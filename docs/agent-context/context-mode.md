@@ -92,7 +92,7 @@ Digite no chat do Copilot — o agente invoca o MCP tool automaticamente.
 Em vez de reler arquivos grandes várias vezes na mesma sessão, prefira:
 
 ```
-ctx search "VistoriaServiceImpl findById"
+ctx search "ExemploServiceImpl findById"
 ```
 
 ao invés de `read_file` no mesmo arquivo. O retorno é uma referência compacta com matches BM25.
