@@ -1,0 +1,45 @@
+---
+applyTo: [{{{applyToJson}}}]
+version: "1.0"
+title: "Convencoes de {{nome}}"
+maintainer: "binding-scaffolder"
+---
+
+# {{titulo_humanizado}}
+
+> Adapter especializado para padroes {{nome}}.
+> Consulte `CLAUDE.md` para regras globais e `.github/copilot-instructions.md` para operacional.
+
+Este documento consolida as convencoes adotadas para {{escopo_humanizado}}.
+
+## 1) Objetivo
+
+Centralizar padroes e boas praticas para {{escopo_humanizado}}, garantindo:
+- Consistencia entre projetos
+- Rastreabilidade de decisoes
+- Sem duplicacao de regras globais
+
+## 2) Convencoes Principais
+
+### Padroes Aplicados a {{applyToList}}
+
+{{#each scope}}
+- {{this}}
+{{/each}}
+
+## 3) Guias Especializados
+
+[Adicionar convencoes especificas para {{nome}} aqui]
+
+## 4) Referencia
+
+- **Binding**: `docs/ai-context/catalog.yaml`
+- **Descoberta**: `.github/instructions/README.md`
+- **Global**: `CLAUDE.md` (R-001..R-031)
+
+---
+
+**Criado por**: binding-scaffolder-agent
+**Data**: {{data}}
+**Status**: ✅ Gerado automaticamente
+

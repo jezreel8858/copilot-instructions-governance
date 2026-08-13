@@ -1,0 +1,160 @@
+# Catalog de Binding — Eco-Sistema 
+# ======================================================
+#
+# PROPÓSITO:
+# Este arquivo é o manifest de binding instanciado para o ecossistema .
+# Gerado a partir de catalog-base.yaml via binding-initializer.
+#
+# HIERARQUIA:
+# 1. Global rules (CLAUDE.md, .github/copilot-instructions.md) — sempre carregados
+# 2. Adapters por stack (applyTo glob em .github/instructions/*.md) — condicional
+# 3. Projeto específico — contexto em runtime via /add-project-context
+#
+# MANUTENÇÃO:
+# - Adicionar projetos: /add-project-context <caminho>
+# - Remover projetos: /del-project-context <nome>
+# - NÃO editar manualmente a seção projetos: — use os prompts acima
+# - Campo `extends:` em projetos declara herança das instruções genéricas disponíveis em adapters:
+
+version: "1.1"
+ecosystem: "app-ecossistema"
+lastUpdated: "2026-07-30"
+maintainer: "eco-sistema-app"
+
+# ============================================
+# BINDINGS GLOBAIS
+# ============================================
+global:
+  - id: "ai-governance"
+    name: "Governança Global de IA"
+    source: "CLAUDE.md"
+    description: "Fonte de verdade operacional — regras R-001..R-039"
+    priority: 100
+    applyTo: "*"
+    audience: "all"
+
+  - id: "copilot-ops"
+    name: "Instruções Operacionais do Copilot"
+    source: ".github/copilot-instructions.md"
+    description: "Roteamento rápido, agents, skills, binding"
+    priority: 75
+    applyTo: "*"
+    audience: "all"
+
+# ============================================
+# ADAPTERS DE STACK
+# ============================================
+adapters:
+  - id: "base-backend"
+    name: "Backend — Java/Spring Boot"
+    source: ".github/instructions/spring-boot-backend.instructions.md"
+    description: "Convenções genéricas de backend Java/Spring Boot (reutilizável por qualquer projeto)"
+    priority: 50
+    applyTo:
+      - "src/main/java/**/*.java"
+      - "src/test/java/**/*.java"
+      - "pom.xml"
+    audience: ["developers", "backend-team"]
+    scope:
+      - "Entities, Services, Controllers"
+      - "Exceções e Logging"
+      - "Testes Unitários JUnit 5"
+      - "Persistência e Banco de Dados"
+
+  - id: "base-frontend"
+    name: "Frontend — Angular 21"
+    source: ".github/instructions/angular-v21-frontend.instructions.md"
+    description: "Convenções genéricas de frontend Angular 21 (reutilizável por qualquer projeto)"
+    priority: 50
+    applyTo:
+      - "src/**/*.ts"
+      - "src/**/*.js"
+      - "angular.json"
+      - "tsconfig.json"
+    audience: ["developers", "frontend-team"]
+    scope:
+      - "Arquitetura Angular 21 e Signals"
+      - "Change Detection e Performance"
+      - "Testes Jasmine/Karma + Playwright"
+      - "SCSS e Estilização"
+
+  - id: "base-python"
+    name: "Backend — Python"
+    source: ".github/instructions/python-backend.instructions.md"
+    description: "Convenções genéricas de backend Python (reutilizável por qualquer projeto)"
+    priority: 50
+    applyTo:
+      - "**/*.py"
+      - "**/pyproject.toml"
+      - "**/requirements*.txt"
+    audience: ["developers", "backend-team"]
+
+  - id: "base-database"
+    name: "Banco de Dados / Migrações"
+    source: ".github/instructions/database.instructions.md"
+    description: "Convenções genéricas de banco de dados, migrações e queries (reutilizável)"
+    priority: 50
+    applyTo:
+      - "migrations/**"
+      - "**/*.sql"
+      - "schema/**"
+    audience: ["developers", "dba-team"]
+
+  - id: "base-devops"
+    name: "DevOps / CI-CD / Containers"
+    source: ".github/instructions/devops.instructions.md"
+    description: "Convenções genéricas de Docker, Kubernetes e CI/CD (reutilizável)"
+    priority: 50
+    applyTo:
+      - "**/Dockerfile*"
+      - "kubernetes/**"
+      - ".github/workflows/**"
+      - "docker-compose*.yml"
+    audience: ["devops-team", "developers"]
+
+
+# ============================================
+# PROJETOS (adicionados via /add-project-context)
+# ============================================
+# Para adicionar: /add-project-context <caminho-do-projeto>
+# Para remover:  /del-project-context <nome-do-projeto>
+# Campo `extends:` declara quais adapters genéricos o projeto herda.
+#   Exemplo:
+#     - id: "meu-projeto"
+#       name: "Meu Projeto"
+#       stack: "backend-microservice"
+#       extends:
+#         - "base-backend"   # herda spring-boot-backend.instructions.md
+#       path: "../meu-projeto"
+#
+# NÃO editar manualmente a seção projetos: — use os prompts acima
+projetos:
+
+# ============================================
+# DISCOVERY
+# ============================================
+discovery:
+  priority_order:
+    - "Regras globais (CLAUDE.md)"
+    - "Instruções operacionais (.github/copilot-instructions.md)"
+    - "Adapters de stack (applyTo glob)"
+    - "Customizações por projeto (/add-project-context)"
+
+  fallback:
+    - "Se nenhum adapter combinar: usar global rules"
+    - "Se conflito entre adapters: aplicar de maior prioridade"
+
+# ============================================
+# METADADOS
+# ============================================
+metadata:
+  base_template: "docs/ai-context/catalog-base.yaml"
+  governance_repo: "eco-sistema-app"
+  initialized_by: "binding-initializer"
+  tools_compatible:
+    - "GitHub Copilot (VS Code, JetBrains)"
+    - "Cursor IDE"
+    - "Claude Code"
+
+
+

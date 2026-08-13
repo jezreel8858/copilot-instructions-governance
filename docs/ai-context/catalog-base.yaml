@@ -1,0 +1,243 @@
+# Catalog de Binding — TEMPLATE GENÉRICO (Reutilizável)
+# ======================================================
+#
+# PROPÓSITO:
+# Este arquivo é a BASE/TEMPLATE genérica para qualquer repositório que adote
+# esta estrutura de governança de IA. É 100% desacoplado de projetos específicos.
+#
+# USO:
+# 1. Copie este arquivo para seu repositório como `docs/ai-context/catalog-base.yaml`
+# 2. Crie `docs/ai-context/catalog.yaml` referenciando este arquivo
+# 3. Preencha a seção `projetos:` com seus projetos específicos
+# 4. Customize adapters e agents conforme seu stack
+#
+# HIERARQUIA:
+# 1. Global rules (CLAUDE.md, .github/copilot-instructions.md) — sempre carregados
+# 2. Adapters por stack (applyTo glob em .github/instructions/*.md) — carregamento condicional
+# 3. Projeto específico — contexto em runtime
+#
+# FORMATO: YAML (compatível com GitHub Copilot, Cursor, e tooling customizado)
+# REFERENCIA: https://github.com/github/copilot-instructions
+# CONSOLIDADO EM: CLAUDE.md (R-003, R-015)
+
+version: "1.0"
+ecosystem: "[seu-ecossistema]"  # CUSTOMIZE: altere para nome do seu ecossistema
+lastUpdated: "2026-06-11"
+maintainer: "[seu-repositorio]"  # CUSTOMIZE: nome do seu repositório
+
+# ============================================
+# BINDINGS GLOBAIS
+# ============================================
+global:
+  - id: "ai-governance"
+    name: "Governanca Global de IA"
+    source: "CLAUDE.md"
+    description: "Fonte de verdade operacional para uso de IA em repositorios com esta base de governanca"
+    priority: 100
+    applyTo: "*"
+    audience: "all"
+    scope:
+      - "Regras normativas (R-001..R-031)"
+      - "Hierarquia de instrucoes"
+      - "Fluxo operacional"
+
+  - id: "copilot-ops"
+    name: "Instrucoes Operacionais do Copilot"
+    source: ".github/copilot-instructions.md"
+    description: "Roteamento rapido, regras de autonomia, e descoberta de agents/skills"
+    priority: 75
+    applyTo: "*"
+    audience: "all"
+    scope:
+      - "Regras de autonomia (nao negociaveis)"
+      - "Model routing (R-021)"
+      - "Descoberta de agents e skills"
+      - "Roteamento rapido para delegacao"
+
+# ============================================
+# ADAPTERS DE STACK (Binding Condicional)
+# ============================================
+adapters:
+  # EXEMPLO: Backend com Java/Spring
+  # Customize este exemplo conforme seu stack real
+  - id: "backend-template"
+    name: "Backend Template"
+    source: ".github/instructions/<seu-projeto>-spring-boot-backend.instructions.md"
+    description: "TEMPLATE: Customize com suas convencoes de backend"
+    priority: 50
+    applyTo:
+      - "src/main/java/**/*.java"
+      - "pom.xml"
+    audience: ["developers", "backend-team"]
+    scope:
+      - "Entities, Services, Controllers"
+      - "Excecoes e Logging"
+      - "Testes Unitarios"
+      - "Persistencia e Banco de Dados"
+
+  # EXEMPLO: Frontend com Angular
+  # Customize este exemplo conforme seu stack real
+  - id: "frontend-template"
+    name: "Frontend Template"
+    source: ".github/instructions/<seu-projeto>-angular-v21-frontend.instructions.md"
+    description: "TEMPLATE: Customize com suas convencoes de frontend"
+    priority: 50
+    applyTo:
+      - "src/**/*.ts"
+      - "src/**/*.tsx"
+      - "src/**/*.js"
+      - "angular.json"
+      - "tsconfig.json"
+    audience: ["developers", "frontend-team"]
+    scope:
+      - "Arquitetura e State Management"
+      - "Ciclo de Vida"
+      - "Testes"
+      - "Performance"
+
+# ============================================
+# AGENTS (Orquestradores)
+# ============================================
+agents:
+  - id: "binding-initializer"
+    name: "binding-initializer-Agent"
+    source: ".github/agents/binding-initializer.agent.md"
+    description: "Inicializa catalog.yaml + binding.md para novo repositório"
+    priority: 40
+    tier: "operational"
+    capabilities:
+      - "initialize_binding"
+      - "ask_questions_5_perguntas"
+      - "validate_yaml"
+    tools_required:
+      - "ask_questions"
+      - "file_operations"
+      - "yaml_validation"
+    source_docs:
+      - ".github/agents/binding-initializer.agent.md"
+      - "docs/ai-context/binding-base.md"
+      - "docs/ai-context/catalog-base.yaml"
+
+# ============================================
+# SKILLS (Capacidades Especializadas)
+# ============================================
+skills:
+  - id: "project-context-builder"
+    name: "project-context-builder"
+    source: ".github/skills/project-context-builder/SKILL.md"
+    description: "Scanner local + LLM para descoberta automatica de projetos"
+    tier: "advanced"
+    triggers:
+      - "/add-project-context"
+      - "novo projeto"
+    capabilities:
+      - "scan_project_structure"
+      - "generate_project_yaml"
+      - "generate_instructions_md"
+    upstream_agents:
+      - "binding-scaffolder"
+    dependencies:
+      - "binding-scaffolder-agent"
+    tools_required:
+      - "file_operations"
+      - "yaml_validation"
+      - "subprocess"
+    source_docs:
+      - "tools/project-context-builder/SPEC.md"
+      - "tools/project-context-builder/USAGE.md"
+      - "tools/project-context-builder/scanner.py"
+      - "tools/project-context-builder/copilot_handler.py"
+
+# ============================================
+# PROJETOS (Binding por Projeto)
+# ============================================
+# INSTRUÇÃO: Customize esta seção com seus PRÓPRIOS projetos
+# Cada projeto deve referenciar um ou mais adapters da seção acima
+#
+# EXEMPLO DE PREENCHIMENTO:
+# projetos:
+#   - name: "meu-projeto-backend"
+#     extends: ["backend-template"]      # ou ID do adapter que combina com seu stack
+#     priority: 40
+#     description: "Sistema de backend em Java"
+#     type: "backend"
+#
+#   - name: "meu-projeto-frontend"
+#     extends: ["frontend-template"]     # ou ID do adapter que combina com seu stack
+#     priority: 40
+#     description: "Interface em Angular"
+#     type: "frontend"
+#
+# REMOVA ESTE COMENTÁRIO APÓS PREENCHER COM SEUS PROJETOS
+
+projetos: []  # Vazio: customize com seus projetos
+
+# ============================================
+# DISCOVERY (Carregamento Progressivo)
+# ============================================
+discovery:
+  priority_order:
+    - "Regras globais (CLAUDE.md)"
+    - "Instrucoes operacionais (.github/copilot-instructions.md)"
+    - "Adapters de stack (applyTo glob)"
+    - "Customizacoes por projeto"
+
+  fallback:
+    - "Se nenhum adapter combinar: usar global rules"
+    - "Se conflito entre adapters: aplicar de maior prioridade"
+    - "Se diferenca entre global e adapter: referenciar em CLAUDE.md (R-003)"
+
+# ============================================
+# METADADOS
+# ============================================
+metadata:
+  standardsUsed:
+    - "GitHub Copilot Instructions (applyTo glob)"
+    - "YAML Frontmatter em .md adapters"
+    - "Hierarquia 3-camadas: Global -> Stack -> Projeto"
+
+  tools_compatible:
+    - "GitHub Copilot (VS Code, JetBrains)"
+    - "Cursor IDE"
+    - "Claude Code"
+    - "Custom tooling (ctx_search, MCP)"
+
+  references:
+    - "GitHub: https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions"
+    - "Research consolidada: R-019 (Busca web proativa)"
+    - "CLAUDE.md: R-003 (Sem duplicacao), R-015 (Atualizacao atomica)"
+
+# ============================================
+# COMO USAR ESTE ARQUIVO COMO BASE/TEMPLATE
+# ============================================
+#
+# 1. COPIE ESTE ARQUIVO
+#    cp catalog-base.yaml catalog.yaml
+#
+# 2. CUSTOMIZE A SEÇÃO DE ADAPTERS
+#    - Atualize os IDs de "backend-template" / "frontend-template"
+#    - Customize os paths em `applyTo:` conforme seu stack real
+#    - Atualize `source:` para referenciar seus .md files específicos
+#
+# 3. PREENCHA A SEÇÃO DE PROJETOS
+#    - Remova `projetos: []`
+#    - Adicione seus próprios projetos
+#    - Cada projeto deve referenciar um adapter da seção acima
+#
+# 4. CUSTOMIZE AGENTS E SKILLS
+#    - Adicione/remova agents e skills conforme necessário
+#    - Mantenha a hierarquia: Global Rules > Adapters > Customizations
+#
+# 5. VALIDE O YAML
+#    python -c "import yaml; yaml.safe_load(open('docs/ai-context/catalog.yaml')); print('✅ YAML válido')"
+#
+# 6. COMMITE AMBOS OS ARQUIVOS
+#    - catalog-base.yaml (template genérico — não mexe mais)
+#    - catalog.yaml (sua instância personalizada)
+#
+# ============================================
+# VERSIONAMENTO
+# ============================================
+# catalog-base.yaml: v1.0 (genérico, reutilizável)
+# Data: 2026-06-11
+# Customizações de instância: track em catalog.yaml (seu repositório)

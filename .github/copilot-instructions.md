@@ -1,0 +1,448 @@
+# Instruções de IA — Base de Governança Reutilizável
+
+> Fonte de verdade operacional: [`CLAUDE.md`](../CLAUDE.md).
+> Mapa de Projetos/Adapters: [`docs/ai-context/catalog.yaml`](../docs/ai-context/catalog.yaml).
+> IDs normativos: consulte `R-001..R-039` em `CLAUDE.md`.
+
+---
+
+## 1) Diretriz de Governança
+
+- Este arquivo define **execução operacional** e **roteamento rápido**.
+- Regras globais devem ficar em `CLAUDE.md` para evitar duplicação.
+- Em conflito, siga a hierarquia definida em `CLAUDE.md`.
+
+### 📋 Separação Clara: Governança Global vs. Adapters
+
+| Tipo | Arquivo | Escopo | Conteúdo Permitido | Exemplos / Referências |
+|------|---------|--------|-------|---|
+| **Governança Global** | `CLAUDE.md` | 🌍 Multi-projeto, desacoplado | Regras R-001..R-038, princípios, fluxos genéricos | ❌ Nenhum projeto/tech específicos |
+| **Operacional** | `.github/copilot-instructions.md` | 🌍 Multi-projeto, desacoplado | Roteamento, agents, skills, estrutura genérica | ❌ Nenhum projeto/tech específicos (remeter a adapters) |
+| **Adapters** | `.github/instructions/*.instructions.md` | 🔧 Stack/domínio específico | Convenções, padrões, tools, paradigmas de tech/domínio **excluivos** | ✅ Projeto, linguagem, framework **específicos permitidos** |
+| **Contexto de Binding** | `docs/ai-context/catalog.yaml` + `docs/ai-context/binding.md` | 🔗 Mapa de instâncias | Lista concreta de adapters, projetos, mapeamento stack → adapter | ✅ Dados de instância permitidos |
+
+---
+
+## 1.1) 🚀 **AGENT ROUTER FIRST — Ponto de Entrada Obrigatório** (R-037)
+
+**SEM EXCEÇÃO:** Toda solicitação deve começar com `@agent-router`.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                                                         │
+│   PRIMEIRA AÇÃO: Invocar `@agent-router`               │
+│                                                         │
+│   Motivo:                                              │
+│   - Classificação de intenção (triagem)                │
+│   - Decisão de rota para agent correto                 │
+│   - Prevenção de implementação direta sem triagem      │
+│   - Garantia de governança agent-first                 │
+│                                                         │
+│   Proibido:                                            │
+│   ❌ Pular router e ir direto para agent específico    │
+│   ❌ Chamar múltiplos agents sem triagem               │
+│   ❌ Implementar sem passar por roteamento             │
+│                                                         │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Fluxo garantido:**
+
+```
+Solicitação
+    ↓
+@agent-router (triagem)
+    ↓
+[Rota decidida]
+    ↓
+@bug-triage | @test-strategy | @refactor-planner |
+@impact-architect | @docs-curator |
+@research-router | @analysis-architect
+    ↓
+[Execução específica]
+```
+
+---
+
+## 1.2) 📋 **Matriz de Decisão — Quando Pedir Contexto (R-006)**
+
+**Vide** `.github/agents/agent-router.agent.md` § *R-006 (Pré-condições — Matriz de Decisão: Quando Pedir Contexto)*.
+
+Esta matriz é **responsabilidade do roteador** — não é regra global.
+
+**Regra de Ouro**: Se downstream consegue agir (ou pedir contexto iterativamente), não bloqueie com pré-voo.
+
+---
+
+## 2) 🛑 Regras de Autonomia (não negociáveis)
+
+- **Agent Router First (R-037)**: TODA solicitação começa com `@agent-router`. Pular router é violação de governança.
+- **Não gere documentação automaticamente (R-033)**: nunca gere documentos `.md` se não for solicitado ou sem a aprovação por `ask_questions`.
+- **Sem loops de correção**: se falhar, PARE, explique e aguarde aprovação.
+- **Sem commits/push autônomos**: gere apenas a mensagem via `/commit`. Nunca `git add/commit/push`.
+- **Sem instalação autônoma**: aponte a dependência e aguarde confirmação.
+- **Um comando por vez**: leia o output uma única vez.
+- **`get_errors` uma vez** por arquivo editado.
+- **Edições agrupadas**: todas as alterações de um arquivo em uma chamada.
+- **Não crie arquivos auxiliares** sem pedido explícito.
+- **Não releia arquivos** já no contexto da conversa.
+- **Pre-fetch automático pelo agent**: ao selecionar um agent, carregue automaticamente os `source_docs` declarados no `catalog.yaml` e anuncie o que foi anexado. Usuário pode rejeitar com "Sem pre-fetch".
+- **Execução via Context Mode (R-008)**: SEMPRE use `ctx_execute`/`ctx_execute_file`/`ctx_batch_execute` para comandos. Terminal é fallback APENAS quando MCP indisponível.
+- **Sem código inline em agents/skills/prompts (R-026)**: blocos com implementações > 8 linhas pertencem a `snippets/`, `templates/` ou `commands/`. Referencie por caminho ou declare em `source_docs:`.
+- **Clarificação Obrigatória (R-027)**: qualquer dúvida → `ask_questions` com opções descritivas + última opção aberta. **Proibido inferir ou deduzir** intenção.
+- **Estrutura de Resposta (R-028)**: toda implementação abre com resumo em 5 seções (Abordagem · Componentes · Código · Passos Cruciais · Impacto).
+- **Postura Senior Engineer (R-029)**: bullets/tabelas > parágrafos · código limpo sem narrativa inline · tom direto sem filler de IA.
+- **Plano Auto-Implementável (R-031)**: plano aprovado → execução integral sem interrupção. Pré-voo: escopo + contingências inline `[fallback: X]` + critério de falha tolerável. Parada permitida APENAS por: commit autônomo, credencial exposta, ou estado irrecuperável. Relatório final substitui checkpoints intermediários.
+- **Genericidade Obrigatória (R-038)**: toda documentação em `.github/` **DEVE ser genérica**. Sem projetos específicos, tecnologias exclusivas ou convenções de domínio. Se é específico → vai para `.github/instructions/*.instructions.md` (adapter). Teste: substitua projeto por `[PROJETO]` e tech por `[TECH]` — continua válido?
+
+### 2.1) context-mode — Regras Obrigatórias de Roteamento (JetBrains Copilot)
+
+Quando as tools de context-mode estiverem disponíveis, elas viram o caminho padrão para coleta, processamento e busca. Objetivo: reduzir bytes no contexto e evitar gasto desnecessário de créditos.
+
+**Princípio-base (Think in Code):**
+
+- Para analisar/contar/filtrar/comparar/parsear/transformar, usar `ctx_execute`/`ctx_execute_file` e imprimir apenas o resultado final.
+- Não trazer dado bruto para o chat; o processamento acontece no sandbox.
+- Em JavaScript sandbox, usar built-ins (`fs`, `path`, `child_process`) com `try/catch` e tratamento de `null`/`undefined`.
+
+**Bloqueios obrigatórios (não tentar):**
+
+- `curl`/`wget` em terminal.
+- HTTP fora do sandbox (`fetch('http`, `requests.get`, `requests.post`, `http.get`, `http.request`).
+- Web fetch direto no fluxo de chat.
+- `ctx_index(content: ...)` para payload grande (duplica custo de contexto).
+
+**Playbook de roteamento (ordem fixa):**
+
+1. `MEMORY` → `ctx_search(..., sort: "timeline")` antes de perguntar contexto ao usuário.
+2. `GATHER` → `ctx_batch_execute(commands, queries)` com comandos rotulados.
+3. `FOLLOW-UP` → `ctx_search(queries: [...])` com todas as perguntas no mesmo array.
+4. `PROCESSING` → `ctx_execute` / `ctx_execute_file` para derivação de dados.
+5. `WEB` → `ctx_fetch_and_index` e depois `ctx_search`.
+6. `INDEX` → `ctx_index(path: ..., source: ...)` para conteúdo reutilizável.
+
+**Substituições mandatórias:**
+
+- Web/docs: `ctx_fetch_and_index` → `ctx_search`.
+- Coleta e resposta em lote: `ctx_batch_execute(commands, queries)`.
+- Arquivo grande para análise: `ctx_execute_file(path, language, code)`.
+- Saída de tool externa grande: salvar em arquivo e processar por `ctx_execute_file` ou indexar via `ctx_index(path)`.
+
+**Regras de economia de contexto (token budget):**
+
+- Sempre usar `queries` em lote (evitar múltiplas chamadas unitárias de `ctx_search`).
+- Sempre informar `source` quando houver mais de uma fonte indexada.
+- Preferir `query_scope: "batch"` no `ctx_batch_execute` quando o objetivo for responder só com dados recém-coletados.
+- Persistir artefatos grandes em arquivo; retornar apenas `caminho` + descrição de 1 linha.
+
+**Concorrência padrão:**
+
+- I/O de rede/API: `concurrency: 4-8` em `ctx_batch_execute`/`ctx_fetch_and_index`.
+- CPU-bound (build/test/lint): `concurrency: 1`.
+- `gh` CLI: máximo `4`.
+
+**Terminal (`run_in_terminal`) apenas para:** `git`, `mkdir`, `rm`, `mv`, `cd`, `ls`, `npm install`, `pip install`.
+
+**Continuidade de sessão e memória:**
+
+- Em retomada, consultar memória antes de perguntar contexto ao usuário.
+- Se `ctx_search` retornar 0 resultados, tratar como sessão nova.
+
+**Comandos `ctx` (atalhos operacionais):**
+
+- `ctx stats` → chamar `ctx_stats` e exibir saída completa.
+- `ctx doctor` → chamar `ctx_doctor`, executar comando retornado e reportar checklist.
+- `ctx upgrade` → chamar `ctx_upgrade`, executar comando retornado e reportar checklist.
+- `ctx purge` → chamar `ctx_purge(confirm: true)` com aviso explícito de operação destrutiva.
+
+### Compact Error Reporting
+
+Ao reportar falhas, use o formato 3 linhas:
+
+```
+- Causa: <descrição em ≤ 1 linha>
+- Local: <arquivo:linha ou comando>
+- Ação sugerida: <o que fazer; aguarda aprovação>
+```
+
+**Proibido sem pedido**: stack trace completo, output integral, diff > 20 linhas.
+Se múltiplos erros: agrupe, liste no máximo 5; resto: `(+N erros similares)`.
+
+---
+
+## 3) 🧠 Model Routing Signal (R-021) + Conformidade (R-036)
+
+**Pré-requisito OBRIGATÓRIO**: 
+
+1. **Antes de QUALQUER agent (incluindo router)**, execute R-036 (verificar conformidade com frontmatter).
+2. **Se houver mismatch**, resolva PRIMEIRO (troque de modelo).
+3. **Depois**: `@agent-router` → classificar intenção e delegar.
+
+**Health Check Model:**
+
+```
+[Model Check] Expected: <model-frontmatter> | Current: <model-sessão> | Status: ?
+
+❌ MISMATCH? → Troque modelo ANTES de invocar qualquer agent.
+✅ MATCH? → Prossiga com @agent-router (obrigatório).
+```
+
+Após confirmar conformidade, avalie o tipo da tarefa e emita o sinal abaixo quando exigir modelo **1× ou superior**:
+
+> 🧠 **Modelo recomendado: `<Claude Sonnet / GPT-5>`**
+> **Motivo:** `<razão em 1 linha>`
+> Troque o modelo e continue neste mesmo chat.
+
+| Tipo de tarefa | Modelo | Custo |
+|---|---|---|
+| Exploração · contexto · Q&A · confirmação · MCP fetch | **Claude Haiku** | **0×** |
+| Edições pequenas · respostas rápidas | Claude Haiku | 0.33× |
+| Implementação padrão · refactor | Claude Sonnet / GPT-5 | 1× |
+| Arquitetura complexa · debug crítico · decisão crítica | Claude Opus | 3× |
+
+**Regra**: emita o sinal **antes** de codar. MCP tools (`ctx_search`, Tavily) amplificam qualquer modelo — use-os antes de escalar.
+
+---
+
+## 4.1) 🏥 Health Check — Binding Context (R-034)
+
+**GATILHO AUTOMÁTICO**: Ao iniciar trabalho em novo repositório, Copilot DEVE verificar:
+
+```
+✓ Existe: docs/ai-context/catalog.yaml  ← NESTE repositório de governança
+✓ Existe: docs/ai-context/binding.md    ← NESTE repositório de governança
+```
+
+> ⛔ **GUARDRAIL DE CONFINAMENTO (R-034)**:
+> - `catalog.yaml` e `binding.md` existem APENAS neste repositório.
+> - Adapters existem APENAS em `.github/instructions/<projeto>.instructions.md` NESTE repositório.
+> - Projetos externos (ex.: `custom-project-app`) são referenciados no catalog,
+>   mas **NUNCA recebem arquivos de governança** criados por estes agents.
+> - O `adapter-generator` faz SCANNER dos projetos externos (read-only), mas cria
+>   arquivos somente neste repositório.
+
+**Se FALTAREM arquivos:**
+
+1. ⚠️ **ALERTA ao usuário:**
+   ```
+   ⚠️ Binding context não detectado!
+
+   Este repositório não possui:
+   - docs/ai-context/catalog.yaml
+   - docs/ai-context/binding.md
+
+   → Vou disparar o agent `binding-initializer` para criá-los NESTE repositório
+   → Responda 1 pergunta (nome do ecossistema) e o esqueleto será criado aqui
+   → Projetos são adicionados depois via /add-project-context
+   ```
+
+2. **DISPARAR AGENT** `binding-initializer` com `ask_questions`:
+   - P1: Nome do ecossistema/organização (kebab-case) — única pergunta obrigatória
+
+3. **GERAR AUTOMATICAMENTE — TODOS NESTE REPOSITÓRIO:**
+   - `docs/ai-context/catalog.yaml` — via `binding-initializer` ← NESTE repo (esqueleto, projetos: [])
+   - `docs/ai-context/binding.md` — via `binding-initializer` ← NESTE repo
+   - `.github/instructions/<projeto>.instructions.md` — via `adapter-generator` após `/add-project-context`
+   - Préview antes de criar
+
+**Sem exceções** — binding + adapters são pré-requisitos para descoberta de convenções (R-034).
+Nenhum desses arquivos deve ser criado nos projetos externos.
+
+---
+
+## 4.2) 🔧 Health Check — Model Enforcement (R-036)
+
+**GATILHO AUTOMÁTICO**: Ao iniciar execução de agent/prompt/skill com frontmatter `model:`, Copilot DEVE verificar **ANTES** de qualquer ação:
+
+```
+[Model Check] Expected: <model-frontmatter> | Current: <model-sessão> | Status: ?
+```
+
+**Se modelos NÃO COINCIDEM** (ex: Agent pede `Claude Sonnet 4.5` mas chat está em `Claude Haiku`):
+
+1. ⚠️ **ALERTAR ao usuário** via `ask_questions`:
+
+```
+Detecção de MISMATCH de Modelo
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✗ ESPERADO (frontmatter): Claude Sonnet 4.5
+✓ ATUAL (sessão):         Claude Haiku
+
+Escolha uma ação:
+```
+
+2. **3 Opções via `ask_questions`**:
+   - **A)** Trocar para modelo correto (`Claude Sonnet 4.5`)
+   - **B)** Continuar com modelo atual (aceitar risco de perda de qualidade)
+   - **C)** Cancelar execução
+
+3. **Se usuário escolhe A:**
+   - Copilot recomenda: "⚙️ Troque em Settings → Model → `Claude Sonnet 4.5`, ou use `/switch-model Claude-Sonnet-4.5` se disponível"
+   - **AGUARDE** trocar manualmente e retome
+   - Não prosseguir até conformidade
+
+4. **Se usuário escolhe B:**
+   - Registrar: `⚠️ CONTINUANDO COM MISMATCH (Claude Haiku ao invés de Claude Sonnet 4.5) — QoS REDUZIDA`
+   - Executar com aviso em cabeçalho do resultado
+   - Não repetir a verificação nesta sessão
+
+5. **Se usuário escolhe C:**
+   - Cancelar: `❌ Execução cancelada. Troque o modelo e execute novamente.`
+   - Bloquear qualquer progresso
+
+**Regra**: Sem exceções — model mismatch impacta QoS, segurança e correção. R-036 é verificação **obrigatória** ANTES de qualquer implementação/análise.
+
+---
+
+### Agents atuais
+
+**⭐ PONTO DE ENTRADA OBRIGATÓRIO:**
+- `agent-router` → **SEMPRE INVOCAR PRIMEIRO** (triagem + roteamento para downstream)
+
+**Downstream (conforme rota do router):**
+- `bug-triage` -> triagem de bugs e regressões.
+- `test-strategy` -> estratégia de testes.
+- `test-implementation` -> implementação de testes unitários, integração e E2E.
+- `refactor-planner` -> planejamento de refatoração.
+- `impact-architect` -> análise de impacto técnico.
+- `docs-curator` -> curadoria de documentação de governança.
+- `research-router` -> triagem e roteamento de pesquisa.
+- `analysis-architect` -> análise técnica cross-projeto.
+- `agent-factory` -> criar/revisar agents customizados com padrão estrutural.
+- `binding-initializer` -> ⚡ inicializar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — R-034)
+- `adapter-generator` -> ⚡ gerar automaticamente adapters em `.github/instructions/` via `/add-project-context`
+- `skill-factory` -> ⭐ criar/revisar skills com padrão estrutural de SKILL.md e `.index.json` atômico
+
+### Skills atuais
+
+**Contexto e Processo:**
+- `context-mode` -> organização de contexto e pesquisa sobre conteúdo já indexado/lido.
+- `context-compact` -> compactação pós-leitura e geração de resumos executáveis.
+- `context-builder` -> coleta e condensação de contexto técnico em `docs/context/`.
+
+**Pesquisa e Documentação:**
+- `tavily` -> pesquisa externa e documentação atualizada.
+- `mermaid-diagrams` -> criação de diagramas Mermaid legíveis em Markdown, ADRs e documentação técnica.
+
+**Tooling e Qualidade:**
+- `sonarqube-governance` -> monitoramento de métricas de qualidade via SonarQube.
+- `yaml-governance` -> boas práticas para leitura, geração e validação de arquivos YAML/YML.
+- `git-governance` -> convenções de git workflow, branch naming e commit standards.
+
+**Testes — Genéricos (agnósticos de stack):**
+- `test-implementation-backend` -> padrões agnósticos de testes para qualquer backend.
+- `test-implementation-frontend` -> padrões agnósticos de testes para qualquer frontend.
+- `test-coverage-governance` -> governança de cobertura de testes e métricas por risco.
+
+**Testes — Específicos por Stack:**
+- `test-implementation-spring-boot` -> padrões de testes em Spring Boot com JUnit 5 e Mockito.
+- `test-implementation-angular-jasmine` -> padrões de testes em Angular com Jasmine/Karma (legado).
+- `test-implementation-angular-vitest` -> padrões de testes em Angular 20/21+ com Vitest (recomendado).
+- `test-implementation-python` -> padrões de testes em Python com pytest.
+
+**Scanner e Adapters:**
+- `project-scanner` -> análise automática de repositórios e detecção de stack e arquitetura.
+- `project-context-builder` -> scanner automático de projetos para geração de adapters via `/add-project-context`.
+
+**Governança de Agents:**
+- `agent-contracts` -> padronização de contratos operacionais de agents.
+- `handoff-governance` -> padrões de delegação entre agents.
+- `confidence-fallback-policy` -> política de confiança e fallback.
+- `agent-safety-guardrails` -> guardrails de segurança para agents.
+- `agent-observability-otel` -> rastreabilidade e telemetria de agents.
+- `agent-evals-lab` -> avaliação contínua e regressão de agents.
+
+### Pre-fetch recomendado (antes de tarefas não triviais)
+- `CLAUDE.md`
+- `docs/ai-context/catalog.yaml`
+- `.github/copilot-instructions.md`
+- `.github/agents/README.md`
+- `.github/skills/README.md`
+- `.github/instructions/README.md`
+
+### Docs de convenções consolidadas
+
+- Instructions específicas por projeto/stack: `.github/instructions/*.instructions.md`
+- Índice de instructions (adapters): `.github/instructions/README.md`
+- Novos arquivos de documentação `.md` devem seguir `kebab-case`, conforme diretriz do `CLAUDE.md`.
+
+### 🔍 Descoberta Progressiva de Agents e Skills
+
+- `@agent list` — lista todos os agents + capacidades
+- `@agent search <tema>` — busca semântica por relevância
+- `@skill list` — lista todas as skills por tier
+- `@skill search "<termo>"` — busca semântica de skills
+
+**Pre-fetch Automático:** ao selecionar um agent, o Copilot carrega automaticamente os `source_docs` declarados no `catalog.yaml`. Rejeite com "Sem pre-fetch" se desejar.
+
+---
+
+## 5) Binding de Adapters — Carregamento Hierárquico de Instruções
+
+### Mecanismo de Binding (Consolidado no Mercado)
+
+Este repositório adota o **padrão consolidado GitHub Copilot** de binding hierárquico:
+
+```
+Camada 1 (Global)      → CLAUDE.md + .github/copilot-instructions.md
+                           ↓
+Camada 2 (Stack/Adapter) → .github/instructions/*.instructions.md (com applyTo glob)
+                           ↓
+Camada 3 (Projeto)      → Customizações locais por repositório
+```
+
+### Manifest de Binding
+
+**Arquivo:** `docs/ai-context/catalog.yaml` (single source of truth)
+
+- Define ordem de carregamento de adapters
+- Mapeia `applyTo` glob patterns → instruções específicas
+- Documenta escopo, audiência e projetos de cada adapter
+- Garante não-duplicação (R-003)
+
+### Adapters: Estrutura Genérica
+
+Cada adapter em `.github/instructions/` deve:
+- Ser **independente** de outros adapters
+- Declarar seus `applyTo` glob patterns via YAML frontmatter
+- **Nunca referenciar projetos específicos ou tecnologias exclusivas** (R-038)
+- Estar registrado em `docs/ai-context/catalog.yaml` como single source of truth
+
+**Para exemplos concretos de adapters registrados**, consulte `docs/ai-context/catalog.yaml` (binding context).
+
+- **GitHub Copilot** (VS Code, JetBrains): carrega `.github/copilot-instructions.md` (global) + adapters via YAML frontmatter `applyTo`
+- **Cursor IDE**, **Claude Code**: suporta o mesmo mecanismo
+- **Custom tooling**: use `docs/ai-context/catalog.yaml` como manifesto de discovery
+
+### Adicionar Novo Adapter
+
+1. Criar arquivo `.github/instructions/<nome>.instructions.md`
+2. Adicionar frontmatter YAML com `applyTo`:
+   ```yaml
+   ---
+   applyTo: ["src/**/*.ext"]
+   ---
+   ```
+3. Atualizar `docs/ai-context/catalog.yaml` com novo entry
+4. Sincronizar `.github/instructions/README.md`
+
+---
+
+## 6) Formato de Saída Padrão
+
+- **Resultado:** o que foi feito.
+- **Evidências:** caminhos e artefatos alterados.
+- **Próximo passo mínimo:** ação objetiva para avançar.
+
+## 7) Índices de Governança
+
+- **Adapters/Binding:** `docs/ai-context/catalog.yaml` (manifest de carregamento hierárquico)
+- **Instructions:** `.github/instructions/README.md` + `.github/instructions/*.instructions.md`
+- **Agents:** `.github/agents/README.md` + `.github/agents/catalog.yaml`
+- **Skills:** `.github/skills/README.md` + `.github/skills/.index.json`
+- **Prompts Workflow:** `/pesquisar` `/plano` `/implementar` `/validar`
+- **Prompts Context Mode:** `/ctx-checkpoint` `/ctx-resume` `/ctx-doctor` `/ctx-status` `/ctx-insight`
+- **Índice completo:** `.github/prompts/README.md`
+- **Hooks:** `.github/hooks/README.md` + `.github/hooks/context-mode.json`
+
+---

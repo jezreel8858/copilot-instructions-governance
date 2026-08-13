@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2026-06-10",
+  "scaffolder": "binding-scaffolder-agent",
+  "description": "Registry de artefatos gerados pelo binding-scaffolder",
+  "generatedArtifacts": [
+    {
+      "type": "adapter",
+      "name": "backend-stack",
+      "source": ".github/instructions/backend.instructions.md",
+      "generatedAt": "2026-06-10",
+      "files": [
+        ".github/instructions/backend.instructions.md",
+        "docs/ai-context/catalog.yaml",
+        "docs/ai-context/binding.md",
+        ".github/instructions/README.md"
+      ],
+      "status": "manual"
+    },
+    {
+      "type": "adapter",
+      "name": "frontend-stack",
+      "source": ".github/instructions/frontend.instructions.md",
+      "generatedAt": "2026-06-10",
+      "files": [
+        ".github/instructions/frontend.instructions.md",
+        "docs/ai-context/catalog.yaml",
+        "docs/ai-context/binding.md",
+        ".github/instructions/README.md"
+      ],
+      "status": "manual"
+    }
+  ],
+  "templateVersions": {
+    "adapter-instructions": "1.0",
+    "catalog-adapter-entry": "1.0",
+    "catalog-projeto-entry": "1.0",
+    "instructions-readme-row": "1.0"
+  },
+  "schemaVersion": "1.0",
+  "changelog": [
+    {
+      "version": "1.0",
+      "date": "2026-06-10",
+      "changes": [
+        "Initial release",
+        "Adapter scaffolding support",
+        "Projeto scaffolding support",
+        "Template rendering with Handlebars",
+        "Atomic execution with rollback"
+      ]
+    }
+  ]
+}
+
