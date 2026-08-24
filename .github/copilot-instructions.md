@@ -303,6 +303,7 @@ Escolha uma ação:
 - `bug-triage` -> triagem de bugs e regressões.
 - `test-strategy` -> estratégia de testes.
 - `test-implementation` -> implementação de testes unitários, integração e E2E.
+- `test-fix` -> correção de testes quebrados a partir de relatório de falhas (opera somente nos testes identificados).
 - `refactor-planner` -> planejamento de refatoração.
 - `impact-architect` -> análise de impacto técnico.
 - `docs-curator` -> curadoria de documentação de governança.

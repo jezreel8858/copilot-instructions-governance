@@ -145,6 +145,54 @@ agents:
       - ".github/skills/test-coverage-governance/SKILL.md"
     estimated_time_minutes: 60
 
+  test-fix:
+    id: "test-fix"
+    priority: 3.8
+    domain: "Correcao de testes quebrados"
+    description: "Corrigir testes quebrados via relatorio ou ask_questions — opera somente nos testes identificados, executa em lote com filtro, nunca roda a suite completa de forma autonoma"
+    keywords:
+      - "teste quebrado"
+      - "broken test"
+      - "fix test"
+      - "corrigir teste"
+      - "falha de teste"
+      - "test failure"
+      - "test repair"
+      - "flaky test"
+      - "relatorio de testes"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/instructions/frontend.instructions.md"
+    related_agents:
+      - "agent-router"
+      - "bug-triage"
+      - "test-implementation"
+      - "test-strategy"
+      - "impact-architect"
+    related_skills:
+      - "context-mode"
+      - "test-implementation-angular-vitest"
+      - "test-implementation-angular-jasmine"
+      - "test-implementation-spring-boot"
+      - "test-implementation-python"
+      - "test-implementation-frontend"
+      - "test-implementation-backend"
+      - "test-coverage-governance"
+      - "agent-contracts"
+      - "confidence-fallback-policy"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/test-fix.agent.md"
+      - ".github/instructions/frontend.instructions.md"
+      - ".github/skills/test-implementation-angular-vitest/SKILL.md"
+      - ".github/skills/test-implementation-angular-jasmine/SKILL.md"
+      - ".github/skills/test-coverage-governance/SKILL.md"
+    estimated_time_minutes: 45
+
   refactor-planner:
     id: "refactor-planner"
     priority: 4

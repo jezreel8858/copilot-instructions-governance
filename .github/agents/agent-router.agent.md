@@ -48,6 +48,7 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 | Tipo de Solicitação | Intenção Clara? | Código-Alvo Presente? | Governa Multi-Projeto? | Ação |
 |---|:---:|:---:|:---:|---|
 | *"Ajuste o teste X após bugfix"* | ✅ Sim | ✅ Sim | ❌ Não | **Roteie direto** → @test-strategy |
+| *"Corrija estes testes quebrados (com relatório)"* | ✅ Sim | ✅ Sim | ❌ Não | **Roteie direto** → @test-fix |
 | *"Crie novo adapter backend"* | ✅ Sim | ❌ Não | ✅ Sim | **Roteie** → @impact-architect (vai pedir design/escopo) |
 | *"Implemente feature de listagem"* | ✅ Sim | ❌ Não | ❌ Não | **Roteie direto** → downstream (vai pedir escopo se precisar) |
 | *"Refatore regra em 3 projetos"* | ✅ Sim | ❌ Não | ✅ Sim | **Roteie** → @impact-architect (vai pedir impacto análise) |
@@ -72,6 +73,9 @@ Pedido recebido?
 |  \- Não
 |- É estratégia/plano de testes?
 |  |- Sim -> @test-strategy
+|  \- Não
+|- É correção de testes quebrados com relatório de falhas?
+|  |- Sim -> @test-fix
 |  \- Não
 |- É pedido de refatoração/plano de refactor?
 |  |- Sim -> @refactor-planner
@@ -154,6 +158,7 @@ Próximo passo mínimo:
 
 - `@bug-triage` (`bug-triage.agent.md`) para erro, bug e regressão.
 - `@test-strategy` (`test-strategy.agent.md`) para estratégia/plano de testes.
+- `@test-fix` (`test-fix.agent.md`) para correção de testes quebrados com relatório de falhas.
 - `@refactor-planner` (`refactor-planner.agent.md`) para planejamento de refactor.
 - `@impact-architect` (`impact-architect.agent.md`) para impacto técnico e risco local.
 - `@docs-curator` (`docs-curator.agent.md`) para curadoria de documentação.

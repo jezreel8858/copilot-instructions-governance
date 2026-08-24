@@ -19,6 +19,7 @@
 | Agent | `bug-triage` | Triagem de bugs/regressões com reprodução e severidade |
 | Agent | `test-strategy` | Estratégia de testes, cobertura por risco e critérios de aceitação |
 | Agent | `test-implementation` | ⭐ ***(NEW)*** Implementar suítes de testes unitários, integração e E2E com cobertura objetiva |
+| Agent | `test-fix` | 🔧 ***(NEW)*** Corrigir testes quebrados a partir de relatório de falhas — opera somente nos testes identificados |
 | Agent | `refactor-planner` | Planejamento de refatoração incremental com risco e rollback |
 | Agent | `impact-architect` | Análise de impacto técnico local, dependências e mitigação |
 | Agent | `docs-curator` | Curadoria e padronização de documentação/catálogo |
@@ -38,6 +39,7 @@
 | Bug, erro, regressão | `bug-triage` |
 | Estratégia de testes | `test-strategy` |
 | Implementação de testes (unit/integration/E2E) | `test-implementation` |
+| Correção de testes quebrados (com relatório de falhas) | `test-fix` |
 | Planejamento de refactor | `refactor-planner` |
 | Impacto técnico local | `impact-architect` |
 | Curadoria de documentação | `docs-curator` |
