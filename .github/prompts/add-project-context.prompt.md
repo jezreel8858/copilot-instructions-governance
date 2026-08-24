@@ -10,6 +10,7 @@ tools: ['file_search', 'grep_search', 'read_file', 'run_in_terminal']
 source_docs:
   - .github/skills/yaml-governance/SKILL.md
   - .github/skills/context-builder/SKILL.md
+  - .github/skills/terminal-governance/SKILL.md
   - CLAUDE.md
   - .github/copilot-instructions.md
 ---

@@ -60,6 +60,8 @@ agents:
       - "analysis-architect"
     related_skills:
       - "context-mode"
+      - "terminal-governance"
+      - "code-tracing"
       - "agent-contracts"
       - "confidence-fallback-policy"
       - "agent-evals-lab"
@@ -67,6 +69,8 @@ agents:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
       - ".github/agents/bug-triage.agent.md"
+      - ".github/skills/terminal-governance/SKILL.md"
+      - ".github/skills/code-tracing/SKILL.md"
     estimated_time_minutes: 25
 
   test-strategy:
@@ -128,6 +132,7 @@ agents:
       - "docs-curator"
     related_skills:
       - "context-mode"
+      - "terminal-governance"
       - "agent-contracts"
       - "agent-evals-lab"
       - "agent-safety-guardrails"
@@ -138,6 +143,7 @@ agents:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
       - ".github/agents/test-implementation.agent.md"
+      - ".github/skills/terminal-governance/SKILL.md"
       - ".github/instructions/backend.instructions.md"
       - ".github/instructions/frontend.instructions.md"
       - ".github/skills/test-implementation-angular/SKILL.md"
@@ -174,6 +180,8 @@ agents:
       - "impact-architect"
     related_skills:
       - "context-mode"
+      - "terminal-governance"
+      - "code-tracing"
       - "test-implementation-angular-vitest"
       - "test-implementation-angular-jasmine"
       - "test-implementation-spring-boot"
@@ -187,6 +195,7 @@ agents:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
       - ".github/agents/test-fix.agent.md"
+      - ".github/skills/terminal-governance/SKILL.md"
       - ".github/instructions/frontend.instructions.md"
       - ".github/skills/test-implementation-angular-vitest/SKILL.md"
       - ".github/skills/test-implementation-angular-jasmine/SKILL.md"

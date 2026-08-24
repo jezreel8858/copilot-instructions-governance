@@ -303,12 +303,41 @@
         "@docs-curator",
         "@refactor-planner"
       ]
+    },
+    {
+      "name": "terminal-governance",
+      "tier": 1,
+      "category": "tooling",
+      "path": ".github/skills/terminal-governance/SKILL.md",
+      "description": "Boas práticas obrigatórias para uso de run_in_terminal por agents de IA — prevenção de poluição de contexto, truncamento de saída, não-interativo, execução em lote, orçamento de tokens e padrões proibidos",
+      "tools": ["run_in_terminal"],
+      "related_agents": [
+        "@bug-triage",
+        "@test-fix",
+        "@test-implementation",
+        "@adapter-generator",
+        "@context-builder"
+      ]
+    },
+    {
+      "name": "code-tracing",
+      "tier": 1,
+      "category": "tooling",
+      "path": ".github/skills/code-tracing/SKILL.md",
+      "description": "Estratégias para rastrear código de um sintoma até a causa raiz — grep vs semântico, stack trace parsing, call graph, rastreio de API/método e coleta mínima de evidências. Agnóstico de linguagem.",
+      "tools": ["grep_search", "file_search", "read_file", "run_in_terminal"],
+      "related_agents": [
+        "@bug-triage",
+        "@test-fix",
+        "@impact-architect",
+        "@refactor-planner"
+      ]
     }
   ],
   "metadata": {
     "total_agents": 15,
-    "total_skills": 24,
-    "last_updated": "2026-07-30T00:00:00Z",
-    "changelog": "2026-07-30 — Adicionada skill test-implementation-angular-vitest (Angular 20/21 + Vitest oficial)"
+    "total_skills": 26,
+    "last_updated": "2026-08-24T00:00:00Z",
+    "changelog": "2026-08-24 — Adicionadas skills terminal-governance (tier 1) e code-tracing (tier 1, tooling)"
   }
 }

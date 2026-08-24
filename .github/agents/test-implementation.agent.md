@@ -144,6 +144,7 @@ Bloqueantes (se houver):
 
 ## Skills Associadas
 
+- **`terminal-governance`** — 🔧 Boas práticas de `run_in_terminal`: truncamento, não-interativo, lote, padrões proibidos
 - **`test-implementation-backend`** — Padrões genéricos agnósticos de framework para backend
 - **`test-implementation-spring-boot`** — Padrões específicos JUnit 5 + Mockito para Spring Boot
 - **`test-implementation-frontend`** — Padrões genéricos agnósticos de framework para frontend
@@ -158,6 +159,7 @@ Bloqueantes (se houver):
 
 - [`../../CLAUDE.md`](../../CLAUDE.md)
 - [`../copilot-instructions.md`](../copilot-instructions.md)
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md)
 - [`../../.github/skills/test-implementation-backend/SKILL.md`](../../.github/skills/test-implementation-backend/SKILL.md) ← genérico backend
 - [`../../.github/skills/test-implementation-frontend/SKILL.md`](../../.github/skills/test-implementation-angular/SKILL.md) ← genérico frontend
 - Skill específica da stack do projeto (ex: `test-implementation-spring-boot`, `test-implementation-angular-jasmine`)

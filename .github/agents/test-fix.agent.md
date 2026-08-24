@@ -321,6 +321,7 @@ Próximo passo mínimo:
 
 ## Skills Associadas
 
+- **`terminal-governance`** — 🔧 Boas práticas de `run_in_terminal`: truncamento, não-interativo, lote, padrões proibidos
 - **`test-implementation-angular-vitest`** — Padrões Vitest + Angular 20/21+ (recomendado)
 - **`test-implementation-angular-jasmine`** — Padrões Jasmine/Karma (legado)
 - **`test-implementation-spring-boot`** — Padrões JUnit 5 + Mockito
@@ -335,6 +336,7 @@ Próximo passo mínimo:
 
 - [`../../CLAUDE.md`](../../CLAUDE.md)
 - [`../copilot-instructions.md`](../copilot-instructions.md)
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md)
 - Relatório de falhas **se disponível** (JSON/Markdown/output de terminal) — se ausente, `ask_questions` coleta
 - Skill da stack identificada (ex: `test-implementation-angular-vitest`)
 - Adapter do projeto (ex: `.github/instructions/<projeto>.instructions.md`)
