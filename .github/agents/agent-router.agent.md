@@ -77,6 +77,9 @@ Pedido recebido?
 |- É correção de testes quebrados com relatório de falhas?
 |  |- Sim -> @test-fix
 |  \- Não
+|- É extração de regras de negócio ou validação de refatoração?
+|  |- Sim -> @business-rules-extractor
+|  \- Não
 |- É pedido de refatoração/plano de refactor?
 |  |- Sim -> @refactor-planner
 |  \- Não
@@ -159,6 +162,7 @@ Próximo passo mínimo:
 - `@bug-triage` (`bug-triage.agent.md`) para erro, bug e regressão.
 - `@test-strategy` (`test-strategy.agent.md`) para estratégia/plano de testes.
 - `@test-fix` (`test-fix.agent.md`) para correção de testes quebrados com relatório de falhas.
+- `@business-rules-extractor` (`business-rules-extractor.agent.md`) para extração de regras de negócio e validação de refatorações.
 - `@refactor-planner` (`refactor-planner.agent.md`) para planejamento de refactor.
 - `@impact-architect` (`impact-architect.agent.md`) para impacto técnico e risco local.
 - `@docs-curator` (`docs-curator.agent.md`) para curadoria de documentação.

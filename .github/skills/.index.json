@@ -330,14 +330,29 @@
         "@bug-triage",
         "@test-fix",
         "@impact-architect",
-        "@refactor-planner"
+        "@refactor-planner",
+        "@business-rules-extractor"
+      ]
+    },
+    {
+      "name": "business-rules-governance",
+      "tier": 1,
+      "category": "documentation",
+      "path": ".github/skills/business-rules-governance/SKILL.md",
+      "description": "Taxonomia, templates e protocolos para extrair, documentar e validar regras de negócio de código-fonte em qualquer linguagem. Formato markdown canônico para ground truth de refatorações.",
+      "tools": ["read_file", "grep_search", "file_search", "create_file", "insert_edit_into_file"],
+      "related_agents": [
+        "@business-rules-extractor",
+        "@refactor-planner",
+        "@impact-architect",
+        "@docs-curator"
       ]
     }
   ],
   "metadata": {
-    "total_agents": 15,
-    "total_skills": 26,
-    "last_updated": "2026-08-24T00:00:00Z",
-    "changelog": "2026-08-24 — Adicionadas skills terminal-governance (tier 1) e code-tracing (tier 1, tooling)"
+    "total_agents": 16,
+    "total_skills": 27,
+    "last_updated": "2026-08-25T00:00:00Z",
+    "changelog": "2026-08-25 — Adicionadas skill business-rules-governance (tier 1, documentation) e agent business-rules-extractor"
   }
 }

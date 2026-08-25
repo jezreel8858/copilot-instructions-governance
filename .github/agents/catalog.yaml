@@ -529,5 +529,46 @@ agents:
     estimated_time_minutes: 25
 
 metadata:
-  total_agents: 15
-  last_updated: "2026-06-12T12:00:00Z"
+  total_agents: 16
+  last_updated: "2026-08-25T00:00:00Z"
+
+  business-rules-extractor:
+    id: "business-rules-extractor"
+    priority: 5
+    domain: "Extracao e validacao de regras de negocio"
+    description: "Extrair regras de negócio de qualquer código-fonte e documentá-las em .md estruturado. Validar código refatorado contra regras documentadas para garantir que nenhuma regra existente foi quebrada."
+    keywords:
+      - "business rule"
+      - "regra de negocio"
+      - "extrair regra"
+      - "documentar codigo"
+      - "validar refatoracao"
+      - "rule violation"
+      - "living documentation"
+      - "ground truth"
+      - "breaking change"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "agent-router"
+      - "refactor-planner"
+      - "impact-architect"
+      - "docs-curator"
+      - "bug-triage"
+      - "test-strategy"
+    related_skills:
+      - "business-rules-governance"
+      - "code-tracing"
+      - "mermaid-diagrams"
+      - "context-mode"
+      - "terminal-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/business-rules-extractor.agent.md"
+      - ".github/skills/business-rules-governance/SKILL.md"
+      - ".github/skills/code-tracing/SKILL.md"
+    estimated_time_minutes: 60
