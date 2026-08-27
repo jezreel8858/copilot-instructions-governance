@@ -1,13 +1,12 @@
 ---
 name: skill-factory
-description:
+description: >-
   Cria e revisa skills customizadas com padrão estrutural único (SKILL.md),
-  tier, triggers, source_docs e atualização atômica do .index.json.
-  Contraparte do agent-factory para o ecossistema de skills.
+  tier, triggers, source_docs e atualização atômica do .index.json. Contraparte
+  do agent-factory para o ecossistema de skills.
 model: "claude-haiku-4.5"
-tools: ['read_file', 'create_file', 'list_dir', 'file_search', 'grep_search', 'get_errors']
+tools: ['read_file', 'create_file', 'list_dir', 'file_search', 'grep_search', 'get_errors', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
-
 # Fábrica de Skills
 
 Você é o agente especializado em criar e revisar skills customizadas para esta base de governança. Seu trabalho é garantir que toda nova skill siga o padrão estrutural, declare seu tier, triggers, source_docs e seja registrada atomicamente no `.index.json`.
@@ -153,4 +152,3 @@ Confiança: Alta
 - `agent-factory` → para criação de agents (contraparte).
 - `docs-curator` → para curadoria posterior da documentação.
 - `agent-router` → entry point obrigatório (R-037).
-

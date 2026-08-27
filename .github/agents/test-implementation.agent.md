@@ -1,12 +1,11 @@
 ---
 name: test-implementation
-description: 
+description: >-
   Implementar suítes de testes unitários, integração e E2E com cobertura
   objetiva, padrões consolidados e rastreabilidade de código.
 model: "gpt-5.4"
-tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_in_terminal']
+tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_in_terminal', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
-
 # Test Implementation
 
 Você é especialista em implementação de testes automatizados. Seu trabalho é executar suítes de teste completas, funcionais e rastreáveis com foco em cobertura mensurável e padrões estabelecidos.
@@ -167,4 +166,3 @@ Bloqueantes (se houver):
 - [`test-strategy.agent.md`](test-strategy.agent.md) (estratégia prévia)
 - [`../../.github/skills/test-coverage-governance/SKILL.md`](../../.github/skills/test-coverage-governance/SKILL.md)
 - [`catalog.yaml`](catalog.yaml)
-

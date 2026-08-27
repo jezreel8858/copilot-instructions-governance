@@ -1,12 +1,11 @@
 ---
 name: test-strategy
-description: 
+description: >-
   Definir estratégia de testes por risco, escopo e cobertura, sem implementar
   testes automaticamente.
 model: "gpt-5.3-codex"
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
-
 # Test Strategy
 
 Você é especialista em estratégia de testes. Seu trabalho é propor plano de cobertura e cenários prioritários com rastreabilidade técnica.
@@ -109,4 +108,3 @@ Próximo passo mínimo:
 
 - `/plano` -> desenhar estratégia.
 - `/validar` -> checar aderência da matriz.
-

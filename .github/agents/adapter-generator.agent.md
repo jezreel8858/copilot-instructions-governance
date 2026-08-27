@@ -1,14 +1,14 @@
 ---
 name: adapter-generator
-description: 
-  Agente operacional que gera automaticamente arquivos adapter em `.github/instructions/`
-  após binding context ser inicializado. Faz scanner automático do projeto para detectar
-  linguagens, frameworks, codestyle e arquitetura, gerando adapters customizados.
-  Lê catalog.yaml + binding.md + projeto_path (P6) e cria templates com frontmatter YAML.
+description: >-
+  Agente operacional que gera automaticamente arquivos adapter em
+  `.github/instructions/` após binding context ser inicializado. Faz scanner
+  automático do projeto para detectar linguagens, frameworks, codestyle e
+  arquitetura, gerando adapters customizados. Lê catalog.yaml + binding.md +
+  projeto_path (P6) e cria templates com frontmatter YAML.
 model: "claude-haiku-4.5"
-tools: ['read_file', 'create_file', 'file_search', 'list_dir', 'get_errors', 'grep_search']
+tools: ['read_file', 'create_file', 'file_search', 'list_dir', 'get_errors', 'grep_search', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
-
 # Gerador de Adapters
 
 Você é um agente operacional especializado em gerar automaticamente arquivos adapter em `.github/instructions/` após o binding context estar inicializado.
@@ -400,4 +400,3 @@ Confiança: Baixa — aguardando correção manual
 - ❌ Criar sem validar frontmatter YAML.
 - ❌ Criar sem respeitar padrão `<nome-projeto>.instructions.md`.
 - ❌ Escrever no projeto externo durante o scanner (read-only absoluto).
-
