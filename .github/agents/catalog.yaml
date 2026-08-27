@@ -353,6 +353,54 @@ agents:
       - ".github/skills/README.md"
     estimated_time_minutes: 45
 
+  analysis-integration-architect:
+    id: "analysis-integration-architect"
+    priority: 8.5
+    domain: "Analise de integracoes cross-sistema"
+    description: >-
+      Arquiteto senior de analise de integracoes: contrato (OpenAPI, AsyncAPI, gRPC, GraphQL),
+      fluxo de dados, grafo de dependencias, deteccao de breaking changes e classificacao de risco.
+    keywords:
+      - "integracao"
+      - "contrato"
+      - "breaking change"
+      - "openapi"
+      - "asyncapi"
+      - "grpc"
+      - "dependencias cross-sistema"
+      - "blast radius"
+      - "fluxo de dados"
+      - "acoplamento"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "agent-router"
+      - "impact-architect"
+      - "business-rules-extractor"
+      - "refactor-planner"
+      - "research-router"
+      - "docs-curator"
+    related_skills:
+      - "integration-contract-analysis"
+      - "dependency-graph-mapping"
+      - "context-mode"
+      - "tavily"
+      - "mermaid-diagrams"
+      - "code-tracing"
+      - "agent-contracts"
+      - "handoff-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/analysis-integration-architect.agent.md"
+      - ".github/skills/integration-contract-analysis/SKILL.md"
+      - ".github/skills/dependency-graph-mapping/SKILL.md"
+      - ".github/skills/mermaid-diagrams/SKILL.md"
+    estimated_time_minutes: 40
+
   agent-factory:
     id: "agent-factory"
     priority: 9
@@ -529,8 +577,8 @@ agents:
     estimated_time_minutes: 25
 
 metadata:
-  total_agents: 16
-  last_updated: "2026-08-25T00:00:00Z"
+  total_agents: 17
+  last_updated: "2026-08-27T00:00:00Z"
 
   business-rules-extractor:
     id: "business-rules-extractor"

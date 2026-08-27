@@ -25,6 +25,7 @@
 | Agent | `docs-curator` | Curadoria e padronização de documentação/catálogo |
 | Agent | `research-router` | Triagem de pesquisa e fallback para investigação externa |
 | Agent | `analysis-architect` | Análise cross-sistema de integração e impacto amplo |
+| Agent | `analysis-integration-architect` | 🔗 ***(NEW)*** Análise de integrações cross-sistema: contratos (OpenAPI/AsyncAPI/gRPC/GraphQL), breaking changes, grafo de dependências e blast radius |
 | Agent | `agent-factory` | Criação/revisão estrutural de agents e governança |
 | Agent | `context-builder` | Coletar, condensar e persistir contexto técnico em `docs/context/` |
 | Agent | `binding-initializer` | ⚡ ***(NEW)*** Criar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — Health Check R-034) |

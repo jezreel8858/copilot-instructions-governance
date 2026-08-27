@@ -3,7 +3,7 @@
   "domain": "governanca-ai-generica",
   "generated_at": "2026-07-30T00:00:00Z",
   "summary": {
-    "total_skills": 24
+    "total_skills": 26
   },
   "skills": [
     {
@@ -347,12 +347,39 @@
         "@impact-architect",
         "@docs-curator"
       ]
+    },
+    {
+      "name": "integration-contract-analysis",
+      "tier": 2,
+      "category": "governance",
+      "path": ".github/skills/integration-contract-analysis/SKILL.md",
+      "description": "Análise e validação de contratos de integração (OpenAPI, AsyncAPI, gRPC, GraphQL): detecção de breaking changes, classificação BREAKING/COMPATIBLE/DEPRECIAÇÃO e mapeamento de consumidores afetados.",
+      "tools": ["grep_search", "file_search", "read_file", "context-mode/ctx_batch_execute", "context-mode/ctx_execute"],
+      "related_agents": [
+        "@analysis-integration-architect",
+        "@impact-architect",
+        "@refactor-planner"
+      ]
+    },
+    {
+      "name": "dependency-graph-mapping",
+      "tier": 2,
+      "category": "process",
+      "path": ".github/skills/dependency-graph-mapping/SKILL.md",
+      "description": "Mapeamento de grafo de dependências entre sistemas, módulos e serviços: rastreamento de fluxo origem→transformação→destino, análise de acoplamento (tight/loose) e blast radius.",
+      "tools": ["grep_search", "file_search", "read_file", "context-mode/ctx_batch_execute", "context-mode/ctx_execute"],
+      "related_agents": [
+        "@analysis-integration-architect",
+        "@impact-architect",
+        "@refactor-planner",
+        "@business-rules-extractor"
+      ]
     }
   ],
   "metadata": {
-    "total_agents": 16,
-    "total_skills": 27,
-    "last_updated": "2026-08-25T00:00:00Z",
-    "changelog": "2026-08-25 — Adicionadas skill business-rules-governance (tier 1, documentation) e agent business-rules-extractor"
+    "total_agents": 17,
+    "total_skills": 29,
+    "last_updated": "2026-08-27T00:00:00Z",
+    "changelog": "2026-08-27 — Adicionadas skills integration-contract-analysis (tier 2, governance) e dependency-graph-mapping (tier 2, process); agent analysis-integration-architect revisado com padrão agent-factory"
   }
 }
