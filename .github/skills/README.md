@@ -51,6 +51,8 @@ Toda skill deve declarar no topo:
 | **`terminal-governance`** | 🔧 **Tier 1** | Boas práticas obrigatórias para uso de `run_in_terminal` — prevenção de poluição de contexto, truncamento de saída, não-interativo, lote e padrões proibidos |
 | **`code-tracing`** | 🔧 **Tier 1** | Rastrear código do sintoma à causa raiz — grep vs semântico, stack trace parsing, call graph, rastreio de API/método, coleta mínima de evidências |
 | **`business-rules-governance`** | 📋 **Tier 1** | Taxonomia, templates e protocolos para extrair, documentar e validar regras de negócio em markdown — ground truth para validação de refatorações |
+| **`integration-contract-analysis`** | 🔗 **Tier 2** | Análise de contratos de integração (OpenAPI, AsyncAPI, gRPC, GraphQL): detecção de **breaking changes**, classificação BREAKING/COMPATIBLE/DEPRECIAÇÃO, consumidores afetados |
+| **`dependency-graph-mapping`** | 🔗 **Tier 2** | Mapeamento de grafo de dependências cross-sistema: fluxo origem→transformação→destino, acoplamento tight/loose/eventual, blast radius e dependências circulares |
 
 ## 4) Instructions associadas
 
