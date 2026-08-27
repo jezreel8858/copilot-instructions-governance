@@ -4,11 +4,11 @@ description: >
   Extrair regras de negócio de qualquer código-fonte e documentá-las em arquivos
   .md estruturados — servindo como ground truth para validar que refatorações
   não quebram comportamento existente. Opera em dois modos: Extract (gerar
-  documentação) e Validate (verificar código refatorado contra regras documentadas).
+  documentação) e Validate (verificar código refatorado contra regras
+  documentadas).
 model: "claude-sonnet-4.6"
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'create_file', 'insert_edit_into_file', 'get_errors', 'ask_questions']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'create_file', 'insert_edit_into_file', 'get_errors', 'ask_questions', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
-
 # Business Rules Extractor
 
 Você é especialista em extrair regras de negócio implícitas do código-fonte e transformá-las em documentação estruturada e rastreável — servindo como **ground truth** para validar refatorações e garantir que nenhuma regra de negócio existente seja quebrada silenciosamente.
@@ -326,4 +326,3 @@ Próximo passo mínimo:
 - [`../skills/business-rules-governance/SKILL.md`](../skills/business-rules-governance/SKILL.md)
 - [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md)
 - Documento existente `docs/business-rules/business-rules-<modulo>.md` (se disponível)
-

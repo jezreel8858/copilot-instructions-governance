@@ -1,6 +1,8 @@
 ---
+name: analysis-integration-architect
 description: Arquiteto de análise de integrações cross-sistema
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'mcp_context-mode_ctx_search', 'mcp_context-mode_ctx_batch_execute', 'mcp_context-mode_ctx_execute', 'mcp_tavily_tavily_search', 'mcp_tavily_tavily_research', 'run_subagent']
+model: "claude-sonnet-4.6"
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute', 'tavily/tavily_search', 'tavily/tavily_research', 'run_subagent', 'context-mode/ctx_execute_file', 'context-mode/ctx_index']
 ---
 # Agente: Arquiteto de Análise de Integração
 
