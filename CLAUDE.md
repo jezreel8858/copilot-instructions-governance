@@ -116,6 +116,8 @@ Solicitação do Usuário
 - `bug-triage`
 - `test-strategy`
 - `test-implementation` — implementar suítes de teste com cobertura objetiva
+- `test-fix` — corrigir testes quebrados a partir de relatório de falhas (somente testes identificados)
+- `business-rules-extractor` — extrair regras de negócio de código e documentar em `.md`; validar refatorações contra ground truth
 - `refactor-planner`
 - `impact-architect`
 - `docs-curator`

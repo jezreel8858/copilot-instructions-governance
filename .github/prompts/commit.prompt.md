@@ -9,6 +9,7 @@ tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal']
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
+  - .github/skills/terminal-governance/SKILL.md
 ---
 
 # `/commit`

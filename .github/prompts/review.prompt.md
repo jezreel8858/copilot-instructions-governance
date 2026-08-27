@@ -10,6 +10,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - docs/ai-context/catalog.yaml
+  - .github/skills/terminal-governance/SKILL.md
 ---
 
 # `/review`

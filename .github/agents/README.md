@@ -19,6 +19,7 @@
 | Agent | `bug-triage` | Triagem de bugs/regressões com reprodução e severidade |
 | Agent | `test-strategy` | Estratégia de testes, cobertura por risco e critérios de aceitação |
 | Agent | `test-implementation` | ⭐ ***(NEW)*** Implementar suítes de testes unitários, integração e E2E com cobertura objetiva |
+| Agent | `test-fix` | 🔧 ***(NEW)*** Corrigir testes quebrados a partir de relatório de falhas — opera somente nos testes identificados |
 | Agent | `refactor-planner` | Planejamento de refatoração incremental com risco e rollback |
 | Agent | `impact-architect` | Análise de impacto técnico local, dependências e mitigação |
 | Agent | `docs-curator` | Curadoria e padronização de documentação/catálogo |
@@ -29,6 +30,7 @@
 | Agent | `binding-initializer` | ⚡ ***(NEW)*** Criar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — Health Check R-034) |
 | Agent | `adapter-generator` | ⚡ ***(NEW)*** Gerar automaticamente adapters em `.github/instructions/` via `/add-project-context` |
 | Agent | `skill-factory` | ⭐ ***(NEW)*** Criar/revisar skills customizadas com padrão SKILL.md e `.index.json` atômico |
+| Agent | `business-rules-extractor` | 📋 ***(NEW)*** Extrair regras de negócio de código e documentar em `.md`; validar refatorações contra regras documentadas |
 
 ## 3) Roteamento Rápido
 
@@ -38,6 +40,7 @@
 | Bug, erro, regressão | `bug-triage` |
 | Estratégia de testes | `test-strategy` |
 | Implementação de testes (unit/integration/E2E) | `test-implementation` |
+| Correção de testes quebrados (com relatório de falhas) | `test-fix` |
 | Planejamento de refactor | `refactor-planner` |
 | Impacto técnico local | `impact-architect` |
 | Curadoria de documentação | `docs-curator` |
@@ -48,6 +51,7 @@
 | ⚡ Binding context faltando (Health Check) | `binding-initializer` |
 | ⚡ Gerar adapters após /add-project-context | `adapter-generator` |
 | ⭐ Criar/revisar skill customizada | `skill-factory` |
+| 📋 Extrair/documentar/validar regras de negócio | `business-rules-extractor` |
 
 ## 4) Pre-fetch Recomendado
 
