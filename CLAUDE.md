@@ -112,7 +112,7 @@ Solicitação do Usuário
 
 ## 6) Catálogo Atual (estado verificado)
 
-### Agents (17 ativos)
+### Agents (18 ativos)
 - `agent-router` v1.1.0 — entry point obrigatório; confidence score + nível de routing declarados no output; routing-graph.yaml como fonte estrutural (R-040)
 - `bug-triage`
 - `test-strategy`
@@ -127,6 +127,7 @@ Solicitação do Usuário
 - `analysis-integration-architect` — análise de integrações cross-sistema: contratos (OpenAPI/AsyncAPI/gRPC/GraphQL), breaking changes, blast radius
 - `agent-factory`
 - `skill-factory` — criar/revisar skills com padrão SKILL.md e .index.json atômico
+- `prompt-factory` — criar/revisar `.prompt.md` seguindo padrão canônico Copilot 2026 (frontmatter, body, kebab-case, README)
 - `context-builder`
 - `binding-initializer` — inicializar catalog.yaml + binding.md (1 pergunta — R-034)
 - `adapter-generator` — gerar adapters em `.github/instructions/` via /add-project-context

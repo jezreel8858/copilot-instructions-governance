@@ -1,7 +1,11 @@
 ---
 name: plano
-description: Cria plano de implementação detalhado com processo interativo e iterativo.
+description: Cria plano de implementação detalhado com análise de dependências, paralelismo e checklist de autonomia.
 model: ["claude-sonnet-5","claude-sonnet-4.6"]
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file']
+source_docs:
+  - CLAUDE.md
+  - .github/copilot-instructions.md
 ---
 
 # /plano

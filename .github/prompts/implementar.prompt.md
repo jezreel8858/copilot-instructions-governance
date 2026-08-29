@@ -1,7 +1,11 @@
 ---
 name: implementar
-description: Implementa plano aprovado marcando `- [x]` ao concluir e pausando entre fases para verificação.
+description: Executa plano aprovado fase a fase, marcando `- [x]` ao concluir e registrando checkpoints obrigatórios.
 model: ["claude-sonnet-5","claude-sonnet-4.6"]
+tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'get_errors', 'run_in_terminal', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file']
+source_docs:
+  - CLAUDE.md
+  - .github/copilot-instructions.md
 ---
 
 # /implementar

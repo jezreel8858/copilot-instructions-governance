@@ -2,6 +2,10 @@
 name: pesquisar
 description: Pesquisa exaustiva no codebase via levantamento paralelo de contexto. Documenta achados de forma objetiva.
 model: "claude-haiku-4.5"
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
+source_docs:
+  - CLAUDE.md
+  - .github/copilot-instructions.md
 ---
 
 # /pesquisar

@@ -1,7 +1,11 @@
 ---
 name: validar
-description: Valida implementação contra plano, verifica critérios de sucesso e identifica desvios.
+description: Valida implementação contra plano aprovado, verifica critérios de sucesso e identifica desvios.
 model: "claude-haiku-4.5"
+tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'get_errors', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
+source_docs:
+  - CLAUDE.md
+  - .github/copilot-instructions.md
 ---
 
 # /validar

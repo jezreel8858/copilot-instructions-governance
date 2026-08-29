@@ -2,7 +2,7 @@
 name: init-context
 description:
   ⚠️ PRÉ-REQUISITO OBRIGATÓRIO — Inicializa contexto de governança global para TODA sessão.
-  Carrega CLAUDE.md + copilot-instructions.md, valida conformidade R-001..R-039 + Model Enforcement (R-036).
+  Carrega CLAUDE.md + copilot-instructions.md, valida conformidade R-001..R-040 + Model Enforcement (R-036).
   Execute UMA ÚNICA VEZ no início da sessão ANTES de /add-project-context ou qualquer agent.
   NÃO REPITA na mesma sessão — faz 1x apenas.
 model: "claude-haiku-4.5"
@@ -125,7 +125,7 @@ Exibir apenas top 5 — sem ruído para quem já conhece as regras:
 [R-037] Agent Router First: toda solicitação → @agent-router
 [R-038] Genericidade: .github/* sem projetos específicos
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Status: ✅ R-001..R-039 ativas — Agents respeitarão
+Status: ✅ R-001..R-040 ativas — Agents respeitarão
 ```
 
 #### Se binding context **NÃO EXISTE** (primeira execução):
@@ -150,9 +150,10 @@ Exibir resumo completo para garantir alinhamento:
 [R-037] Agent Router First: TODA solicitação começa com @agent-router
 [R-038] Genericidade: .github/* deve ser genérica (sem projetos específicos)
 [R-039] Diagramas: usar Mermaid em .md (nada de PNG/SVG)
+[R-040] Grafo de Roteamento: routing-graph.yaml é fonte de verdade estrutural
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Status: ✅ R-001..R-039 ativas — Agents respeitarão
+Status: ✅ R-001..R-040 ativas — Agents respeitarão
 ```
 
 ---
@@ -278,7 +279,7 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
 ║      Esperado: <model-frontmatter>                       ║
 ║      Atual: <model-sessão>                               ║
 ║                                                           ║
-║ [✅] Regras críticas (R-001..R-039) ativas              ║
+║ [✅] Regras críticas (R-001..R-040) ativas              ║
 ║      Exibidas conforme contexto (recorrente/1ª vez)      ║
 ║                                                           ║
 ║ [✅] Binding context verificado (R-034)                  ║
@@ -299,10 +300,11 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
 ╚═══════════════════════════════════════════════════════════╝
 
 🎯 Próximos passos recomendados:
-   → /add-project-context <caminho-externo>  para plugar um projeto externo
-   → /del-project-context <nome-projeto>     para desplugar um projeto
-   → @agent-router                           para classificar intenção
-   → Nenhum arquivo será criado fora DESTE repositório de governança ✅
+    → /add-project-context <caminho-externo>  para plugar um projeto externo
+    → /del-project-context <nome-projeto>     para desplugar um projeto
+    → @agent-router                           para classificar intenção
+    → /health                                 para checar saúde da governança
+    → Nenhum arquivo será criado fora DESTE repositório de governança ✅
 
 ℹ️  Validação de contexto: ✅ SUCESSO
    Estado armazenado para sessão | Disponível para agents downstream
@@ -366,7 +368,7 @@ CONTEXTO INICIALIZADO COM SUCESSO
 
 [PASSO 1] Diretrizes base — OK
 [PASSO 2] Modelo ativo — INFORMADO
-[PASSO 3] Regras criticas — ATIVAS (R-001..R-039)
+[PASSO 3] Regras criticas — ATIVAS (R-001..R-040)
 [PASSO 4] Binding context — VALIDO (<n> projetos registrados)
 [PASSO 5] Herança de instruções — OK (<n-com-extends> c/ extends | <n-sem-extends> sem extends)
 [PASSO 6] Context Mode Session — ATIVA (<n> chamadas)

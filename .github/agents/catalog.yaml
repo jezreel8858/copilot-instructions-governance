@@ -565,6 +565,7 @@ agents:
       - "agent-factory"
       - "docs-curator"
       - "agent-router"
+      - "prompt-factory"
     related_skills:
       - "agent-contracts"
       - "agent-evals-lab"
@@ -577,9 +578,49 @@ agents:
       - ".github/skills/.index.json"
     estimated_time_minutes: 25
 
+  prompt-factory:
+    id: "prompt-factory"
+    priority: 9.8
+    domain: "Autoria e padronizacao de prompts"
+    description: >-
+      Criar e revisar arquivos .prompt.md seguindo o padrao canonico do GitHub Copilot 2026:
+      frontmatter correto (description, model, tools, source_docs), estrutura de body,
+      separacao de responsabilidade com .instructions.md, nomenclatura kebab-case e
+      atualizacao atomica do README de prompts (R-015).
+    keywords:
+      - "criar prompt"
+      - "revisar prompt"
+      - "novo prompt"
+      - "padronizar prompt"
+      - ".prompt.md"
+      - "slash command"
+      - "auditar prompts"
+      - "prompt template"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/prompts/README.md"
+    related_agents:
+      - "agent-factory"
+      - "skill-factory"
+      - "docs-curator"
+      - "agent-router"
+    related_skills:
+      - "agent-contracts"
+      - "context-mode"
+      - "yaml-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/prompt-factory.agent.md"
+      - ".github/prompts/README.md"
+      - ".github/prompts/templates/prompt-template.md"
+    estimated_time_minutes: 20
+
 metadata:
-  total_agents: 17
-  last_updated: "2026-08-27T00:00:00Z"
+  total_agents: 18
+  last_updated: "2026-08-29T00:00:00Z"
 
   business-rules-extractor:
     id: "business-rules-extractor"

@@ -315,6 +315,7 @@ Escolha uma ação:
 - `binding-initializer` -> ⚡ inicializar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — R-034)
 - `adapter-generator` -> ⚡ gerar automaticamente adapters em `.github/instructions/` via `/add-project-context`
 - `skill-factory` -> ⭐ criar/revisar skills com padrão estrutural de SKILL.md e `.index.json` atômico
+- `prompt-factory` -> 📝 criar/revisar `.prompt.md` seguindo padrão canônico Copilot 2026 (frontmatter, body, kebab-case, README)
 
 ### Skills atuais
 

@@ -110,3 +110,21 @@ Use esta lista para revisar qualquer prompt `.prompt.md` antes de publicar:
 - [ ] O prompt evita releitura redundante de dados já coletados/indexados?
 - [ ] A saída esperada pede síntese objetiva com evidência (`arquivo:linha`), sem dump?
 
+---
+
+## ✅ Checklist de Conformidade de Frontmatter (padrão Copilot 2026)
+
+Use `@prompt-factory` para auditar e corrigir automaticamente:
+
+| Campo | Status | Significado |
+|---|---|---|
+| `description` | **OBRIGATÓRIO** | Habilita discoverability no Quick Pick do Copilot |
+| `model` | Recomendado | claude-haiku-4.5 / gpt-5.1 / claude-opus-4 |
+| `tools` | Quando usa ferramentas | Princípio de menor privilégio — listar apenas o necessário |
+| `source_docs` | Quando precisa de contexto | Pre-fetch de governança ou projeto |
+| `name` | Opcional | Override do filename como slash command |
+
+**Template de referência**: `.github/prompts/templates/prompt-template.md`
+
+**Para criar ou auditar prompts**: use `@prompt-factory`
+
