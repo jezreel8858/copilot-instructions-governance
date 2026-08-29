@@ -32,6 +32,7 @@ Você é especialista em criar e revisar arquivos de agents no repositório, pre
 | Agent analítico | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Análise operacional de integração |
 | Template research | [`templates/research-agent.md`](templates/research-agent.md) | Padrão de agents read-only |
 | Template operacional | `templates/operational-agent.md` | Padrão de agents com execução operacional |
+| Modelo de output por perfil | [`../skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) § 8 | 2 camadas (universal + template por perfil: Router/Analista/Especialista/Operacional) — consultar ANTES de definir o "Formato de Saída" de um novo agent |
 
 ## Decision Tree
 
@@ -77,6 +78,7 @@ Validações:
 ## Checklist Antes de Codar
 
 - [ ] Template oficial selecionado (`research-agent.md` ou `operational-agent.md`).
+- [ ] Perfil de output definido conforme `agent-contracts/SKILL.md` § 8 (Router | Analista | Especialista-Recomendação | Operacional).
 - [ ] Escopo do agent definido em 1 frase objetiva.
 - [ ] Nome do arquivo alinhado com `name` no frontmatter.
 - [ ] Bloco CRÍTICO com itens ❌ e ✅ planejado.
