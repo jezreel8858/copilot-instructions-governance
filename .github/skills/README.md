@@ -53,6 +53,14 @@ Toda skill deve declarar no topo:
 | **`business-rules-governance`** | 📋 **Tier 1** | Taxonomia, templates e protocolos para extrair, documentar e validar regras de negócio em markdown — ground truth para validação de refatorações |
 | **`integration-contract-analysis`** | 🔗 **Tier 2** | Análise de contratos de integração (OpenAPI, AsyncAPI, gRPC, GraphQL): detecção de **breaking changes**, classificação BREAKING/COMPATIBLE/DEPRECIAÇÃO, consumidores afetados |
 | **`dependency-graph-mapping`** | 🔗 **Tier 2** | Mapeamento de grafo de dependências cross-sistema: fluxo origem→transformação→destino, acoplamento tight/loose/eventual, blast radius e dependências circulares |
+| **`agent-memory-policy`** | 🧠 **Tier 3** | Política de memória long-term para agents: tipos episódico, semântico e procedimental. Foco em memória procedimental (agents auto-adaptativos) com guardrails e aprovação humana obrigatória |
+| **`frontend-componentization-patterns`** | 🧩 **Tier 2** | Padrões genéricos de componentização frontend (responsabilidade única, composição, contrato de componente, fronteiras de estado) |
+| **`angular-frontend-patterns`** | 🅰️ **Tier 2** | Boas práticas/patterns de codificação Angular (standalone, template/binding, Signals+RxJS, segurança e consistência) |
+| **`angular-responsive-ui-patterns`** | 📱 **Tier 2** | Responsividade Angular (mobile-first, breakpoints, container queries, layout fluido, imagens responsivas e validação multi-viewport) |
+| **`design-system-component-contracts`** | 🧱 **Tier 2** | Governança de contratos de componente para design system: tokens, variantes/estados, Inputs/Outputs, semver, depreciação, breaking change e acessibilidade |
+| **`spring-boot-backend-patterns`** | ☕ **Tier 2** | Baseline enterprise para análise/recomendação Spring Boot (arquitetura, observabilidade, segurança, performance e migração) |
+| **`spring-reactive-webflux-patterns`** | ⚛️ **Tier 2** | Baseline enterprise para análise/recomendação WebFlux/Reactor (adequação reativa, backpressure, resiliência e operação) |
+| **`java-jdk-backend-governance`** | ☕ **Tier 1** | Governança de versões Java/JDK backend (LTS, compatibilidade, segurança, performance e trilha de migração) |
 
 ## 4) Instructions associadas
 

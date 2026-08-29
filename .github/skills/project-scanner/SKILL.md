@@ -4,12 +4,31 @@ description: |
   Boas práticas para análise automática de repositórios e detecção de stack,
   frameworks, estrutura, codestyle e arquitetura. Essencial para customização
   de adapters e descoberta de convenções reais do projeto.
-tier: "operational"
+tier: 2
 related_agents:
   - "adapter-generator"
 related_skills:
   - "context-mode"
   - "agent-contracts"
+
+category: tooling
+triggers:
+  - "scan project"
+  - "detectar stack"
+  - "analisar repositório"
+  - "identificar framework"
+  - "descobrir convenções"
+source_docs:
+  - "../../../CLAUDE.md"
+  - "../../../.github/copilot-instructions.md"
+  - "../../../tools/binding-scaffolder/SPEC.md"
+  - "../../../tools/binding-scaffolder/USAGE.md"
+  - "../../../docs/ai-context/catalog.yaml"
+tools:
+  - "read_file"
+  - "list_dir"
+  - "grep_search"
+  - "file_search"
 ---
 
 # Project Scanner Governance

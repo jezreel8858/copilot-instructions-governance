@@ -6,7 +6,7 @@ description: >
   identificados — nunca executa a suite completa de forma autonoma. Executa
   testes em lote por modulo; quando necessaria a suite completa, instrui o
   usuario com o comando exato e filtro grep.
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 tools: ['read_file', 'insert_edit_into_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_in_terminal', 'ask_questions', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
 # Test Fix
@@ -315,9 +315,9 @@ Próximo passo mínimo:
 
 ## Combina Com (Commands)
 
-- `/implementar` → executar correções em sequência após plano definido.
-- `/validar` → verificar que os lotes passam em isolamento.
-- `/plano` → mapear escopo antes de iniciar correções em lote.
+- `/implement` → executar correções em sequência após plano definido.
+- `/validate` → verificar que os lotes passam em isolamento.
+- `/plan` → mapear escopo antes de iniciar correções em lote.
 
 ## Skills Associadas
 

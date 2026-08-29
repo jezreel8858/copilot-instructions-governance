@@ -16,9 +16,9 @@
 # - NÃO editar manualmente a seção projetos: — use os prompts acima
 # - Campo `extends:` em projetos declara herança das instruções genéricas disponíveis em adapters:
 
-version: "1.1"
+version: "1.2"
 ecosystem: "app-ecossistema"
-lastUpdated: "2026-07-30"
+lastUpdated: "2026-08-29"
 maintainer: "eco-sistema-app"
 
 # ============================================
@@ -155,6 +155,39 @@ metadata:
     - "GitHub Copilot (VS Code, JetBrains)"
     - "Cursor IDE"
     - "Claude Code"
+
+# ============================================
+# ARTEFATOS DE GOVERNANÇA DE AGENTS
+# Registra artefatos estruturais criados pelo ecossistema de IA
+# (além dos adapters de stack acima)
+# ============================================
+governance_artefacts:
+  - id: "routing-graph"
+    name: "Grafo de Roteamento do Agent Router"
+    source: "docs/ai-context/routing-graph.yaml"
+    description: >
+      Fonte de verdade estrutural do agent-router: nós (agents), arestas (condições
+      de roteamento com keywords e thresholds) e política de cascata (rule→semantic→LLM).
+      A Decision Tree em agent-router.agent.md é documentação derivada deste arquivo.
+    version: "1.0"
+    created: "2026-08-28"
+    consumed_by:
+      - "agent-router"
+    related_rule: "R-040"
+
+  - id: "evals-roteamento"
+    name: "Suíte de Casos de Avaliação de Roteamento"
+    source: "docs/ai-context/evals/casos-roteamento.yaml"
+    description: >
+      Suíte de testes de regressão de roteamento: casos canônicos (threshold 0.90),
+      ambíguos (0.70), regressão (1.00) e segurança (1.00). Atualizar obrigatoriamente
+      em toda PR que altere agent-router.agent.md ou routing-graph.yaml.
+    version: "1.0"
+    created: "2026-08-28"
+    consumed_by:
+      - "agent-evals-lab"
+      - "agent-router"
+    maintenance_rule: "Equivalente a R-015 — atualização atômica com mudanças no router"
 
 
 

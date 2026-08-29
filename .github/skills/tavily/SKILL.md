@@ -19,6 +19,13 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
+tools:
+  - "tavily/tavily_search"
+  - "tavily/tavily_extract"
+  - "tavily/tavily_crawl"
+  - "tavily/tavily_map"
+  - "tavily/tavily_research"
+  - "context-mode/ctx_search"
 ---
 
 # Tavily — Pesquisa Externa

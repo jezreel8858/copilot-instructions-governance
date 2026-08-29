@@ -21,8 +21,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/agents/README.md
-tools:
-  - context-mode
+tools: []
 ---
 
 # Agent Safety Guardrails

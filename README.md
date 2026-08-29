@@ -18,7 +18,7 @@ Objetivo:
 
 **Fonte de Verdade Operacional:**
 
-- **[`CLAUDE.md`](CLAUDE.md)** — Regras normativas (R-001..R-036), princípios e fluxos genéricos
+- **[`CLAUDE.md`](CLAUDE.md)** — Regras normativas (R-001..R-040), princípios e fluxos genéricos
 - **[`.github/copilot-instructions.md`](.github/copilot-instructions.md)** — Execução operacional e roteamento de agents
 
 **Características:**
@@ -39,12 +39,14 @@ Exemplos:
 - Nunca incluem regras globais (apenas referências)
 - Declarados em `docs/ai-context/catalog.yaml` com `applyTo` glob patterns
 
-### Nível 3: Contexto de Binding
+### Nível 3: Contexto de Binding e Artefatos de Governança
 
 **Local:** `docs/ai-context/`
 
-- **`catalog.yaml`** — Manifest único de carregamento de adapters, projetos e mapping stack → instrução
+- **`catalog.yaml`** — Manifest único de adapters, projetos e mapping stack → instrução; inclui seção `governance_artefacts` com artefatos estruturais de IA
 - **`binding.md`** — Documentação de binding e descoberta
+- **`routing-graph.yaml`** — ⭐ **Grafo de roteamento declarado** (nós = agents, arestas = condições, política de cascata) — fonte de verdade estrutural do `agent-router` (R-040)
+- **`evals/casos-roteamento.yaml`** — Suíte de casos de teste de regressão de roteamento (canônicos, ambíguos, regressão, segurança)
 
 ---
 
@@ -142,6 +144,7 @@ flowchart TD
 | Regra | Aplica-se em | Razão |
 |-------|------------|-------|
 | **R-037: Agent Router First** | Toda solicitação | Triagem + governança |
+| **R-040: Grafo de Roteamento** | Toda nova rota de agent | Dado estruturado > prosa; rastreabilidade + evals |
 | **R-036: Model Enforcement** | Agents/Skills/Prompts | QoS e segurança |
 | **R-034: Health Check Binding** | Novo repositório | Descoberta de adapters |
 | **R-038: Genericidade Obrigatória** | Tudo em `.github/` | Reutilização |
@@ -154,24 +157,50 @@ flowchart TD
 
 - **Governança Global:** [`CLAUDE.md`](CLAUDE.md)
 - **Operacional:** [`.github/copilot-instructions.md`](.github/copilot-instructions.md)
-- **Catalog de Adapters:** [`docs/ai-context/catalog.yaml`](docs/ai-context/catalog.yaml)
+- **Catalog de Adapters + Artefatos:** [`docs/ai-context/catalog.yaml`](docs/ai-context/catalog.yaml)
+- **Grafo de Roteamento (R-040):** [`docs/ai-context/routing-graph.yaml`](docs/ai-context/routing-graph.yaml)
+- **Suíte de Evals:** [`docs/ai-context/evals/casos-roteamento.yaml`](docs/ai-context/evals/casos-roteamento.yaml)
+- **Plano de Melhorias Implementado:** [`docs/plan/plano-implementacao-orquestracao.md`](docs/plan/plano-implementacao-orquestracao.md)
 - **Agents Disponíveis:** `.github/agents/README.md`
 - **Skills Disponíveis:** `.github/skills/README.md`
 - **Adapters Registrados:** `.github/instructions/README.md`
 
 ---
 
-## Status Atual (2026-06-12)
+## Status Atual (2026-08-29)
 
-- ✅ Governança global consolidada (CLAUDE.md — R-001..R-039)
-- ✅ Roteamento operacional (copilot-instructions.md)
-- ✅ Adapters base (spring-boot-backend.instructions.md, angular-v21-frontend.instructions.md)
-- ✅ Binding hierárquico instanciado (docs/ai-context/catalog.yaml + binding.md)
+### Governança Global
+- ✅ Regras normativas consolidadas (`CLAUDE.md` — R-001..R-040)
+- ✅ Roteamento operacional (`copilot-instructions.md`)
 - ✅ Genericidade explícita em todas as regras globais (R-038)
-- ✅ 15 agents catalogados (incluindo skill-factory)
-- ✅ 20 skills indexadas (incluindo git-governance)
-- ✅ Prompts: /commit, /review, /health adicionados
-- ✅ catalog.yaml e .index.json sincronizados
+
+### Adapters de Stack
+- ✅ `spring-boot-backend.instructions.md` — Java/Spring Boot
+- ✅ `angular-v21-frontend.instructions.md` — Angular 21
+- ✅ `python-backend.instructions.md` — Python
+- ✅ `database.instructions.md` — Banco de dados / Migrações
+- ✅ `devops.instructions.md` — Docker, Kubernetes, CI/CD
+
+### Agents (17 catalogados)
+- ✅ `agent-router` v1.1.0 — com `version:` no frontmatter, confidence score numérico e nível de routing no output
+- ✅ 16 agents downstream especializados (bug-triage, test-*, refactor-planner, impact-architect, docs-curator, research-router, analysis-architect, analysis-integration-architect, agent-factory, skill-factory, business-rules-extractor, context-builder, binding-initializer, adapter-generator)
+
+### Skills (29 indexadas)
+- ✅ Tier 1 (Core): context-mode, agent-contracts, handoff-governance, confidence-fallback-policy, agent-safety-guardrails, terminal-governance, code-tracing, business-rules-governance
+- ✅ Tier 2 (Support): 20 skills cobrindo testing, observability, quality, tooling, research, documentation
+- ✅ Tier 3 (Experimental): `agent-memory-policy` — memória episódica/semântica/procedimental
+
+### Artefatos Estruturais de Orquestração (novo — 2026-08-28/29)
+- ✅ `docs/ai-context/routing-graph.yaml` — grafo de roteamento declarado (R-040): nós, arestas, condições e política de cascata rule-based→semantic→LLM
+- ✅ `docs/ai-context/evals/casos-roteamento.yaml` — suíte de 23 casos de teste (canônicos, ambíguos, regressão, segurança)
+- ✅ `docs/ai-context/catalog.yaml` v1.2 — seção `governance_artefacts` com os novos artefatos
+
+### Skills de Orquestração Evoluídas (2026-08-28)
+- ✅ `handoff-governance` — schema formal tipado v1.0 + guardrails gap + fan-out/fan-in + agent identity
+- ✅ `agent-contracts` — limites de delegação (`max_delegation_depth`, `max_execution_time`) + context engineering (XML canônico, prompt caching, context budget)
+- ✅ `context-mode` — 6 dimensões de memória short-term vs long-term formalizadas
+- ✅ `confidence-fallback-policy` — routing em cascata (rule→semantic→LLM) + ambiguity zone + logging estruturado
+- ✅ `agent-evals-lab` — seção 9 com link para arquivo real de casos (suíte deixou de ser aspiracional)
 
 ---
 

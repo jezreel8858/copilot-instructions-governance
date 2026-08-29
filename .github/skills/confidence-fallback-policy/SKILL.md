@@ -20,9 +20,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/agents/README.md
-tools:
-  - context-mode
-  - tavily
+tools: []
 ---
 
 # Confidence & Fallback Policy
@@ -143,3 +141,40 @@ roteamento_de_volta:
 - ❌ Usar fallback de tool sem registrar que ocorreu
 - ❌ Escalar para modelo mais caro sem tentar ferramentas MCP primeiro
 - ❌ Bloquear execução por ambiguidade que o downstream pode resolver iterativamente
+
+## 6) Routing em Cascata (Rule → Semantic → LLM-Based)
+
+Para ecossistemas com muitos agents especializados, aplicar routing em cascata com threshold progressivo:
+
+| Nível | Estratégia | Trigger | Custo | Latência |
+|---|---|---|---|---|
+| **1 — Rule-based** | Keywords + sinais R-006 | Score ≥ 0.90 | Mínimo | < 10ms |
+| **2 — Semantic** | Similaridade por embedding | 0.70 ≤ score < 0.90 | Baixo | ~50-200ms |
+| **3 — LLM-based** | LLM-as-judge (tiebreaker) | 0.50 ≤ score < 0.70 | Moderado | ~1-3s |
+| **Escalonamento humano** | `ask_questions` | score < 0.50 | — | — |
+
+**Ambiguity Zone**: quando top-1 e top-2 candidatos têm scores dentro de 0.05 entre si → aplicar nível 3 (LLM tiebreaker) independentemente do threshold absoluto.
+
+**Logging obrigatório por request** para calibração contínua:
+
+```yaml
+routing_log:
+  request_id: "<uuid>"
+  timestamp: "<ISO-8601>"
+  nivel_usado: "rule-based | semantic | llm-based | escalonamento"
+  top_3_candidatos:
+    - agent: "<nome>"
+      score: 0.95
+    - agent: "<nome>"
+      score: 0.88
+    - agent: "<nome>"
+      score: 0.72
+  rota_final: "<agent-escolhido>"
+  confianca_final: "<alta|média|baixa>"
+  score_numerico: 0.95
+```
+
+**Calibração de threshold**: deve ser orientada por `observed false-positive rates` dos logs reais — não por intuição. Revisar thresholds a cada 100 requests ou quando taxa de `ask_questions` ultrapassar 15%.
+
+**Regra de output** (obrigatória para o `agent-router`): declarar `Confidence Score: X.XX` e nível de routing usado em toda saída de roteamento — não apenas o qualitativo `alta|média|baixa`.
+

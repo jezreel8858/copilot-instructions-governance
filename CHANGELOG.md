@@ -49,7 +49,7 @@ Formato: [Semantic Versioning](https://semver.org/) | [Conventional Commits](htt
 - Estrutura inicial de governança (`CLAUDE.md`, `copilot-instructions.md`)
 - 14 agents: `agent-router`, `bug-triage`, `test-strategy`, `test-implementation`, `refactor-planner`, `impact-architect`, `docs-curator`, `research-router`, `analysis-architect`, `agent-factory`, `context-builder`, `binding-initializer`, `adapter-generator`
 - 17 skills: `context-mode`, `context-builder`, `context-compact`, `sonarqube-governance`, `tavily`, `mermaid-diagrams`, `agent-contracts`, `handoff-governance`, `confidence-fallback-policy`, `agent-safety-guardrails`, `agent-observability-otel`, `agent-evals-lab`, `yaml-governance`, `test-implementation-angular`, `test-implementation-backend`, `test-coverage-governance`
-- Prompts de workflow: `/pesquisar`, `/plano`, `/implementar`, `/validar`
+- Prompts de workflow: `/research`, `/plan`, `/implement`, `/validate` (renomeados de PT→EN em 2026-08-29)
 - Prompts de Context Mode: `/ctx-checkpoint`, `/ctx-resume`, `/ctx-doctor`, `/ctx-insight`, `/ctx-status`
 - Prompts de binding: `/init-context`, `/add-project-context`, `/del-project-context`
 - Templates base: `catalog-base.yaml`, `binding-base.md`

@@ -17,8 +17,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/agents/catalog.yaml
-tools:
-  - context-mode
+tools: []
 ---
 
 # Handoff Governance
@@ -88,6 +87,55 @@ handoff_payload:
 
 ---
 
+### 2.1) Schema Formal — Campos Obrigatórios e Identidade do Emissor
+
+Todo handoff deve usar este schema tipado (versão 1.0), validável via `yaml-governance`:
+
+```yaml
+handoff_payload:
+  versao: "1.0"                           # string — versão do schema de handoff
+  para: "<nome-exato-do-agent>"           # string — enum do catálogo de agents
+  motivo: "<1 linha clara>"               # string — razão objetiva da delegação
+  emissor:                                # identidade do agent delegante (P10)
+    nome: "<nome-do-agent-atual>"
+    versao: "<versao-semantica>"          # ex.: "1.1.0"
+    modelo_llm: "<modelo-usado>"          # ex.: "claude-haiku-4.5"
+    timestamp: "<ISO-8601>"              # ex.: "2026-08-28T14:23:00Z"
+  contexto:
+    solicitacao_original: "<texto>"
+    trabalho_realizado: "<resumo>"
+    descobertas_chave:
+      - "<item>"
+    artefatos:
+      - "<path>"
+    restricoes:
+      - "<restrição>"
+  proximos_passos_sugeridos:
+    - "<passo>"
+  nao_retornar_para: true
+```
+
+> **Correlação OTel**: os campos `emissor.nome`, `emissor.modelo_llm` e `timestamp` mapeiam diretamente para atributos `gen_ai.agent.name`, `gen_ai.request.model` e `timestamp` do span `invoke_agent` — use `agent-observability-otel` para rastrear handoffs em pipelines instrumentados.
+
+---
+
+### 2.2) Gap de Guardrails em Handoffs
+
+**⚠️ Risco operacional confirmado** (OpenAI Agents SDK, 2025): tool guardrails **não se aplicam a handoffs** — apenas ao primeiro agent da cadeia (input guardrails) e ao agent que produz o output final (output guardrails). Agents intermediários numa cadeia de handoffs ficam sem validação de saída por padrão.
+
+**Estratégias compensatórias obrigatórias:**
+
+| Cenário | Estratégia |
+|---|---|
+| Handoff com dados sensíveis | Validar campos PII/credenciais no payload **antes** de delegar |
+| Handoff cross-domínio (ex.: research → implementation) | Agent receptor confirma recebimento: `Contexto recebido: [resumo]` |
+| Cadeia com 3+ agents | Inserir ponto de validação explícita no agent intermediário central |
+| Payload com schema crítico | Usar `yaml-governance` para validar `handoff_payload` antes de prosseguir |
+
+**Regra mínima**: todo agent que recebe um handoff deve confirmar explicitamente no início da resposta quais entradas foram recebidas e consideradas válidas.
+
+---
+
 ## 3) Fluxos de Delegação Comuns
 
 ```
@@ -138,6 +186,38 @@ Agent receptor confirma:
 | Implementação sem estratégia definida | `@test-implementation` → `@test-strategy` primeiro |
 | Dúvida técnica que precisa de pesquisa | Qualquer agent → `@research-router` |
 | Documentação a atualizar após mudança | Qualquer agent → `@docs-curator` |
+
+---
+
+### 5.1) Modo Fan-out/Fan-in (Orchestrator-Workers)
+
+Use quando a solicitação for explicitamente marcada `[P]` pelo R-018 — múltiplos agents sem dependência entre si podem trabalhar em paralelo.
+
+**Quando usar fan-out vs. delegação única:**
+
+| Situação | Padrão | Custo LLM |
+|---|---|---|
+| 1 domínio, 1 agent especializado | Delegação única (padrão) | 1 call/domínio |
+| N domínios simultâneos sem dependência | Fan-out (Orchestrator-Workers) | 2 calls/domínio |
+| N domínios com dependência sequencial | Pipeline sequencial | 1 call/domínio/passo |
+
+**Estrutura obrigatória para fan-out:**
+
+```yaml
+fan_out:
+  trigger: "R-018 [P] marcado explicitamente"
+  workers:
+    - agent: "<agent-1>"
+      escopo: "<escopo delimitado e sem sobreposição>"
+    - agent: "<agent-2>"
+      escopo: "<escopo delimitado e sem sobreposição>"
+  fan_in:
+    criterio_conclusao: "todos os workers reportaram resultado"
+    formato_agregacao: "tabela comparativa | lista unificada | decisão por votação"
+  guardrail_saida: true   # obrigatório — validar output de cada worker antes de agregar
+```
+
+**Anti-padrão**: fan-out sem ponto explícito de fan-in resulta em resultados fragmentados sem síntese. Prefira sempre delegação única quando o ganho de paralelismo não for evidente.
 
 ---
 

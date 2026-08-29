@@ -4,7 +4,7 @@ description:
   Orquestra revisão de código com foco em qualidade, impacto e aderência às convenções.
   Analisa diff ou arquivo alvo, classifica achados por severidade e gera relatório compacto.
   Roteie automaticamente para @bug-triage (bugs) ou @impact-architect (impacto).
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal']
 source_docs:
   - CLAUDE.md

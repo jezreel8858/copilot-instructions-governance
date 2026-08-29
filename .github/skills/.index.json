@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "domain": "governanca-ai-generica",
-  "generated_at": "2026-07-30T00:00:00Z",
+  "generated_at": "2026-08-29T07:00:00Z",
   "summary": {
-    "total_skills": 26
+    "total_skills": 35
   },
   "skills": [
     {
@@ -374,12 +374,114 @@
         "@refactor-planner",
         "@business-rules-extractor"
       ]
+    },
+    {
+      "name": "agent-memory-policy",
+      "tier": 3,
+      "category": "governance",
+      "path": ".github/skills/agent-memory-policy/SKILL.md",
+      "description": "Política de memória long-term para agents de IA: tipos episódico, semântico e procedimental. Foco em memória procedimental (agents auto-adaptativos) com guardrails de segurança e aprovação humana obrigatória (R-027).",
+      "tools": ["context-mode"],
+      "related_agents": [
+        "@agent-factory",
+        "@agent-router",
+        "@docs-curator",
+        "@context-builder"
+      ]
+    },
+    {
+      "name": "frontend-componentization-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Padrões genéricos de componentização frontend para reduzir acoplamento, aumentar reutilização e melhorar manutenibilidade.",
+      "path": ".github/skills/frontend-componentization-patterns/SKILL.md",
+      "related_agents": [
+        "@angular",
+        "@analysis-architect",
+        "@impact-architect",
+        "@test-strategy"
+      ]
+    },
+    {
+      "name": "angular-frontend-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Boas práticas e patterns de codificação Angular para componentes, templates, reatividade, segurança e consistência arquitetural.",
+      "path": ".github/skills/angular-frontend-patterns/SKILL.md",
+      "related_agents": [
+        "@angular",
+        "@analysis-architect",
+        "@test-strategy"
+      ]
+    },
+    {
+      "name": "angular-responsive-ui-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Diretrizes de responsividade para Angular: mobile-first, breakpoints, layout fluido, container queries, imagens responsivas e validação multi-viewport.",
+      "path": ".github/skills/angular-responsive-ui-patterns/SKILL.md",
+      "related_agents": [
+        "@angular",
+        "@analysis-architect",
+        "@impact-architect",
+        "@test-strategy"
+      ]
+    },
+    {
+      "name": "design-system-component-contracts",
+      "tier": 2,
+      "category": "governance",
+      "description": "Diretrizes enterprise para contratos de componentes (tokens, variantes/estados, inputs/outputs, compatibilidade, semver, depreciação, breaking change e acessibilidade).",
+      "path": ".github/skills/design-system-component-contracts/SKILL.md",
+      "related_agents": [
+        "@angular",
+        "@analysis-architect",
+        "@impact-architect",
+        "@test-strategy"
+      ]
+    },
+    {
+      "name": "spring-boot-backend-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Baseline enterprise para análise e recomendação em Spring Boot: arquitetura, observabilidade, segurança, performance e migração.",
+      "path": ".github/skills/spring-boot-backend-patterns/SKILL.md",
+      "related_agents": [
+        "@spring-boot",
+        "@analysis-architect",
+        "@impact-architect"
+      ]
+    },
+    {
+      "name": "spring-reactive-webflux-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Baseline enterprise para análise e recomendação em Spring WebFlux/Reactor: adequação reativa, backpressure, resiliência e operação.",
+      "path": ".github/skills/spring-reactive-webflux-patterns/SKILL.md",
+      "related_agents": [
+        "@spring-reactive",
+        "@analysis-architect",
+        "@impact-architect"
+      ]
+    },
+    {
+      "name": "java-jdk-backend-governance",
+      "tier": 1,
+      "category": "governance",
+      "description": "Governança de versões Java/JDK em backend: LTS, compatibilidade de ecossistema, segurança, performance e migração.",
+      "path": ".github/skills/java-jdk-backend-governance/SKILL.md",
+      "related_agents": [
+        "@spring-boot",
+        "@spring-reactive",
+        "@analysis-architect",
+        "@impact-architect"
+      ]
     }
   ],
   "metadata": {
-    "total_agents": 17,
-    "total_skills": 29,
-    "last_updated": "2026-08-27T00:00:00Z",
-    "changelog": "2026-08-27 — Adicionadas skills integration-contract-analysis (tier 2, governance) e dependency-graph-mapping (tier 2, process); agent analysis-integration-architect revisado com padrão agent-factory"
+    "total_agents": 20,
+    "total_skills": 36,
+    "last_updated": "2026-08-29T08:10:00Z",
+    "changelog": "2026-08-29 — Adicionada a skill angular-responsive-ui-patterns para responsividade Angular e sincronização com o agent angular, além das skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; atualização dos catálogos (R-015, R-026, R-038)."
   }
 }

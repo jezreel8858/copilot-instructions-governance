@@ -24,14 +24,17 @@
 | Agent | `impact-architect` | Análise de impacto técnico local, dependências e mitigação |
 | Agent | `docs-curator` | Curadoria e padronização de documentação/catálogo |
 | Agent | `research-router` | Triagem de pesquisa e fallback para investigação externa |
-| Agent | `analysis-architect` | Análise cross-sistema de integração e impacto amplo |
-| Agent | `analysis-integration-architect` | 🔗 ***(NEW)*** Análise de integrações cross-sistema: contratos (OpenAPI/AsyncAPI/gRPC/GraphQL), breaking changes, grafo de dependências e blast radius |
+| Agent | `analysis-architect` | Análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL) com metodologia B1/B2/B3 |
 | Agent | `agent-factory` | Criação/revisão estrutural de agents e governança |
 | Agent | `context-builder` | Coletar, condensar e persistir contexto técnico em `docs/context/` |
 | Agent | `binding-initializer` | ⚡ ***(NEW)*** Criar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — Health Check R-034) |
 | Agent | `adapter-generator` | ⚡ ***(NEW)*** Gerar automaticamente adapters em `.github/instructions/` via `/add-project-context` |
 | Agent | `skill-factory` | ⭐ ***(NEW)*** Criar/revisar skills customizadas com padrão SKILL.md e `.index.json` atômico |
+| Agent | `prompt-factory` | 📝 ***(NEW)*** Criar/revisar `.prompt.md` seguindo padrão canônico Copilot 2026: frontmatter correto, body estruturado e README atualizado |
 | Agent | `business-rules-extractor` | 📋 ***(NEW)*** Extrair regras de negócio de código e documentar em `.md`; validar refatorações contra regras documentadas |
+| Agent | `angular` | 🅰️ Especialista Angular **enterprise** para análise/recomendação (arquitetura moderna, RxJS+Signals, performance CWV/SSR, segurança, acessibilidade, testes e upgrades), carregando skills de componentização, patterns Angular e contratos de API de componentes para design system, sem implementação direta |
+| Agent | `spring-boot` | ☕ ***(NEW)*** Especialista backend Spring Boot **enterprise** para análise/recomendação (arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração), sem implementação direta |
+| Agent | `spring-reactive` | ⚛️ ***(NEW)*** Especialista backend reativo Spring WebFlux/Reactor **enterprise** para análise/recomendação (capacidade, resiliência, backpressure, observabilidade, segurança e compatibilidade Java/JDK), sem implementação direta |
 
 ## 3) Roteamento Rápido
 
@@ -46,13 +49,17 @@
 | Impacto técnico local | `impact-architect` |
 | Curadoria de documentação | `docs-curator` |
 | Pesquisa externa/triagem de pesquisa | `research-router` |
-| Integração cross-sistema | `analysis-architect` |
+| Análise técnica, impacto, contratos, integrações cross-sistema | `analysis-architect` |
 | Criação/revisão de agents | `agent-factory` |
 | Consolidação de contexto para execução posterior | `context-builder` |
 | ⚡ Binding context faltando (Health Check) | `binding-initializer` |
 | ⚡ Gerar adapters após /add-project-context | `adapter-generator` |
 | ⭐ Criar/revisar skill customizada | `skill-factory` |
+| 📝 Criar/revisar prompt `.prompt.md` | `prompt-factory` |
 | 📋 Extrair/documentar/validar regras de negócio | `business-rules-extractor` |
+| 🅰️ Análise e recomendação Angular | `angular` |
+| ☕ Análise e recomendação backend Spring Boot | `spring-boot` |
+| ⚛️ Análise e recomendação backend reativo WebFlux/Reactor | `spring-reactive` |
 
 ## 4) Pre-fetch Recomendado
 
@@ -63,6 +70,7 @@ Antes de tarefas não triviais, anexar ao contexto:
 - `./README.md`
 - `./catalog.yaml`
 - `../skills/README.md`
+- `../../docs/ai-context/routing-graph.yaml` — grafo de roteamento estrutural (R-040)
 
 ## 5) Regras de Catálogo
 
@@ -83,10 +91,12 @@ Antes de tarefas não triviais, anexar ao contexto:
 ## 8) Diretrizes Transversais (obrigatórias)
 
 - Todo agent deve manter contrato explícito de entrada/saída e não-escopo.
-- Todo handoff deve declarar motivo e payload mínimo (contexto, evidência, lacunas).
-- Toda execução deve declarar confiança (`alta|média|baixa`) e fallback quando aplicável.
+- Todo handoff deve usar o schema formal v1.0 (`versao`, `para`, `emissor`, `contexto`) — ver `handoff-governance/SKILL.md` seção 2.1.
+- Toda execução deve declarar **confidence score numérico** (0.00–1.00) **e nível de routing** (`rule-based|semantic|llm-based`) — não apenas `alta|média|baixa`.
 - Toda decisão operacional deve seguir menor privilégio de tools.
 - Todo agent deve preservar rastreabilidade (rota, evidências e próximo passo mínimo).
+- Todo agent pode declarar `version:` no frontmatter para rastrear mudanças de comportamento.
+- Nova rota de roteamento → atualizar `docs/ai-context/routing-graph.yaml` **antes** de editar a Decision Tree (R-040).
 
 ## 9) Skills-base por função
 
@@ -97,4 +107,4 @@ Antes de tarefas não triviais, anexar ao contexto:
 | Pesquisa | `agent-contracts`, `handoff-governance`, `tavily` |
 | Curadoria/governança | `agent-contracts`, `agent-safety-guardrails`, `agent-evals-lab` |
 | Operação com métricas | `agent-observability-otel` |
-
+| Agents com memória adaptativa | `agent-memory-policy` (Tier 3 — experimental) |

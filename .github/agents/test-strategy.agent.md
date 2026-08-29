@@ -106,5 +106,5 @@ Próximo passo mínimo:
 
 ## Combina Com (Commands)
 
-- `/plano` -> desenhar estratégia.
-- `/validar` -> checar aderência da matriz.
+- `/plan` -> desenhar estratégia.
+- `/validate` -> checar aderência da matriz.

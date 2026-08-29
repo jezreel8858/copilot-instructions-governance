@@ -104,6 +104,6 @@ Mitigação mínima:
 
 ## Combina Com (Commands)
 
-- `/pesquisar` -> levantar evidências.
-- `/plano` -> estruturar matriz de impacto.
-- `/validar` -> revisar riscos e mitigação.
+- `/research` -> levantar evidências.
+- `/plan` -> estruturar matriz de impacto.
+- `/validate` -> revisar riscos e mitigação.

@@ -19,6 +19,7 @@ source_docs:
   - .github/copilot-instructions.md
   - .github/instructions/angular-v21-frontend.instructions.md
   - .github/skills/test-implementation-frontend/SKILL.md
+tools: []
 ---
 
 # Test Implementation — Angular / Jasmine / Karma (Legado)

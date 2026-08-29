@@ -94,6 +94,7 @@ Esta matriz é **responsabilidade do roteador** — não é regra global.
 - **Postura Senior Engineer (R-029)**: bullets/tabelas > parágrafos · código limpo sem narrativa inline · tom direto sem filler de IA.
 - **Plano Auto-Implementável (R-031)**: plano aprovado → execução integral sem interrupção. Pré-voo: escopo + contingências inline `[fallback: X]` + critério de falha tolerável. Parada permitida APENAS por: commit autônomo, credencial exposta, ou estado irrecuperável. Relatório final substitui checkpoints intermediários.
 - **Genericidade Obrigatória (R-038)**: toda documentação em `.github/` **DEVE ser genérica**. Sem projetos específicos, tecnologias exclusivas ou convenções de domínio. Se é específico → vai para `.github/instructions/*.instructions.md` (adapter). Teste: substitua projeto por `[PROJETO]` e tech por `[TECH]` — continua válido?
+- **Grafo de Roteamento (R-040)**: o roteamento de agents DEVE ser declarado como dado estruturado em `docs/ai-context/routing-graph.yaml`. A Decision Tree em prosa é documentação derivada. Toda nova rota exige: *(a)* entrada no grafo; *(b)* atualização da Decision Tree; *(c)* novo caso em `docs/ai-context/evals/casos-roteamento.yaml`.
 
 ### 2.1) context-mode — Regras Obrigatórias de Roteamento (JetBrains Copilot)
 
@@ -309,11 +310,12 @@ Escolha uma ação:
 - `impact-architect` -> análise de impacto técnico.
 - `docs-curator` -> curadoria de documentação de governança.
 - `research-router` -> triagem e roteamento de pesquisa.
-- `analysis-architect` -> análise técnica cross-projeto.
+- `analysis-architect` -> análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL); metodologia B1/B2/B3.
 - `agent-factory` -> criar/revisar agents customizados com padrão estrutural.
 - `binding-initializer` -> ⚡ inicializar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — R-034)
 - `adapter-generator` -> ⚡ gerar automaticamente adapters em `.github/instructions/` via `/add-project-context`
 - `skill-factory` -> ⭐ criar/revisar skills com padrão estrutural de SKILL.md e `.index.json` atômico
+- `prompt-factory` -> 📝 criar/revisar `.prompt.md` seguindo padrão canônico Copilot 2026 (frontmatter, body, kebab-case, README)
 
 ### Skills atuais
 
@@ -353,6 +355,7 @@ Escolha uma ação:
 - `agent-safety-guardrails` -> guardrails de segurança para agents.
 - `agent-observability-otel` -> rastreabilidade e telemetria de agents.
 - `agent-evals-lab` -> avaliação contínua e regressão de agents.
+- `agent-memory-policy` -> política de memória long-term (episódica, semântica, procedimental) para agents auto-adaptativos.
 
 ### Pre-fetch recomendado (antes de tarefas não triviais)
 - `CLAUDE.md`
@@ -439,10 +442,12 @@ Cada adapter em `.github/instructions/` deve:
 ## 7) Índices de Governança
 
 - **Adapters/Binding:** `docs/ai-context/catalog.yaml` (manifest de carregamento hierárquico)
+- **Grafo de Roteamento (R-040):** `docs/ai-context/routing-graph.yaml` (fonte estrutural — nós, arestas, cascata)
+- **Suíte de Evals:** `docs/ai-context/evals/casos-roteamento.yaml` (quality gate de regressão de roteamento)
 - **Instructions:** `.github/instructions/README.md` + `.github/instructions/*.instructions.md`
 - **Agents:** `.github/agents/README.md` + `.github/agents/catalog.yaml`
 - **Skills:** `.github/skills/README.md` + `.github/skills/.index.json`
-- **Prompts Workflow:** `/pesquisar` `/plano` `/implementar` `/validar`
+- **Prompts Workflow:** `/research` `/plan` `/implement` `/validate` `/commit` `/review`
 - **Prompts Context Mode:** `/ctx-checkpoint` `/ctx-resume` `/ctx-doctor` `/ctx-status` `/ctx-insight`
 - **Índice completo:** `.github/prompts/README.md`
 - **Hooks:** `.github/hooks/README.md` + `.github/hooks/context-mode.json`

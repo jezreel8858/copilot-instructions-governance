@@ -36,7 +36,8 @@ agents:
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
-      - "docs/plan/agent-router-agent-first-plan.md"
+      - "docs/ai-context/routing-graph.yaml"
+      - "docs/ai-context/evals/casos-roteamento.yaml"
     estimated_time_minutes: 15
 
   bug-triage:
@@ -326,42 +327,18 @@ agents:
   analysis-architect:
     id: "analysis-architect"
     priority: 8
-    domain: "Analise tecnica multi-projeto"
-    description: "Arquiteto de analise tecnica para ecossistemas de software"
+    version: "2.0.0"
+    domain: "Analise tecnica multi-projeto e integracoes cross-sistema"
+    description: >-
+      Arquiteto de analise tecnica unificado: impactos, riscos, dependencias,
+      contratos e integracoes cross-sistema (OpenAPI, AsyncAPI, gRPC, GraphQL).
+      Metodologia B1/B2/B3 com classificacao BREAKING | COMPATIBLE | DEPRECACAO.
     keywords:
-      - "analise integracao"
+      - "analise tecnica"
       - "impacto"
       - "fluxo ponta a ponta"
       - "ecossistema"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/skills/README.md"
-    related_skills:
-      - "context-mode"
-      - "tavily"
-      - "agent-contracts"
-      - "handoff-governance"
-      - "agent-evals-lab"
-      - "agent-observability-otel"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/instructions/README.md"
-      - ".github/skills/README.md"
-    estimated_time_minutes: 45
-
-  analysis-integration-architect:
-    id: "analysis-integration-architect"
-    priority: 8.5
-    domain: "Analise de integracoes cross-sistema"
-    description: >-
-      Arquiteto senior de analise de integracoes: contrato (OpenAPI, AsyncAPI, gRPC, GraphQL),
-      fluxo de dados, grafo de dependencias, deteccao de breaking changes e classificacao de risco.
-    keywords:
-      - "integracao"
+      - "integracao cross-sistema"
       - "contrato"
       - "breaking change"
       - "openapi"
@@ -375,31 +352,29 @@ agents:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-    related_agents:
-      - "agent-router"
-      - "impact-architect"
-      - "business-rules-extractor"
-      - "refactor-planner"
-      - "research-router"
-      - "docs-curator"
+      - ".github/skills/README.md"
     related_skills:
-      - "integration-contract-analysis"
-      - "dependency-graph-mapping"
       - "context-mode"
       - "tavily"
-      - "mermaid-diagrams"
-      - "code-tracing"
       - "agent-contracts"
       - "handoff-governance"
+      - "agent-evals-lab"
+      - "agent-observability-otel"
+      - "integration-contract-analysis"
+      - "dependency-graph-mapping"
+      - "mermaid-diagrams"
+      - "code-tracing"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
-      - ".github/agents/analysis-integration-architect.agent.md"
+      - ".github/agents/analysis-architect.agent.md"
+      - ".github/agents/README.md"
+      - ".github/instructions/README.md"
+      - ".github/skills/README.md"
       - ".github/skills/integration-contract-analysis/SKILL.md"
       - ".github/skills/dependency-graph-mapping/SKILL.md"
       - ".github/skills/mermaid-diagrams/SKILL.md"
-    estimated_time_minutes: 40
+    estimated_time_minutes: 45
 
   agent-factory:
     id: "agent-factory"
@@ -564,6 +539,7 @@ agents:
       - "agent-factory"
       - "docs-curator"
       - "agent-router"
+      - "prompt-factory"
     related_skills:
       - "agent-contracts"
       - "agent-evals-lab"
@@ -576,9 +552,45 @@ agents:
       - ".github/skills/.index.json"
     estimated_time_minutes: 25
 
-metadata:
-  total_agents: 17
-  last_updated: "2026-08-27T00:00:00Z"
+  prompt-factory:
+    id: "prompt-factory"
+    priority: 9.8
+    domain: "Autoria e padronizacao de prompts"
+    description: >-
+      Criar e revisar arquivos .prompt.md seguindo o padrao canonico do GitHub Copilot 2026:
+      frontmatter correto (description, model, tools, source_docs), estrutura de body,
+      separacao de responsabilidade com .instructions.md, nomenclatura kebab-case e
+      atualizacao atomica do README de prompts (R-015).
+    keywords:
+      - "criar prompt"
+      - "revisar prompt"
+      - "novo prompt"
+      - "padronizar prompt"
+      - ".prompt.md"
+      - "slash command"
+      - "auditar prompts"
+      - "prompt template"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/prompts/README.md"
+    related_agents:
+      - "agent-factory"
+      - "skill-factory"
+      - "docs-curator"
+      - "agent-router"
+    related_skills:
+      - "agent-contracts"
+      - "context-mode"
+      - "yaml-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/prompt-factory.agent.md"
+      - ".github/prompts/README.md"
+      - ".github/prompts/templates/prompt-template.md"
+    estimated_time_minutes: 20
 
   business-rules-extractor:
     id: "business-rules-extractor"
@@ -620,3 +632,134 @@ metadata:
       - ".github/skills/business-rules-governance/SKILL.md"
       - ".github/skills/code-tracing/SKILL.md"
     estimated_time_minutes: 60
+
+  angular:
+    id: "angular"
+    priority: 8.6
+    domain: "Analise e recomendacao tecnica Angular"
+    description: "Especialista Angular enterprise para análise e recomendação técnica (arquitetura moderna, RxJS+Signals, performance CWV/SSR/hydration, segurança OWASP, acessibilidade WCAG, estratégia de testes e upgrade/migração), sem implementar código."
+    keywords:
+      - "angular"
+      - "standalone"
+      - "dependency injection"
+      - "signals"
+      - "rxjs"
+      - "core web vitals"
+      - "ssr"
+      - "hydration"
+      - "security"
+      - "owasp"
+      - "wcag"
+      - "upgrade angular"
+      - "deprecations"
+      - "analise angular"
+      - "recomendacao tecnica"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_skills:
+      - "context-mode"
+      - "tavily"
+      - "agent-contracts"
+      - "handoff-governance"
+      - "confidence-fallback-policy"
+      - "agent-evals-lab"
+      - "code-tracing"
+      - "frontend-componentization-patterns"
+      - "angular-frontend-patterns"
+      - "design-system-component-contracts"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/angular.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/frontend-componentization-patterns/SKILL.md"
+      - ".github/skills/angular-frontend-patterns/SKILL.md"
+      - ".github/skills/design-system-component-contracts/SKILL.md"
+    estimated_time_minutes: 30
+
+  spring-boot:
+    id: "spring-boot"
+    priority: 8.7
+    domain: "Analise e recomendacao tecnica backend Spring Boot"
+    description: "Especialista backend Spring Boot enterprise para análise e recomendação técnica (arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração), sem implementar código."
+    keywords:
+      - "spring boot"
+      - "java lts"
+      - "jdk"
+      - "observabilidade"
+      - "actuator"
+      - "seguranca backend"
+      - "migracao spring"
+      - "analise backend"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_skills:
+      - "context-mode"
+      - "tavily"
+      - "agent-contracts"
+      - "handoff-governance"
+      - "confidence-fallback-policy"
+      - "agent-evals-lab"
+      - "code-tracing"
+      - "spring-boot-backend-patterns"
+      - "java-jdk-backend-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/spring-boot.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/spring-boot-backend-patterns/SKILL.md"
+      - ".github/skills/java-jdk-backend-governance/SKILL.md"
+    estimated_time_minutes: 35
+
+  spring-reactive:
+    id: "spring-reactive"
+    priority: 8.8
+    domain: "Analise e recomendacao tecnica backend reativo Spring"
+    description: "Especialista backend reativo Spring WebFlux/Reactor para análise e recomendação técnica (capacidade, resiliência, backpressure, observabilidade, segurança e compatibilidade Java/JDK), sem implementação."
+    keywords:
+      - "spring webflux"
+      - "project reactor"
+      - "backend reativo"
+      - "backpressure"
+      - "event-loop"
+      - "reactive streams"
+      - "latencia p95"
+      - "migracao java"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_skills:
+      - "context-mode"
+      - "tavily"
+      - "agent-contracts"
+      - "handoff-governance"
+      - "confidence-fallback-policy"
+      - "agent-evals-lab"
+      - "code-tracing"
+      - "spring-reactive-webflux-patterns"
+      - "java-jdk-backend-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/spring-reactive.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/spring-reactive-webflux-patterns/SKILL.md"
+      - ".github/skills/java-jdk-backend-governance/SKILL.md"
+    estimated_time_minutes: 35
+
+metadata:
+  total_agents: 20
+  last_updated: "2026-08-29T07:00:00Z"
+  changelog: "2026-08-29 — Inclusão dos agents spring-boot e spring-reactive com foco analítico enterprise; integração das skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; catálogos sincronizados (R-015, R-026, R-038)."

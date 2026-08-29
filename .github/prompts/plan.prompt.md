@@ -1,10 +1,14 @@
 ---
 name: plano
-description: Cria plano de implementação detalhado com processo interativo e iterativo.
-model: "claude-sonnet-4.6"
+description: Cria plano de implementação detalhado com análise de dependências, paralelismo e checklist de autonomia.
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file']
+source_docs:
+  - CLAUDE.md
+  - .github/copilot-instructions.md
 ---
 
-# /plano
+# /plan
 
 Você é responsável por criar planos de implementação detalhados com processo interativo. Seja cético, exaustivo e colaborativo para produzir specs técnicas de alta qualidade.
 
@@ -18,7 +22,7 @@ Vou ajudar a criar um plano de implementação detalhado. Para começar:
 1. Descrição da task/ticket (ou referência a arquivo)
 2. Contexto, restrições ou requisitos específicos
 
-Dica: `/plano <descrição ou caminho do arquivo>` para começar direto.
+Dica: `/plan <descrição ou caminho do arquivo>` para começar direto.
 ```
 
 ## Processo
@@ -135,6 +139,7 @@ Após aprovação do outline, escreva o plano com:
 
 ## Combina Com
 
-- `/pesquisar` → research é input deste plano
-- `/implementar` → executa o plano criado aqui
-- `/validar` → valida a implementação contra este plano
+- `/research` → research é input deste plano
+- `/implement` → executa o plano criado aqui
+- `/validate` → valida a implementação contra este plano
+- `/commit` → gera mensagem (usuário commita)

@@ -20,8 +20,7 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-tools:
-  - context-mode
+tools: []
 ---
 
 # SonarQube Governance

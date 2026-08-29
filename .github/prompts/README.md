@@ -22,7 +22,7 @@ Prompts operacionais para workflow de execução no chat.
 ```
 1. /init-context
    └─ Valida CLAUDE.md + copilot-instructions.md
-   └─ Carrega R-001..R-039
+   └─ Carrega R-001..R-040
    └─ Faz 1x por sessão APENAS
 
 2. @agent-router ou qualquer agent
@@ -33,7 +33,7 @@ Prompts operacionais para workflow de execução no chat.
    └─ Descobre stack + cria binding
    └─ Reutilizável (repete para cada projeto)
 
-4. /pesquisar, /plano, /implementar, /validar
+4. /research, /plan, /implement, /validate
    └─ Usa contexto governança + binding já pronto
 ```
 
@@ -60,10 +60,10 @@ Prompts operacionais para workflow de execução no chat.
 
 | Command | Arquivo | Descrição |
 |---|---|---|
-| `/pesquisar` | `.github/prompts/pesquisar.prompt.md` | Pesquisa exaustiva no codebase via levantamento paralelo |
-| `/plano` | `.github/prompts/plano.prompt.md` | Cria plano de implementação detalhado com processo interativo |
-| `/implementar` | `.github/prompts/implementar.prompt.md` | Executa plano aprovado com checkpoints e pausas para verificação |
-| `/validar` | `.github/prompts/validar.prompt.md` | Valida implementação contra plano e identifica desvios |
+| `/research` | `.github/prompts/research.prompt.md` | Pesquisa exaustiva no codebase via levantamento paralelo de contexto |
+| `/plan` | `.github/prompts/plan.prompt.md` | Cria plano de implementação detalhado com processo interativo |
+| `/implement` | `.github/prompts/implement.prompt.md` | Executa plano aprovado com checkpoints e pausas para verificação |
+| `/validate` | `.github/prompts/validate.prompt.md` | Valida implementação contra plano e identifica desvios |
 | `/commit` | `.github/prompts/commit.prompt.md` | ⭐ **(NEW)** Gera mensagem de commit convencional (PT-BR, Conventional Commits). Nunca executa git. |
 | `/review` | `.github/prompts/review.prompt.md` | ⭐ **(NEW)** Revisão de código por qualidade, convenções e impacto. Relatório compacto por severidade. |
 
@@ -109,4 +109,22 @@ Use esta lista para revisar qualquer prompt `.prompt.md` antes de publicar:
 - [ ] O fallback para terminal está restrito e justificado?
 - [ ] O prompt evita releitura redundante de dados já coletados/indexados?
 - [ ] A saída esperada pede síntese objetiva com evidência (`arquivo:linha`), sem dump?
+
+---
+
+## ✅ Checklist de Conformidade de Frontmatter (padrão Copilot 2026)
+
+Use `@prompt-factory` para auditar e corrigir automaticamente:
+
+| Campo | Status | Significado |
+|---|---|---|
+| `description` | **OBRIGATÓRIO** | Habilita discoverability no Quick Pick do Copilot |
+| `model` | Recomendado | claude-haiku-4.5 / gpt-5.1 / claude-opus-4 |
+| `tools` | Quando usa ferramentas | Princípio de menor privilégio — listar apenas o necessário |
+| `source_docs` | Quando precisa de contexto | Pre-fetch de governança ou projeto |
+| `name` | Opcional | Override do filename como slash command |
+
+**Template de referência**: `.github/prompts/templates/prompt-template.md`
+
+**Para criar ou auditar prompts**: use `@prompt-factory`
 

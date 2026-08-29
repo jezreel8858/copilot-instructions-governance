@@ -16,7 +16,7 @@ applyTo: ["**/*.java"]
 ### Entity
 
 - Usar `@Entity`, `@Builder`, `@Data`, `@NoArgsConstructor`, `@AllArgsConstructor`.
-- Preferir `@EmbeddedId` para PK composta (exceção conhecida: `Vistoria` com `@Id Long`).
+- Preferir `@EmbeddedId` para PK composta (exceção conhecida: `User` com `@Id Long`).
 - Flags devem ser `String` com valores `"S"`/`"N"`.
 - Datas em entidades seguem padrão legado com `java.util.Date`.
 - Usar `jakarta.persistence` (não `javax`).
