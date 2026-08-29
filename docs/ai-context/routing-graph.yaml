@@ -1,0 +1,309 @@
+version: "1.0"
+description: >
+  Grafo de roteamento declarado — fonte de verdade estrutural para o agent-router.
+  Nós = agents disponíveis; arestas = condições de roteamento (keywords, sinais R-006, score threshold).
+  A Decision Tree em agent-router.agent.md é documentação derivada deste arquivo.
+last_updated: "2026-08-28"
+
+# ─────────────────────────────────────────────
+# NÓS — agents disponíveis no catálogo
+# ─────────────────────────────────────────────
+nos:
+  - id: agent-router
+    tipo: entry_point
+    descricao: "Entry point obrigatório — nunca é destino, apenas origem"
+
+  - id: bug-triage
+    tipo: downstream
+    descricao: "Triagem de bugs e regressões"
+
+  - id: test-strategy
+    tipo: downstream
+    descricao: "Planejamento e estratégia de testes"
+
+  - id: test-implementation
+    tipo: downstream
+    descricao: "Implementação de suítes de teste"
+
+  - id: test-fix
+    tipo: downstream
+    descricao: "Correção de testes quebrados com relatório de falhas"
+
+  - id: business-rules-extractor
+    tipo: downstream
+    descricao: "Extração e validação de regras de negócio"
+
+  - id: refactor-planner
+    tipo: downstream
+    descricao: "Planejamento de refatoração segura"
+
+  - id: impact-architect
+    tipo: downstream
+    descricao: "Análise de impacto técnico local"
+
+  - id: docs-curator
+    tipo: downstream
+    descricao: "Curadoria e atualização de documentação de governança"
+
+  - id: research-router
+    tipo: fallback
+    descricao: "Triagem de pesquisa externa — fallback primário"
+
+  - id: analysis-architect
+    tipo: fallback
+    descricao: "Análise técnica cross-projeto — fallback secundário"
+
+  - id: agent-factory
+    tipo: downstream
+    descricao: "Criação e revisão de agents customizados"
+
+  - id: skill-factory
+    tipo: downstream
+    descricao: "Criação e revisão de skills"
+
+  - id: binding-initializer
+    tipo: health_check
+    descricao: "Inicialização de binding context — acionado antes da triagem se catalog.yaml ausente"
+
+  - id: adapter-generator
+    tipo: downstream
+    descricao: "Geração automática de adapters via /add-project-context"
+
+  - id: context-builder
+    tipo: downstream
+    descricao: "Coleta e consolidação de contexto técnico"
+
+  - id: analysis-integration-architect
+    tipo: downstream
+    descricao: "Análise de integrações cross-sistema (contratos, breaking changes)"
+
+# ─────────────────────────────────────────────
+# ARESTAS — condições de roteamento
+# Cada aresta define: origem, destino, sinais de ativação e threshold mínimo
+# ─────────────────────────────────────────────
+arestas:
+  # Health check obrigatório (pré-triagem)
+  - de: agent-router
+    para: binding-initializer
+    prioridade: 0
+    threshold_score: 0  # null — health check não usa score numérico
+    nivel_routing: rule-based
+    condicoes:
+      tipo: health_check
+      regra: "R-034"
+      gatilho: "docs/ai-context/catalog.yaml ausente OU docs/ai-context/binding.md ausente"
+
+  # Bug / Erro / Regressão
+  - de: agent-router
+    para: bug-triage
+    prioridade: 1
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "bug"
+        - "erro"
+        - "regressão"
+        - "falha em produção"
+        - "não funciona"
+        - "exception"
+        - "NPE"
+        - "500"
+        - "stack trace"
+      sinal_r006: "É bug/erro/regressão?"
+
+  # Estratégia de testes
+  - de: agent-router
+    para: test-strategy
+    prioridade: 2
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "estratégia de testes"
+        - "planejar testes"
+        - "cobertura"
+        - "cenários de teste"
+        - "matriz de testes"
+      sinal_r006: "É estratégia/plano de testes?"
+      nao_confundir_com:
+        - "implementar testes"  # → test-implementation
+        - "corrigir testes"     # → test-fix
+
+  # Implementação de testes
+  - de: agent-router
+    para: test-implementation
+    prioridade: 2
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "implementar testes"
+        - "criar testes"
+        - "escrever testes"
+        - "adicionar cobertura"
+        - "junit"
+        - "jasmine"
+        - "vitest"
+        - "pytest"
+
+  # Correção de testes quebrados
+  - de: agent-router
+    para: test-fix
+    prioridade: 2
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "testes quebrados"
+        - "testes falhando"
+        - "broken test"
+        - "corrigir teste"
+        - "test failure"
+        - "flaky test"
+      requisito: "relatório de falhas presente (ou ask_questions para obtê-lo)"
+
+  # Extração de regras de negócio
+  - de: agent-router
+    para: business-rules-extractor
+    prioridade: 3
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "regra de negócio"
+        - "extrair regra"
+        - "documentar comportamento"
+        - "validar refatoração"
+        - "ground truth"
+
+  # Refatoração
+  - de: agent-router
+    para: refactor-planner
+    prioridade: 3
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "refatorar"
+        - "refactor"
+        - "clean code"
+        - "simplificar código"
+        - "eliminar duplicação"
+        - "reestruturar"
+
+  # Análise de impacto
+  - de: agent-router
+    para: impact-architect
+    prioridade: 4
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "impacto"
+        - "risco"
+        - "dependências"
+        - "o que muda"
+        - "quem é afetado"
+        - "breaking change"
+
+  # Documentação
+  - de: agent-router
+    para: docs-curator
+    prioridade: 5
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "atualizar documentação"
+        - "curar doc"
+        - "README"
+        - "catálogo"
+        - "rastreabilidade de doc"
+
+  # Agent factory
+  - de: agent-router
+    para: agent-factory
+    prioridade: 6
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "criar agent"
+        - "novo agent"
+        - "revisar agent"
+        - "padronizar agent"
+
+  # Skill factory
+  - de: agent-router
+    para: skill-factory
+    prioridade: 6
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "criar skill"
+        - "nova skill"
+        - "revisar skill"
+
+  # Análise de integração cross-sistema
+  - de: agent-router
+    para: analysis-integration-architect
+    prioridade: 7
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "integração entre sistemas"
+        - "contrato de API"
+        - "breaking change de contrato"
+        - "openapi"
+        - "asyncapi"
+        - "grpc"
+        - "blast radius"
+
+  # Pesquisa externa — fallback primário
+  - de: agent-router
+    para: research-router
+    prioridade: 8
+    threshold_score: 0.70
+    nivel_routing: semantic
+    condicoes:
+      sinal: "Dúvida técnica, pesquisa externa, benchmark de mercado"
+      gatilho: "Intenção clara mas requer informação externa ao repositório"
+
+  # Análise cross-projeto — fallback secundário
+  - de: agent-router
+    para: analysis-architect
+    prioridade: 9
+    threshold_score: 0.70
+    nivel_routing: semantic
+    condicoes:
+      sinal: "Análise cross-projeto profunda, contratos, fluxos multi-sistema"
+      gatilho: "Escopo que envolve múltiplos projetos ou múltiplas integrações"
+
+# ─────────────────────────────────────────────
+# POLÍTICA DE CASCATA
+# Aplicada quando score < threshold da aresta rule-based
+# ─────────────────────────────────────────────
+politica_cascata:
+  nivel_1_rule_based:
+    threshold: 0.90
+    acao: "Rotear diretamente pela aresta com mais keywords correspondentes"
+
+  nivel_2_semantic:
+    threshold: 0.70
+    acao: "Calcular similaridade semântica entre solicitação e descrição dos agents"
+
+  nivel_3_llm_based:
+    threshold: 0.50
+    acao: "LLM tiebreaker — solicitar ao modelo atual a decisão de roteamento com contexto"
+
+  escalonamento_humano:
+    threshold: 0.00
+    acao: "ask_questions com top-3 candidatos como opções"
+
+  ambiguity_zone:
+    descricao: "Top-1 e Top-2 scores dentro de 0.05 um do outro"
+    acao: "Aplicar nível 3 (LLM tiebreaker) independentemente do threshold absoluto"
+

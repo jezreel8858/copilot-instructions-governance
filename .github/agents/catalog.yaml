@@ -36,7 +36,8 @@ agents:
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
-      - "docs/plan/agent-router-agent-first-plan.md"
+      - "docs/ai-context/routing-graph.yaml"
+      - "docs/ai-context/evals/casos-roteamento.yaml"
     estimated_time_minutes: 15
 
   bug-triage:

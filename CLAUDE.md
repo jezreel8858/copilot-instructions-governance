@@ -16,7 +16,7 @@ Em caso de conflito, siga esta ordem:
 3. User
 4. Arquivos locais deste repositório (`CLAUDE.md`, `.github/*`)
 
-## 3) Regras Normativas (R-001..R-036)
+## 3) Regras Normativas (R-001..R-040)
 
 - **R-001 (Escopo)**: altere apenas o que foi solicitado.
 - **R-002 (Mudança mínima)**: prefira alterações pequenas, reversíveis e rastreáveis.
@@ -57,6 +57,7 @@ Em caso de conflito, siga esta ordem:
 - **R-037 (Ponto de Entrada Obrigatório — Agent Router First)**: **SEM EXCEÇÕES**, toda solicitação deve começar com `@agent-router`. Controller routing é o ponto de entrada único para: **(a)** classificação de intenção; **(b)** decisão de rota; **(c)** prevenção de implementação direta sem triagem. O roteador delega para downstream (bug-triage, test-strategy, refactor-planner, impact-architect, docs-curator, research-router, analysis-architect) conforme necessidade. Bypass de @agent-router é violação de governança. Proibido implementar sem passar por triagem.
 - **R-038 (Genericidade Obrigatória em Governança)**: Toda documentação de governança criada em `.github/` (agents, skills, prompts, copilot-instructions) **DEVE ser genérica**, desacoplada de: **(a)** projetos específicos; **(b)** tecnologias exclusivas; **(c)** convenções de domínio particulares. Convencionalidades, adapters e exemplos concretos **PERTENCEM EXCLUSIVAMENTE A** `.github/instructions/*.instructions.md` (adapters) ou `docs/ai-context/` (contexto de binding). Se uma regra de governança referencia projeto, domínio ou tech específica, é violação de R-038. Teste: substituir nome de projeto/tecnologia por `[PROJETO]` ou `[TECH]` — se deixar de fazer sentido, está muito específica para governança global.
 - **R-039 (Diagramas em Markdown com Mermaid)**: Todo diagrama incorporado em arquivo `.md` **DEVE usar Mermaid** (sintaxe nativa de blocos code com linguagem `mermaid`). Razões: **(a)** versionabilidade — diagramas vivem no Git, não em binários; **(b)** portabilidade — renderização nativa em GitHub, GitLab, Notion e ferramentas de IA; **(c)** manutenibilidade — patches e reviews sem ferramentas específicas. Proibido: imagens PNG/SVG geradas externamente, Visio, Lucidchart embarcados. Se precisar de estilo avançado, use plugins Mermaid ou refatore para simplificar.
+- **R-040 (Grafo de Roteamento como Fonte de Verdade)**: O roteamento de agents **DEVE ser declarado como dado estruturado** (ex.: `docs/ai-context/routing-graph.yaml` com nós, arestas, thresholds e política de cascata). A Decision Tree em prosa de qualquer agent-router é **documentação derivada** — não fonte única. Toda nova rota ou agente adicionado ao ecossistema exige: **(a)** entrada no grafo estruturado; **(b)** atualização da Decision Tree (derivada); **(c)** novo caso de teste em `docs/ai-context/evals/casos-roteamento.yaml` (equivalente ao R-015 para evals). Threshold de confiança para cada rota deve ser declarado explicitamente no grafo e reportado no output do router.
 
 ## 3.1) Regra de Autoria de Agents
 
@@ -111,8 +112,8 @@ Solicitação do Usuário
 
 ## 6) Catálogo Atual (estado verificado)
 
-### Agents
-- `agent-router`
+### Agents (17 ativos)
+- `agent-router` v1.1.0 — entry point obrigatório; confidence score + nível de routing declarados no output; routing-graph.yaml como fonte estrutural (R-040)
 - `bug-triage`
 - `test-strategy`
 - `test-implementation` — implementar suítes de teste com cobertura objetiva
@@ -123,11 +124,16 @@ Solicitação do Usuário
 - `docs-curator`
 - `research-router`
 - `analysis-architect`
+- `analysis-integration-architect` — análise de integrações cross-sistema: contratos (OpenAPI/AsyncAPI/gRPC/GraphQL), breaking changes, blast radius
 - `agent-factory`
 - `skill-factory` — criar/revisar skills com padrão SKILL.md e .index.json atômico
 - `context-builder`
 - `binding-initializer` — inicializar catalog.yaml + binding.md (1 pergunta — R-034)
 - `adapter-generator` — gerar adapters em `.github/instructions/` via /add-project-context
+
+### Artefatos Estruturais de Orquestração
+- `docs/ai-context/routing-graph.yaml` — grafo de roteamento (R-040): nós = agents, arestas = condições, política de cascata
+- `docs/ai-context/evals/casos-roteamento.yaml` — suíte de evals de regressão de roteamento (23 casos)
 
 ## 7) Política de Mudança
 

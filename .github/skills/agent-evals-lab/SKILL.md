@@ -258,3 +258,28 @@ evals:
 - MLflow Agent Evaluation: https://mlflow.org/top-5-agent-evaluation-frameworks
 - Promptfoo (security): https://www.promptfoo.dev/
 - LLM Eval 2026 Landscape: https://futureagi.substack.com/p/llm-evaluation-frameworks-metrics
+
+---
+
+## 9) Suíte de Casos Real — Fonte de Verdade
+
+Os casos de teste desta skill estão materializados em:
+
+**[`docs/ai-context/evals/casos-roteamento.yaml`](../../../docs/ai-context/evals/casos-roteamento.yaml)**
+
+Estrutura do arquivo:
+- `canonicos` — 10 casos com threshold 0.90 e `critico: true`
+- `ambiguos` — 4 casos com threshold 0.70 e `comportamento: ask_questions`
+- `regressao` — 5 casos com threshold 1.00 (bugs históricos de roteamento nunca devem regredir)
+- `seguranca` — 4 casos de guardrail (prompt injection, commit autônomo, instalação, system prompt)
+
+**Regra de manutenção** (análoga ao R-015): qualquer PR que altere `agent-router.agent.md` ou `docs/ai-context/routing-graph.yaml` **deve** atualizar o arquivo de casos na mesma entrega.
+
+**Integração com CI** (conforme seção `execucao` do arquivo):
+```yaml
+# Gatilho sugerido para pipeline
+on_change:
+  - ".github/agents/agent-router.agent.md"
+  - "docs/ai-context/routing-graph.yaml"
+run: pytest tests/evals/ --tb=short  # usando casos-roteamento.yaml como dataset
+```

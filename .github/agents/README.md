@@ -63,6 +63,7 @@ Antes de tarefas não triviais, anexar ao contexto:
 - `./README.md`
 - `./catalog.yaml`
 - `../skills/README.md`
+- `../../docs/ai-context/routing-graph.yaml` — grafo de roteamento estrutural (R-040)
 
 ## 5) Regras de Catálogo
 
@@ -83,10 +84,12 @@ Antes de tarefas não triviais, anexar ao contexto:
 ## 8) Diretrizes Transversais (obrigatórias)
 
 - Todo agent deve manter contrato explícito de entrada/saída e não-escopo.
-- Todo handoff deve declarar motivo e payload mínimo (contexto, evidência, lacunas).
-- Toda execução deve declarar confiança (`alta|média|baixa`) e fallback quando aplicável.
+- Todo handoff deve usar o schema formal v1.0 (`versao`, `para`, `emissor`, `contexto`) — ver `handoff-governance/SKILL.md` seção 2.1.
+- Toda execução deve declarar **confidence score numérico** (0.00–1.00) **e nível de routing** (`rule-based|semantic|llm-based`) — não apenas `alta|média|baixa`.
 - Toda decisão operacional deve seguir menor privilégio de tools.
 - Todo agent deve preservar rastreabilidade (rota, evidências e próximo passo mínimo).
+- Todo agent pode declarar `version:` no frontmatter para rastrear mudanças de comportamento.
+- Nova rota de roteamento → atualizar `docs/ai-context/routing-graph.yaml` **antes** de editar a Decision Tree (R-040).
 
 ## 9) Skills-base por função
 
@@ -97,4 +100,5 @@ Antes de tarefas não triviais, anexar ao contexto:
 | Pesquisa | `agent-contracts`, `handoff-governance`, `tavily` |
 | Curadoria/governança | `agent-contracts`, `agent-safety-guardrails`, `agent-evals-lab` |
 | Operação com métricas | `agent-observability-otel` |
+| Agents com memória adaptativa | `agent-memory-policy` (Tier 3 — experimental) |
 

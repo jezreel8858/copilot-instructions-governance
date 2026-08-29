@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "domain": "governanca-ai-generica",
-  "generated_at": "2026-07-30T00:00:00Z",
+  "generated_at": "2026-08-29T00:00:00Z",
   "summary": {
-    "total_skills": 26
+    "total_skills": 29
   },
   "skills": [
     {
@@ -374,12 +374,26 @@
         "@refactor-planner",
         "@business-rules-extractor"
       ]
+    },
+    {
+      "name": "agent-memory-policy",
+      "tier": 3,
+      "category": "governance",
+      "path": ".github/skills/agent-memory-policy/SKILL.md",
+      "description": "Política de memória long-term para agents de IA: tipos episódico, semântico e procedimental. Foco em memória procedimental (agents auto-adaptativos) com guardrails de segurança e aprovação humana obrigatória (R-027).",
+      "tools": ["context-mode"],
+      "related_agents": [
+        "@agent-factory",
+        "@agent-router",
+        "@docs-curator",
+        "@context-builder"
+      ]
     }
   ],
   "metadata": {
     "total_agents": 17,
     "total_skills": 29,
-    "last_updated": "2026-08-27T00:00:00Z",
-    "changelog": "2026-08-27 — Adicionadas skills integration-contract-analysis (tier 2, governance) e dependency-graph-mapping (tier 2, process); agent analysis-integration-architect revisado com padrão agent-factory"
+    "last_updated": "2026-08-29T00:00:00Z",
+    "changelog": "2026-08-29 — Adicionada skill agent-memory-policy (tier 3, governance): política de memória episódica/semântica/procedimental para agents auto-adaptativos. 2026-08-27 — Adicionadas skills integration-contract-analysis (tier 2, governance) e dependency-graph-mapping (tier 2, process); agent analysis-integration-architect revisado com padrão agent-factory"
   }
 }

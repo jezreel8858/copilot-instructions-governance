@@ -1,5 +1,6 @@
 ---
 name: agent-router
+version: "1.1.0"
 description: >-
   Entry point obrigatório agent-first para classificar solicitações e delegar ao
   agent downstream correto, com fallback para pesquisa e análise de integração.
@@ -30,12 +31,14 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais + IDs normativos (R-001..R-037)
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais locais
 - [`catalog.yaml`](catalog.yaml) — catálogo estruturado de agents (verdade para roteamento)
+- [`../../docs/ai-context/routing-graph.yaml`](../../docs/ai-context/routing-graph.yaml) — **grafo declarado de roteamento** (fonte de verdade estrutural — nós, arestas, condições e política de cascata); a Decision Tree abaixo é documentação derivada deste arquivo
 
 **Referências por Tipo de Delegação:**
 
 | Item | Caminho/Uso | Observação |
 |---|---|---|
 | Catálogo textual | [`README.md`](README.md) | Fonte de referência para roteamento humano |
+| Grafo de roteamento | [`../../docs/ai-context/routing-graph.yaml`](../../docs/ai-context/routing-graph.yaml) | Fonte estrutural — nós, arestas, thresholds e cascata |
 | Router de pesquisa | [`research-router.agent.md`](research-router.agent.md) | Fallback para pesquisa e incerteza externa |
 | Arquiteto de análise | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Fallback para análise de integração ampla |
 | Factory de agents | [`agent-factory.agent.md`](agent-factory.agent.md) | Governança de criação/revisão de agents |
@@ -98,13 +101,13 @@ Pedido recebido?
 
 ## Padrões Obrigatórios
 
-1. Frontmatter com `name`, `description`, `tools`.
+1. Frontmatter com `name`, `version`, `description`, `tools`.
 2. Nome de arquivo no formato `agent-router.agent.md`.
 3. Bloco **CRÍTICO** com itens `❌` e `✅`.
 4. Seção **Regras Herdadas** apontando para `CLAUDE.md` e `copilot-instructions.md`.
 5. Delegação explícita para agents downstream + fallback para `research-router` e `analysis-architect`.
 6. Decisão sempre explícita em formato estruturado.
-7. Confiança da rota declarada (`alta|média|baixa`).
+7. Confiança declarada com **score numérico** (0.00–1.00) e nível de routing usado.
 8. Handoff com payload mínimo (contexto, evidências e lacunas).
 
 ## Formato de Saída
@@ -114,6 +117,8 @@ Rota: <bug_fix|test_strategy|refactor|impact_analysis|documentation|research_fal
 Delegado: <@agent>
 Motivo: <1 frase objetiva>
 Confiança: <alta|média|baixa>
+Confidence Score: <0.00–1.00>
+Nível de Routing: <rule-based|semantic|llm-based|escalonamento>
 Entradas consideradas:
 - <item>
 - <item>
