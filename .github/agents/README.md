@@ -32,6 +32,7 @@
 | Agent | `skill-factory` | ⭐ ***(NEW)*** Criar/revisar skills customizadas com padrão SKILL.md e `.index.json` atômico |
 | Agent | `prompt-factory` | 📝 ***(NEW)*** Criar/revisar `.prompt.md` seguindo padrão canônico Copilot 2026: frontmatter correto, body estruturado e README atualizado |
 | Agent | `business-rules-extractor` | 📋 ***(NEW)*** Extrair regras de negócio de código e documentar em `.md`; validar refatorações contra regras documentadas |
+| Agent | `angular` | 🅰️ Especialista Angular **enterprise** para análise/recomendação (arquitetura moderna, RxJS+Signals, performance CWV/SSR, segurança, acessibilidade, testes e upgrades), carregando skills de componentização, patterns Angular e contratos de API de componentes para design system, sem implementação direta |
 
 ## 3) Roteamento Rápido
 
@@ -54,6 +55,7 @@
 | ⭐ Criar/revisar skill customizada | `skill-factory` |
 | 📝 Criar/revisar prompt `.prompt.md` | `prompt-factory` |
 | 📋 Extrair/documentar/validar regras de negócio | `business-rules-extractor` |
+| 🅰️ Análise e recomendação Angular | `angular` |
 
 ## 4) Pre-fetch Recomendado
 
@@ -102,4 +104,3 @@ Antes de tarefas não triviais, anexar ao contexto:
 | Curadoria/governança | `agent-contracts`, `agent-safety-guardrails`, `agent-evals-lab` |
 | Operação com métricas | `agent-observability-otel` |
 | Agents com memória adaptativa | `agent-memory-policy` (Tier 3 — experimental) |
-

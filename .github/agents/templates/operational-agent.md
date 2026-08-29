@@ -88,6 +88,6 @@ Próximo passo mínimo:
 
 ## Combina Com (Commands)
 
-- `/plano`
-- `/implementar`
-- `/validar`
+- `/plan`
+- `/implement`
+- `/validate`

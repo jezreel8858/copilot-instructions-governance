@@ -152,6 +152,6 @@ Resposta:
 
 | Command | Uso |
 |---|---|
-| `/plano` | Estruturar abordagem antes de decidir rota |
-| `/validar` | Revisar se a triagem respeitou o catálogo real |
-| `/pesquisar` | Entry point padrão para acionar investigação |
+| `/plan` | Estruturar abordagem antes de decidir rota |
+| `/validate` | Revisar se a triagem respeitou o catálogo real |
+| `/research` | Entry point padrão para acionar investigação |

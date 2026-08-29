@@ -143,6 +143,6 @@ Posso seguir com [ação proposta]?
 ## Combina Com
 
 - `/ctx-checkpoint` → cria o checkpoint que este retoma
-- `/plano` → use após retomar para planejar próximo passo
-- `/implementar` → use após retomar para continuar implementação
+- `/plan` → use após retomar para planejar próximo passo
+- `/implement` → use após retomar para continuar implementação
 

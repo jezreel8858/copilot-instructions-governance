@@ -149,7 +149,7 @@ Documento gerado:
 
 ## Combina Com (Commands)
 
-- `/pesquisar` -> levantar artefatos e evidências mínimas.
-- `/plano` -> estruturar escopo, projetos e dependências.
-- `/validar` -> checar completude e rastreabilidade do contexto.
-- `/implementar` -> entregar o contexto consolidado para o agent executor.
+- `/research` -> levantar artefatos e evidências mínimas.
+- `/plan` -> estruturar escopo, projetos e dependências.
+- `/validate` -> checar completude e rastreabilidade do contexto.
+- `/implement` -> entregar o contexto consolidado para o agent executor.

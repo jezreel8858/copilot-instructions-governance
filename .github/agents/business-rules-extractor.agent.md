@@ -305,9 +305,9 @@ Próximo passo mínimo:
 
 ## Combina Com (Commands)
 
-- `/implementar` → executar extração ou validação após plano definido.
-- `/validar` → verificar relatório de validação com dev.
-- `/plano` → mapear escopo de extração antes de iniciar em projeto grande.
+- `/implement` → executar extração ou validação após plano definido.
+- `/validate` → verificar relatório de validação com dev.
+- `/plan` → mapear escopo de extração antes de iniciar em projeto grande.
 
 ## Skills Associadas
 

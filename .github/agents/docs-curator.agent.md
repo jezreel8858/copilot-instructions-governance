@@ -105,4 +105,4 @@ Próximo passo mínimo:
 ## Combina Com (Commands)
 
 - `/documentar-regras` -> consolidar documentação.
-- `/validar` -> checar consistência final.
+- `/validate` -> checar consistência final.

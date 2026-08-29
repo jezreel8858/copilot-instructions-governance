@@ -175,6 +175,6 @@ Próximo passo mínimo:
 
 ## Combina Com (Commands)
 
-- `/plano` -> classificar intenção e decidir rota.
-- `/implementar` -> acionar downstream correto.
-- `/validar` -> confirmar consistência do roteamento.
+- `/plan` -> classificar intenção e decidir rota.
+- `/implement` -> acionar downstream correto.
+- `/validate` -> confirmar consistência do roteamento.

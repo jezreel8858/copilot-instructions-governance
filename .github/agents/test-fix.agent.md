@@ -315,9 +315,9 @@ Próximo passo mínimo:
 
 ## Combina Com (Commands)
 
-- `/implementar` → executar correções em sequência após plano definido.
-- `/validar` → verificar que os lotes passam em isolamento.
-- `/plano` → mapear escopo antes de iniciar correções em lote.
+- `/implement` → executar correções em sequência após plano definido.
+- `/validate` → verificar que os lotes passam em isolamento.
+- `/plan` → mapear escopo antes de iniciar correções em lote.
 
 ## Skills Associadas
 

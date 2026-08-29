@@ -31,7 +31,7 @@ O arquivo `context-mode.json` declara cada evento em **duas variantes de capital
 Se o hook não estiver disponível:
 
 1. Registrar no resultado que o fallback foi usado.
-2. Prosseguir com workflow por prompts (`/plano`, `/implementar`, `/validar`, `/pesquisar`).
+2. Prosseguir com workflow por prompts (`/plan`, `/implement`, `/validate`, `/research`).
 3. Priorizar `ctx_*` quando o MCP estiver acessível novamente.
 
 ## Integração

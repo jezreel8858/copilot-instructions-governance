@@ -222,9 +222,9 @@ Próximo passo: testar invocando /<nome> no Copilot Chat
 
 ## Combina Com
 
-- `/plano` → definir escopo e lista de prompts a criar.
-- `/implementar` → materializar os `.prompt.md` conforme plano.
-- `/validar` → auditar conformidade de todos os prompts após criação.
+- `/plan` → definir escopo e lista de prompts a criar.
+- `/implement` → materializar os `.prompt.md` conforme plano.
+- `/validate` → auditar conformidade de todos os prompts após criação.
 - `agent-factory` → quando o mesmo workflow também precisa de agent.
 
 ## Referências de Boas Práticas

@@ -278,7 +278,7 @@ python tools/binding-scaffolder/binding_scaffolder.py generate projeto ./novo_pr
 🎉 Artefato gerado com sucesso!
 ```
 
-**Output Fase 3**: Projeto registrado em catalog.yaml + adapters em .github/instructions/ → pronto para `/pesquisar`, `/plano`
+**Output Fase 3**: Projeto registrado em catalog.yaml + adapters em .github/instructions/ → pronto para `/research`, `/plan`
 
 ---
 
@@ -321,16 +321,16 @@ python tools/binding-scaffolder/binding_scaffolder.py generate projeto ./novo_pr
 ├─ Validação pós: ✅ YAML válido, entrada presente em catalog
 └─ Resultado: 🎉 Artefato gerado com sucesso!
 
-🚀 Projeto adicionado! Agora pronto para: /pesquisar, /plano, /implementar
+🚀 Projeto adicionado! Agora pronto para: /research, /plan, /implement
 ```
 
 ---
 
 ## 🔄 Quando Usar
 
-- **Início de tarefa em projeto novo** ← Use ANTES de `/pesquisar`
+- **Início de tarefa em projeto novo** ← Use ANTES de `/research`
 - **Mudança de contexto entre projetos** ← Use quando trocar de repo
-- **Preparação para refatoração** ← Use ANTES de `/plano`
+- **Preparação para refatoração** ← Use ANTES de `/plan`
 - **Validação de padrões** ← Use quando não tem certeza de convenção
 
 ---
@@ -406,16 +406,16 @@ Após invocar `/add-project-context D:\workspace\porto\[meu-projeto]`, verifique
 
 Após `/add-project-context` completar com sucesso:
 
-- **`/pesquisar <tema>`** — explorar padrões específicos com contexto já estruturado
-- **`/plano`** — planejar mudanças com knowledge base do projeto pronto
-- **`/implementar`** — executar com `/ctx-checkpoint` para continuidade
-- **`/validar`** — validar qualidade do projeto
+- **`/research <tema>`** — explorar padrões específicos com contexto já estruturado
+- **`/plan`** — planejar mudanças com knowledge base do projeto pronto
+- **`/implement`** — executar com `/ctx-checkpoint` para continuidade
+- **`/validate`** — validar qualidade do projeto
 
 Exemplo típico:
 ```bash
 /add-project-context meu-projeto-backend
-/pesquisar "como usar @EmbeddedId"
-/plano "refatorar Entity para usar EmbeddedId"
+/research "como usar @EmbeddedId"
+/plan "refatorar Entity para usar EmbeddedId"
 ```
 
 ---

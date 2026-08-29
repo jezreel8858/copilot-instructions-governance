@@ -129,9 +129,9 @@ Bloqueantes (se houver):
 
 ## Combina Com (Commands)
 
-- `/plano` → estruturar estratégia.
-- `/implementar` → executar suíte de teste.
-- `/validar` → revisar cobertura e padrões.
+- `/plan` → estruturar estratégia.
+- `/implement` → executar suíte de teste.
+- `/validate` → revisar cobertura e padrões.
 
 ## Anti-Padrões
 

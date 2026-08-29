@@ -54,6 +54,9 @@ Toda skill deve declarar no topo:
 | **`integration-contract-analysis`** | 🔗 **Tier 2** | Análise de contratos de integração (OpenAPI, AsyncAPI, gRPC, GraphQL): detecção de **breaking changes**, classificação BREAKING/COMPATIBLE/DEPRECIAÇÃO, consumidores afetados |
 | **`dependency-graph-mapping`** | 🔗 **Tier 2** | Mapeamento de grafo de dependências cross-sistema: fluxo origem→transformação→destino, acoplamento tight/loose/eventual, blast radius e dependências circulares |
 | **`agent-memory-policy`** | 🧠 **Tier 3** | Política de memória long-term para agents: tipos episódico, semântico e procedimental. Foco em memória procedimental (agents auto-adaptativos) com guardrails e aprovação humana obrigatória |
+| **`frontend-componentization-patterns`** | 🧩 **Tier 2** | Padrões genéricos de componentização frontend (responsabilidade única, composição, contrato de componente, fronteiras de estado) |
+| **`angular-frontend-patterns`** | 🅰️ **Tier 2** | Boas práticas/patterns de codificação Angular (standalone, template/binding, Signals+RxJS, segurança e consistência) |
+| **`design-system-component-contracts`** | 🧱 **Tier 2** | Governança de contratos de componente para design system: tokens, variantes/estados, Inputs/Outputs, semver, depreciação, breaking change e acessibilidade |
 
 ## 4) Instructions associadas
 

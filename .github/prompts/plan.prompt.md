@@ -22,7 +22,7 @@ Vou ajudar a criar um plano de implementação detalhado. Para começar:
 1. Descrição da task/ticket (ou referência a arquivo)
 2. Contexto, restrições ou requisitos específicos
 
-Dica: `/plano <descrição ou caminho do arquivo>` para começar direto.
+Dica: `/plan <descrição ou caminho do arquivo>` para começar direto.
 ```
 
 ## Processo

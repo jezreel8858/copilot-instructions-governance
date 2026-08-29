@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "domain": "governanca-ai-generica",
-  "generated_at": "2026-08-29T00:00:00Z",
+  "generated_at": "2026-08-29T06:10:00Z",
   "summary": {
-    "total_skills": 29
+    "total_skills": 32
   },
   "skills": [
     {
@@ -388,12 +388,50 @@
         "@docs-curator",
         "@context-builder"
       ]
+    },
+    {
+      "name": "frontend-componentization-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Padrões genéricos de componentização frontend para reduzir acoplamento, aumentar reutilização e melhorar manutenibilidade.",
+      "path": ".github/skills/frontend-componentization-patterns/SKILL.md",
+      "related_agents": [
+        "@angular",
+        "@analysis-architect",
+        "@impact-architect",
+        "@test-strategy"
+      ]
+    },
+    {
+      "name": "angular-frontend-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Boas práticas e patterns de codificação Angular para componentes, templates, reatividade, segurança e consistência arquitetural.",
+      "path": ".github/skills/angular-frontend-patterns/SKILL.md",
+      "related_agents": [
+        "@angular",
+        "@analysis-architect",
+        "@test-strategy"
+      ]
+    },
+    {
+      "name": "design-system-component-contracts",
+      "tier": 2,
+      "category": "governance",
+      "description": "Diretrizes enterprise para contratos de componentes (tokens, variantes/estados, inputs/outputs, compatibilidade, semver, depreciação, breaking change e acessibilidade).",
+      "path": ".github/skills/design-system-component-contracts/SKILL.md",
+      "related_agents": [
+        "@angular",
+        "@analysis-architect",
+        "@impact-architect",
+        "@test-strategy"
+      ]
     }
   ],
   "metadata": {
-    "total_agents": 17,
-    "total_skills": 29,
-    "last_updated": "2026-08-29T00:00:00Z",
-    "changelog": "2026-08-29 — Adicionada skill agent-memory-policy (tier 3, governance): política de memória episódica/semântica/procedimental para agents auto-adaptativos. 2026-08-27 — Adicionadas skills integration-contract-analysis (tier 2, governance) e dependency-graph-mapping (tier 2, process); agent analysis-integration-architect revisado com padrão agent-factory"
+    "total_agents": 18,
+    "total_skills": 32,
+    "last_updated": "2026-08-29T06:10:00Z",
+    "changelog": "2026-08-29 — Adicionada a skill design-system-component-contracts (tier 2, governance) para contratos de componentes em design systems; integração no agent angular e sincronização de catálogos (R-015, R-038)."
   }
 }

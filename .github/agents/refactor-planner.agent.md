@@ -106,5 +106,5 @@ Próximo passo:
 
 ## Combina Com (Commands)
 
-- `/plano` -> decompor etapas.
-- `/validar` -> revisar riscos e rollback.
+- `/plan` -> decompor etapas.
+- `/validate` -> revisar riscos e rollback.

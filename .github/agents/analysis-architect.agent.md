@@ -189,7 +189,7 @@ Próximo passo mínimo:
 
 ## Combina Com (Commands)
 
-- `/pesquisar` → levantamento inicial de artefatos via context-mode.
-- `/plano` → estruturar as fases da análise de impacto, risco ou dependência.
-- `/validar` → checar se todas as dependências e riscos foram mapeados.
+- `/research` → levantamento inicial de artefatos via context-mode.
+- `/plan` → estruturar as fases da análise de impacto, risco ou dependência.
+- `/validate` → checar se todas as dependências e riscos foram mapeados.
 - `/documentar` → persistir análise em `docs/context/` via `@context-builder`.

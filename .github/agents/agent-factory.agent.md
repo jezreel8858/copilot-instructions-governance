@@ -117,7 +117,7 @@ Validações:
 
 ## Combina Com (Commands)
 
-- `/plano` -> definir escopo e contrato do novo agent.
-- `/implementar` -> materializar `<name>.agent.md` e atualizar catálogo.
-- `/validar` -> checar aderência estrutural e consistência com catálogo.
+- `/plan` -> definir escopo e contrato do novo agent.
+- `/implement` -> materializar `<name>.agent.md` e atualizar catálogo.
+- `/validate` -> checar aderência estrutural e consistência com catálogo.
 - `/documentar-regras` -> consolidar mudanças no `README.md`.

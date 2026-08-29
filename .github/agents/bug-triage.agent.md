@@ -350,6 +350,6 @@ C) PARCIALMENTE — Preciso de mais informações
 
 ## Combina Com (Commands)
 
-- `/plano` → estruturar triagem.
-- `/validar` → revisar evidências e severidade.
-- `/implementar` → após aprovação do plano de ação.
+- `/plan` → estruturar triagem.
+- `/validate` → revisar evidências e severidade.
+- `/implement` → após aprovação do plano de ação.

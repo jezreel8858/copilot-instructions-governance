@@ -592,11 +592,6 @@ agents:
       - ".github/prompts/templates/prompt-template.md"
     estimated_time_minutes: 20
 
-metadata:
-  total_agents: 17
-  last_updated: "2026-08-29T12:00:00Z"
-  changelog: "2026-08-29 — analysis-integration-architect absorvido pelo analysis-architect v2.0.0 (unificacao para eliminar redundancia). Total: 18→17."
-
   business-rules-extractor:
     id: "business-rules-extractor"
     priority: 5
@@ -637,3 +632,56 @@ metadata:
       - ".github/skills/business-rules-governance/SKILL.md"
       - ".github/skills/code-tracing/SKILL.md"
     estimated_time_minutes: 60
+
+  angular:
+    id: "angular"
+    priority: 8.6
+    domain: "Analise e recomendacao tecnica Angular"
+    description: "Especialista Angular enterprise para análise e recomendação técnica (arquitetura moderna, RxJS+Signals, performance CWV/SSR/hydration, segurança OWASP, acessibilidade WCAG, estratégia de testes e upgrade/migração), sem implementar código."
+    keywords:
+      - "angular"
+      - "standalone"
+      - "dependency injection"
+      - "signals"
+      - "rxjs"
+      - "core web vitals"
+      - "ssr"
+      - "hydration"
+      - "security"
+      - "owasp"
+      - "wcag"
+      - "upgrade angular"
+      - "deprecations"
+      - "analise angular"
+      - "recomendacao tecnica"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_skills:
+      - "context-mode"
+      - "tavily"
+      - "agent-contracts"
+      - "handoff-governance"
+      - "confidence-fallback-policy"
+      - "agent-evals-lab"
+      - "code-tracing"
+      - "frontend-componentization-patterns"
+      - "angular-frontend-patterns"
+      - "design-system-component-contracts"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/angular.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/frontend-componentization-patterns/SKILL.md"
+      - ".github/skills/angular-frontend-patterns/SKILL.md"
+      - ".github/skills/design-system-component-contracts/SKILL.md"
+    estimated_time_minutes: 30
+
+metadata:
+  total_agents: 18
+  last_updated: "2026-08-29T06:10:00Z"
+  changelog: "2026-08-29 — Skill design-system-component-contracts integrada ao agent angular (related_skills + source_docs); catálogos de agents/skills sincronizados em atualização atômica (R-015, R-038)."
