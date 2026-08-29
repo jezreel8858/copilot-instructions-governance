@@ -7,7 +7,7 @@ description: >-
   body canônica, separação de responsabilidade com .instructions.md, nomenclatura
   kebab-case e atualização atômica do README de prompts (R-015).
 model: "claude-haiku-4.5"
-tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'ask_questions']
+tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'ask_questions', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 
 # Prompt Factory
