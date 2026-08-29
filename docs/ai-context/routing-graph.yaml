@@ -51,7 +51,7 @@ nos:
 
   - id: analysis-architect
     tipo: fallback
-    descricao: "Análise técnica cross-projeto — fallback secundário"
+    descricao: "Análise técnica cross-projeto e integrações cross-sistema (v2.0.0 — unificado com analysis-integration-architect)"
 
   - id: agent-factory
     tipo: downstream
@@ -72,10 +72,6 @@ nos:
   - id: context-builder
     tipo: downstream
     descricao: "Coleta e consolidação de contexto técnico"
-
-  - id: analysis-integration-architect
-    tipo: downstream
-    descricao: "Análise de integrações cross-sistema (contratos, breaking changes)"
 
 # ─────────────────────────────────────────────
 # ARESTAS — condições de roteamento
@@ -246,9 +242,9 @@ arestas:
         - "nova skill"
         - "revisar skill"
 
-  # Análise de integração cross-sistema
+  # Análise de integração cross-sistema + análise técnica geral (unificado em analysis-architect v2.0.0)
   - de: agent-router
-    para: analysis-integration-architect
+    para: analysis-architect
     prioridade: 7
     threshold_score: 0.85
     nivel_routing: rule-based
@@ -261,6 +257,8 @@ arestas:
         - "asyncapi"
         - "grpc"
         - "blast radius"
+        - "fluxo de dados cross-sistema"
+        - "acoplamento entre serviços"
 
   # Pesquisa externa — fallback primário
   - de: agent-router
@@ -272,15 +270,15 @@ arestas:
       sinal: "Dúvida técnica, pesquisa externa, benchmark de mercado"
       gatilho: "Intenção clara mas requer informação externa ao repositório"
 
-  # Análise cross-projeto — fallback secundário
+  # Análise técnica genérica e cross-projeto — fallback secundário amplo
   - de: agent-router
     para: analysis-architect
     prioridade: 9
     threshold_score: 0.70
     nivel_routing: semantic
     condicoes:
-      sinal: "Análise cross-projeto profunda, contratos, fluxos multi-sistema"
-      gatilho: "Escopo que envolve múltiplos projetos ou múltiplas integrações"
+      sinal: "Análise técnica genérica, impacto, requisitos, fluxos ou qualquer análise cross-sistema"
+      gatilho: "Escopo que envolve análise de impacto, contratos, dependências ou integrações"
 
 # ─────────────────────────────────────────────
 # POLÍTICA DE CASCATA

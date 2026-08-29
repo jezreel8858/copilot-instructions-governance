@@ -327,42 +327,18 @@ agents:
   analysis-architect:
     id: "analysis-architect"
     priority: 8
-    domain: "Analise tecnica multi-projeto"
-    description: "Arquiteto de analise tecnica para ecossistemas de software"
+    version: "2.0.0"
+    domain: "Analise tecnica multi-projeto e integracoes cross-sistema"
+    description: >-
+      Arquiteto de analise tecnica unificado: impactos, riscos, dependencias,
+      contratos e integracoes cross-sistema (OpenAPI, AsyncAPI, gRPC, GraphQL).
+      Metodologia B1/B2/B3 com classificacao BREAKING | COMPATIBLE | DEPRECACAO.
     keywords:
-      - "analise integracao"
+      - "analise tecnica"
       - "impacto"
       - "fluxo ponta a ponta"
       - "ecossistema"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/skills/README.md"
-    related_skills:
-      - "context-mode"
-      - "tavily"
-      - "agent-contracts"
-      - "handoff-governance"
-      - "agent-evals-lab"
-      - "agent-observability-otel"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/instructions/README.md"
-      - ".github/skills/README.md"
-    estimated_time_minutes: 45
-
-  analysis-integration-architect:
-    id: "analysis-integration-architect"
-    priority: 8.5
-    domain: "Analise de integracoes cross-sistema"
-    description: >-
-      Arquiteto senior de analise de integracoes: contrato (OpenAPI, AsyncAPI, gRPC, GraphQL),
-      fluxo de dados, grafo de dependencias, deteccao de breaking changes e classificacao de risco.
-    keywords:
-      - "integracao"
+      - "integracao cross-sistema"
       - "contrato"
       - "breaking change"
       - "openapi"
@@ -376,31 +352,29 @@ agents:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-    related_agents:
-      - "agent-router"
-      - "impact-architect"
-      - "business-rules-extractor"
-      - "refactor-planner"
-      - "research-router"
-      - "docs-curator"
+      - ".github/skills/README.md"
     related_skills:
-      - "integration-contract-analysis"
-      - "dependency-graph-mapping"
       - "context-mode"
       - "tavily"
-      - "mermaid-diagrams"
-      - "code-tracing"
       - "agent-contracts"
       - "handoff-governance"
+      - "agent-evals-lab"
+      - "agent-observability-otel"
+      - "integration-contract-analysis"
+      - "dependency-graph-mapping"
+      - "mermaid-diagrams"
+      - "code-tracing"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
-      - ".github/agents/analysis-integration-architect.agent.md"
+      - ".github/agents/analysis-architect.agent.md"
+      - ".github/agents/README.md"
+      - ".github/instructions/README.md"
+      - ".github/skills/README.md"
       - ".github/skills/integration-contract-analysis/SKILL.md"
       - ".github/skills/dependency-graph-mapping/SKILL.md"
       - ".github/skills/mermaid-diagrams/SKILL.md"
-    estimated_time_minutes: 40
+    estimated_time_minutes: 45
 
   agent-factory:
     id: "agent-factory"
@@ -619,8 +593,9 @@ agents:
     estimated_time_minutes: 20
 
 metadata:
-  total_agents: 18
-  last_updated: "2026-08-29T00:00:00Z"
+  total_agents: 17
+  last_updated: "2026-08-29T12:00:00Z"
+  changelog: "2026-08-29 — analysis-integration-architect absorvido pelo analysis-architect v2.0.0 (unificacao para eliminar redundancia). Total: 18→17."
 
   business-rules-extractor:
     id: "business-rules-extractor"

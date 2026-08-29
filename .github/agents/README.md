@@ -24,8 +24,7 @@
 | Agent | `impact-architect` | Análise de impacto técnico local, dependências e mitigação |
 | Agent | `docs-curator` | Curadoria e padronização de documentação/catálogo |
 | Agent | `research-router` | Triagem de pesquisa e fallback para investigação externa |
-| Agent | `analysis-architect` | Análise cross-sistema de integração e impacto amplo |
-| Agent | `analysis-integration-architect` | 🔗 ***(NEW)*** Análise de integrações cross-sistema: contratos (OpenAPI/AsyncAPI/gRPC/GraphQL), breaking changes, grafo de dependências e blast radius |
+| Agent | `analysis-architect` | Análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL) com metodologia B1/B2/B3 |
 | Agent | `agent-factory` | Criação/revisão estrutural de agents e governança |
 | Agent | `context-builder` | Coletar, condensar e persistir contexto técnico em `docs/context/` |
 | Agent | `binding-initializer` | ⚡ ***(NEW)*** Criar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — Health Check R-034) |
@@ -47,7 +46,7 @@
 | Impacto técnico local | `impact-architect` |
 | Curadoria de documentação | `docs-curator` |
 | Pesquisa externa/triagem de pesquisa | `research-router` |
-| Integração cross-sistema | `analysis-architect` |
+| Análise técnica, impacto, contratos, integrações cross-sistema | `analysis-architect` |
 | Criação/revisão de agents | `agent-factory` |
 | Consolidação de contexto para execução posterior | `context-builder` |
 | ⚡ Binding context faltando (Health Check) | `binding-initializer` |

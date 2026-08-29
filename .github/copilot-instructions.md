@@ -310,7 +310,7 @@ Escolha uma ação:
 - `impact-architect` -> análise de impacto técnico.
 - `docs-curator` -> curadoria de documentação de governança.
 - `research-router` -> triagem e roteamento de pesquisa.
-- `analysis-architect` -> análise técnica cross-projeto.
+- `analysis-architect` -> análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL); metodologia B1/B2/B3.
 - `agent-factory` -> criar/revisar agents customizados com padrão estrutural.
 - `binding-initializer` -> ⚡ inicializar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — R-034)
 - `adapter-generator` -> ⚡ gerar automaticamente adapters em `.github/instructions/` via `/add-project-context`
