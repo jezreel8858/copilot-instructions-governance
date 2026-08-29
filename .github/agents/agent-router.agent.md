@@ -1,6 +1,6 @@
 ---
 name: agent-router
-version: "1.3.0"
+version: "1.4.0"
 description: >-
   Entry point obrigatório agent-first para classificar solicitações e delegar ao
   agent downstream correto, com fallback para pesquisa e análise de integração.
@@ -85,6 +85,9 @@ Pedido recebido (já refinado por @prompt-structuring)?
 |  \- Não
 |- É revisão de código antes do merge (preventiva, nada quebrou ainda)?
 |  |- Sim -> @code-review
+|  \- Não
+|- É elicitação de requisito NOVO a partir de pedido ambíguo (ainda sem análise técnica)?
+|  |- Sim -> @requirements-analyst
 |  \- Não
 |- É estratégia/plano de testes?
 |  |- Sim -> @test-strategy
@@ -183,6 +186,7 @@ Próximo passo mínimo:
 - `@prompt-structuring` (`prompt-structuring.agent.md`) **SEMPRE, antes de qualquer classificação** (R-041) — exceto quando a solicitação já retornou refinada por ele.
 - `@bug-triage` (`bug-triage.agent.md`) para erro, bug e regressão.
 - `@code-review` (`code-review.agent.md`) para revisão de código (diff/PR) antes do merge, por severidade.
+- `@requirements-analyst` (`requirements-analyst.agent.md`) para elicitação e estruturação de requisitos a partir de pedido de negócio ambíguo (não confundir com `@business-rules-extractor`, que é reverso — código existente → regra).
 - `@test-strategy` (`test-strategy.agent.md`) para estratégia/plano de testes.
 - `@test-fix` (`test-fix.agent.md`) para correção de testes quebrados com relatório de falhas.
 - `@business-rules-extractor` (`business-rules-extractor.agent.md`) para extração de regras de negócio e validação de refatorações.

@@ -64,6 +64,7 @@ Toda skill deve declarar no topo:
 | **`java-jdk-backend-governance`** | ☕ **Tier 1** | Governança de versões Java/JDK backend (LTS, compatibilidade, segurança, performance e trilha de migração) |
 | **`documentation-writing-patterns`** | 📝 **Tier 2** | Diretrizes agnósticas de domínio para escrever documentação técnica em `.md` (Diátaxis, ADR/MADR, README, formatação chunking-friendly para IA) — base do agent `docs-writer` |
 | **`code-review-patterns`** | 🔎 **Tier 2** | Diretrizes de mercado para revisão de código por IA — severidade (bloqueador/alta/sugestão), dimensões (correção/segurança/convenções/impacto/testes/performance), critérios de bloqueio de merge — base do agent `code-review` |
+| **`requirements-engineering-patterns`** | 🧾 **Tier 2** | Engenharia de Requisitos (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+) para elicitar e estruturar requisitos a partir de pedido ambíguo, com detecção de *solution-jumping* (Five Whys) — base do agent `requirements-analyst` |
 
 ## 4) Instructions associadas
 

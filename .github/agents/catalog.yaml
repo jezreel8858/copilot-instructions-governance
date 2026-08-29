@@ -881,8 +881,46 @@ agents:
       - "docs/ai-context/catalog.yaml"
     estimated_time_minutes: 20
 
+  requirements-analyst:
+    id: "requirements-analyst"
+    priority: 4.8
+    domain: "Elicitacao e estruturacao de requisitos (prospectivo, pre-tecnico)"
+    description: "Elicita e estrutura requisitos funcionais/nao-funcionais a partir de pedido de negocio ambiguo, aplicando EARS/INVEST/Gherkin/FURPS+; detecta solution-jumping via Five Whys; nunca decide arquitetura; nunca extrai regra de codigo existente (isso e escopo de business-rules-extractor)."
+    keywords:
+      - "levantar requisitos"
+      - "requisito ambiguo"
+      - "elicitacao de requisitos"
+      - "user story"
+      - "criterio de aceite"
+      - "requisito funcional"
+      - "requisito nao funcional"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "impact-architect"
+      - "analysis-architect"
+      - "refactor-planner"
+      - "business-rules-extractor"
+      - "test-strategy"
+    related_skills:
+      - "requirements-engineering-patterns"
+      - "agent-contracts"
+      - "context-mode"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/requirements-analyst.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/requirements-engineering-patterns/SKILL.md"
+      - "docs/ai-context/catalog.yaml"
+    estimated_time_minutes: 25
+
 metadata:
-  total_agents: 23
-  last_updated: "2026-08-29T12:00:00Z"
-  changelog: "2026-08-29 (3) — Criado agent code-review (perfil Analista/Read-only): revisao de diff/PR por 6 dimensoes (correcao/seguranca/convencoes/impacto/testes/performance), taxonomia de severidade bloqueador/alta/sugestao, nunca corrige, delega para bug-triage/impact-architect/test-strategy/refactor-planner. Skill code-review-patterns criada (Google Eng Practices, OWASP, taxonomia de mercado CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040). | 2026-08-29 (2) — Criado agent docs-writer (perfil documentador, Operacional): gera documentacao tecnica agnostica de dominio em .md, com base na skill nova documentation-writing-patterns (Diataxis, MADR, standard-readme, llms.txt, anti-alucinacao), pesquisada via research-router/tavily. Registrado em catalog.yaml, README.md, skills/.index.json e skills/README.md (R-015)."
+  total_agents: 24
+  last_updated: "2026-08-29T13:00:00Z"
+  changelog: "2026-08-29 (4) — Criado agent requirements-analyst (perfil Operacional, prospectivo): elicita e estrutura requisitos funcionais/nao-funcionais a partir de pedido de negocio ambiguo, aplicando ISO/IEC/IEEE 29148, notacao EARS, INVEST, Gherkin/BDD e FURPS+; detecta solution-jumping via tecnica Five Whys; nunca decide arquitetura (handoff para impact-architect/analysis-architect/refactor-planner); nunca extrai regra de codigo existente (nao confundir com business-rules-extractor, que e reverso). Skill requirements-engineering-patterns criada (pesquisa de mercado). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review (perfil Analista/Read-only): revisao de diff/PR por 6 dimensoes (correcao/seguranca/convencoes/impacto/testes/performance), taxonomia de severidade bloqueador/alta/sugestao, nunca corrige, delega para bug-triage/impact-architect/test-strategy/refactor-planner. Skill code-review-patterns criada (Google Eng Practices, OWASP, taxonomia de mercado CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040). | 2026-08-29 (2) — Criado agent docs-writer (perfil documentador, Operacional): gera documentacao tecnica agnostica de dominio em .md, com base na skill nova documentation-writing-patterns (Diataxis, MADR, standard-readme, llms.txt, anti-alucinacao), pesquisada via research-router/tavily. Registrado em catalog.yaml, README.md, skills/.index.json e skills/README.md (R-015)."
 

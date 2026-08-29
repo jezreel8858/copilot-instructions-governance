@@ -533,12 +533,24 @@
         "@bug-triage",
         "@impact-architect"
       ]
+    },
+    {
+      "name": "requirements-engineering-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Diretrizes de Engenharia de Requisitos (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+) para elicitar e estruturar requisitos funcionais/não-funcionais a partir de pedidos de negócio ambíguos, com detecção de solution-jumping via Five Whys.",
+      "path": ".github/skills/requirements-engineering-patterns/SKILL.md",
+      "related_agents": [
+        "@requirements-analyst",
+        "@impact-architect",
+        "@analysis-architect"
+      ]
     }
   ],
   "metadata": {
-    "total_agents": 23,
-    "total_skills": 38,
-    "last_updated": "2026-08-29T12:00:00Z",
-    "changelog": "2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
+    "total_agents": 24,
+    "total_skills": 39,
+    "last_updated": "2026-08-29T13:00:00Z",
+    "changelog": "2026-08-29 (4) — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
   }
 }

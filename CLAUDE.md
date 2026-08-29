@@ -16,7 +16,7 @@ Em caso de conflito, siga esta ordem:
 3. User
 4. Arquivos locais deste repositório (`CLAUDE.md`, `.github/*`)
 
-## 3) Regras Normativas (R-001..R-040)
+## 3) Regras Normativas (R-001..R-041)
 
 - **R-001 (Escopo)**: altere apenas o que foi solicitado.
 - **R-002 (Mudança mínima)**: prefira alterações pequenas, reversíveis e rastreáveis.
@@ -116,10 +116,12 @@ Solicitação do Usuário
 
 ## 6) Catálogo Atual (estado verificado)
 
-### Agents (18 ativos)
-- `agent-router` v1.1.0 — entry point obrigatório; confidence score + nível de routing declarados no output; routing-graph.yaml como fonte estrutural (R-040)
+### Agents (24 ativos)
+- `agent-router` v1.4.0 — entry point obrigatório; confidence score + nível de routing declarados no output; routing-graph.yaml como fonte estrutural (R-040)
 - `prompt-structuring` — ⚠️ passo mandatório pós-`agent-router` (R-041); loop de refinamento de prompt limitado a 5 iterações; sempre retorna ao `agent-router`
 - `bug-triage`
+- `code-review` — revisão de código preventiva antes do merge, por severidade (read-only)
+- `requirements-analyst` — elicitação e estruturação de requisitos de negócio ambíguos (prospectivo)
 - `test-strategy`
 - `test-implementation` — implementar suítes de teste com cobertura objetiva
 - `test-fix` — corrigir testes quebrados a partir de relatório de falhas (somente testes identificados)
@@ -127,8 +129,8 @@ Solicitação do Usuário
 - `refactor-planner`
 - `impact-architect`
 - `docs-curator`
+- `docs-writer` — escrita/geração de documentação técnica nova em `.md`
 - `research-router`
-- `analysis-architect`
 - `analysis-architect` v2.0.0 — análise técnica unificada: impacto, riscos, dependências, contratos e integrações cross-sistema (absorveu `analysis-integration-architect`); metodologia B1/B2/B3 + BREAKING|COMPATIBLE|DEPRECIAÇÃO
 - `agent-factory`
 - `skill-factory` — criar/revisar skills com padrão SKILL.md e .index.json atômico

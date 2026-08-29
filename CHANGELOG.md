@@ -6,6 +6,24 @@ Formato: [Semantic Versioning](https://semver.org/) | [Conventional Commits](htt
 
 ---
 
+## [1.4.0] — 2026-08-29
+
+### Adicionado
+- **Agent `requirements-analyst`**: perfil de elicitação prospectiva para transformar pedido de negócio ambíguo em requisitos funcionais/não-funcionais estruturados e testáveis, com rastreabilidade da fonte; aplica mediação contra *solution-jumping* (Five Whys) antes de qualquer decisão técnica
+- **Skill `requirements-engineering-patterns`** (Tier 2): base de conhecimento consolidada via pesquisa de mercado (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, regra de singularidade INCOSE)
+- **`docs/ai-context/routing-graph.yaml`**: novo nó + aresta `agent-router → requirements-analyst` (R-040), com `nao_confundir_com` cruzado para evitar colisão com `business-rules-extractor` e `impact-architect`
+- **`docs/ai-context/evals/casos-roteamento.yaml`**: `canon-014` (roteamento correto para `requirements-analyst`), `regr-012` e `regr-013` (não-confusão `requirements-analyst` × `business-rules-extractor`) — suíte passa de 32 para 35 casos
+- **`agent-router.agent.md`**: nova ramificação na Decision Tree para elicitação de requisito novo; bump `version: 1.3.0 → 1.4.0`
+
+### Corrigido
+- **SYNC de catálogos (R-015/R-040)**: atualização atômica de `agents/catalog.yaml` (23 → 24 agents), `skills/.index.json` (38 → 39 skills), `agents/README.md` e `skills/README.md` para refletir o novo perfil de requisitos
+- **`README.md`** consolidado para refletir o estado real: 24 agents, 39 skills, 35 casos de roteamento e distinção explícita de escopo entre `requirements-analyst` (pedido → requisito) e `business-rules-extractor` (código → regra)
+
+### Conformidade
+- Mantida separação de responsabilidades sem duplicação (R-003): `requirements-analyst` opera em requisito **novo/prospectivo**; `business-rules-extractor` permanece no fluxo **reverso** (código existente)
+
+---
+
 ## [1.3.0] — 2026-08-29
 
 ### Adicionado

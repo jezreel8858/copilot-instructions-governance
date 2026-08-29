@@ -18,7 +18,7 @@ Objetivo:
 
 **Fonte de Verdade Operacional:**
 
-- **[`CLAUDE.md`](CLAUDE.md)** — Regras normativas (R-001..R-040), princípios e fluxos genéricos
+- **[`CLAUDE.md`](CLAUDE.md)** — Regras normativas (R-001..R-041), princípios e fluxos genéricos
 - **[`.github/copilot-instructions.md`](.github/copilot-instructions.md)** — Execução operacional e roteamento de agents
 
 **Características:**
@@ -111,9 +111,10 @@ flowchart TD
     E --> F["bug-triage"]
     E --> G["test-strategy\ntest-implementation\ntest-fix"]
     E --> H["refactor-planner\nimpact-architect"]
+    E --> M["requirements-analyst"]
     E --> I["docs-curator\ndocs-writer"]
     E --> J["research-router\nanalysis-architect"]
-    F & G & H & I & J --> K["Resultado"]
+    F & G & H & I & J & M --> K["Resultado"]
     K --> L["/commit\nmensagem gerada"]
 ```
 
@@ -170,7 +171,7 @@ flowchart TD
 ## Status Atual (2026-08-29)
 
 ### Governança Global
-- ✅ Regras normativas consolidadas (`CLAUDE.md` — R-001..R-040)
+- ✅ Regras normativas consolidadas (`CLAUDE.md` — R-001..R-041)
 - ✅ Roteamento operacional (`copilot-instructions.md`)
 - ✅ Genericidade explícita em todas as regras globais (R-038)
 
@@ -181,26 +182,26 @@ flowchart TD
 - ✅ `database.instructions.md` — Banco de dados / Migrações
 - ✅ `devops.instructions.md` — Docker, Kubernetes, CI/CD
 
-### Agents (22 catalogados)
-- ✅ `agent-router` v1.2.0 — com `version:` no frontmatter, confidence score numérico, nível de routing no output e rota para `docs-writer` (R-040)
+### Agents (24 catalogados)
+- ✅ `agent-router` v1.4.0 — com `version:` no frontmatter, confidence score numérico, nível de routing no output e rotas para `docs-writer`, `code-review` e `requirements-analyst` (R-040)
 - ✅ `prompt-structuring` — passo mandatório pós-Health Check (R-041), loop de auto-refinamento (máx. 5 iterações)
-- ✅ 20 agents downstream especializados, agrupados por função:
+- ✅ 22 agents downstream especializados, agrupados por função:
   - **Triagem/Qualidade:** `bug-triage`, `test-strategy`, `test-implementation`, `test-fix`
-  - **Planejamento/Impacto:** `refactor-planner`, `impact-architect`, `business-rules-extractor`
+  - **Planejamento/Impacto/Requisitos:** `requirements-analyst`, `refactor-planner`, `impact-architect`, `business-rules-extractor`
   - **Documentação:** `docs-curator` (curadoria de doc existente), `docs-writer` (escrita de doc nova em `.md`, perfil documentador)
   - **Pesquisa/Análise:** `research-router`, `analysis-architect` (unificado com integrações cross-sistema OpenAPI/AsyncAPI/gRPC/GraphQL)
   - **Especialistas de Recomendação (enterprise, sem implementar):** `angular`, `spring-boot`, `spring-reactive`
   - **Governança de Agents/Skills/Prompts:** `agent-factory`, `skill-factory`, `prompt-factory`
   - **Contexto/Binding:** `context-builder`, `binding-initializer`, `adapter-generator`
 
-### Skills (37 indexadas)
+### Skills (39 indexadas)
 - ✅ Tier 1 (Core): `context-mode`, `agent-contracts`, `handoff-governance`, `confidence-fallback-policy`, `agent-safety-guardrails`, `terminal-governance`, `code-tracing`, `business-rules-governance`, `java-jdk-backend-governance`
-- ✅ Tier 2 (Support): 27 skills cobrindo testing (backend/frontend/Spring Boot/Angular/Python), observability, quality, tooling, research, frontend patterns, backend patterns e **documentation** (`documentation-writing-patterns` — base do `docs-writer`)
+- ✅ Tier 2 (Support): 29 skills cobrindo testing (backend/frontend/Spring Boot/Angular/Python), observability, quality, tooling, research, frontend patterns, backend patterns, **documentation** (`documentation-writing-patterns` — base do `docs-writer`) e **engenharia de requisitos** (`requirements-engineering-patterns` — base do `requirements-analyst`)
 - ✅ Tier 3 (Experimental): `agent-memory-policy` — memória episódica/semântica/procedimental
 
 ### Artefatos Estruturais de Orquestração (novo — 2026-08-28/29)
-- ✅ `docs/ai-context/routing-graph.yaml` — grafo de roteamento declarado (R-040): nós, arestas, condições e política de cascata rule-based→semantic→LLM; inclui rota dedicada para `docs-writer` (distinta de `docs-curator`)
-- ✅ `docs/ai-context/evals/casos-roteamento.yaml` — suíte de 29 casos de teste (12 canônicos, 4 ambíguos, 9 regressão, 4 segurança) — inclui casos de não-confusão `docs-writer` × `docs-curator`
+- ✅ `docs/ai-context/routing-graph.yaml` — grafo de roteamento declarado (R-040): nós, arestas, condições e política de cascata rule-based→semantic→LLM; inclui rotas dedicadas para `docs-writer`, `code-review` e `requirements-analyst`
+- ✅ `docs/ai-context/evals/casos-roteamento.yaml` — suíte de 35 casos de teste (14 canônicos, 4 ambíguos, 13 regressão, 4 segurança) — inclui casos de não-confusão `docs-writer` × `docs-curator` e `requirements-analyst` × `business-rules-extractor`
 - ✅ `docs/ai-context/catalog.yaml` v1.2 — seção `governance_artefacts` com os novos artefatos
 
 ### Skills de Orquestração Evoluídas (2026-08-28)
@@ -214,6 +215,11 @@ flowchart TD
 - ✅ `docs-writer` (agent) — perfil documentador agnóstico de domínio; gera/atualiza documentação técnica em Markdown (Diátaxis, ADR/MADR, README, runbook, postmortem); produz **exclusivamente** arquivos `.md`; nunca alucina comportamento não verificado no código-fonte
 - ✅ `documentation-writing-patterns` (skill, Tier 2) — base de conhecimento consolidada via pesquisa de mercado (Diátaxis, Google/Microsoft Style Guide, MADR, standard-readme, `llms.txt`, práticas anti-alucinação Anthropic/Copilot/Cursor)
 - ✅ Diferença de escopo: `docs-writer` **escreve documentação nova**; `docs-curator` **cura/padroniza documentação de governança já existente** — roteamento distinguido em `routing-graph.yaml` e validado em `casos-roteamento.yaml` (`regr-008`, `regr-009`)
+
+### Perfil de Requisitos (novo — 2026-08-29)
+- ✅ `requirements-analyst` (agent) — perfil de elicitação prospectiva; transforma pedido ambíguo em requisitos funcionais/não-funcionais estruturados e testáveis, com rastreabilidade à fonte do stakeholder
+- ✅ `requirements-engineering-patterns` (skill, Tier 2) — base de conhecimento consolidada via pesquisa de mercado (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti-solution-jumping com Five Whys)
+- ✅ Diferença de escopo: `requirements-analyst` **pedido de negócio → requisito novo**; `business-rules-extractor` **código existente → regra documentada** — distinção roteada e validada nos casos `regr-012` e `regr-013`
 
 ---
 

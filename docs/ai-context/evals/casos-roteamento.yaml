@@ -4,7 +4,7 @@ description: >
   Fonte de verdade para regressão de roteamento — deve ser atualizada
   em toda PR que altere agent-router.agent.md ou routing-graph.yaml (análogo ao R-015).
   Compatível com DeepEval (Apache 2.0) e pytest via estrutura de casos padronizados.
-last_updated: "2026-08-29 (code-review: canon-013, regr-010, regr-011)"
+last_updated: "2026-08-29 (requirements-analyst: canon-014, regr-012, regr-013)"
 responsavel: "agent-evals-lab + docs-curator"
 
 # ─────────────────────────────────────────────
@@ -180,6 +180,20 @@ canonicos:
       score_minimo: 0.90
       output_contains:
         - "Delegado: @code-review"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-014"
+    descricao: "Elicitação de requisito a partir de pedido de negócio ambíguo (perfil requirements-analyst)"
+    input:
+      solicitacao: "Precisamos de uma funcionalidade de notificação para os usuários — ainda não sei bem os detalhes"
+    expected:
+      agent_route: "requirements-analyst"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @requirements-analyst"
     critico: true
     threshold: 0.90
 
@@ -364,6 +378,28 @@ regressao:
       agent_route: "bug-triage"
     nao_deve:
       agent_route: "code-review"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-012"
+    descricao: "REGRESSÃO: 'requisito ambíguo de negócio' não deve rotear para business-rules-extractor (é requisito NOVO, não regra de código existente)"
+    input:
+      solicitacao: "Preciso definir os requisitos de uma nova tela de checkout, ainda não existe código"
+    expected:
+      agent_route: "requirements-analyst"
+    nao_deve:
+      agent_route: "business-rules-extractor"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-013"
+    descricao: "REGRESSÃO: 'extrair regra de negócio de código existente' não deve rotear para requirements-analyst (é reverso, não elicitação prospectiva)"
+    input:
+      solicitacao: "Extrair as regras de negócio implícitas na classe PedidoService"
+    expected:
+      agent_route: "business-rules-extractor"
+    nao_deve:
+      agent_route: "requirements-analyst"
     critico: true
     threshold: 1.00
 
