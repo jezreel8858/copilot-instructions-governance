@@ -93,7 +93,7 @@ Validações:
 
 - [`README.md`](README.md) — catálogo de agents para atualização.
 - [`templates/research-agent.md`](templates/research-agent.md) — template para agent read-only.
-- `templates/operational-agent.md` — template para agent operacional.
+- [`templates/operational-agent.md`](templates/operational-agent.md) — template para agent operacional.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais e IDs normativos.
 
 ## Diretrizes
