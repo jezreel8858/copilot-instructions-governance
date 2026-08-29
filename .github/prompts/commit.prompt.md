@@ -93,7 +93,7 @@ Co-authored-by: <nome> <email>
 ## 📄 Exemplos de Saída
 
 ```
-feat(service): adiciona validação de data de início em VistoriaService
+feat(service): adiciona validação de data de início em ExampleService
 
 Inclui verificação de conflito de datas antes de persistir.
 Refs: [PROJ-1234]
