@@ -3,7 +3,7 @@ description: >
   Grafo de roteamento declarado — fonte de verdade estrutural para o agent-router.
   Nós = agents disponíveis; arestas = condições de roteamento (keywords, sinais R-006, score threshold).
   A Decision Tree em agent-router.agent.md é documentação derivada deste arquivo.
-last_updated: "2026-08-29 (docs-writer: nó + aresta adicionados)"
+last_updated: "2026-08-29 (code-review: nó + aresta adicionados)"
 
 # ─────────────────────────────────────────────
 # NÓS — agents disponíveis no catálogo
@@ -55,6 +55,10 @@ nos:
   - id: docs-writer
     tipo: downstream
     descricao: "Geração/escrita de documentação técnica nova em Markdown, agnóstica de domínio (perfil documentador) — produz exclusivamente arquivos .md"
+
+  - id: code-review
+    tipo: downstream
+    descricao: "Revisão de código (diff/PR) antes do merge — correção, segurança, convenções, impacto, testes e performance; classifica por severidade; read-only, nunca corrige"
 
   - id: research-router
     tipo: fallback
@@ -131,6 +135,25 @@ arestas:
         - "500"
         - "stack trace"
       sinal_r006: "É bug/erro/regressão?"
+
+  # Revisão de código antes do merge
+  - de: agent-router
+    para: code-review
+    prioridade: 1.5
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "revisar código"
+        - "code review"
+        - "revisão antes do merge"
+        - "analisar pull request"
+        - "revisar diff"
+        - "revisar pr"
+      sinal_r006: "É revisão preventiva de qualidade ANTES do merge (não bug já ocorrido)?"
+      nao_confundir_com:
+        - "bug em produção"        # → bug-triage (algo já quebrou)
+        - "impacto de mudar X"     # → impact-architect (análise isolada de impacto)
 
   # Estratégia de testes
   - de: agent-router

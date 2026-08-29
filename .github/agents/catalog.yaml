@@ -844,8 +844,45 @@ agents:
       - ".github/skills/documentation-writing-patterns/SKILL.md"
     estimated_time_minutes: 15
 
+  code-review:
+    id: "code-review"
+    priority: 4.5
+    domain: "Revisao de codigo antes do merge (read-only, severidade)"
+    description: "Revisa diff/PR/arquivo por correcao, seguranca, convencoes, impacto, testes e performance; classifica achados por severidade (bloqueador/alta/sugestao); nunca corrige; delega para agents especializados quando necessario."
+    keywords:
+      - "revisar codigo"
+      - "code review"
+      - "revisao antes do merge"
+      - "analisar pull request"
+      - "revisar diff"
+      - "revisar pr"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "bug-triage"
+      - "impact-architect"
+      - "test-strategy"
+      - "refactor-planner"
+    related_skills:
+      - "code-review-patterns"
+      - "code-tracing"
+      - "agent-contracts"
+      - "terminal-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/code-review.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/code-review-patterns/SKILL.md"
+      - "docs/ai-context/catalog.yaml"
+    estimated_time_minutes: 20
+
 metadata:
-  total_agents: 22
-  last_updated: "2026-08-29T11:00:00Z"
-  changelog: "2026-08-29 (2) — Criado agent docs-writer (perfil documentador, Operacional): gera documentacao tecnica agnostica de dominio em .md, com base na skill nova documentation-writing-patterns (Diataxis, MADR, standard-readme, llms.txt, anti-alucinacao), pesquisada via research-router/tavily. Registrado em catalog.yaml, README.md, skills/.index.json e skills/README.md (R-015). | 2026-08-29 — Consolidação de pre-fetch (auditoria de tools/perfis de todos os 21 agents): sincronizado related_skills de impact-architect (code-tracing, dependency-graph-mapping), refactor-planner (code-tracing, business-rules-governance, dependency-graph-mapping, integration-contract-analysis) e test-strategy (test-coverage-governance, test-implementation-backend/frontend) para refletir tools e Docs Sempre Anexadas reais. Ver também .github/skills/.index.json (correção de typo '@analysis-integration-architect' -> '@analysis-architect' e expansão de related_agents de context-mode/tavily/code-tracing/prompt-engineering-patterns) (R-015)."
+  total_agents: 23
+  last_updated: "2026-08-29T12:00:00Z"
+  changelog: "2026-08-29 (3) — Criado agent code-review (perfil Analista/Read-only): revisao de diff/PR por 6 dimensoes (correcao/seguranca/convencoes/impacto/testes/performance), taxonomia de severidade bloqueador/alta/sugestao, nunca corrige, delega para bug-triage/impact-architect/test-strategy/refactor-planner. Skill code-review-patterns criada (Google Eng Practices, OWASP, taxonomia de mercado CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040). | 2026-08-29 (2) — Criado agent docs-writer (perfil documentador, Operacional): gera documentacao tecnica agnostica de dominio em .md, com base na skill nova documentation-writing-patterns (Diataxis, MADR, standard-readme, llms.txt, anti-alucinacao), pesquisada via research-router/tavily. Registrado em catalog.yaml, README.md, skills/.index.json e skills/README.md (R-015)."
 

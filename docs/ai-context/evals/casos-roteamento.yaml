@@ -4,7 +4,7 @@ description: >
   Fonte de verdade para regressão de roteamento — deve ser atualizada
   em toda PR que altere agent-router.agent.md ou routing-graph.yaml (análogo ao R-015).
   Compatível com DeepEval (Apache 2.0) e pytest via estrutura de casos padronizados.
-last_updated: "2026-08-29 (docs-writer: canon-012, regr-008, regr-009)"
+last_updated: "2026-08-29 (code-review: canon-013, regr-010, regr-011)"
 responsavel: "agent-evals-lab + docs-curator"
 
 # ─────────────────────────────────────────────
@@ -169,6 +169,20 @@ canonicos:
     critico: true
     threshold: 0.90
 
+  - id: "canon-013"
+    descricao: "Revisão de código antes do merge (perfil code-review)"
+    input:
+      solicitacao: "Pode revisar o diff da branch feat/checkout antes de eu abrir o PR?"
+    expected:
+      agent_route: "code-review"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @code-review"
+    critico: true
+    threshold: 0.90
+
 # ─────────────────────────────────────────────
 # SUITE 2 — Casos Ambíguos (threshold ≥ 0.70)
 # Intenção ambígua que exige clarificação ou roteamento defensivo.
@@ -328,6 +342,28 @@ regressao:
       agent_route: "docs-curator"
     nao_deve:
       agent_route: "docs-writer"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-010"
+    descricao: "REGRESSÃO: 'revisar código antes do merge' não deve rotear para bug-triage (nada quebrou ainda)"
+    input:
+      solicitacao: "Revise esse código antes de eu commitar, por favor"
+    expected:
+      agent_route: "code-review"
+    nao_deve:
+      agent_route: "bug-triage"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-011"
+    descricao: "REGRESSÃO: 'bug em produção' não deve rotear para code-review (algo já quebrou, não é revisão preventiva)"
+    input:
+      solicitacao: "Há um bug em produção no endpoint /checkout"
+    expected:
+      agent_route: "bug-triage"
+    nao_deve:
+      agent_route: "code-review"
     critico: true
     threshold: 1.00
 

@@ -1,6 +1,6 @@
 ---
 name: agent-router
-version: "1.2.0"
+version: "1.3.0"
 description: >-
   Entry point obrigatório agent-first para classificar solicitações e delegar ao
   agent downstream correto, com fallback para pesquisa e análise de integração.
@@ -82,6 +82,9 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 Pedido recebido (já refinado por @prompt-structuring)?
 |- É bug/erro/regressão?
 |  |- Sim -> @bug-triage
+|  \- Não
+|- É revisão de código antes do merge (preventiva, nada quebrou ainda)?
+|  |- Sim -> @code-review
 |  \- Não
 |- É estratégia/plano de testes?
 |  |- Sim -> @test-strategy
@@ -179,6 +182,7 @@ Próximo passo mínimo:
 
 - `@prompt-structuring` (`prompt-structuring.agent.md`) **SEMPRE, antes de qualquer classificação** (R-041) — exceto quando a solicitação já retornou refinada por ele.
 - `@bug-triage` (`bug-triage.agent.md`) para erro, bug e regressão.
+- `@code-review` (`code-review.agent.md`) para revisão de código (diff/PR) antes do merge, por severidade.
 - `@test-strategy` (`test-strategy.agent.md`) para estratégia/plano de testes.
 - `@test-fix` (`test-fix.agent.md`) para correção de testes quebrados com relatório de falhas.
 - `@business-rules-extractor` (`business-rules-extractor.agent.md`) para extração de regras de negócio e validação de refatorações.
