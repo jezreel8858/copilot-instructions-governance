@@ -20,9 +20,7 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-tools:
-  - context-mode
-  - sonarqube-governance
+tools: []
 ---
 
 # Agent Observability — OpenTelemetry GenAI

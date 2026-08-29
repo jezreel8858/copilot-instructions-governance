@@ -26,8 +26,7 @@ source_docs:
   - .github/skills/context-mode/SKILL.md
   - .github/skills/agent-safety-guardrails/SKILL.md
   - .github/skills/agent-observability-otel/SKILL.md
-tools:
-  - context-mode
+tools: []
 ---
 
 # Agent Memory Policy

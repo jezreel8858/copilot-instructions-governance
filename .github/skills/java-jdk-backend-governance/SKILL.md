@@ -16,6 +16,7 @@ source_docs:
   - .github/copilot-instructions.md
   - .github/agents/spring-boot.agent.md
   - .github/agents/spring-reactive.agent.md
+tools: []
 ---
 
 # Java/JDK Backend Governance

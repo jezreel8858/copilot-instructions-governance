@@ -20,6 +20,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/skills/test-coverage-governance/SKILL.md
+tools: []
 ---
 
 # Test Implementation — Backend (Genérico)

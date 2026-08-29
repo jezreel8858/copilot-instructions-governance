@@ -16,6 +16,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/agents/angular.agent.md
+tools: []
 ---
 
 # Angular Responsive UI Patterns

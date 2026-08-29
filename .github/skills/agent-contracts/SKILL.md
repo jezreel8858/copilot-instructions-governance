@@ -17,8 +17,7 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-tools:
-  - context-mode
+tools: []
 ---
 
 # Agent Contracts
@@ -59,7 +58,6 @@ criterios_de_evidencia:
   - comando de coverage executado e resultado
   - link para relatório de cobertura gerado
 ```
-
 ---
 
 ## 2) Checklist Mínimo de Contrato

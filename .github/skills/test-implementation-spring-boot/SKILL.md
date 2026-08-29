@@ -20,6 +20,7 @@ source_docs:
   - .github/copilot-instructions.md
   - .github/instructions/spring-boot-backend.instructions.md
   - .github/skills/test-implementation-backend/SKILL.md
+tools: []
 ---
 
 # Test Implementation — Spring Boot / JUnit 5 / Mockito

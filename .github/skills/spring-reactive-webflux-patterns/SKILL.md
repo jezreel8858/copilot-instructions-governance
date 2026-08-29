@@ -15,6 +15,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/agents/spring-reactive.agent.md
+tools: []
 ---
 
 # Spring Reactive / WebFlux Patterns

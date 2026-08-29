@@ -18,8 +18,7 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-tools:
-  - context-mode
+tools: []
 ---
 
 # YAML Governance — Boas práticas genéricas

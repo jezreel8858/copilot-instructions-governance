@@ -19,6 +19,7 @@ source_docs:
   - .github/copilot-instructions.md
   - .github/skills/test-implementation-backend/SKILL.md
   - .github/skills/test-coverage-governance/SKILL.md
+tools: []
 ---
 
 # Test Implementation — Python / pytest / coverage.py

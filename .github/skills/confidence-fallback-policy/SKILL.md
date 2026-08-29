@@ -20,9 +20,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/agents/README.md
-tools:
-  - context-mode
-  - tavily
+tools: []
 ---
 
 # Confidence & Fallback Policy

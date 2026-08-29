@@ -20,9 +20,7 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-tools:
-  - context-mode
-  - tavily
+tools: []
 ---
 
 # Agent Evals Lab
@@ -48,7 +46,6 @@ Mudança de prompt / modelo / tool
   PASS → deploy | FAIL → bloquear
 ```
 
----
 
 ## 2) Tipos de Métricas — O que Medir
 

@@ -1,6 +1,6 @@
 ---
 name: project-context-builder
-tier: advanced
+tier: 2
 type: discovery-and-generation
 input_type: path-based
 output_type: structured-artifacts
@@ -49,6 +49,13 @@ constraints:
   - "Sempre pedir confirmação antes de criar arquivos"
   - "Fallback para CLI interativa se scanner falhar"
 
+category: process
+tools:
+  - "read_file"
+  - "create_file"
+  - "list_dir"
+  - "grep_search"
+  - "file_search"
 ---
 
 # project-context-builder — Skill de Descoberta de Projeto

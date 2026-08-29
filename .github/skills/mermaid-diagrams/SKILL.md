@@ -31,6 +31,7 @@ source_docs:
   - "https://mermaid.live/"
   - "https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams"
   - "https://docs.kroki.io/kroki/formats/mermaid/"
+tools: []
 ---
 
 # mermaid-diagrams — Boas práticas genéricas

@@ -15,6 +15,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/agents/spring-boot.agent.md
+tools: []
 ---
 
 # Spring Boot Backend Patterns

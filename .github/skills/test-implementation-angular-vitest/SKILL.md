@@ -28,6 +28,7 @@ source_docs:
   - .github/instructions/angular-v21-frontend.instructions.md
   - .github/skills/test-implementation-frontend/SKILL.md
   - .github/skills/test-coverage-governance/SKILL.md
+tools: []
 ---
 
 # Test Implementation — Angular + Vitest

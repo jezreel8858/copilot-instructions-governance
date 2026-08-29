@@ -15,6 +15,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/skills/test-implementation-angular/SKILL.md
+tools: []
 ---
 
 # Frontend Componentization Patterns

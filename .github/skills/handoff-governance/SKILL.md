@@ -17,8 +17,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - .github/agents/catalog.yaml
-tools:
-  - context-mode
+tools: []
 ---
 
 # Handoff Governance
