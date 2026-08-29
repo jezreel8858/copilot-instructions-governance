@@ -42,6 +42,7 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 | Catálogo textual | [`README.md`](README.md) | Fonte de referência para roteamento humano |
 | Grafo de roteamento | [`../../docs/ai-context/routing-graph.yaml`](../../docs/ai-context/routing-graph.yaml) | Fonte estrutural — nós, arestas, thresholds e cascata |
 | Prompt structuring | [`prompt-structuring.agent.md`](prompt-structuring.agent.md) | ⚠️ Passo mandatório pré-classificação (R-041) — loop máx. 5 iterações |
+| Skill — Técnicas de prompt | [`../skills/prompt-engineering-patterns/SKILL.md`](../skills/prompt-engineering-patterns/SKILL.md) | Base de conhecimento do `prompt-structuring`; consultar se o router precisar avaliar completude do handoff |
 | Router de pesquisa | [`research-router.agent.md`](research-router.agent.md) | Fallback para pesquisa e incerteza externa |
 | Arquiteto de análise | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Fallback para análise de integração ampla |
 | Factory de agents | [`agent-factory.agent.md`](agent-factory.agent.md) | Governança de criação/revisão de agents |

@@ -85,6 +85,11 @@ Próximo passo mínimo:
 - [`catalog.yaml`](catalog.yaml)
 - [`../../CLAUDE.md`](../../CLAUDE.md)
 - [`../copilot-instructions.md`](../copilot-instructions.md)
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta eficiente de escopo/cobertura atual.
+- [`../skills/test-coverage-governance/SKILL.md`](../skills/test-coverage-governance/SKILL.md) — priorização por risco e métricas de cobertura.
+- Skill da stack alvo (`test-implementation-backend` | `test-implementation-frontend` | `test-implementation-spring-boot` | `test-implementation-angular-vitest` | `test-implementation-angular-jasmine` | `test-implementation-python`) — carregar conforme stack identificada.
+- [`../skills/agent-evals-lab/SKILL.md`](../skills/agent-evals-lab/SKILL.md) — quando a estratégia envolver avaliação de agents/prompts.
+- [`../skills/confidence-fallback-policy/SKILL.md`](../skills/confidence-fallback-policy/SKILL.md) — score de confiança ao declarar prioridade de cenários.
 
 ## Diretrizes
 

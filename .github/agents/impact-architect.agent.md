@@ -84,6 +84,9 @@ Mitigação mínima:
 - [`catalog.yaml`](catalog.yaml)
 - [`../../CLAUDE.md`](../../CLAUDE.md)
 - [`../copilot-instructions.md`](../copilot-instructions.md)
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta eficiente de artefatos locais.
+- [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) — rastreio de dependências e símbolos afetados.
+- [`../skills/dependency-graph-mapping/SKILL.md`](../skills/dependency-graph-mapping/SKILL.md) — grafo de dependências local e blast radius.
 
 ## Diretrizes
 

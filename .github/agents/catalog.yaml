@@ -135,6 +135,10 @@ agents:
       - "context-mode"
       - "agent-contracts"
       - "agent-evals-lab"
+      - "confidence-fallback-policy"
+      - "test-coverage-governance"
+      - "test-implementation-backend"
+      - "test-implementation-frontend"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
@@ -263,6 +267,10 @@ agents:
       - "context-mode"
       - "agent-contracts"
       - "confidence-fallback-policy"
+      - "code-tracing"
+      - "business-rules-governance"
+      - "dependency-graph-mapping"
+      - "integration-contract-analysis"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
@@ -295,6 +303,8 @@ agents:
       - "handoff-governance"
       - "agent-evals-lab"
       - "agent-observability-otel"
+      - "code-tracing"
+      - "dependency-graph-mapping"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
@@ -799,5 +809,5 @@ agents:
 
 metadata:
   total_agents: 21
-  last_updated: "2026-08-29T09:00:00Z"
-  changelog: "2026-08-29 — Inclusão do agent prompt-structuring (exceção R-041): passo mandatório pós-agent-router com loop controlado de refinamento de prompt (máx. 5 iterações), sempre retornando ao agent-router. Vinculada nova skill prompt-engineering-patterns (APE/OPRO/DSPy/Anthropic/OpenAI) como base de conhecimento. Grafo de roteamento e suíte de evals atualizados (R-040)."
+  last_updated: "2026-08-29T10:00:00Z"
+  changelog: "2026-08-29 — Consolidação de pre-fetch (auditoria de tools/perfis de todos os 21 agents): sincronizado related_skills de impact-architect (code-tracing, dependency-graph-mapping), refactor-planner (code-tracing, business-rules-governance, dependency-graph-mapping, integration-contract-analysis) e test-strategy (test-coverage-governance, test-implementation-backend/frontend) para refletir tools e Docs Sempre Anexadas reais. Ver também .github/skills/.index.json (correção de typo '@analysis-integration-architect' -> '@analysis-architect' e expansão de related_agents de context-mode/tavily/code-tracing/prompt-engineering-patterns) (R-015)."

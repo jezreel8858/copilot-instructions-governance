@@ -44,6 +44,7 @@ Você atua como arquiteto sênior para análise técnica de mudanças, requisito
 | Skill — Grafo de Dependências | `.github/skills/dependency-graph-mapping/SKILL.md` | Blast radius, acoplamento, fluxo origem→destino |
 | Skill — Diagramas Mermaid | `.github/skills/mermaid-diagrams/SKILL.md` | Visualização de fluxos e dependências |
 | Skill — Context Mode | `.github/skills/context-mode/SKILL.md` | Coleta eficiente de artefatos |
+| Skill — Rastreio de Código | `.github/skills/code-tracing/SKILL.md` | Localizar dependências/símbolos no código (grep → semântico → call chain) |
 
 ## Decision Tree
 
@@ -159,6 +160,11 @@ Próximo passo mínimo:
 
 - [`../../docs/ai-context/catalog.yaml`](../../docs/ai-context/catalog.yaml) — mapa de localização dos projetos.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais de governança.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta eficiente sem poluir contexto.
+- [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) — rastreio de dependências e símbolos no código.
+- [`../skills/dependency-graph-mapping/SKILL.md`](../skills/dependency-graph-mapping/SKILL.md) — grafo de dependências e blast radius.
+- [`../skills/integration-contract-analysis/SKILL.md`](../skills/integration-contract-analysis/SKILL.md) — análise de contrato (OpenAPI/AsyncAPI/gRPC/GraphQL).
+- [`../skills/tavily/SKILL.md`](../skills/tavily/SKILL.md) — pesquisa externa apenas após esgotar artefatos locais.
 
 ## Diretrizes
 

@@ -86,6 +86,11 @@ Próximo passo:
 - [`catalog.yaml`](catalog.yaml)
 - [`../../CLAUDE.md`](../../CLAUDE.md)
 - [`../copilot-instructions.md`](../copilot-instructions.md)
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta eficiente de artefatos.
+- [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) — rastreio de dependências do alvo do refactor.
+- [`../skills/dependency-graph-mapping/SKILL.md`](../skills/dependency-graph-mapping/SKILL.md) — acoplamento e blast radius por etapa.
+- [`../skills/business-rules-governance/SKILL.md`](../skills/business-rules-governance/SKILL.md) — ground truth para não quebrar comportamento existente.
+- [`../skills/integration-contract-analysis/SKILL.md`](../skills/integration-contract-analysis/SKILL.md) — quando o refactor tocar contratos de integração.
 
 ## Diretrizes
 

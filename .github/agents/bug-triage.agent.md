@@ -318,6 +318,7 @@ C) PARCIALMENTE — Preciso de mais informações
 - [`../copilot-instructions.md`](../copilot-instructions.md)
 - [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md)
 - [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md)
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada quando o módulo investigado for grande.
 - [`README.md`](README.md)
 - [`catalog.yaml`](catalog.yaml)
 

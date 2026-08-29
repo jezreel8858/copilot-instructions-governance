@@ -13,7 +13,8 @@
       "path": ".github/skills/prompt-engineering-patterns/SKILL.md",
       "related_agents": [
         "@prompt-structuring",
-        "@agent-router"
+        "@agent-router",
+        "@research-router"
       ]
     },
     {
@@ -22,8 +23,26 @@
       "category": "process",
       "path": ".github/skills/context-mode/SKILL.md",
       "related_agents": [
+        "@agent-router",
         "@research-router",
-        "@analysis-architect"
+        "@analysis-architect",
+        "@bug-triage",
+        "@impact-architect",
+        "@refactor-planner",
+        "@business-rules-extractor",
+        "@docs-curator",
+        "@context-builder",
+        "@test-strategy",
+        "@test-implementation",
+        "@test-fix",
+        "@agent-factory",
+        "@skill-factory",
+        "@binding-initializer",
+        "@adapter-generator",
+        "@prompt-factory",
+        "@angular",
+        "@spring-boot",
+        "@spring-reactive"
       ]
     },
     {
@@ -73,7 +92,10 @@
       "path": ".github/skills/tavily/SKILL.md",
       "related_agents": [
         "@research-router",
-        "@analysis-architect"
+        "@analysis-architect",
+        "@angular",
+        "@spring-boot",
+        "@spring-reactive"
       ]
     },
     {
@@ -341,7 +363,8 @@
         "@test-fix",
         "@impact-architect",
         "@refactor-planner",
-        "@business-rules-extractor"
+        "@business-rules-extractor",
+        "@analysis-architect"
       ]
     },
     {
@@ -366,7 +389,7 @@
       "description": "Análise e validação de contratos de integração (OpenAPI, AsyncAPI, gRPC, GraphQL): detecção de breaking changes, classificação BREAKING/COMPATIBLE/DEPRECIAÇÃO e mapeamento de consumidores afetados.",
       "tools": ["grep_search", "file_search", "read_file", "context-mode/ctx_batch_execute", "context-mode/ctx_execute"],
       "related_agents": [
-        "@analysis-integration-architect",
+        "@analysis-architect",
         "@impact-architect",
         "@refactor-planner"
       ]
@@ -379,7 +402,7 @@
       "description": "Mapeamento de grafo de dependências entre sistemas, módulos e serviços: rastreamento de fluxo origem→transformação→destino, análise de acoplamento (tight/loose) e blast radius.",
       "tools": ["grep_search", "file_search", "read_file", "context-mode/ctx_batch_execute", "context-mode/ctx_execute"],
       "related_agents": [
-        "@analysis-integration-architect",
+        "@analysis-architect",
         "@impact-architect",
         "@refactor-planner",
         "@business-rules-extractor"
@@ -489,9 +512,9 @@
     }
   ],
   "metadata": {
-    "total_agents": 20,
+    "total_agents": 21,
     "total_skills": 36,
-    "last_updated": "2026-08-29T08:10:00Z",
-    "changelog": "2026-08-29 — Adicionada a skill angular-responsive-ui-patterns para responsividade Angular e sincronização com o agent angular, além das skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; atualização dos catálogos (R-015, R-026, R-038)."
+    "last_updated": "2026-08-29T10:00:00Z",
+    "changelog": "2026-08-29 — Consolidação de pre-fetch (auditoria de tools/perfis): corrigido typo '@analysis-integration-architect' -> '@analysis-architect' em dependency-graph-mapping e integration-contract-analysis; sincronizado related_agents de context-mode (20 agents), tavily (angular/spring-boot/spring-reactive), code-tracing (analysis-architect) e prompt-engineering-patterns (research-router) para refletir tools reais declaradas em cada agent (R-015)."
   }
 }

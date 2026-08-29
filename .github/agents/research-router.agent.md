@@ -52,10 +52,12 @@ Pedido de pesquisa recebido
 
 | Tipo | Disponível | Uso |
 |---|---|---|
-| Agent | `research-router` | Triagem e orquestração |
+| Agent | `research-router` | Triagem e orquestração (self, via `run_subagent` para decomposição) |
 | Agent | `analysis-architect` | Análise operacional de integração |
 | Skill | `context-mode` | Leitura e síntese contextual local |
-| Skill | `tavily` | Pesquisa externa quando necessário |
+| Skill | `tavily` | Pesquisa externa quando necessário — decomposição/paralelização de query |
+| Skill | `mermaid-diagrams` | Visualização de fluxos/dependências levantados na pesquisa |
+| Skill | `prompt-engineering-patterns` | Decomposição de query composta em sub-queries objetivas |
 
 ## Quando rotear para `@analysis-architect`
 
@@ -148,6 +150,10 @@ Resposta:
 - [`README.md`](README.md) — catálogo geral de agents para evitar sobreposição.
 - [`catalog.yaml`](catalog.yaml) — fonte estruturada de descoberta e roteamento.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais e IDs normativos.
+- [`../skills/tavily/SKILL.md`](../skills/tavily/SKILL.md) — hierarquia de decisão e estratégias de query externa.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada e busca sem poluir contexto.
+- [`../skills/mermaid-diagrams/SKILL.md`](../skills/mermaid-diagrams/SKILL.md) — quando a síntese exigir diagrama de fluxo/dependência.
+- [`../skills/prompt-engineering-patterns/SKILL.md`](../skills/prompt-engineering-patterns/SKILL.md) — técnica de decomposição de query composta (§ Planejamento de Query).
 
 ## Diretrizes
 
