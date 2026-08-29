@@ -138,7 +138,7 @@ docs(adapter): adiciona adapter git-governance com convenções de commit
 ## 🔄 Integração com Workflow
 
 ```
-/implementar → /validar → /commit → [dev executa git commit manualmente]
+/implement → /validate → /commit → [dev executa git commit manualmente]
 ```
 
 Após `/commit` gerar a mensagem, o dev executa:

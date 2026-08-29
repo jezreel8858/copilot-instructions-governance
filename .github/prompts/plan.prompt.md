@@ -55,7 +55,7 @@ Perguntas que research não respondeu:
 
 ### Passo 2: Análise Antecipada de Bloqueadores
 
-**Antes de qualquer pergunta**, varra os cenários que podem pausar `/implementar`:
+**Antes de qualquer pergunta**, varra os cenários que podem pausar `/implement`:
 
 | Categoria | Verificar | Ação se incerto |
 |---|---|---|
@@ -117,11 +117,11 @@ Após aprovação do outline, escreva o plano com:
 - [ ] Dependências entre fases documentadas na tabela
 - [ ] Edge cases de negócio resolvidos ou explicitamente fora do escopo
 - [ ] Decisões tomadas durante planejamento registradas
-- [ ] Nenhuma pergunta ao usuário ficará em aberto durante `/implementar`
+- [ ] Nenhuma pergunta ao usuário ficará em aberto durante `/implement`
 
 ### Aviso ao usuário (inclua no plano gerado):
 
-> Este plano será executado por `/implementar`, que **obrigatoriamente**:
+> Este plano será executado por `/implement`, que **obrigatoriamente**:
 > 1. Marca `- [x]` antes de passar para a próxima fase
 > 2. Executa `/ctx-checkpoint` após cada fase concluída (`[x]`) e no fechamento do plano
 > 3. Declara `lastStep` e `nextStep` após cada `[x]` para captura pelo Context Mode
@@ -135,7 +135,7 @@ Após aprovação do outline, escreva o plano com:
 4. **Token budget** — agrupe perguntas no mesmo `queries`, use `source` e evite múltiplas chamadas unitárias
 5. **Sem TBD** — qualquer item "a definir" no plano final é inválido
 6. **Decisões explícitas** — toda decisão de design deve ser registrada na seção "Decisões Tomadas"
-7. **Autonomia total** — o plano deve ser executável por `/implementar` sem nenhuma pergunta ao usuário
+7. **Autonomia total** — o plano deve ser executável por `/implement` sem nenhuma pergunta ao usuário
 
 ## Combina Com
 

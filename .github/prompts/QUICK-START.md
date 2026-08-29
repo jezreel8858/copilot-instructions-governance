@@ -49,7 +49,7 @@ Guia rápido para usar os prompts do Copilot Chat.
 ## 4️⃣ Executar Plano com Checkpoints
 
 ```bash
-/implementar "fase-1: criar entity" "fase-2: controller" "fase-3: testes"
+/implement "fase-1: criar entity" "fase-2: controller" "fase-3: testes"
 ```
 
 **Nota**: A cada fase completa, use `/ctx-checkpoint` para salvar estado.
@@ -82,14 +82,14 @@ Guia rápido para usar os prompts do Copilot Chat.
 /ctx-doctor
 
 # PASSO 5: Planejar
-/plano "descreva a tarefa aqui"
+/plan "descreva a tarefa aqui"
 
 # PASSO 6: Implementar com checkpoints
-/implementar "fase-1: preparar" "fase-2: converter" "fase-3: testar"
+/implement "fase-1: preparar" "fase-2: converter" "fase-3: testar"
 /ctx-checkpoint  # ← após cada fase
 
 # PASSO 7: Validar
-/validar
+/validate
 
 # PASSO 8: Se houver interrupção, retomar:
 /ctx-resume

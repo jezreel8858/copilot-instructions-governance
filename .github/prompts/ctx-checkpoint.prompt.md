@@ -111,5 +111,5 @@ Para retomar:
 
 - `/ctx-resume` → retoma o checkpoint gravado aqui
 - `/ctx-status` → verifica consumo de contexto antes de criar checkpoint
-- `/implementar` → use checkpoint ao finalizar cada fase
+- `/implement` → use checkpoint ao finalizar cada fase
 
