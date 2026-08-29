@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "domain": "governanca-ai-generica",
-  "generated_at": "2026-08-29T06:10:00Z",
+  "generated_at": "2026-08-29T07:00:00Z",
   "summary": {
-    "total_skills": 32
+    "total_skills": 35
   },
   "skills": [
     {
@@ -426,12 +426,49 @@
         "@impact-architect",
         "@test-strategy"
       ]
+    },
+    {
+      "name": "spring-boot-backend-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Baseline enterprise para análise e recomendação em Spring Boot: arquitetura, observabilidade, segurança, performance e migração.",
+      "path": ".github/skills/spring-boot-backend-patterns/SKILL.md",
+      "related_agents": [
+        "@spring-boot",
+        "@analysis-architect",
+        "@impact-architect"
+      ]
+    },
+    {
+      "name": "spring-reactive-webflux-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Baseline enterprise para análise e recomendação em Spring WebFlux/Reactor: adequação reativa, backpressure, resiliência e operação.",
+      "path": ".github/skills/spring-reactive-webflux-patterns/SKILL.md",
+      "related_agents": [
+        "@spring-reactive",
+        "@analysis-architect",
+        "@impact-architect"
+      ]
+    },
+    {
+      "name": "java-jdk-backend-governance",
+      "tier": 1,
+      "category": "governance",
+      "description": "Governança de versões Java/JDK em backend: LTS, compatibilidade de ecossistema, segurança, performance e migração.",
+      "path": ".github/skills/java-jdk-backend-governance/SKILL.md",
+      "related_agents": [
+        "@spring-boot",
+        "@spring-reactive",
+        "@analysis-architect",
+        "@impact-architect"
+      ]
     }
   ],
   "metadata": {
-    "total_agents": 18,
-    "total_skills": 32,
-    "last_updated": "2026-08-29T06:10:00Z",
-    "changelog": "2026-08-29 — Adicionada a skill design-system-component-contracts (tier 2, governance) para contratos de componentes em design systems; integração no agent angular e sincronização de catálogos (R-015, R-038)."
+    "total_agents": 20,
+    "total_skills": 35,
+    "last_updated": "2026-08-29T07:00:00Z",
+    "changelog": "2026-08-29 — Adicionadas as skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; integração com os novos agents spring-boot/spring-reactive e sincronização de catálogos (R-015, R-026, R-038)."
   }
 }

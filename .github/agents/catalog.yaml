@@ -681,7 +681,85 @@ agents:
       - ".github/skills/design-system-component-contracts/SKILL.md"
     estimated_time_minutes: 30
 
+  spring-boot:
+    id: "spring-boot"
+    priority: 8.7
+    domain: "Analise e recomendacao tecnica backend Spring Boot"
+    description: "Especialista backend Spring Boot enterprise para análise e recomendação técnica (arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração), sem implementar código."
+    keywords:
+      - "spring boot"
+      - "java lts"
+      - "jdk"
+      - "observabilidade"
+      - "actuator"
+      - "seguranca backend"
+      - "migracao spring"
+      - "analise backend"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_skills:
+      - "context-mode"
+      - "tavily"
+      - "agent-contracts"
+      - "handoff-governance"
+      - "confidence-fallback-policy"
+      - "agent-evals-lab"
+      - "code-tracing"
+      - "spring-boot-backend-patterns"
+      - "java-jdk-backend-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/spring-boot.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/spring-boot-backend-patterns/SKILL.md"
+      - ".github/skills/java-jdk-backend-governance/SKILL.md"
+    estimated_time_minutes: 35
+
+  spring-reactive:
+    id: "spring-reactive"
+    priority: 8.8
+    domain: "Analise e recomendacao tecnica backend reativo Spring"
+    description: "Especialista backend reativo Spring WebFlux/Reactor para análise e recomendação técnica (capacidade, resiliência, backpressure, observabilidade, segurança e compatibilidade Java/JDK), sem implementação."
+    keywords:
+      - "spring webflux"
+      - "project reactor"
+      - "backend reativo"
+      - "backpressure"
+      - "event-loop"
+      - "reactive streams"
+      - "latencia p95"
+      - "migracao java"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_skills:
+      - "context-mode"
+      - "tavily"
+      - "agent-contracts"
+      - "handoff-governance"
+      - "confidence-fallback-policy"
+      - "agent-evals-lab"
+      - "code-tracing"
+      - "spring-reactive-webflux-patterns"
+      - "java-jdk-backend-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/spring-reactive.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/spring-reactive-webflux-patterns/SKILL.md"
+      - ".github/skills/java-jdk-backend-governance/SKILL.md"
+    estimated_time_minutes: 35
+
 metadata:
-  total_agents: 18
-  last_updated: "2026-08-29T06:10:00Z"
-  changelog: "2026-08-29 — Skill design-system-component-contracts integrada ao agent angular (related_skills + source_docs); catálogos de agents/skills sincronizados em atualização atômica (R-015, R-038)."
+  total_agents: 20
+  last_updated: "2026-08-29T07:00:00Z"
+  changelog: "2026-08-29 — Inclusão dos agents spring-boot e spring-reactive com foco analítico enterprise; integração das skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; catálogos sincronizados (R-015, R-026, R-038)."
