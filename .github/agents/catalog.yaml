@@ -40,6 +40,43 @@ agents:
       - "docs/ai-context/evals/casos-roteamento.yaml"
     estimated_time_minutes: 15
 
+  prompt-structuring:
+    id: "prompt-structuring"
+    priority: 1.5
+    version: "1.0.0"
+    domain: "Refinamento estrutural de prompt (passo mandatorio)"
+    description: >-
+      Passo mandatorio pos-agent-router (excecao R-041): refina o prompt recebido
+      em loop controlado (maximo 5 iteracoes) no formato canonico
+      <task>/<context>/<constraints>/<output_format> e sempre retorna ao
+      agent-router antes de qualquer classificacao de intencao/delegacao downstream.
+    keywords:
+      - "refinar prompt"
+      - "estruturar prompt"
+      - "prompt loop"
+      - "meta-prompting"
+      - "clarificacao de prompt"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/agent-router.agent.md"
+    related_agents:
+      - "agent-router"
+    related_skills:
+      - "prompt-engineering-patterns"
+      - "agent-contracts"
+      - "confidence-fallback-policy"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/prompt-structuring.agent.md"
+      - ".github/agents/agent-router.agent.md"
+      - ".github/skills/prompt-engineering-patterns/SKILL.md"
+      - "docs/ai-context/routing-graph.yaml"
+      - "docs/ai-context/evals/casos-roteamento.yaml"
+    estimated_time_minutes: 5
+
   bug-triage:
     id: "bug-triage"
     priority: 2
@@ -760,6 +797,6 @@ agents:
     estimated_time_minutes: 35
 
 metadata:
-  total_agents: 20
-  last_updated: "2026-08-29T07:00:00Z"
-  changelog: "2026-08-29 — Inclusão dos agents spring-boot e spring-reactive com foco analítico enterprise; integração das skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; catálogos sincronizados (R-015, R-026, R-038)."
+  total_agents: 21
+  last_updated: "2026-08-29T09:00:00Z"
+  changelog: "2026-08-29 — Inclusão do agent prompt-structuring (exceção R-041): passo mandatório pós-agent-router com loop controlado de refinamento de prompt (máx. 5 iterações), sempre retornando ao agent-router. Vinculada nova skill prompt-engineering-patterns (APE/OPRO/DSPy/Anthropic/OpenAI) como base de conhecimento. Grafo de roteamento e suíte de evals atualizados (R-040)."

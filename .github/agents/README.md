@@ -16,6 +16,7 @@
 | Tipo | Nome | Quando usar |
 |---|---|---|
 | Agent | `agent-router` | Entry point obrigatório para classificar intenção e delegar para downstream |
+| Agent | `prompt-structuring` | ⚠️ ***(NEW)*** Passo mandatório pós-`agent-router` (R-041) — refina o prompt em loop controlado (máx. 5 iterações) antes de retornar para classificação de intenção |
 | Agent | `bug-triage` | Triagem de bugs/regressões com reprodução e severidade |
 | Agent | `test-strategy` | Estratégia de testes, cobertura por risco e critérios de aceitação |
 | Agent | `test-implementation` | ⭐ ***(NEW)*** Implementar suítes de testes unitários, integração e E2E com cobertura objetiva |
@@ -41,6 +42,7 @@
 | Cenário | Rota |
 |---|---|
 | Entrada padrão no chat | `agent-router` |
+| ⚠️ Toda solicitação (pós Health Check R-034) | `prompt-structuring` (mandatório, retorna ao `agent-router`) |
 | Bug, erro, regressão | `bug-triage` |
 | Estratégia de testes | `test-strategy` |
 | Implementação de testes (unit/integration/E2E) | `test-implementation` |

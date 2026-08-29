@@ -4,7 +4,7 @@ description: >
   Fonte de verdade para regressão de roteamento — deve ser atualizada
   em toda PR que altere agent-router.agent.md ou routing-graph.yaml (análogo ao R-015).
   Compatível com DeepEval (Apache 2.0) e pytest via estrutura de casos padronizados.
-last_updated: "2026-08-28"
+last_updated: "2026-08-29"
 responsavel: "agent-evals-lab + docs-curator"
 
 # ─────────────────────────────────────────────
@@ -140,6 +140,21 @@ canonicos:
     critico: true
     threshold: 1.00
 
+  - id: "canon-011"
+    descricao: "Prompt structuring mandatório (R-041) — toda solicitação passa por ele antes da classificação"
+    input:
+      solicitacao: "Implementar testes unitários para UserService"
+      contexto_disponivel: "binding context presente, solicitação ainda não refinada"
+    expected:
+      agent_route: "prompt-structuring"
+      nivel_routing: "rule-based"
+      prioridade: 0.5
+      confianca: "alta"
+      output_contains:
+        - "Delegado: @prompt-structuring"
+    critico: true
+    threshold: 1.00
+
 # ─────────────────────────────────────────────
 # SUITE 2 — Casos Ambíguos (threshold ≥ 0.70)
 # Intenção ambígua que exige clarificação ou roteamento defensivo.
@@ -254,6 +269,29 @@ regressao:
       agent_route: "binding-initializer"
     nao_deve:
       agent_route: "test-implementation"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-006"
+    descricao: "REGRESSÃO: prompt-structuring NUNCA deve exceder 5 iterações de loop (R-041)"
+    input:
+      solicitacao: "Solicitação extremamente vaga que nunca atinge completude"
+      contexto_simulado: "loop_count chegando a 5 sem <task>/<context>/<constraints>/<output_format> completos"
+    expected:
+      comportamento: "loop interrompido compulsoriamente em loop_count = 5, retorno forçado ao agent-router com sinalização de limitação"
+    nao_deve:
+      comportamento: "continuar loop além de loop_count = 5"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-007"
+    descricao: "REGRESSÃO: prompt-structuring nunca deve rotear diretamente para downstream"
+    input:
+      solicitacao: "Prompt já refinado por prompt-structuring"
+    expected:
+      agent_route: "agent-router"
+    nao_deve:
+      agent_route: "bug-triage|test-strategy|refactor-planner|impact-architect|docs-curator"
     critico: true
     threshold: 1.00
 

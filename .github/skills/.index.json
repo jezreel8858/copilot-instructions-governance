@@ -1,11 +1,21 @@
 {
   "version": "1.0",
   "domain": "governanca-ai-generica",
-  "generated_at": "2026-08-29T07:00:00Z",
+  "generated_at": "2026-08-29T09:00:00Z",
   "summary": {
-    "total_skills": 35
+    "total_skills": 36
   },
   "skills": [
+    {
+      "name": "prompt-engineering-patterns",
+      "tier": 2,
+      "category": "process",
+      "path": ".github/skills/prompt-engineering-patterns/SKILL.md",
+      "related_agents": [
+        "@prompt-structuring",
+        "@agent-router"
+      ]
+    },
     {
       "name": "context-mode",
       "tier": 1,

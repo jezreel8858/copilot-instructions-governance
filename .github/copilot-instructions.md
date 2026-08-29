@@ -53,6 +53,10 @@ Solicitação
     ↓
 @agent-router (triagem)
     ↓
+@prompt-structuring (R-041 — obrigatório, loop máx. 5 iterações)
+    ↓
+@agent-router (retomada com prompt refinado)
+    ↓
 [Rota decidida]
     ↓
 @bug-triage | @test-strategy | @refactor-planner |
@@ -77,6 +81,7 @@ Esta matriz é **responsabilidade do roteador** — não é regra global.
 ## 2) 🛑 Regras de Autonomia (não negociáveis)
 
 - **Agent Router First (R-037)**: TODA solicitação começa com `@agent-router`. Pular router é violação de governança.
+- **Prompt Structuring Obrigatório (R-041)**: após o Health Check (R-034), o `@agent-router` SEMPRE delega ao `@prompt-structuring` antes de classificar intenção. Esse é o **único** agent do catálogo autorizado a operar em loop de auto-refinamento, limitado a **5 iterações** — ao atingir o limite, prossegue compulsoriamente com o melhor prompt disponível e retorna ao `@agent-router`. Nenhum outro agent pode adotar esse padrão de loop.
 - **Não gere documentação automaticamente (R-033)**: nunca gere documentos `.md` se não for solicitado ou sem a aprovação por `ask_questions`.
 - **Sem loops de correção**: se falhar, PARE, explique e aguarde aprovação.
 - **Sem commits/push autônomos**: gere apenas a mensagem via `/commit`. Nunca `git add/commit/push`.
@@ -299,6 +304,9 @@ Escolha uma ação:
 
 **⭐ PONTO DE ENTRADA OBRIGATÓRIO:**
 - `agent-router` → **SEMPRE INVOCAR PRIMEIRO** (triagem + roteamento para downstream)
+
+**Passo mandatório pós-router (R-041):**
+- `prompt-structuring` → ⚠️ **SEMPRE acionado pelo `agent-router`** logo após o Health Check (R-034) e antes de qualquer classificação de intenção. Refina o prompt em loop controlado (máx. 5 iterações) e retorna sempre ao `agent-router`.
 
 **Downstream (conforme rota do router):**
 - `bug-triage` -> triagem de bugs e regressões.

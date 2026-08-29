@@ -25,6 +25,7 @@ Toda skill deve declarar no topo:
 
 | Skill | Tier sugerido | Quando usar |
 |---|---|---|
+| **`prompt-engineering-patterns`** | 🧠 **Tier 2** | Técnicas consolidadas (APE/OPRO/DSPy/Anthropic/OpenAI) para estruturar prompts em `<task>/<context>/<constraints>/<output_format>`, detectar ambiguidade objetivamente e aplicar self-critique — base do agent `prompt-structuring` |
 | `context-mode` | Tier 1 | Roteamento ctx-first, coleta em batch, busca indexada e processamento em sandbox com economia de tokens/créditos |
 | `sonarqube-governance` | Tier 2 | Monitorar métricas de qualidade, cobertura e segurança via SonarQube |
 | `tavily` | Tier 2 | Pesquisar documentação externa, changelog, versões e referências de terceiros |
