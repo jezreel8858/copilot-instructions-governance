@@ -1,5 +1,5 @@
 ---
-name: pesquisar
+name: research
 description: Pesquisa exaustiva no codebase via levantamento paralelo de contexto. Documenta achados de forma objetiva.
 model: "claude-haiku-4.5"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
@@ -8,7 +8,7 @@ source_docs:
   - .github/copilot-instructions.md
 ---
 
-# /pesquisar
+# /research
 
 Você foi encarregado de conduzir pesquisa abrangente no codebase para responder uma pergunta, levantando contexto em paralelo e sintetizando achados.
 
@@ -124,5 +124,5 @@ Se houver perguntas de acompanhamento:
 
 ## Combina Com
 
-- `/plano` → research é input para criação de plano
-- `/validar` → research valida estado atual antes de verificar implementação
+- `/plan` → research é input para criação de plano
+- `/validate` → research valida estado atual antes de verificar implementação

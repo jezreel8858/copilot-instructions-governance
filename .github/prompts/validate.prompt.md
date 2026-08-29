@@ -1,5 +1,5 @@
 ---
-name: validar
+name: validate
 description: Valida implementação contra plano aprovado, verifica critérios de sucesso e identifica desvios.
 model: "claude-haiku-4.5"
 tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'get_errors', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
@@ -8,7 +8,7 @@ source_docs:
   - .github/copilot-instructions.md
 ---
 
-# /validar
+# /validate
 
 Você foi encarregado de validar que um plano foi implementado corretamente, verificando critérios e identificando desvios.
 
@@ -122,5 +122,5 @@ Para cada fase:
 
 ## Combina Com
 
-- `/implementar` → precede este command
-- `/plano` → se validação revela necessidade de ajustar plano
+- `/implement` → precede este command
+- `/plan` → se validação revela necessidade de ajustar plano

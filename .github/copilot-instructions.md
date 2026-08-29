@@ -447,7 +447,7 @@ Cada adapter em `.github/instructions/` deve:
 - **Instructions:** `.github/instructions/README.md` + `.github/instructions/*.instructions.md`
 - **Agents:** `.github/agents/README.md` + `.github/agents/catalog.yaml`
 - **Skills:** `.github/skills/README.md` + `.github/skills/.index.json`
-- **Prompts Workflow:** `/pesquisar` `/plano` `/implementar` `/validar`
+- **Prompts Workflow:** `/research` `/plan` `/implement` `/validate` `/commit` `/review`
 - **Prompts Context Mode:** `/ctx-checkpoint` `/ctx-resume` `/ctx-doctor` `/ctx-status` `/ctx-insight`
 - **Índice completo:** `.github/prompts/README.md`
 - **Hooks:** `.github/hooks/README.md` + `.github/hooks/context-mode.json`

@@ -304,6 +304,7 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
     → /del-project-context <nome-projeto>     para desplugar um projeto
     → @agent-router                           para classificar intenção
     → /health                                 para checar saúde da governança
+    → /research, /plan, /implement, /validate para fluxo de desenvolvimento
     → Nenhum arquivo será criado fora DESTE repositório de governança ✅
 
 ℹ️  Validação de contexto: ✅ SUCESSO

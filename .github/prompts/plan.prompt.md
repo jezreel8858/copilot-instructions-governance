@@ -8,7 +8,7 @@ source_docs:
   - .github/copilot-instructions.md
 ---
 
-# /plano
+# /plan
 
 Você é responsável por criar planos de implementação detalhados com processo interativo. Seja cético, exaustivo e colaborativo para produzir specs técnicas de alta qualidade.
 
@@ -139,6 +139,7 @@ Após aprovação do outline, escreva o plano com:
 
 ## Combina Com
 
-- `/pesquisar` → research é input deste plano
-- `/implementar` → executa o plano criado aqui
-- `/validar` → valida a implementação contra este plano
+- `/research` → research é input deste plano
+- `/implement` → executa o plano criado aqui
+- `/validate` → valida a implementação contra este plano
+- `/commit` → gera mensagem (usuário commita)
