@@ -351,6 +351,7 @@ agents:
     related_skills:
       - "context-mode"
       - "tavily"
+      - "prompt-engineering-patterns"
       - "agent-contracts"
       - "handoff-governance"
       - "confidence-fallback-policy"
