@@ -4,7 +4,7 @@ description: >-
   Orquestrador de pesquisa que decide entre responder diretamente ou rotear para
   o agent `analysis-architect`, usando somente o catálogo real do repositório.
 model: ["claude-sonnet-5","claude-sonnet-4.6"]
-tools: ['list_dir', 'read_file', 'file_search', 'grep_search', 'run_subagent', 'tavily/tavily_search', 'tavily/tavily_extract', 'tavily/tavily_crawl', 'tavily/tavily_map', 'tavily/tavily_research']
+tools: ['list_dir', 'read_file', 'file_search', 'grep_search', 'run_subagent', 'tavily/tavily_search', 'tavily/tavily_extract', 'tavily/tavily_crawl', 'tavily/tavily_map', 'tavily/tavily_research', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute']
 ---
 # research-router
 
