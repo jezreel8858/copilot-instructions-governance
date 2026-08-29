@@ -6,6 +6,27 @@ Formato: [Semantic Versioning](https://semver.org/) | [Conventional Commits](htt
 
 ---
 
+## [1.3.0] — 2026-08-29
+
+### Adicionado
+- **Agent `docs-writer`**: Perfil documentador agnóstico de domínio — gera/atualiza documentação técnica em Markdown (Diátaxis, ADR/MADR, README, runbook, postmortem); produz exclusivamente arquivos `.md`; nunca alucina comportamento não verificado no código-fonte
+- **Skill `documentation-writing-patterns`** (Tier 2): base de conhecimento consolidada via pesquisa de mercado (Diátaxis, Google/Microsoft Style Guide, MADR, standard-readme, `llms.txt`, anti-alucinação Anthropic/Copilot/Cursor) — base do `docs-writer`
+- **`docs/ai-context/routing-graph.yaml`**: novo nó + aresta `agent-router → docs-writer` (R-040), com `nao_confundir_com` cruzado em relação a `docs-curator`
+- **`docs/ai-context/evals/casos-roteamento.yaml`**: `canon-012` (roteamento correto para `docs-writer`), `regr-008` e `regr-009` (não-confusão `docs-writer` × `docs-curator`) — suíte passa de 23 para 29 casos
+- **`agent-router.agent.md`**: nova ramificação na Decision Tree (escrita de doc nova vs. curadoria existente) — bump `version: 1.1.0 → 1.2.0`
+
+### Corrigido
+- **SYNC (auditoria de tools/perfis dos 21 agents)**: corrigido typo `@analysis-integration-architect` → `@analysis-architect` em 2 skills (`dependency-graph-mapping`, `integration-contract-analysis`) no `.index.json`
+- **SYNC**: `related_agents` de `context-mode`, `tavily`, `code-tracing` e `prompt-engineering-patterns` expandidos no `.index.json` para refletir `tools:` reais declaradas em cada agent
+- **SYNC**: seção "Docs Sempre Anexadas" (pre-fetch) completada em 8 agents (`research-router`, `agent-router`, `analysis-architect`, `impact-architect`, `refactor-planner`, `test-strategy`, `bug-triage`, `skill-factory`) — skills usadas nas `tools:` não estavam referenciadas no pre-fetch
+- **SYNC**: `catalog.yaml` (`related_skills`) alinhado ao pre-fetch de `impact-architect`, `refactor-planner` e `test-strategy`
+- **README.md**: consolidado para refletir estado real — 22 agents (antes citava 17), 37 skills (antes citava 29), remoção de referência ao agent já unificado `analysis-integration-architect`, contagem de casos de evals (23 → 29), diagrama Mermaid atualizado com `docs-writer`
+
+### Conformidade
+- Decisão de escopo registrada: **não** foi adicionado campo `profile:` no frontmatter dos agents — `agent-contracts/SKILL.md` § 8 já é fonte única de verdade para o mapeamento perfil → template de saída (evita duplicação — R-003)
+
+---
+
 ## [1.2.0] — 2026-06-12
 
 ### Adicionado

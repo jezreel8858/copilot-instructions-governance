@@ -109,10 +109,10 @@ flowchart TD
     B -- Sim --> D
     D --> E["@agent-router\nR-037 — entry point"]
     E --> F["bug-triage"]
-    E --> G["test-strategy\ntest-implementation"]
+    E --> G["test-strategy\ntest-implementation\ntest-fix"]
     E --> H["refactor-planner\nimpact-architect"]
-    E --> I["docs-curator\nresearch-router"]
-    E --> J["analysis-architect\n"]
+    E --> I["docs-curator\ndocs-writer"]
+    E --> J["research-router\nanalysis-architect"]
     F & G & H & I & J --> K["Resultado"]
     K --> L["/commit\nmensagem gerada"]
 ```
@@ -181,18 +181,26 @@ flowchart TD
 - ✅ `database.instructions.md` — Banco de dados / Migrações
 - ✅ `devops.instructions.md` — Docker, Kubernetes, CI/CD
 
-### Agents (17 catalogados)
-- ✅ `agent-router` v1.1.0 — com `version:` no frontmatter, confidence score numérico e nível de routing no output
-- ✅ 16 agents downstream especializados (bug-triage, test-*, refactor-planner, impact-architect, docs-curator, research-router, analysis-architect, analysis-integration-architect, agent-factory, skill-factory, business-rules-extractor, context-builder, binding-initializer, adapter-generator)
+### Agents (22 catalogados)
+- ✅ `agent-router` v1.2.0 — com `version:` no frontmatter, confidence score numérico, nível de routing no output e rota para `docs-writer` (R-040)
+- ✅ `prompt-structuring` — passo mandatório pós-Health Check (R-041), loop de auto-refinamento (máx. 5 iterações)
+- ✅ 20 agents downstream especializados, agrupados por função:
+  - **Triagem/Qualidade:** `bug-triage`, `test-strategy`, `test-implementation`, `test-fix`
+  - **Planejamento/Impacto:** `refactor-planner`, `impact-architect`, `business-rules-extractor`
+  - **Documentação:** `docs-curator` (curadoria de doc existente), `docs-writer` (escrita de doc nova em `.md`, perfil documentador)
+  - **Pesquisa/Análise:** `research-router`, `analysis-architect` (unificado com integrações cross-sistema OpenAPI/AsyncAPI/gRPC/GraphQL)
+  - **Especialistas de Recomendação (enterprise, sem implementar):** `angular`, `spring-boot`, `spring-reactive`
+  - **Governança de Agents/Skills/Prompts:** `agent-factory`, `skill-factory`, `prompt-factory`
+  - **Contexto/Binding:** `context-builder`, `binding-initializer`, `adapter-generator`
 
-### Skills (29 indexadas)
-- ✅ Tier 1 (Core): context-mode, agent-contracts, handoff-governance, confidence-fallback-policy, agent-safety-guardrails, terminal-governance, code-tracing, business-rules-governance
-- ✅ Tier 2 (Support): 20 skills cobrindo testing, observability, quality, tooling, research, documentation
+### Skills (37 indexadas)
+- ✅ Tier 1 (Core): `context-mode`, `agent-contracts`, `handoff-governance`, `confidence-fallback-policy`, `agent-safety-guardrails`, `terminal-governance`, `code-tracing`, `business-rules-governance`, `java-jdk-backend-governance`
+- ✅ Tier 2 (Support): 27 skills cobrindo testing (backend/frontend/Spring Boot/Angular/Python), observability, quality, tooling, research, frontend patterns, backend patterns e **documentation** (`documentation-writing-patterns` — base do `docs-writer`)
 - ✅ Tier 3 (Experimental): `agent-memory-policy` — memória episódica/semântica/procedimental
 
 ### Artefatos Estruturais de Orquestração (novo — 2026-08-28/29)
-- ✅ `docs/ai-context/routing-graph.yaml` — grafo de roteamento declarado (R-040): nós, arestas, condições e política de cascata rule-based→semantic→LLM
-- ✅ `docs/ai-context/evals/casos-roteamento.yaml` — suíte de 23 casos de teste (canônicos, ambíguos, regressão, segurança)
+- ✅ `docs/ai-context/routing-graph.yaml` — grafo de roteamento declarado (R-040): nós, arestas, condições e política de cascata rule-based→semantic→LLM; inclui rota dedicada para `docs-writer` (distinta de `docs-curator`)
+- ✅ `docs/ai-context/evals/casos-roteamento.yaml` — suíte de 29 casos de teste (12 canônicos, 4 ambíguos, 9 regressão, 4 segurança) — inclui casos de não-confusão `docs-writer` × `docs-curator`
 - ✅ `docs/ai-context/catalog.yaml` v1.2 — seção `governance_artefacts` com os novos artefatos
 
 ### Skills de Orquestração Evoluídas (2026-08-28)
@@ -201,6 +209,11 @@ flowchart TD
 - ✅ `context-mode` — 6 dimensões de memória short-term vs long-term formalizadas
 - ✅ `confidence-fallback-policy` — routing em cascata (rule→semantic→LLM) + ambiguity zone + logging estruturado
 - ✅ `agent-evals-lab` — seção 9 com link para arquivo real de casos (suíte deixou de ser aspiracional)
+
+### Perfil Documentador (novo — 2026-08-29)
+- ✅ `docs-writer` (agent) — perfil documentador agnóstico de domínio; gera/atualiza documentação técnica em Markdown (Diátaxis, ADR/MADR, README, runbook, postmortem); produz **exclusivamente** arquivos `.md`; nunca alucina comportamento não verificado no código-fonte
+- ✅ `documentation-writing-patterns` (skill, Tier 2) — base de conhecimento consolidada via pesquisa de mercado (Diátaxis, Google/Microsoft Style Guide, MADR, standard-readme, `llms.txt`, práticas anti-alucinação Anthropic/Copilot/Cursor)
+- ✅ Diferença de escopo: `docs-writer` **escreve documentação nova**; `docs-curator` **cura/padroniza documentação de governança já existente** — roteamento distinguido em `routing-graph.yaml` e validado em `casos-roteamento.yaml` (`regr-008`, `regr-009`)
 
 ---
 

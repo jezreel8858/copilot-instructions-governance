@@ -1,6 +1,6 @@
 ---
 name: agent-router
-version: "1.1.0"
+version: "1.2.0"
 description: >-
   Entry point obrigatório agent-first para classificar solicitações e delegar ao
   agent downstream correto, com fallback para pesquisa e análise de integração.
@@ -98,8 +98,11 @@ Pedido recebido (já refinado por @prompt-structuring)?
 |- É análise de impacto, dependências, contratos ou risco?
 |  |- Sim -> @impact-architect
 |  \- Não
-|- É curadoria de documentação, padrão ou rastreabilidade?
+|- É curadoria de documentação, padrão ou rastreabilidade já existente?
 |  |- Sim -> @docs-curator
+|  \- Não
+|- É escrita/geração de documentação técnica nova (.md), agnóstica de domínio?
+|  |- Sim -> @docs-writer
 |  \- Não
 |- É triagem de pesquisa ou dúvida externa?
 |  |- Sim -> @research-router
@@ -181,7 +184,8 @@ Próximo passo mínimo:
 - `@business-rules-extractor` (`business-rules-extractor.agent.md`) para extração de regras de negócio e validação de refatorações.
 - `@refactor-planner` (`refactor-planner.agent.md`) para planejamento de refactor.
 - `@impact-architect` (`impact-architect.agent.md`) para impacto técnico e risco local.
-- `@docs-curator` (`docs-curator.agent.md`) para curadoria de documentação.
+- `@docs-curator` (`docs-curator.agent.md`) para curadoria de documentação já existente.
+- `@docs-writer` (`docs-writer.agent.md`) para escrita/geração de documentação técnica nova em `.md`, agnóstica de domínio.
 - [`@research-router`](research-router.agent.md) como fallback para pesquisa externa.
 - [`@analysis-architect`](analysis-architect.agent.md) como fallback para integração cross-sistema.
 

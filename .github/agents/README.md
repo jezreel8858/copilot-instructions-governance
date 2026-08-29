@@ -36,6 +36,7 @@
 | Agent | `angular` | 🅰️ Especialista Angular **enterprise** para análise/recomendação (arquitetura moderna, RxJS+Signals, performance CWV/SSR, segurança, acessibilidade, testes e upgrades), carregando skills de componentização, patterns Angular e contratos de API de componentes para design system, sem implementação direta |
 | Agent | `spring-boot` | ☕ ***(NEW)*** Especialista backend Spring Boot **enterprise** para análise/recomendação (arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração), sem implementação direta |
 | Agent | `spring-reactive` | ⚛️ ***(NEW)*** Especialista backend reativo Spring WebFlux/Reactor **enterprise** para análise/recomendação (capacidade, resiliência, backpressure, observabilidade, segurança e compatibilidade Java/JDK), sem implementação direta |
+| Agent | `docs-writer` | 📝 ***(NEW)*** Perfil documentador agnóstico de domínio — gera/atualiza documentação técnica em Markdown (Diátaxis, ADR/MADR, README, runbook, postmortem), produz exclusivamente arquivos `.md` |
 
 ## 3) Roteamento Rápido
 
@@ -62,6 +63,7 @@
 | 🅰️ Análise e recomendação Angular | `angular` |
 | ☕ Análise e recomendação backend Spring Boot | `spring-boot` |
 | ⚛️ Análise e recomendação backend reativo WebFlux/Reactor | `spring-reactive` |
+| 📝 Escrever/gerar documentação técnica em `.md` (qualquer domínio) | `docs-writer` |
 
 ## 4) Pre-fetch Recomendado
 
@@ -110,3 +112,4 @@ Antes de tarefas não triviais, anexar ao contexto:
 | Curadoria/governança | `agent-contracts`, `agent-safety-guardrails`, `agent-evals-lab` |
 | Operação com métricas | `agent-observability-otel` |
 | Agents com memória adaptativa | `agent-memory-policy` (Tier 3 — experimental) |
+| Documentação (escrita) | `documentation-writing-patterns`, `mermaid-diagrams`, `agent-contracts` |

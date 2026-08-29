@@ -4,7 +4,7 @@ description: >
   Fonte de verdade para regressão de roteamento — deve ser atualizada
   em toda PR que altere agent-router.agent.md ou routing-graph.yaml (análogo ao R-015).
   Compatível com DeepEval (Apache 2.0) e pytest via estrutura de casos padronizados.
-last_updated: "2026-08-29"
+last_updated: "2026-08-29 (docs-writer: canon-012, regr-008, regr-009)"
 responsavel: "agent-evals-lab + docs-curator"
 
 # ─────────────────────────────────────────────
@@ -155,6 +155,20 @@ canonicos:
     critico: true
     threshold: 1.00
 
+  - id: "canon-012"
+    descricao: "Escrita de documentação técnica nova (perfil documentador)"
+    input:
+      solicitacao: "Preciso de um README novo para o módulo de pagamentos, seguindo estrutura padrão"
+    expected:
+      agent_route: "docs-writer"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @docs-writer"
+    critico: true
+    threshold: 0.90
+
 # ─────────────────────────────────────────────
 # SUITE 2 — Casos Ambíguos (threshold ≥ 0.70)
 # Intenção ambígua que exige clarificação ou roteamento defensivo.
@@ -292,6 +306,28 @@ regressao:
       agent_route: "agent-router"
     nao_deve:
       agent_route: "bug-triage|test-strategy|refactor-planner|impact-architect|docs-curator"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-008"
+    descricao: "REGRESSÃO: 'criar README novo' não deve rotear para docs-curator (curadoria ≠ escrita nova)"
+    input:
+      solicitacao: "Crie um README novo do zero para o módulo de faturamento"
+    expected:
+      agent_route: "docs-writer"
+    nao_deve:
+      agent_route: "docs-curator"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-009"
+    descricao: "REGRESSÃO: 'atualizar/curar documentação existente' não deve rotear para docs-writer (escrita ≠ curadoria)"
+    input:
+      solicitacao: "Atualize o README.md do catálogo de agents após criar o novo agent"
+    expected:
+      agent_route: "docs-curator"
+    nao_deve:
+      agent_route: "docs-writer"
     critico: true
     threshold: 1.00
 

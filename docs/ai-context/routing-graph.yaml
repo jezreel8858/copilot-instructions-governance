@@ -3,7 +3,7 @@ description: >
   Grafo de roteamento declarado — fonte de verdade estrutural para o agent-router.
   Nós = agents disponíveis; arestas = condições de roteamento (keywords, sinais R-006, score threshold).
   A Decision Tree em agent-router.agent.md é documentação derivada deste arquivo.
-last_updated: "2026-08-29"
+last_updated: "2026-08-29 (docs-writer: nó + aresta adicionados)"
 
 # ─────────────────────────────────────────────
 # NÓS — agents disponíveis no catálogo
@@ -51,6 +51,10 @@ nos:
   - id: docs-curator
     tipo: downstream
     descricao: "Curadoria e atualização de documentação de governança"
+
+  - id: docs-writer
+    tipo: downstream
+    descricao: "Geração/escrita de documentação técnica nova em Markdown, agnóstica de domínio (perfil documentador) — produz exclusivamente arquivos .md"
 
   - id: research-router
     tipo: fallback
@@ -236,6 +240,31 @@ arestas:
         - "README"
         - "catálogo"
         - "rastreabilidade de doc"
+      nao_confundir_com:
+        - "escrever documentação nova"  # → docs-writer
+        - "criar documentação técnica"  # → docs-writer
+
+  # Documentação — escrita/geração de conteúdo novo
+  - de: agent-router
+    para: docs-writer
+    prioridade: 5
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "escrever documentação"
+        - "criar documentação técnica"
+        - "gerar readme"
+        - "criar adr"
+        - "documentar decisão técnica"
+        - "gerar arquivo md"
+        - "documentador"
+        - "runbook"
+        - "postmortem"
+      sinal_r006: "É criação de documentação NOVA (não curadoria de doc já existente)?"
+      nao_confundir_com:
+        - "atualizar documentação existente"  # → docs-curator
+        - "curar catálogo"                    # → docs-curator
 
   # Agent factory
   - de: agent-router

@@ -807,7 +807,45 @@ agents:
       - ".github/skills/java-jdk-backend-governance/SKILL.md"
     estimated_time_minutes: 35
 
+  docs-writer:
+    id: "docs-writer"
+    priority: 9
+    domain: "Documentacao tecnica agnostica de dominio (perfil documentador)"
+    description: "Gera e atualiza documentacao tecnica em Markdown para qualquer dominio/assunto, aplicando estrutura consolidada de mercado (Diataxis, ADR/MADR, README, runbook, postmortem) — produz exclusivamente arquivos .md."
+    keywords:
+      - "escrever documentacao"
+      - "criar documentacao tecnica"
+      - "gerar readme"
+      - "criar adr"
+      - "documentar decisao tecnica"
+      - "gerar arquivo md"
+      - "documentador"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "docs-curator"
+      - "business-rules-extractor"
+      - "agent-router"
+    related_skills:
+      - "documentation-writing-patterns"
+      - "mermaid-diagrams"
+      - "business-rules-governance"
+      - "agent-contracts"
+      - "context-mode"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/docs-writer.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/documentation-writing-patterns/SKILL.md"
+    estimated_time_minutes: 15
+
 metadata:
-  total_agents: 21
-  last_updated: "2026-08-29T10:00:00Z"
-  changelog: "2026-08-29 — Consolidação de pre-fetch (auditoria de tools/perfis de todos os 21 agents): sincronizado related_skills de impact-architect (code-tracing, dependency-graph-mapping), refactor-planner (code-tracing, business-rules-governance, dependency-graph-mapping, integration-contract-analysis) e test-strategy (test-coverage-governance, test-implementation-backend/frontend) para refletir tools e Docs Sempre Anexadas reais. Ver também .github/skills/.index.json (correção de typo '@analysis-integration-architect' -> '@analysis-architect' e expansão de related_agents de context-mode/tavily/code-tracing/prompt-engineering-patterns) (R-015)."
+  total_agents: 22
+  last_updated: "2026-08-29T11:00:00Z"
+  changelog: "2026-08-29 (2) — Criado agent docs-writer (perfil documentador, Operacional): gera documentacao tecnica agnostica de dominio em .md, com base na skill nova documentation-writing-patterns (Diataxis, MADR, standard-readme, llms.txt, anti-alucinacao), pesquisada via research-router/tavily. Registrado em catalog.yaml, README.md, skills/.index.json e skills/README.md (R-015). | 2026-08-29 — Consolidação de pre-fetch (auditoria de tools/perfis de todos os 21 agents): sincronizado related_skills de impact-architect (code-tracing, dependency-graph-mapping), refactor-planner (code-tracing, business-rules-governance, dependency-graph-mapping, integration-contract-analysis) e test-strategy (test-coverage-governance, test-implementation-backend/frontend) para refletir tools e Docs Sempre Anexadas reais. Ver também .github/skills/.index.json (correção de typo '@analysis-integration-architect' -> '@analysis-architect' e expansão de related_agents de context-mode/tavily/code-tracing/prompt-engineering-patterns) (R-015)."
+

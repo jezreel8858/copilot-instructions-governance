@@ -42,7 +42,8 @@
         "@prompt-factory",
         "@angular",
         "@spring-boot",
-        "@spring-reactive"
+        "@spring-reactive",
+        "@docs-writer"
       ]
     },
     {
@@ -509,12 +510,23 @@
         "@analysis-architect",
         "@impact-architect"
       ]
+    },
+    {
+      "name": "documentation-writing-patterns",
+      "tier": 2,
+      "category": "documentation",
+      "description": "Diretrizes agnósticas de domínio para estruturar e escrever documentação técnica em Markdown (Diátaxis, ADR/MADR, README, front-matter, formatação chunking-friendly para IA).",
+      "path": ".github/skills/documentation-writing-patterns/SKILL.md",
+      "related_agents": [
+        "@docs-writer",
+        "@docs-curator"
+      ]
     }
   ],
   "metadata": {
-    "total_agents": 21,
-    "total_skills": 36,
-    "last_updated": "2026-08-29T10:00:00Z",
-    "changelog": "2026-08-29 — Consolidação de pre-fetch (auditoria de tools/perfis): corrigido typo '@analysis-integration-architect' -> '@analysis-architect' em dependency-graph-mapping e integration-contract-analysis; sincronizado related_agents de context-mode (20 agents), tavily (angular/spring-boot/spring-reactive), code-tracing (analysis-architect) e prompt-engineering-patterns (research-router) para refletir tools reais declaradas em cada agent (R-015)."
+    "total_agents": 22,
+    "total_skills": 37,
+    "last_updated": "2026-08-29T11:00:00Z",
+    "changelog": "2026-08-29 (2) — Criado agent @docs-writer (perfil documentador, Especialista-Recomendação/Operacional, gera somente .md) e skill documentation-writing-patterns (Diátaxis, MADR, standard-readme, llms.txt, anti-alucinação) via pesquisa web (tavily/research-router). Registrado em .index.json, README.md, agents/catalog.yaml e agents/README.md (R-015). | 2026-08-29 — Consolidação de pre-fetch (auditoria de tools/perfis): corrigido typo '@analysis-integration-architect' -> '@analysis-architect' em dependency-graph-mapping e integration-contract-analysis; sincronizado related_agents de context-mode (20 agents), tavily (angular/spring-boot/spring-reactive), code-tracing (analysis-architect) e prompt-engineering-patterns (research-router) para refletir tools reais declaradas em cada agent (R-015)."
   }
 }
