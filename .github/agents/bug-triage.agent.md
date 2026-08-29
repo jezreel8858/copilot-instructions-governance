@@ -4,7 +4,7 @@ description:
   Triar bugs e regressões com foco em reprodução, hipótese de causa raiz e plano
   mínimo de correção sem implementar a solução. Genérico — agnóstico de sistema
   de rastreamento (Jira, GitHub Issues, Linear, CSV ou relato livre).
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_in_terminal', 'ask_questions']
 ---
 

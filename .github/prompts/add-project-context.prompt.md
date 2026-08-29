@@ -5,7 +5,7 @@ description:
   Orquestra descoberta estruturada de projeto com Intent Classification + Multi-Query RRF.
   Análise estática offline → geração automática de YAML/Markdown → validação e binding atômico.
   Execute UMA VEZ POR PROJETO (reutilizável). PRÉ-REQUISITO `/init-context` já executado.
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 tools: ['file_search', 'grep_search', 'read_file', 'run_in_terminal']
 source_docs:
   - .github/skills/yaml-governance/SKILL.md

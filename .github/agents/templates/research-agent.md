@@ -1,7 +1,7 @@
 ---
 name: <nome-do-agent>
 description: <objetivo de pesquisa/read-only em 1 frase>
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 tools: [Read, Grep, Glob]
 ---
 

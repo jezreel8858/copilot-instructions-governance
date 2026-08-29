@@ -1,7 +1,7 @@
 ---
 name: plano
 description: Cria plano de implementação detalhado com processo interativo e iterativo.
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 ---
 
 # /plano

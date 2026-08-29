@@ -4,7 +4,7 @@ description:
   Orquestrador de pesquisa que decide entre responder diretamente ou rotear para
   o agent `analysis-architect`, usando somente o catálogo real do
   repositório.
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 tools: ['list_dir', 'read_file', 'file_search', 'grep_search', 'run_subagent']
 ---
 # research-router

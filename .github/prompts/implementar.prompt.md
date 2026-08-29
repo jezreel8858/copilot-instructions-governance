@@ -1,7 +1,7 @@
 ---
 name: implementar
 description: Implementa plano aprovado marcando `- [x]` ao concluir e pausando entre fases para verificação.
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 ---
 
 # /implementar

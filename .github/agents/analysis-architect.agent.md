@@ -1,7 +1,7 @@
 ---
 name: analysis-architect
 description: Arquiteto de análise técnica para avaliar impactos, riscos, dependências e contratos em mudanças de software multi-projeto.
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 tools: [ 'read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'tavily/tavily_search', 'tavily/tavily_extract', 'tavily/tavily_crawl', 'tavily/tavily_map', 'tavily/tavily_research', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_stats', 'context-mode/ctx_doctor', 'context-mode/ctx_upgrade', 'context-mode/ctx_purge', 'context-mode/ctx_insight' ]
 ---
 

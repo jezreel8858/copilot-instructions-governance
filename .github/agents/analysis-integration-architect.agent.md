@@ -3,7 +3,7 @@ name: analysis-integration-architect
 description: >-
   Arquiteto sênior de análise de integrações cross-sistema: contrato, fluxo de dados,
   grafo de dependências, detecção de breaking changes e classificação de risco operacional.
-model: "claude-sonnet-4.6"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_fetch_and_index', 'tavily/tavily_search', 'tavily/tavily_research']
 ---
 # Agente: Arquiteto de Análise de Integração
