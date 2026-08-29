@@ -56,6 +56,7 @@ Toda skill deve declarar no topo:
 | **`agent-memory-policy`** | 🧠 **Tier 3** | Política de memória long-term para agents: tipos episódico, semântico e procedimental. Foco em memória procedimental (agents auto-adaptativos) com guardrails e aprovação humana obrigatória |
 | **`frontend-componentization-patterns`** | 🧩 **Tier 2** | Padrões genéricos de componentização frontend (responsabilidade única, composição, contrato de componente, fronteiras de estado) |
 | **`angular-frontend-patterns`** | 🅰️ **Tier 2** | Boas práticas/patterns de codificação Angular (standalone, template/binding, Signals+RxJS, segurança e consistência) |
+| **`angular-responsive-ui-patterns`** | 📱 **Tier 2** | Responsividade Angular (mobile-first, breakpoints, container queries, layout fluido, imagens responsivas e validação multi-viewport) |
 | **`design-system-component-contracts`** | 🧱 **Tier 2** | Governança de contratos de componente para design system: tokens, variantes/estados, Inputs/Outputs, semver, depreciação, breaking change e acessibilidade |
 | **`spring-boot-backend-patterns`** | ☕ **Tier 2** | Baseline enterprise para análise/recomendação Spring Boot (arquitetura, observabilidade, segurança, performance e migração) |
 | **`spring-reactive-webflux-patterns`** | ⚛️ **Tier 2** | Baseline enterprise para análise/recomendação WebFlux/Reactor (adequação reativa, backpressure, resiliência e operação) |

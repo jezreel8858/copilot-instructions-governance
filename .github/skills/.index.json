@@ -415,6 +415,19 @@
       ]
     },
     {
+      "name": "angular-responsive-ui-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Diretrizes de responsividade para Angular: mobile-first, breakpoints, layout fluido, container queries, imagens responsivas e validação multi-viewport.",
+      "path": ".github/skills/angular-responsive-ui-patterns/SKILL.md",
+      "related_agents": [
+        "@angular",
+        "@analysis-architect",
+        "@impact-architect",
+        "@test-strategy"
+      ]
+    },
+    {
       "name": "design-system-component-contracts",
       "tier": 2,
       "category": "governance",
@@ -467,8 +480,8 @@
   ],
   "metadata": {
     "total_agents": 20,
-    "total_skills": 35,
-    "last_updated": "2026-08-29T07:00:00Z",
-    "changelog": "2026-08-29 — Adicionadas as skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; integração com os novos agents spring-boot/spring-reactive e sincronização de catálogos (R-015, R-026, R-038)."
+    "total_skills": 36,
+    "last_updated": "2026-08-29T08:10:00Z",
+    "changelog": "2026-08-29 — Adicionada a skill angular-responsive-ui-patterns para responsividade Angular e sincronização com o agent angular, além das skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; atualização dos catálogos (R-015, R-026, R-038)."
   }
 }
