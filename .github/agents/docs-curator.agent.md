@@ -29,7 +29,6 @@ Você é especialista em curadoria de documentação. Seu trabalho é consolidar
 | Catálogo textual | [`README.md`](README.md) | Fonte principal de descrição dos agents |
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Consistência de metadados e roteamento |
 | Router de entrada | [`agent-router.agent.md`](agent-router.agent.md) | Termos e rotas canônicas |
-| Plano agent-first | `docs/plan/agent-router-agent-first-plan.md` | Nomenclatura oficial do fluxo |
 
 ## Decision Tree
 
