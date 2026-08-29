@@ -64,7 +64,7 @@ Prompts operacionais para workflow de execução no chat.
 | `/plan` | `.github/prompts/plan.prompt.md` | Cria plano de implementação detalhado com processo interativo |
 | `/implement` | `.github/prompts/implement.prompt.md` | Executa plano aprovado com checkpoints e pausas para verificação |
 | `/validate` | `.github/prompts/validate.prompt.md` | Valida implementação contra plano e identifica desvios |
-| `/commit` | `.github/prompts/commit.prompt.md` | ⭐ **(NEW)** Gera mensagem de commit convencional (PT-BR, Conventional Commits). Nunca executa git. |
+| `/commit` | `.github/prompts/commit.prompt.md` | ⭐ **(v1.1)** Gera mensagem de commit convencional (PT-BR, Conventional Commits) com guardrail de secrets, atomic commits e trailers padronizados. Nunca executa git. |
 | `/review` | `.github/prompts/review.prompt.md` | ⭐ **(NEW)** Revisão de código por qualidade, convenções e impacto. Relatório compacto por severidade. |
 
 ---
