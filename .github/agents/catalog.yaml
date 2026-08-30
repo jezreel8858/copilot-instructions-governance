@@ -40,6 +40,43 @@ agents:
       - "docs/ai-context/evals/casos-roteamento.yaml"
     estimated_time_minutes: 15
 
+  prompt-structuring:
+    id: "prompt-structuring"
+    priority: 1.5
+    version: "1.0.0"
+    domain: "Refinamento estrutural de prompt (passo mandatorio)"
+    description: >-
+      Passo mandatorio pos-agent-router (excecao R-041): refina o prompt recebido
+      em loop controlado (maximo 5 iteracoes) no formato canonico
+      <task>/<context>/<constraints>/<output_format> e sempre retorna ao
+      agent-router antes de qualquer classificacao de intencao/delegacao downstream.
+    keywords:
+      - "refinar prompt"
+      - "estruturar prompt"
+      - "prompt loop"
+      - "meta-prompting"
+      - "clarificacao de prompt"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/agent-router.agent.md"
+    related_agents:
+      - "agent-router"
+    related_skills:
+      - "prompt-engineering-patterns"
+      - "agent-contracts"
+      - "confidence-fallback-policy"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/prompt-structuring.agent.md"
+      - ".github/agents/agent-router.agent.md"
+      - ".github/skills/prompt-engineering-patterns/SKILL.md"
+      - "docs/ai-context/routing-graph.yaml"
+      - "docs/ai-context/evals/casos-roteamento.yaml"
+    estimated_time_minutes: 5
+
   bug-triage:
     id: "bug-triage"
     priority: 2
@@ -98,6 +135,10 @@ agents:
       - "context-mode"
       - "agent-contracts"
       - "agent-evals-lab"
+      - "confidence-fallback-policy"
+      - "test-coverage-governance"
+      - "test-implementation-backend"
+      - "test-implementation-frontend"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
@@ -226,6 +267,10 @@ agents:
       - "context-mode"
       - "agent-contracts"
       - "confidence-fallback-policy"
+      - "code-tracing"
+      - "business-rules-governance"
+      - "dependency-graph-mapping"
+      - "integration-contract-analysis"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
@@ -258,6 +303,8 @@ agents:
       - "handoff-governance"
       - "agent-evals-lab"
       - "agent-observability-otel"
+      - "code-tracing"
+      - "dependency-graph-mapping"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
@@ -314,6 +361,7 @@ agents:
     related_skills:
       - "context-mode"
       - "tavily"
+      - "prompt-engineering-patterns"
       - "agent-contracts"
       - "handoff-governance"
       - "confidence-fallback-policy"
@@ -759,7 +807,120 @@ agents:
       - ".github/skills/java-jdk-backend-governance/SKILL.md"
     estimated_time_minutes: 35
 
+  docs-writer:
+    id: "docs-writer"
+    priority: 9
+    domain: "Documentacao tecnica agnostica de dominio (perfil documentador)"
+    description: "Gera e atualiza documentacao tecnica em Markdown para qualquer dominio/assunto, aplicando estrutura consolidada de mercado (Diataxis, ADR/MADR, README, runbook, postmortem) — produz exclusivamente arquivos .md."
+    keywords:
+      - "escrever documentacao"
+      - "criar documentacao tecnica"
+      - "gerar readme"
+      - "criar adr"
+      - "documentar decisao tecnica"
+      - "gerar arquivo md"
+      - "documentador"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "docs-curator"
+      - "business-rules-extractor"
+      - "agent-router"
+    related_skills:
+      - "documentation-writing-patterns"
+      - "mermaid-diagrams"
+      - "business-rules-governance"
+      - "agent-contracts"
+      - "context-mode"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/docs-writer.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/documentation-writing-patterns/SKILL.md"
+    estimated_time_minutes: 15
+
+  code-review:
+    id: "code-review"
+    priority: 4.5
+    domain: "Revisao de codigo antes do merge (read-only, severidade)"
+    description: "Revisa diff/PR/arquivo por correcao, seguranca, convencoes, impacto, testes e performance; classifica achados por severidade (bloqueador/alta/sugestao); nunca corrige; delega para agents especializados quando necessario."
+    keywords:
+      - "revisar codigo"
+      - "code review"
+      - "revisao antes do merge"
+      - "analisar pull request"
+      - "revisar diff"
+      - "revisar pr"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "bug-triage"
+      - "impact-architect"
+      - "test-strategy"
+      - "refactor-planner"
+    related_skills:
+      - "code-review-patterns"
+      - "code-tracing"
+      - "agent-contracts"
+      - "terminal-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/code-review.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/code-review-patterns/SKILL.md"
+      - "docs/ai-context/catalog.yaml"
+    estimated_time_minutes: 20
+
+  requirements-analyst:
+    id: "requirements-analyst"
+    priority: 4.8
+    domain: "Elicitacao e estruturacao de requisitos (prospectivo, pre-tecnico)"
+    description: "Elicita e estrutura requisitos funcionais/nao-funcionais a partir de pedido de negocio ambiguo, aplicando EARS/INVEST/Gherkin/FURPS+; detecta solution-jumping via Five Whys; nunca decide arquitetura; nunca extrai regra de codigo existente (isso e escopo de business-rules-extractor)."
+    keywords:
+      - "levantar requisitos"
+      - "requisito ambiguo"
+      - "elicitacao de requisitos"
+      - "user story"
+      - "criterio de aceite"
+      - "requisito funcional"
+      - "requisito nao funcional"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "impact-architect"
+      - "analysis-architect"
+      - "refactor-planner"
+      - "business-rules-extractor"
+      - "test-strategy"
+    related_skills:
+      - "requirements-engineering-patterns"
+      - "agent-contracts"
+      - "context-mode"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/requirements-analyst.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/requirements-engineering-patterns/SKILL.md"
+      - "docs/ai-context/catalog.yaml"
+    estimated_time_minutes: 25
+
 metadata:
-  total_agents: 20
-  last_updated: "2026-08-29T07:00:00Z"
-  changelog: "2026-08-29 — Inclusão dos agents spring-boot e spring-reactive com foco analítico enterprise; integração das skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; catálogos sincronizados (R-015, R-026, R-038)."
+  total_agents: 24
+  last_updated: "2026-08-29T13:00:00Z"
+  changelog: "2026-08-29 (4) — Criado agent requirements-analyst (perfil Operacional, prospectivo): elicita e estrutura requisitos funcionais/nao-funcionais a partir de pedido de negocio ambiguo, aplicando ISO/IEC/IEEE 29148, notacao EARS, INVEST, Gherkin/BDD e FURPS+; detecta solution-jumping via tecnica Five Whys; nunca decide arquitetura (handoff para impact-architect/analysis-architect/refactor-planner); nunca extrai regra de codigo existente (nao confundir com business-rules-extractor, que e reverso). Skill requirements-engineering-patterns criada (pesquisa de mercado). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review (perfil Analista/Read-only): revisao de diff/PR por 6 dimensoes (correcao/seguranca/convencoes/impacto/testes/performance), taxonomia de severidade bloqueador/alta/sugestao, nunca corrige, delega para bug-triage/impact-architect/test-strategy/refactor-planner. Skill code-review-patterns criada (Google Eng Practices, OWASP, taxonomia de mercado CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040). | 2026-08-29 (2) — Criado agent docs-writer (perfil documentador, Operacional): gera documentacao tecnica agnostica de dominio em .md, com base na skill nova documentation-writing-patterns (Diataxis, MADR, standard-readme, llms.txt, anti-alucinacao), pesquisada via research-router/tavily. Registrado em catalog.yaml, README.md, skills/.index.json e skills/README.md (R-015)."
+

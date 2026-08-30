@@ -2,7 +2,7 @@
 name: spring-boot
 description: Especialista enterprise em análise e recomendação para backend Spring Boot, com foco em arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração, sem implementação.
 model: "claude-sonnet-5"
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'tavily/tavily_search', 'tavily/tavily_extract', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_index']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'tavily/tavily_search', 'tavily/tavily_extract', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_index']
 ---
 
 # Spring Boot Specialist

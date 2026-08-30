@@ -5,7 +5,7 @@ description: >-
   técnico em `docs/context/`, usando `docs/ai-context/catalog.yaml` como
   referência de escopo.
 model: "claude-haiku-4.5"
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'create_file', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'create_file', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
 # Construtor de Contexto
 

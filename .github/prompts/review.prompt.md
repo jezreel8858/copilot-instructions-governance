@@ -1,25 +1,29 @@
 ---
 name: review
 description:
-  Orquestra revisão de código com foco em qualidade, impacto e aderência às convenções.
-  Analisa diff ou arquivo alvo, classifica achados por severidade e gera relatório compacto.
-  Roteie automaticamente para @bug-triage (bugs) ou @impact-architect (impacto).
+  Aciona o agent @code-review para revisar diff/PR/arquivo por qualidade,
+  segurança, convenções, impacto e testes. Gera relatório por severidade.
+  NÃO executa alterações.
 model: ["claude-sonnet-5","claude-sonnet-4.6"]
-tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal']
+tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent']
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - docs/ai-context/catalog.yaml
   - .github/skills/terminal-governance/SKILL.md
+  - .github/skills/code-review-patterns/SKILL.md
+  - .github/agents/code-review.agent.md
 ---
 
 # `/review`
 
-Revisão de código orientada por qualidade, convenções e impacto técnico.
+Atalho manual on-demand para o agent [`@code-review`](../agents/code-review.agent.md) — revisão de código orientada por qualidade, convenções e impacto técnico.
 
-> **PROPÓSITO**: Analisar código (diff, PR ou arquivo) contra as convenções do projeto e identificar bugs, riscos, melhorias e gaps de teste.
+> **PROPÓSITO**: Analisar código (diff, PR ou arquivo) contra as convenções do projeto e identificar bugs, riscos, melhorias e gaps de teste, classificados por severidade.
 >
-> **NÃO executa alterações** — apenas analisa e reporta.
+> **NÃO executa alterações** — apenas analisa e reporta (agent `@code-review` é read-only).
+>
+> A lógica completa (taxonomia de severidade, dimensões de análise, critérios de bloqueio, anti-padrões) vive em `code-review.agent.md` + `code-review-patterns/SKILL.md` — este prompt apenas dispara o fluxo manualmente, sem duplicar a regra (R-003).
 
 ---
 
@@ -33,7 +37,7 @@ Revisão de código orientada por qualidade, convenções e impacto técnico.
 
 ---
 
-## 📋 Fluxo em 4 Passos
+## 📋 Fluxo
 
 ### PASSO 1 — Coletar mudanças
 
@@ -41,65 +45,28 @@ Revisão de código orientada por qualidade, convenções e impacto técnico.
 # Diff não commitado (padrão)
 git --no-pager diff HEAD
 
-# Ou ler arquivo alvo diretamente
+# Ou ler arquivo(s) alvo diretamente
 ```
 
-### PASSO 2 — Identificar convenções aplicáveis
+### PASSO 2 — Delegar ao agent `@code-review`
 
-- Ler `docs/ai-context/catalog.yaml` para identificar projeto e adapter
-- Carregar adapter correspondente (`.github/instructions/<projeto>.instructions.md`)
-- Usar adapter + CLAUDE.md como régua de qualidade
+Aplicar a Decision Tree e o formato de saída definidos em [`code-review.agent.md`](../agents/code-review.agent.md), usando [`code-review-patterns/SKILL.md`](../skills/code-review-patterns/SKILL.md) como base de severidade/dimensões e `docs/ai-context/catalog.yaml` para identificar o adapter de stack aplicável.
 
-### PASSO 3 — Analisar por dimensão
+### PASSO 3 — Apresentar o relatório
 
-| Dimensão | O que verificar |
-|----------|----------------|
-| **Bugs / Erros** | NPE, off-by-one, condições de corrida, typos críticos |
-| **Segurança** | Exposição de dados, injeção, autenticação bypassada |
-| **Convenções** | Aderência às regras do adapter (naming, logging, exceptions) |
-| **Impacto** | Mudanças que quebram contratos, dependências afetadas |
-| **Testes** | Cobertura insuficiente, cenários não cobertos |
-| **Performance** | N+1, queries sem índice, loops desnecessários |
-
-### PASSO 4 — Gerar relatório compacto
-
-```
-📋 REVISÃO DE CÓDIGO
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Arquivo(s): <lista>
-Convenções aplicadas: <adapter usado>
-
-🔴 BLOQUEADORES (requer correção antes do merge):
-  - [BUG] <descrição> → <arquivo:linha>
-  - [SEC] <descrição> → <arquivo:linha>
-
-🟠 RECOMENDAÇÕES (alta prioridade):
-  - [CONV] <descrição> → <arquivo:linha>
-  - [TESTE] <cobertura faltando> → <cenário>
-
-🟡 SUGESTÕES (baixa prioridade):
-  - [PERF] <otimização opcional> → <arquivo:linha>
-  - [STYLE] <ajuste de estilo>
-
-✅ APROVAÇÕES:
-  - <o que está bem feito>
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Resultado: <APROVADO | APROVADO COM RESSALVAS | BLOQUEADO>
-Próximo passo: <ação mínima se houver bloqueador>
-```
+O relatório e o veredito final (`APROVADO | APROVADO COM RESSALVAS | BLOQUEADO`) seguem exatamente o "Formato de Saída" do agent `@code-review` — ver arquivo referenciado.
 
 ---
 
-## 🔀 Roteamento Automático
+## 🔀 Roteamento Automático (herdado do agent)
 
 | Achado | Ação |
 |--------|------|
-| Bug crítico encontrado | Reportar no relatório + sugerir `@bug-triage` |
-| Impacto em dependências | Reportar + sugerir `@impact-architect` |
-| Falta de testes | Reportar + sugerir `@test-strategy` |
-| Apenas convenção | Incluir no relatório, sem escalação |
+| Bug crítico encontrado | Reportar no relatório + handoff `@bug-triage` |
+| Impacto em dependências | Reportar + handoff `@impact-architect` |
+| Falta de testes | Reportar + handoff `@test-strategy` |
+| Dívida técnica estrutural | Reportar + handoff `@refactor-planner` |
+| Apenas convenção/estilo | Incluir no relatório, sem escalação |
 
 ---
 
@@ -107,10 +74,17 @@ Próximo passo: <ação mínima se houver bloqueador>
 
 - ❌ **NUNCA** alterar o código sendo revisado
 - ❌ **NUNCA** criar commits ou arquivos derivados da revisão
-- ✅ **APENAS** analisar e reportar achados
-- ✅ Se achado exige ação complexa → sugira o agent correto via `@agent-router`
+- ✅ **APENAS** analisar e reportar achados (delegado ao agent `@code-review`)
+- ✅ Se achado exige ação complexa → sugerir o agent correto via handoff
 
 ---
 
-*v1.0 — review prompt — 2026-06-12*
+## 🔄 Combina Com
+
+- [`@code-review`](../agents/code-review.agent.md) → agent que concentra a lógica completa deste prompt.
+- `@agent-router` → roteamento em linguagem natural ("revisa esse código") sem precisar digitar `/review`.
+
+---
+
+*v2.0 — review prompt — 2026-08-29 (consolidado como alias do agent @code-review, remove duplicação de lógica — R-003)*
 

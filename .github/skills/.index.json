@@ -1,19 +1,49 @@
 {
   "version": "1.0",
   "domain": "governanca-ai-generica",
-  "generated_at": "2026-08-29T07:00:00Z",
+  "generated_at": "2026-08-29T09:00:00Z",
   "summary": {
-    "total_skills": 35
+    "total_skills": 36
   },
   "skills": [
+    {
+      "name": "prompt-engineering-patterns",
+      "tier": 2,
+      "category": "process",
+      "path": ".github/skills/prompt-engineering-patterns/SKILL.md",
+      "related_agents": [
+        "@prompt-structuring",
+        "@agent-router",
+        "@research-router"
+      ]
+    },
     {
       "name": "context-mode",
       "tier": 1,
       "category": "process",
       "path": ".github/skills/context-mode/SKILL.md",
       "related_agents": [
+        "@agent-router",
         "@research-router",
-        "@analysis-architect"
+        "@analysis-architect",
+        "@bug-triage",
+        "@impact-architect",
+        "@refactor-planner",
+        "@business-rules-extractor",
+        "@docs-curator",
+        "@context-builder",
+        "@test-strategy",
+        "@test-implementation",
+        "@test-fix",
+        "@agent-factory",
+        "@skill-factory",
+        "@binding-initializer",
+        "@adapter-generator",
+        "@prompt-factory",
+        "@angular",
+        "@spring-boot",
+        "@spring-reactive",
+        "@docs-writer"
       ]
     },
     {
@@ -63,7 +93,10 @@
       "path": ".github/skills/tavily/SKILL.md",
       "related_agents": [
         "@research-router",
-        "@analysis-architect"
+        "@analysis-architect",
+        "@angular",
+        "@spring-boot",
+        "@spring-reactive"
       ]
     },
     {
@@ -331,7 +364,8 @@
         "@test-fix",
         "@impact-architect",
         "@refactor-planner",
-        "@business-rules-extractor"
+        "@business-rules-extractor",
+        "@analysis-architect"
       ]
     },
     {
@@ -356,7 +390,7 @@
       "description": "Análise e validação de contratos de integração (OpenAPI, AsyncAPI, gRPC, GraphQL): detecção de breaking changes, classificação BREAKING/COMPATIBLE/DEPRECIAÇÃO e mapeamento de consumidores afetados.",
       "tools": ["grep_search", "file_search", "read_file", "context-mode/ctx_batch_execute", "context-mode/ctx_execute"],
       "related_agents": [
-        "@analysis-integration-architect",
+        "@analysis-architect",
         "@impact-architect",
         "@refactor-planner"
       ]
@@ -369,7 +403,7 @@
       "description": "Mapeamento de grafo de dependências entre sistemas, módulos e serviços: rastreamento de fluxo origem→transformação→destino, análise de acoplamento (tight/loose) e blast radius.",
       "tools": ["grep_search", "file_search", "read_file", "context-mode/ctx_batch_execute", "context-mode/ctx_execute"],
       "related_agents": [
-        "@analysis-integration-architect",
+        "@analysis-architect",
         "@impact-architect",
         "@refactor-planner",
         "@business-rules-extractor"
@@ -476,12 +510,47 @@
         "@analysis-architect",
         "@impact-architect"
       ]
+    },
+    {
+      "name": "documentation-writing-patterns",
+      "tier": 2,
+      "category": "documentation",
+      "description": "Diretrizes agnósticas de domínio para estruturar e escrever documentação técnica em Markdown (Diátaxis, ADR/MADR, README, front-matter, formatação chunking-friendly para IA).",
+      "path": ".github/skills/documentation-writing-patterns/SKILL.md",
+      "related_agents": [
+        "@docs-writer",
+        "@docs-curator"
+      ]
+    },
+    {
+      "name": "code-review-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Diretrizes de mercado para revisão de código automatizada por IA — taxonomia de severidade, dimensões de análise, critérios de bloqueio de merge e anti-padrões de review.",
+      "path": ".github/skills/code-review-patterns/SKILL.md",
+      "related_agents": [
+        "@code-review",
+        "@bug-triage",
+        "@impact-architect"
+      ]
+    },
+    {
+      "name": "requirements-engineering-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Diretrizes de Engenharia de Requisitos (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+) para elicitar e estruturar requisitos funcionais/não-funcionais a partir de pedidos de negócio ambíguos, com detecção de solution-jumping via Five Whys.",
+      "path": ".github/skills/requirements-engineering-patterns/SKILL.md",
+      "related_agents": [
+        "@requirements-analyst",
+        "@impact-architect",
+        "@analysis-architect"
+      ]
     }
   ],
   "metadata": {
-    "total_agents": 20,
-    "total_skills": 36,
-    "last_updated": "2026-08-29T08:10:00Z",
-    "changelog": "2026-08-29 — Adicionada a skill angular-responsive-ui-patterns para responsividade Angular e sincronização com o agent angular, além das skills spring-boot-backend-patterns, spring-reactive-webflux-patterns e java-jdk-backend-governance; atualização dos catálogos (R-015, R-026, R-038)."
+    "total_agents": 24,
+    "total_skills": 39,
+    "last_updated": "2026-08-29T13:00:00Z",
+    "changelog": "2026-08-29 (4) — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
   }
 }

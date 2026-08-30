@@ -3,7 +3,7 @@ description: >
   Grafo de roteamento declarado — fonte de verdade estrutural para o agent-router.
   Nós = agents disponíveis; arestas = condições de roteamento (keywords, sinais R-006, score threshold).
   A Decision Tree em agent-router.agent.md é documentação derivada deste arquivo.
-last_updated: "2026-08-28"
+last_updated: "2026-08-29 (requirements-analyst: nó + aresta adicionados)"
 
 # ─────────────────────────────────────────────
 # NÓS — agents disponíveis no catálogo
@@ -12,6 +12,13 @@ nos:
   - id: agent-router
     tipo: entry_point
     descricao: "Entry point obrigatório — nunca é destino, apenas origem"
+
+  - id: prompt-structuring
+    tipo: mandatory_pre_step
+    descricao: >
+      Passo mandatório pós-health-check (R-041): refina o prompt em loop
+      controlado (máx. 5 iterações) no formato <task>/<context>/<constraints>/
+      <output_format> e SEMPRE retorna ao agent-router. Nunca é destino final.
 
   - id: bug-triage
     tipo: downstream
@@ -44,6 +51,18 @@ nos:
   - id: docs-curator
     tipo: downstream
     descricao: "Curadoria e atualização de documentação de governança"
+
+  - id: docs-writer
+    tipo: downstream
+    descricao: "Geração/escrita de documentação técnica nova em Markdown, agnóstica de domínio (perfil documentador) — produz exclusivamente arquivos .md"
+
+  - id: code-review
+    tipo: downstream
+    descricao: "Revisão de código (diff/PR) antes do merge — correção, segurança, convenções, impacto, testes e performance; classifica por severidade; read-only, nunca corrige"
+
+  - id: requirements-analyst
+    tipo: downstream
+    descricao: "Elicitação e estruturação de requisitos funcionais/não-funcionais a partir de pedido de negócio ambíguo (EARS/INVEST/Gherkin/FURPS+); detecta solution-jumping via Five Whys; prospectivo (pedido → requisito), nunca decide arquitetura, não confundir com business-rules-extractor (reverso: código → regra)"
 
   - id: research-router
     tipo: fallback
@@ -89,6 +108,19 @@ arestas:
       regra: "R-034"
       gatilho: "docs/ai-context/catalog.yaml ausente OU docs/ai-context/binding.md ausente"
 
+  # Prompt structuring obrigatório (pré-classificação) — exceção R-041
+  - de: agent-router
+    para: prompt-structuring
+    prioridade: 0.5
+    threshold_score: 0  # null — passo mandatório, não usa score numérico
+    nivel_routing: rule-based
+    condicoes:
+      tipo: mandatory_pre_step
+      regra: "R-041"
+      gatilho: "Sempre, após Health Check (R-034) e antes de qualquer classificação de intenção — exceto quando a solicitação já retornou refinada por prompt-structuring"
+      loop_maximo: 5
+      retorno_obrigatorio: agent-router
+
   # Bug / Erro / Regressão
   - de: agent-router
     para: bug-triage
@@ -107,6 +139,45 @@ arestas:
         - "500"
         - "stack trace"
       sinal_r006: "É bug/erro/regressão?"
+
+  # Revisão de código antes do merge
+  - de: agent-router
+    para: code-review
+    prioridade: 1.5
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "revisar código"
+        - "code review"
+        - "revisão antes do merge"
+        - "analisar pull request"
+        - "revisar diff"
+        - "revisar pr"
+      sinal_r006: "É revisão preventiva de qualidade ANTES do merge (não bug já ocorrido)?"
+      nao_confundir_com:
+        - "bug em produção"        # → bug-triage (algo já quebrou)
+        - "impacto de mudar X"     # → impact-architect (análise isolada de impacto)
+
+  # Elicitação e estruturação de requisitos (pré-técnico, prospectivo)
+  - de: agent-router
+    para: requirements-analyst
+    prioridade: 1.8
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "levantar requisitos"
+        - "requisito ambíguo"
+        - "elicitação de requisitos"
+        - "user story"
+        - "critério de aceite"
+        - "requisito funcional"
+        - "requisito não funcional"
+      sinal_r006: "É elicitação de requisito NOVO a partir de pedido ambíguo (ainda sem análise técnica)?"
+      nao_confundir_com:
+        - "extrair regra de negócio de código existente"  # → business-rules-extractor (reverso)
+        - "impacto técnico de mudança já definida"          # → impact-architect (requisito já claro)
 
   # Estratégia de testes
   - de: agent-router
@@ -216,6 +287,31 @@ arestas:
         - "README"
         - "catálogo"
         - "rastreabilidade de doc"
+      nao_confundir_com:
+        - "escrever documentação nova"  # → docs-writer
+        - "criar documentação técnica"  # → docs-writer
+
+  # Documentação — escrita/geração de conteúdo novo
+  - de: agent-router
+    para: docs-writer
+    prioridade: 5
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "escrever documentação"
+        - "criar documentação técnica"
+        - "gerar readme"
+        - "criar adr"
+        - "documentar decisão técnica"
+        - "gerar arquivo md"
+        - "documentador"
+        - "runbook"
+        - "postmortem"
+      sinal_r006: "É criação de documentação NOVA (não curadoria de doc já existente)?"
+      nao_confundir_com:
+        - "atualizar documentação existente"  # → docs-curator
+        - "curar catálogo"                    # → docs-curator
 
   # Agent factory
   - de: agent-router

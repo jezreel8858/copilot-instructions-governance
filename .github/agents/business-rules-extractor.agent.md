@@ -7,7 +7,7 @@ description: >
   documentação) e Validate (verificar código refatorado contra regras
   documentadas).
 model: ["claude-sonnet-5","claude-sonnet-4.6"]
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'create_file', 'insert_edit_into_file', 'get_errors', 'ask_questions', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'create_file', 'insert_edit_into_file', 'get_errors', 'ask_questions', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 # Business Rules Extractor
 

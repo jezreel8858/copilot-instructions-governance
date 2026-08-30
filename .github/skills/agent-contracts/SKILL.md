@@ -201,3 +201,39 @@ Todo agent deve seguir política de context assembly para otimizar custo, latên
 
 **Regra mínima**: conteúdo estático deve sempre preceder conteúdo variável — habilita prompt caching nativo dos providers (redução de custo de até 90%, latência de até 85% conforme Anthropic 2025).
 
+---
+
+## 8) Camadas de Formato de Saída (Universal vs por Perfil)
+
+### Modelo de 2 Camadas
+
+**Camada 1 — Contrato Universal (obrigatório em TODO agent, nunca varia):**
+Já normatizado por R-016/R-020 e pelas seções 1-4 desta skill: confiança declarada, evidências rastreáveis (arquivo/símbolo/comando) e próximo passo mínimo. Esta camada é o que garante interoperabilidade — evita o risco de "handoff incompatível" documentado pelo JetBrains.
+
+**Camada 2 — Template Narrativo por Perfil (varia conforme o papel do agent):**
+
+| Perfil | Template | Agents exemplo | Racional (pesquisa) |
+|---|---|---|---|
+| Router/Triagem | Bloco de decisão compacto: Rota·Delegado·Motivo·Confiança·Score·Nível Routing·Entradas·Lacunas·Próximo Passo | `agent-router`, `research-router`, `prompt-structuring` | Orchestrator decide, não narra (Product School: planner→executor) |
+| Analista/Read-only | 5 seções: Abordagem·Componentes·Evidências·Riscos·Próximo Passo | `analysis-architect`, `impact-architect`, `bug-triage`, `business-rules-extractor` | "Data/Insight Agent" exige leitura humana rica — tabelas/bullets |
+| Especialista de Recomendação | 5 seções + Trade-offs/Riscos explícitos, sem implementar | `angular`, `spring-boot`, `spring-reactive` | Mesma classe de Insight Agent, com recomendação técnica declarada |
+| Operacional/Executor | Resultado·Evidências·Validações·Próximo Passo (compacto, checklist) | `test-implementation`, `agent-factory`, `skill-factory`, `binding-initializer`, `adapter-generator`, `docs-curator` | "Specialist Skills" tem output estreito e determinístico |
+
+**Regra de ouro:** a Camada 1 nunca muda entre perfis. A Camada 2 pode e deve variar — forçar um router no template rico de 5 seções (ou um analista no bloco compacto de decisão) é *format mismatch* contra a pesquisa acima.
+
+### Checklist ao Criar/Revisar Agent (agent-factory / skill-factory)
+
+- [ ] Perfil identificado: Router | Analista | Especialista-Recomendação | Operacional.
+- [ ] Camada 1 (universal) presente no "Formato de Saída" do agent.
+- [ ] Camada 2 escolhida conforme a tabela acima — não inventar 5º template sem justificativa registrada aqui.
+- [ ] Se o perfil não se encaixa nos 4 acima, documentar o novo perfil nesta tabela antes de usá-lo em produção.
+
+### Referências
+
+- Microsoft Learn, "Producing Structured Outputs with agents" (Agent Framework), 2026 — https://learn.microsoft.com/en-us/agent-framework/agents/structured-outputs
+- Medium, "Configuration-Driven Agents: The Fastest Way to Build Enterprise AI Systems" (Output Reformatter pattern), 2026 — https://medium.com/@balajibal/configuration-driven-agents-the-fastest-way-to-build-enterprise-ai-systems-01356f805fb1
+- JetBrains, "AI Agent Orchestration Explained" (handoff contracts), 2026 — https://www.jetbrains.com/pages/ai-agents/architecture/ai-agent-orchestration
+- Agent.ai Docs, "How to Format Output for Better Readability", 2026 — https://docs.agent.ai/output-formatting
+- Product School, "AI Agent Orchestration Patterns for Reliable Products", 2026 — https://productschool.com/blog/artificial-intelligence/ai-agent-orchestration-patterns
+- arXiv:2506.12508, "Orchestrating Multi-Agent Intelligence..." (Reporter Agent normaliza outputs distintos em relatório final), 2025/2026.
+

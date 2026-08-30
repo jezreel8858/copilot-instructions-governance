@@ -2,7 +2,7 @@
 
 > Fonte de verdade operacional: [`CLAUDE.md`](../CLAUDE.md).
 > Mapa de Projetos/Adapters: [`docs/ai-context/catalog.yaml`](../docs/ai-context/catalog.yaml).
-> IDs normativos: consulte `R-001..R-039` em `CLAUDE.md`.
+> IDs normativos: consulte `R-001..R-041` em `CLAUDE.md`.
 
 ---
 
@@ -16,7 +16,7 @@
 
 | Tipo | Arquivo | Escopo | Conteúdo Permitido | Exemplos / Referências |
 |------|---------|--------|-------|---|
-| **Governança Global** | `CLAUDE.md` | 🌍 Multi-projeto, desacoplado | Regras R-001..R-038, princípios, fluxos genéricos | ❌ Nenhum projeto/tech específicos |
+| **Governança Global** | `CLAUDE.md` | 🌍 Multi-projeto, desacoplado | Regras R-001..R-041, princípios, fluxos genéricos | ❌ Nenhum projeto/tech específicos |
 | **Operacional** | `.github/copilot-instructions.md` | 🌍 Multi-projeto, desacoplado | Roteamento, agents, skills, estrutura genérica | ❌ Nenhum projeto/tech específicos (remeter a adapters) |
 | **Adapters** | `.github/instructions/*.instructions.md` | 🔧 Stack/domínio específico | Convenções, padrões, tools, paradigmas de tech/domínio **excluivos** | ✅ Projeto, linguagem, framework **específicos permitidos** |
 | **Contexto de Binding** | `docs/ai-context/catalog.yaml` + `docs/ai-context/binding.md` | 🔗 Mapa de instâncias | Lista concreta de adapters, projetos, mapeamento stack → adapter | ✅ Dados de instância permitidos |
@@ -53,10 +53,15 @@ Solicitação
     ↓
 @agent-router (triagem)
     ↓
+@prompt-structuring (R-041 — obrigatório, loop máx. 5 iterações)
+    ↓
+@agent-router (retomada com prompt refinado)
+    ↓
 [Rota decidida]
     ↓
 @bug-triage | @test-strategy | @refactor-planner |
-@impact-architect | @docs-curator |
+@impact-architect | @docs-curator | @code-review |
+@requirements-analyst |
 @research-router | @analysis-architect
     ↓
 [Execução específica]
@@ -77,6 +82,7 @@ Esta matriz é **responsabilidade do roteador** — não é regra global.
 ## 2) 🛑 Regras de Autonomia (não negociáveis)
 
 - **Agent Router First (R-037)**: TODA solicitação começa com `@agent-router`. Pular router é violação de governança.
+- **Prompt Structuring Obrigatório (R-041)**: após o Health Check (R-034), o `@agent-router` SEMPRE delega ao `@prompt-structuring` antes de classificar intenção. Esse é o **único** agent do catálogo autorizado a operar em loop de auto-refinamento, limitado a **5 iterações** — ao atingir o limite, prossegue compulsoriamente com o melhor prompt disponível e retorna ao `@agent-router`. Nenhum outro agent pode adotar esse padrão de loop.
 - **Não gere documentação automaticamente (R-033)**: nunca gere documentos `.md` se não for solicitado ou sem a aprovação por `ask_questions`.
 - **Sem loops de correção**: se falhar, PARE, explique e aguarde aprovação.
 - **Sem commits/push autônomos**: gere apenas a mensagem via `/commit`. Nunca `git add/commit/push`.
@@ -300,8 +306,13 @@ Escolha uma ação:
 **⭐ PONTO DE ENTRADA OBRIGATÓRIO:**
 - `agent-router` → **SEMPRE INVOCAR PRIMEIRO** (triagem + roteamento para downstream)
 
+**Passo mandatório pós-router (R-041):**
+- `prompt-structuring` → ⚠️ **SEMPRE acionado pelo `agent-router`** logo após o Health Check (R-034) e antes de qualquer classificação de intenção. Refina o prompt em loop controlado (máx. 5 iterações) e retorna sempre ao `agent-router`.
+
 **Downstream (conforme rota do router):**
 - `bug-triage` -> triagem de bugs e regressões.
+- `code-review` -> revisão de código (diff/PR) antes do merge, por severidade (read-only).
+- `requirements-analyst` -> elicitação e estruturação de requisitos funcionais e não-funcionais a partir de pedido de negócio ambíguo.
 - `test-strategy` -> estratégia de testes.
 - `test-implementation` -> implementação de testes unitários, integração e E2E.
 - `test-fix` -> correção de testes quebrados a partir de relatório de falhas (opera somente nos testes identificados).

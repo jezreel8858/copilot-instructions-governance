@@ -150,6 +150,7 @@ tavily_research(
 - ❌ Chamar Tavily sem verificar ctx_search antes
 - ❌ Usar `tavily_research` para Q&A simples (muito caro — use `tavily_search`)
 - ❌ Passar resultado bruto de Tavily direto para o contexto sem sumarizar (usa tokens)
+- ❌ Executar pesquisa multi-subtema sequencialmente em vez de decompor e paralelizar (ver § 8)
 
 ---
 
@@ -158,3 +159,28 @@ tavily_research(
 - Tavily MCP Docs: https://docs.tavily.com/
 - R-019 (Busca web proativa): `CLAUDE.md`
 - Integração ctx: `.github/skills/context-mode/SKILL.md`
+- Anthropic, "How we built our multi-agent research system" (2026) — https://www.anthropic.com/engineering/multi-agent-research-system — padrão orchestrator-worker (base da § 8).
+- Encytics, "The Router-Planner Pattern" (2026) — https://www.encytics.ai/insights/blog/router-planner-pattern-multi-agent-architecture
+- arXiv:2506.18096, "Deep Research Agents: A Systematic Examination" (2025) — retrieval planning dinâmico e síntese estruturada.
+
+---
+
+## 8) Decomposição e Paralelização (Orchestrator-Worker)
+
+Para pesquisa **composta** (2+ subtemas, comparação, "melhores práticas de X e Y"), siga o padrão orchestrator-worker do Anthropic Multi-Agent Research System em vez de buscar tudo sequencialmente em uma única chamada:
+
+```text
+1. Decompor o tema em N sub-queries objetivas (1 subtema cada)
+2. Delegar cada sub-query via run_subagent (research-router) em paralelo
+3. Coletar resultados brutos de cada subagent (título + URL + ano + snippet)
+4. Sintetizar com checklist de citação (nenhuma fonte inventada)
+```
+
+**Quando NÃO paralelizar:** pergunta atômica (1 fato, 1 tema) — buscar direto com `tavily_search`, sem overhead de decomposição.
+
+## 9) Checklist de Síntese e Citação
+
+- [ ] Cada afirmação relevante cita fonte (título + URL + ano).
+- [ ] Fontes contraditórias foram reconciliadas ou explicitamente apontadas.
+- [ ] Nenhuma fonte foi inventada — lacuna declarada quando a busca não retornar dado.
+- [ ] Veredito final explícito (não apenas lista de achados soltos).

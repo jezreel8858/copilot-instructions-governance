@@ -5,7 +5,7 @@ description: >-
   tier, triggers, source_docs e atualização atômica do .index.json. Contraparte
   do agent-factory para o ecossistema de skills.
 model: "claude-haiku-4.5"
-tools: ['read_file', 'create_file', 'list_dir', 'file_search', 'grep_search', 'get_errors', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
+tools: ['read_file', 'create_file', 'list_dir', 'file_search', 'grep_search', 'get_errors', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
 # Fábrica de Skills
 
@@ -146,6 +146,15 @@ Confiança: Alta
 - Usar código inline > 8 linhas (R-026).
 - Criar duplicata de skill existente.
 - Tier 1 com `tools:` muito específicas (Tier 1 deve ser genérica).
+
+## Docs Sempre Anexadas (pre-fetch obrigatório)
+
+> Antes de invocar este agent, anexe os arquivos abaixo. Se faltar, **PEÇA o anexo** — nunca infira.
+
+- [`.github/skills/.index.json`](../skills/.index.json) — índice estruturado, atualização atômica obrigatória (R-015).
+- [`.github/skills/README.md`](README.md) — catálogo textual, atualização atômica obrigatória (R-015).
+- [`../../CLAUDE.md`](../../CLAUDE.md) — regras normativas R-001..R-039, especialmente R-026.
+- [`.github/skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) — exemplo Tier 1 de referência estrutural.
 
 ## Combina Com
 

@@ -4,7 +4,7 @@ description: >-
   Planejar refatorações em etapas seguras com análise de risco, dependências e
   critérios de rollback.
 model: ["gpt-5.4", "claude-sonnet-5", "claude-sonnet-4.6"]
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 # Refactor Planner
 
@@ -86,6 +86,11 @@ Próximo passo:
 - [`catalog.yaml`](catalog.yaml)
 - [`../../CLAUDE.md`](../../CLAUDE.md)
 - [`../copilot-instructions.md`](../copilot-instructions.md)
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta eficiente de artefatos.
+- [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) — rastreio de dependências do alvo do refactor.
+- [`../skills/dependency-graph-mapping/SKILL.md`](../skills/dependency-graph-mapping/SKILL.md) — acoplamento e blast radius por etapa.
+- [`../skills/business-rules-governance/SKILL.md`](../skills/business-rules-governance/SKILL.md) — ground truth para não quebrar comportamento existente.
+- [`../skills/integration-contract-analysis/SKILL.md`](../skills/integration-contract-analysis/SKILL.md) — quando o refactor tocar contratos de integração.
 
 ## Diretrizes
 

@@ -16,7 +16,7 @@ Em caso de conflito, siga esta ordem:
 3. User
 4. Arquivos locais deste repositório (`CLAUDE.md`, `.github/*`)
 
-## 3) Regras Normativas (R-001..R-040)
+## 3) Regras Normativas (R-001..R-041)
 
 - **R-001 (Escopo)**: altere apenas o que foi solicitado.
 - **R-002 (Mudança mínima)**: prefira alterações pequenas, reversíveis e rastreáveis.
@@ -44,8 +44,8 @@ Em caso de conflito, siga esta ordem:
 - **R-024 (MCP Least-Tools)**: mantenha ativas somente as ferramentas MCP necessárias à tarefa corrente.
 - **R-025 (MCP Prompt Budget)**: se houver degradação por excesso de tools MCP, reduza a superfície de ferramentas antes de prosseguir.
 - **R-026 (Sem código inline em agents/skills/prompts)**: arquivos `.github/agents/*.md`, `.github/skills/*/SKILL.md` e `.github/prompts/*.md` NÃO devem conter blocos de código com implementações > 8 linhas. Código real vai em `snippets/`, `templates/` ou `commands/`, referenciado por caminho ou `source_docs:`.
-- **R-027 (Clarificação Obrigatória via ask_questions)**: frente a qualquer ambiguidade, use EXCLUSIVAMENTE `ask_questions` antes de agir. Proibido inferir ou deduzir intenção. A última opção sempre deve ser campo aberto. Sem exceções.
-- **R-028 (Estrutura de Resposta — Code Assist Standard)**: ao iniciar qualquer implementação, exiba resumo em 5 seções: **(1)** Resumo da Abordagem; **(2)** Visão Geral dos Componentes; **(3)** Implementação; **(4)** Passos Cruciais; **(5)** Notas Técnicas de Impacto.
+- **R-027 (Clarificação Obrigatória via ask_questions)**: frente a qualquer ambiguidade, use EXCLUSIVAMENTE `ask_questions` antes de agir. Proibido inferir ou deduzir intenção. A última opção sempre deve ser campo aberto. Sem exceções, ressalvado R-041 (loop controlado do agent `prompt-structuring`, limitado a 5 iterações).
+- **R-028 (Estrutura de Resposta — Code Assist Standard)**: ao iniciar qualquer implementação, exiba resumo em 5 seções: **(1)** Resumo da Abordagem; **(2)** Visão Geral dos Componentes; **(3)** Implementação; **(4)** Passos Cruciais; **(5)** Notas Técnicas de Impacto. Para outros perfis de agent (router, analista, operacional), consulte o modelo de 2 camadas (universal + template por perfil) em `.github/skills/agent-contracts/SKILL.md` § 8.
 - **R-029 (Postura Senior Engineer)**: **(a)** prefira bullets e tabelas a parágrafos; **(b)** código limpo sem explicações inline; **(c)** elimine introduções genéricas de IA — responda como colega sênior, preciso e focado.
 - **R-030 (Checkpoint obrigatório por fase/plano)**: durante `/implement`, ao concluir cada fase (`- [x]`) e ao concluir o plano, execute `/ctx-checkpoint` imediatamente, registrando `lastStep`, `nextStep` e `source` do checkpoint na resposta.
 - **R-031 (Plano Auto-Implementável — Zero-Interrupção)**: todo plano aprovado (explícito ou por contexto claro) DEVE ser executado integralmente sem interrupção nem contra-medida do agent. **Pré-voo obrigatório** antes de iniciar: **(a)** Escopo completo — todos os artefatos mapeados e dependências resolvidas; **(b)** Contingências por fase — cada passo com `[fallback: <ação alternativa se falhar>]` inline; **(c)** Critério de falha tolerável — distinguir o que é contornável (warnings, arquivo ausente, tool lenta) do que é bloqueante real; **(d)** Bloqueantes absolutos — único motivo de parada permitido: violação de R-003 (commit autônomo), exposição de credencial (R-010), ou estado de dados irrecuperável detectado. **Formato de contingência por passo:** `[S] Passo X — descrição [fallback: alternativa]`. Ao final, **relatório de execução** (o que foi feito, o que usou fallback, próximo passo) substitui checkpoints intermediários. Proibido pedir confirmação mid-plan.
@@ -58,6 +58,7 @@ Em caso de conflito, siga esta ordem:
 - **R-038 (Genericidade Obrigatória em Governança)**: Toda documentação de governança criada em `.github/` (agents, skills, prompts, copilot-instructions) **DEVE ser genérica**, desacoplada de: **(a)** projetos específicos; **(b)** tecnologias exclusivas; **(c)** convenções de domínio particulares. Convencionalidades, adapters e exemplos concretos **PERTENCEM EXCLUSIVAMENTE A** `.github/instructions/*.instructions.md` (adapters) ou `docs/ai-context/` (contexto de binding). Se uma regra de governança referencia projeto, domínio ou tech específica, é violação de R-038. Teste: substituir nome de projeto/tecnologia por `[PROJETO]` ou `[TECH]` — se deixar de fazer sentido, está muito específica para governança global.
 - **R-039 (Diagramas em Markdown com Mermaid)**: Todo diagrama incorporado em arquivo `.md` **DEVE usar Mermaid** (sintaxe nativa de blocos code com linguagem `mermaid`). Razões: **(a)** versionabilidade — diagramas vivem no Git, não em binários; **(b)** portabilidade — renderização nativa em GitHub, GitLab, Notion e ferramentas de IA; **(c)** manutenibilidade — patches e reviews sem ferramentas específicas. Proibido: imagens PNG/SVG geradas externamente, Visio, Lucidchart embarcados. Se precisar de estilo avançado, use plugins Mermaid ou refatore para simplificar.
 - **R-040 (Grafo de Roteamento como Fonte de Verdade)**: O roteamento de agents **DEVE ser declarado como dado estruturado** (ex.: `docs/ai-context/routing-graph.yaml` com nós, arestas, thresholds e política de cascata). A Decision Tree em prosa de qualquer agent-router é **documentação derivada** — não fonte única. Toda nova rota ou agente adicionado ao ecossistema exige: **(a)** entrada no grafo estruturado; **(b)** atualização da Decision Tree (derivada); **(c)** novo caso de teste em `docs/ai-context/evals/casos-roteamento.yaml` (equivalente ao R-015 para evals). Threshold de confiança para cada rota deve ser declarado explicitamente no grafo e reportado no output do router.
+- **R-041 (Exceção de Loop Controlado — Agent `prompt-structuring`)**: por exceção formal a R-011 (sem overengineering), R-012 (clarificação progressiva, máx. 3 perguntas/ciclo) e R-027 (proibição de loop em `ask_questions`), o agent `prompt-structuring` é o **ÚNICO** agent do catálogo autorizado a operar em loop de auto-refinamento de prompt. Regras do loop: **(a)** limite rígido `loop_count <= 5` — ao atingir 5 iterações sem completude, o loop é interrompido compulsoriamente e o fluxo prossegue com o melhor prompt disponível, sinalizando a limitação; **(b)** cada iteração avalia o prompt contra o checklist estrutural `<task>/<context>/<constraints>/<output_format>`; se incompleto, faz **no máximo 1 pergunta objetiva por iteração** via `ask_questions` (nunca aberta); **(c)** encerramento antecipado é obrigatório assim que o prompt atingir completude — não force as 5 iterações; **(d)** o agent SEMPRE retorna para `@agent-router` ao final (sucesso ou limite atingido) — nunca roteia diretamente para downstream. Nenhum outro agent do catálogo pode adotar este padrão de loop sem nova exceção formalizada nesta regra.
 
 ## 3.1) Regra de Autoria de Agents
 
@@ -71,10 +72,13 @@ Em caso de conflito, siga esta ordem:
 ```
 Solicitação do Usuário
            ↓
-    @agent-router ←── OBRIGATÓRIO
-    (triagem + rota)
+    @agent-router ←── OBRIGATÓRIO (Health Check R-034)
            ↓
-  Classificação de Intenção
+    @prompt-structuring ←── OBRIGATÓRIO (R-041 — loop máx. 5 iterações)
+    (refina prompt em <task>/<context>/<constraints>/<output_format>)
+           ↓
+    @agent-router ←── retorno obrigatório (loop nunca roteia direto)
+    (classificação de intenção com prompt refinado)
            ↓
   [Delega para downstream correto]
        ↙ ↓ ↘ ↙ ↓ ↘
@@ -112,9 +116,12 @@ Solicitação do Usuário
 
 ## 6) Catálogo Atual (estado verificado)
 
-### Agents (17 ativos)
-- `agent-router` v1.1.0 — entry point obrigatório; confidence score + nível de routing declarados no output; routing-graph.yaml como fonte estrutural (R-040)
+### Agents (24 ativos)
+- `agent-router` v1.4.0 — entry point obrigatório; confidence score + nível de routing declarados no output; routing-graph.yaml como fonte estrutural (R-040)
+- `prompt-structuring` — ⚠️ passo mandatório pós-`agent-router` (R-041); loop de refinamento de prompt limitado a 5 iterações; sempre retorna ao `agent-router`
 - `bug-triage`
+- `code-review` — revisão de código preventiva antes do merge, por severidade (read-only)
+- `requirements-analyst` — elicitação e estruturação de requisitos de negócio ambíguos (prospectivo)
 - `test-strategy`
 - `test-implementation` — implementar suítes de teste com cobertura objetiva
 - `test-fix` — corrigir testes quebrados a partir de relatório de falhas (somente testes identificados)
@@ -122,8 +129,8 @@ Solicitação do Usuário
 - `refactor-planner`
 - `impact-architect`
 - `docs-curator`
+- `docs-writer` — escrita/geração de documentação técnica nova em `.md`
 - `research-router`
-- `analysis-architect`
 - `analysis-architect` v2.0.0 — análise técnica unificada: impacto, riscos, dependências, contratos e integrações cross-sistema (absorveu `analysis-integration-architect`); metodologia B1/B2/B3 + BREAKING|COMPATIBLE|DEPRECIAÇÃO
 - `agent-factory`
 - `skill-factory` — criar/revisar skills com padrão SKILL.md e .index.json atômico

@@ -4,7 +4,7 @@ description: >-
   Curar e atualizar documentação técnica e operacional com rastreabilidade,
   padronização e consistência com catálogo e plano vigente.
 model: "claude-haiku-4.5"
-tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
+tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
 # Docs Curator
 
@@ -29,7 +29,6 @@ Você é especialista em curadoria de documentação. Seu trabalho é consolidar
 | Catálogo textual | [`README.md`](README.md) | Fonte principal de descrição dos agents |
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Consistência de metadados e roteamento |
 | Router de entrada | [`agent-router.agent.md`](agent-router.agent.md) | Termos e rotas canônicas |
-| Plano agent-first | `docs/plan/agent-router-agent-first-plan.md` | Nomenclatura oficial do fluxo |
 
 ## Decision Tree
 

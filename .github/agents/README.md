@@ -16,6 +16,7 @@
 | Tipo | Nome | Quando usar |
 |---|---|---|
 | Agent | `agent-router` | Entry point obrigatório para classificar intenção e delegar para downstream |
+| Agent | `prompt-structuring` | ⚠️ ***(NEW)*** Passo mandatório pós-`agent-router` (R-041) — refina o prompt em loop controlado (máx. 5 iterações) antes de retornar para classificação de intenção |
 | Agent | `bug-triage` | Triagem de bugs/regressões com reprodução e severidade |
 | Agent | `test-strategy` | Estratégia de testes, cobertura por risco e critérios de aceitação |
 | Agent | `test-implementation` | ⭐ ***(NEW)*** Implementar suítes de testes unitários, integração e E2E com cobertura objetiva |
@@ -35,12 +36,16 @@
 | Agent | `angular` | 🅰️ Especialista Angular **enterprise** para análise/recomendação (arquitetura moderna, RxJS+Signals, performance CWV/SSR, segurança, acessibilidade, testes e upgrades), carregando skills de componentização, patterns Angular e contratos de API de componentes para design system, sem implementação direta |
 | Agent | `spring-boot` | ☕ ***(NEW)*** Especialista backend Spring Boot **enterprise** para análise/recomendação (arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração), sem implementação direta |
 | Agent | `spring-reactive` | ⚛️ ***(NEW)*** Especialista backend reativo Spring WebFlux/Reactor **enterprise** para análise/recomendação (capacidade, resiliência, backpressure, observabilidade, segurança e compatibilidade Java/JDK), sem implementação direta |
+| Agent | `docs-writer` | 📝 ***(NEW)*** Perfil documentador agnóstico de domínio — gera/atualiza documentação técnica em Markdown (Diátaxis, ADR/MADR, README, runbook, postmortem), produz exclusivamente arquivos `.md` |
+| Agent | `code-review` | 🔎 Revisa código (diff/PR) antes do merge por correção, segurança, convenções, impacto, testes e performance; classifica achados por severidade; read-only; delega para `bug-triage`/`impact-architect`/`test-strategy`/`refactor-planner` |
+| Agent | `requirements-analyst` | 🧾 ***(NEW)*** Elicita e estrutura requisitos funcionais/não-funcionais a partir de pedido de negócio ambíguo (EARS, INVEST, Gherkin, FURPS+); detecta *solution-jumping* via Five Whys; prospectivo (não confundir com `business-rules-extractor`, que é reverso) |
 
 ## 3) Roteamento Rápido
 
 | Cenário | Rota |
 |---|---|
 | Entrada padrão no chat | `agent-router` |
+| ⚠️ Toda solicitação (pós Health Check R-034) | `prompt-structuring` (mandatório, retorna ao `agent-router`) |
 | Bug, erro, regressão | `bug-triage` |
 | Estratégia de testes | `test-strategy` |
 | Implementação de testes (unit/integration/E2E) | `test-implementation` |
@@ -60,6 +65,9 @@
 | 🅰️ Análise e recomendação Angular | `angular` |
 | ☕ Análise e recomendação backend Spring Boot | `spring-boot` |
 | ⚛️ Análise e recomendação backend reativo WebFlux/Reactor | `spring-reactive` |
+| 📝 Escrever/gerar documentação técnica em `.md` (qualquer domínio) | `docs-writer` |
+| 🔎 Revisar código (diff/PR) antes do merge, por severidade | `code-review` |
+| 🧾 Elicitar/estruturar requisitos a partir de pedido ambíguo (pré-técnico) | `requirements-analyst` |
 
 ## 4) Pre-fetch Recomendado
 
@@ -108,3 +116,6 @@ Antes de tarefas não triviais, anexar ao contexto:
 | Curadoria/governança | `agent-contracts`, `agent-safety-guardrails`, `agent-evals-lab` |
 | Operação com métricas | `agent-observability-otel` |
 | Agents com memória adaptativa | `agent-memory-policy` (Tier 3 — experimental) |
+| Documentação (escrita) | `documentation-writing-patterns`, `mermaid-diagrams`, `agent-contracts` |
+| Revisão de código | `code-review-patterns`, `code-tracing`, `agent-contracts` |
+| Elicitação de requisitos | `requirements-engineering-patterns`, `agent-contracts` |

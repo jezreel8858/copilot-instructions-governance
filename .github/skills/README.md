@@ -25,6 +25,7 @@ Toda skill deve declarar no topo:
 
 | Skill | Tier sugerido | Quando usar |
 |---|---|---|
+| **`prompt-engineering-patterns`** | 🧠 **Tier 2** | Técnicas consolidadas (APE/OPRO/DSPy/Anthropic/OpenAI) para estruturar prompts em `<task>/<context>/<constraints>/<output_format>`, detectar ambiguidade objetivamente e aplicar self-critique — base do agent `prompt-structuring` |
 | `context-mode` | Tier 1 | Roteamento ctx-first, coleta em batch, busca indexada e processamento em sandbox com economia de tokens/créditos |
 | `sonarqube-governance` | Tier 2 | Monitorar métricas de qualidade, cobertura e segurança via SonarQube |
 | `tavily` | Tier 2 | Pesquisar documentação externa, changelog, versões e referências de terceiros |
@@ -61,6 +62,9 @@ Toda skill deve declarar no topo:
 | **`spring-boot-backend-patterns`** | ☕ **Tier 2** | Baseline enterprise para análise/recomendação Spring Boot (arquitetura, observabilidade, segurança, performance e migração) |
 | **`spring-reactive-webflux-patterns`** | ⚛️ **Tier 2** | Baseline enterprise para análise/recomendação WebFlux/Reactor (adequação reativa, backpressure, resiliência e operação) |
 | **`java-jdk-backend-governance`** | ☕ **Tier 1** | Governança de versões Java/JDK backend (LTS, compatibilidade, segurança, performance e trilha de migração) |
+| **`documentation-writing-patterns`** | 📝 **Tier 2** | Diretrizes agnósticas de domínio para escrever documentação técnica em `.md` (Diátaxis, ADR/MADR, README, formatação chunking-friendly para IA) — base do agent `docs-writer` |
+| **`code-review-patterns`** | 🔎 **Tier 2** | Diretrizes de mercado para revisão de código por IA — severidade (bloqueador/alta/sugestão), dimensões (correção/segurança/convenções/impacto/testes/performance), critérios de bloqueio de merge — base do agent `code-review` |
+| **`requirements-engineering-patterns`** | 🧾 **Tier 2** | Engenharia de Requisitos (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+) para elicitar e estruturar requisitos a partir de pedido ambíguo, com detecção de *solution-jumping* (Five Whys) — base do agent `requirements-analyst` |
 
 ## 4) Instructions associadas
 

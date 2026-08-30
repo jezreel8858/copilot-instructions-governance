@@ -6,7 +6,7 @@ description:
   Execute UMA ÚNICA VEZ no início da sessão ANTES de /add-project-context ou qualquer agent.
   NÃO REPITA na mesma sessão — faz 1x apenas.
 model: "claude-haiku-4.5"
-tools: ['read_file', 'list_dir']
+tools: ['read_file', 'list_dir', 'run_subagent']
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
