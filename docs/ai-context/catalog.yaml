@@ -129,14 +129,6 @@ adapters:
 #
 # NÃO editar manualmente a seção projetos: — use os prompts acima
 projetos:
-  - id: "worship-scale-app"
-    name: "Worship Scale App"
-    type: "frontend"
-    stack: "angular-20-capacitor"
-    path: "D:\\workspace\\worship-scale-app"
-    description: "Frontend para gestão de escala de louvor em Angular 20 com integração Capacitor/Firebase."
-    extends:
-      - "base-frontend"
 
 # ============================================
 # DISCOVERY
