@@ -6,7 +6,7 @@ description: >-
   plano de implementação. Nunca decide arquitetura, nunca extrai regra de
   código existente, sempre rastreia requisito à fonte do pedido original.
 model: ["claude-sonnet-5","claude-sonnet-4.6"]
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'create_file', 'insert_edit_into_file', 'get_errors', 'context-mode/ctx_search']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'create_file', 'insert_edit_into_file', 'get_errors', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Requirements Analyst
 

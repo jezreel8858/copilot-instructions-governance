@@ -5,7 +5,7 @@ description: >-
   tier, triggers, source_docs e atualização atômica do .index.json. Contraparte
   do agent-factory para o ecossistema de skills.
 model: "claude-haiku-4.5"
-tools: ['read_file', 'create_file', 'list_dir', 'file_search', 'grep_search', 'get_errors', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
+tools: ['read_file', 'create_file', 'list_dir', 'file_search', 'grep_search', 'get_errors', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
 # Fábrica de Skills
 

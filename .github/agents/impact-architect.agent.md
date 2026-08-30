@@ -3,7 +3,7 @@ name: impact-architect
 description: Avaliar impacto técnico de mudanças no projeto atual com foco em dependências,
 contratos, riscos e plano mínimo de mitigação.: ''
 model: claude-sonnet-4.6
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute']
 ---
 # Impact Architect
 

@@ -4,7 +4,7 @@ description: >-
   Planejar refatorações em etapas seguras com análise de risco, dependências e
   critérios de rollback.
 model: ["gpt-5.4", "claude-sonnet-5", "claude-sonnet-4.6"]
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 # Refactor Planner
 

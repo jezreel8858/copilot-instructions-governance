@@ -5,7 +5,7 @@ description:
   segurança, convenções, impacto e testes. Gera relatório por severidade.
   NÃO executa alterações.
 model: ["claude-sonnet-5","claude-sonnet-4.6"]
-tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal']
+tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent']
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md

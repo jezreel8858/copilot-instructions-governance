@@ -8,7 +8,7 @@ description: >-
   formato canônico <task>/<context>/<constraints>/<output_format>, retornando
   em seguida ao agent-router para roteamento downstream.
 model: "claude-haiku-4.5"
-tools: ['ask_questions']
+tools: ['ask_questions', 'run_subagent']
 ---
 # Prompt Structuring
 

@@ -2,7 +2,7 @@
 name: angular
 description: Especialista enterprise em análise e recomendação Angular (arquitetura, reatividade, responsividade, performance, segurança, acessibilidade, testes e upgrades), sem implementação.
 model: ["claude-sonnet-5", "claude-sonnet-4.6"]
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'tavily/tavily_search', 'tavily/tavily_extract', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_index']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'tavily/tavily_search', 'tavily/tavily_extract', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_index']
 ---
 
 # Angular Specialist
