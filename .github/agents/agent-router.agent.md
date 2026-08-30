@@ -4,7 +4,7 @@ version: "1.4.0"
 description: >-
   Entry point obrigatório agent-first para classificar solicitações e delegar ao
   agent downstream correto, com fallback para pesquisa e análise de integração.
-model: "claude-haiku-4.5"
+model: ["claude-sonnet-5", "claude-sonnet-4.6", "claude-haiku-4.5"]
 tools: ['list_dir', 'read_file', 'file_search', 'grep_search', 'ask_questions', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Agent Router
