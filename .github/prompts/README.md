@@ -60,6 +60,7 @@ Prompts operacionais para workflow de execução no chat.
 
 | Command | Arquivo | Descrição |
 |---|---|---|
+| `/agent-router` | `.github/prompts/agent-router.prompt.md` | ⭐ **(NEW)** Alias fino do agent `@agent-router` — ponto de entrada obrigatório agent-first (R-037): Health Check (R-034), Prompt Structuring (R-041), classificação de intenção e delegação ao downstream correto. |
 | `/research` | `.github/prompts/research.prompt.md` | Pesquisa exaustiva no codebase via levantamento paralelo de contexto |
 | `/plan` | `.github/prompts/plan.prompt.md` | Cria plano de implementação detalhado com processo interativo |
 | `/implement` | `.github/prompts/implement.prompt.md` | Executa plano aprovado com checkpoints e pausas para verificação |
