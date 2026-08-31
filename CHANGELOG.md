@@ -1,4 +1,4 @@
-# CHANGELOG — Eco-Sistema Copilot (Governança de IA)
+# CHANGELOG — Deep Agents Copilot (Estrutura de Governança Genérica e Reutilizável
 
 Todas as mudanças significativas nesta base de governança são documentadas aqui.
 

@@ -1,4 +1,4 @@
-# Eco-Sistema Copilot — Estrutura de Governança de IA Reutilizável
+# Deep Agents Copilot — Estrutura de Governança Genérica e Reutilizável
 
 ## Propósito
 
