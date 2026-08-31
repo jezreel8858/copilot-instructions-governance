@@ -6,7 +6,7 @@ description:
   Análise estática offline → geração automática de YAML/Markdown → validação e binding atômico.
   Execute UMA VEZ POR PROJETO (reutilizável). PRÉ-REQUISITO `/init-context` já executado.
 model: ["claude-sonnet-5","claude-sonnet-4.6"]
-tools: ['file_search', 'grep_search', 'read_file', 'run_in_terminal', 'run_subagent']
+tools: ['file_search', 'grep_search', 'read_file', 'run_in_terminal', 'run_subagent', 'ask_questions', 'context-mode/ctx_search']
 source_docs:
   - .github/skills/yaml-governance/SKILL.md
   - .github/skills/context-builder/SKILL.md
@@ -95,9 +95,9 @@ Este repositório de governança não possui docs/ai-context/catalog.yaml ou bin
 ### Exemplos
 
 ```
-/add-project-context D:\workspace\porto\meu-projeto-backend
-/add-project-context D:\workspace\porto\meu-projeto-frontend
-/add-project-context D:\workspace\porto\meu-novo-projeto
+/add-project-context D:\workspace\meu-projeto-backend
+/add-project-context D:\workspace\meu-projeto-frontend
+/add-project-context D:\workspace\meu-novo-projeto
 ```
 
 ---
@@ -184,7 +184,7 @@ Use o scanner consolidado em `adapter-generator.agent.md` § 🔍 Scanner de Pro
 ```
 [Q1] Nome do projeto?
   - Sugerido automaticamente a partir do último segmento do path
-    (ex: path D:\workspace\porto\meu-projeto-backend → sugere "meu-projeto-backend")
+    (ex: path D:\workspace\meu-projeto-backend → sugere "meu-projeto-backend")
   - Validar: kebab-case, não existe ainda em catalog.yaml
   - Exemplos: meu-projeto-backend, meu-frontend-app, meu-backend-api
 
@@ -274,6 +274,25 @@ O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de 
 
 **Output Fase 3**: Projeto registrado em catalog.yaml + adapters em .github/instructions/ → pronto para `/research`, `/plan`
 
+### FASE 3.5: **Sugestão de Sumarização de Código-Fonte** (não-bloqueante, opcional)
+
+> Funcionalidade: ao término do registro de projeto, oferecer ao usuário a opção de sumarizar código-fonte via agent especialista dedicado. Execução é sempre sob demanda — nunca automática (R-009).
+
+**Regra R-009**: nunca executar sumarização automaticamente — sempre aguardar confirmação explícita.
+
+1. Verificar histórico: `ctx_search(queries: ["sumarização concluída", "resumo de código"], source: "<nome-projeto>")`.
+2. **Se 0 resultados** (projeto nunca foi sumarizado) → exibir via `ask_questions`:
+   > "Projeto '<nome-projeto>' foi registrado. Deseja iniciar a sumarização de código-fonte via agent especialista agora? (A) Sim, agora (B) Não, decidir depois"
+3. **Se houver resultado prévio** → exibir aviso compacto de 1 linha, sem reabrir `ask_questions`:
+   > `ℹ️ Projeto '<nome-projeto>' já possui sumarização anterior — invoque o agent especialista sob demanda se precisar de um resumo atualizado.`
+4. Se usuário escolher (A) → `run_subagent(agentName: "code-summarizer", description: "Sumarizar projeto <nome>", task: "Sumarizar arquivos-fonte do projeto registrado: <nome-projeto>...")`. Esta etapa é **aditiva**: o sucesso da FASE 3 (binding) já foi reportado antes deste passo e não depende dele.
+
+**Saída esperada (caso A):**
+```
+ℹ️ Projeto 'meu-projeto-backend' registrado — nenhuma sumarização anterior encontrada.
+Deseja iniciar a sumarização de código-fonte via agent especialista agora? (A) Sim (B) Não
+```
+
 ---
 
 ## 📊 Exemplo de Saída Esperada
@@ -281,7 +300,7 @@ O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de 
 
 ```
 [FASE 1 ✅] Scanner READ-ONLY Executado (projeto externo — somente leitura)
-├─ Projeto escaneado: D:\workspace\porto\[meu-projeto] (read-only)
+├─ Projeto escaneado: D:\workspace\[meu-projeto] (read-only)
 ├─ Linguagem: Java 17
 ├─ Framework: Spring Boot 3
 ├─ Stack: Spring Boot 3 + Hibernate + JUnit 5
@@ -375,7 +394,7 @@ Antes de confirmar `"Proceder? (y/n)"` em Fase 2:
 
 ## ✅ Checklist: Copilot Executou Corretamente?
 
-Após invocar `/add-project-context D:\workspace\porto\[meu-projeto]`, verifique:
+Após invocar `/add-project-context D:\workspace\[meu-projeto]`, verifique:
 
 - [ ] **FASE 1**: Copilot apresentou descobertas (Stack, Frameworks, Estrutura, Codestyle)?
 - [ ] **FASE 2.1**: Solicitou ou inferiu o caminho do projeto corretamente?

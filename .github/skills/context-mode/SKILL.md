@@ -66,6 +66,7 @@ Skill para operar `ctx_*` com mínimo consumo de contexto: coletar em lote, proc
 | Arquivo grande para análise | `read_file` completo | `ctx_execute_file` |
 | Docs/web externa | fetch/manual | `ctx_fetch_and_index` + `ctx_search` |
 | Indexação de payload grande | `ctx_index(content: ...)` | `ctx_index(path: ...)` |
+| Arquivo-fonte > 300 linhas OU > 20KB, para reduzir contexto | Ler/anexar conteúdo bruto ao chat | `run_subagent(agentName: "code-summarizer")`, depois anexar o resumo retornado |
 
 ## 4) Guardrails de economia (token budget)
 
@@ -87,6 +88,8 @@ Skill para operar `ctx_*` com mínimo consumo de contexto: coletar em lote, proc
 - Passar dados grandes em `ctx_index(content)`.
 - Reindexar no `ctx_index(content)` uma resposta já recebida por outra tool.
 - Ler arquivo grande com `read_file` quando a intenção é apenas analisar.
+
+> **Exceção ao guardrail de `ctx_index(content)`:** resumos gerados por `@code-summarizer` podem ser indexados via `ctx_index(content: "<resumo>", source: "summary:<projeto>/<caminho>")` — o guardrail acima proíbe indexar *payload bruto grande*, não o resumo em si (pequeno por definição). Consumo via `ctx_search(source: "summary:<projeto>", queries: [...])`.
 
 ## 7) Playbooks curtos
 

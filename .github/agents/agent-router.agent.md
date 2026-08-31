@@ -47,6 +47,7 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 | Skill — Técnicas de prompt | [`../skills/prompt-engineering-patterns/SKILL.md`](../skills/prompt-engineering-patterns/SKILL.md) | Base de conhecimento do `prompt-structuring`; consultar se o router precisar avaliar completude do handoff |
 | Router de pesquisa | [`deep-search.agent.md`](deep-search.agent.md) | Pesquisa interna aprofundada e externa (atômica/composta) |
 | Arquiteto de análise | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Análise de impacto local (tier B1) e integração cross-sistema |
+| Sumarização de código | [`code-summarizer.agent.md`](code-summarizer.agent.md) | Ponto de entrada único (RF-008) — modelo híbrido AST/heurística → LLM leve fallback |
 | Especialista Angular | [`angular.agent.md`](angular.agent.md) | Advisory — análise/recomendação, nunca implementa |
 | Especialista Spring Boot | [`spring-boot.agent.md`](spring-boot.agent.md) | Advisory — análise/recomendação, nunca implementa |
 | Especialista Spring Reactive | [`spring-reactive.agent.md`](spring-reactive.agent.md) | Advisory — análise/recomendação, nunca implementa |
@@ -103,6 +104,9 @@ Pedido recebido (já refinado por @prompt-structuring)?
 |  \- Não
 |- É elicitação de requisito NOVO a partir de pedido ambíguo (ainda sem análise técnica)?
 |  |- Sim -> @requirements-analyst
+|  \- Não
+|- É pedido para sumarizar código-fonte / reduzir volume de código levado ao contexto (não é revisão/correção)?
+|  |- Sim -> @code-summarizer
 |  \- Não
 |- É análise/recomendação Angular sem implementação (arquitetura, reatividade, performance, a11y, upgrade)?
 |  |- Sim -> @angular
@@ -212,6 +216,7 @@ Próximo passo mínimo:
 - `@bug-triage` (`bug-triage.agent.md`) para erro, bug e regressão.
 - `@code-review` (`code-review.agent.md`) para revisão de código (diff/PR) antes do merge, por severidade.
 - `@requirements-analyst` (`requirements-analyst.agent.md`) para elicitação e estruturação de requisitos a partir de pedido de negócio ambíguo (não confundir com `@business-rules-extractor`, que é reverso — código existente → regra).
+- `@code-summarizer` (`code-summarizer.agent.md`) para sumarização de código-fonte agnóstica a linguagem (RF-008) — reduzir bytes/tokens de arquivo levado ao contexto; nunca para revisar/corrigir código (isso é `@code-review`/`@bug-triage`).
 - `@angular` (`angular.agent.md`) para análise/recomendação Angular sem implementação.
 - `@spring-boot` (`spring-boot.agent.md`) para análise/recomendação backend Spring Boot sem implementação.
 - `@spring-reactive` (`spring-reactive.agent.md`) para análise/recomendação backend reativo Spring WebFlux/Reactor sem implementação.
