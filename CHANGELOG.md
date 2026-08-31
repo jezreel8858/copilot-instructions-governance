@@ -166,6 +166,5 @@ Formato: [Semantic Versioning](https://semver.org/) | [Conventional Commits](htt
 - Prompts de binding: `/init-context`, `/add-project-context`, `/del-project-context`
 - Templates base: `catalog-base.yaml`, `binding-base.md`
 - Adapters: `spring-boot-backend.instructions.md` (Java/Spring), `angular-v21-frontend.instructions.md` (Angular 21)
-- Ferramentas: `binding-scaffolder/` (Python)
 - Regras normativas R-001..R-039 em CLAUDE.md
 

@@ -125,7 +125,7 @@ skills:
   - id: "project-context-builder"
     name: "project-context-builder"
     source: ".github/skills/project-context-builder/SKILL.md"
-    description: "Scanner local + LLM para descoberta automatica de projetos"
+    description: "Scanner local para descoberta automatica de projetos"
     tier: "advanced"
     triggers:
       - "/add-project-context"
@@ -135,18 +135,17 @@ skills:
       - "generate_project_yaml"
       - "generate_instructions_md"
     upstream_agents:
-      - "binding-scaffolder"
+      - "adapter-generator"
     dependencies:
-      - "binding-scaffolder-agent"
+      - "adapter-generator"
     tools_required:
       - "file_operations"
       - "yaml_validation"
       - "subprocess"
     source_docs:
-      - "tools/project-context-builder/SPEC.md"
-      - "tools/project-context-builder/USAGE.md"
-      - "tools/project-context-builder/scanner.py"
-      - "tools/project-context-builder/copilot_handler.py"
+      - ".github/prompts/add-project-context.prompt.md"
+      - ".github/agents/adapter-generator.agent.md"
+      - "docs/ai-context/catalog.yaml"
 
 # ============================================
 # PROJETOS (Binding por Projeto)

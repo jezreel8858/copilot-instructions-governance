@@ -235,24 +235,18 @@ Use o scanner consolidado em `adapter-generator.agent.md` § 🔍 Scanner de Pro
 
 **Output Fase 2**: YAML + Markdown revisados, preview aprovado
 
-### FASE 3: **Binding Atômico via Script** (Execução — Copilot invoca terminal)
+### FASE 3: **Binding Atômico via Tools Nativas** (Execução — sem script externo)
 
-**Regra R-008**: Executar via terminal (fallback quando MCP indisponível). Se Context Mode MCP estiver ativo, preferir `ctx_execute` ou `ctx_batch_execute`.
+**Regra R-008**: Preferir `ctx_execute`/`ctx_batch_execute` para coleta e validação; aplicar mudanças com tools de edição de arquivo.
 
-O Copilot invoca script `binding_scaffolder.py` **atomicamente** (tudo ou nada):
+O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de runtime Python):
 
 **Pré-requisitos**:
 - ✅ FASE 2 concluída: `novo_projeto.yaml` + `xxx.instructions.md` revisados
 - ✅ YAML validado (sem indentação errada, sem chaves duplicadas)
 - ✅ Preview aprovado pelo usuário
 
-**Comando (Terminal via R-008)**:
-```bash
-cd /d/workspace/porto/eco-sistema-custom-app
-python tools/binding-scaffolder/binding_scaffolder.py generate projeto ./novo_projeto.yaml
-```
-
-**Script executa (atomicamente) — SOMENTE neste repositório**:
+**Execução (somente neste repositório)**:
 1. **Validar**: schema YAML, kebab-case, sem duplicatas em catalog.yaml
 2. **Planejar**: 3–4 operações (CREATE se novo adapter, UPDATE, UPDATE, UPDATE)
 3. **Preview**: arquivos a serem modificados → "Proceder? (y/n)"
@@ -264,7 +258,7 @@ python tools/binding-scaffolder/binding_scaffolder.py generate projeto ./novo_pr
    - [UPDATE] `.github/instructions/README.md` ← NESTE repo
    - ❌ Nenhuma operação no projeto externo
 5. **Validar pós**: YAML válido, entrada presente
-6. **Atomicidade**: Qualquer erro → rollback automático
+6. **Atomicidade**: Qualquer erro → abortar operação e reaplicar estado anterior por patch reverso
 
 **Saída esperada**:
 ```
@@ -307,8 +301,8 @@ python tools/binding-scaffolder/binding_scaffolder.py generate projeto ./novo_pr
 │  ✓ .github/instructions/meu-projeto-backend.instructions.md ← NESTE repo
 └─ Preview aprovado ✅
 
-[FASE 3 ✅] Binding Scaffolder — Execução Atômica (NESTE repositório)
-├─ Comando: python binding_scaffolder.py generate projeto ./novo_projeto.yaml
+[FASE 3 ✅] Binding Atômico via Tools Nativas (NESTE repositório)
+├─ Execução: aplicação de patches/edições por plano aprovado
 ├─ Validação: ✅ Artefato validado (schema OK, sem duplicatas)
 ├─ Plano: 4 operações (CREATE, UPDATE, UPDATE, UPDATE) — todas NESTE repo
 ├─ Preview: 4 arquivos serao modificados → [Proceder? (y/n)] → y
@@ -343,15 +337,15 @@ python tools/binding-scaffolder/binding_scaffolder.py generate projeto ./novo_pr
 
 #### Como Validar
 
-**Opção A: Python (Recomendado)**
-```bash
-python -c "import yaml; yaml.safe_load(open('docs/ai-context/catalog.yaml')); print('✅ YAML válido')" || echo "❌ ERRO: YAML inválido"
-```
-
-**Opção B: yamllint (se disponível)**
+**Opção A: yamllint (se disponível)**
 ```bash
 yamllint docs/ai-context/catalog.yaml
 ```
+
+**Opção B: validação estrutural via revisão de diff**
+- Confirmar identação consistente (2 espaços)
+- Confirmar chaves obrigatórias e sem duplicatas
+- Confirmar blocos `adapters:` e `projetos:` íntegros
 
 #### Checklist Pré-Confirmação (FASE 2.6)
 
@@ -374,9 +368,8 @@ Antes de confirmar `"Proceder? (y/n)"` em Fase 2:
 | `mapping values are not allowed here` | Indentação errada | Use **2 espaços**, nunca tabs |
 | `could not find expected ':'` | YAML malformado | Valide sintaxe de `key: value` |
 | `duplicate key` | Chave duplicada | Remova entrada duplicada |
-| "Script falha com ModuleNotFoundError" | Dependências faltando | `pip install pyyaml jinja2` |
-| "Script mostra 'Campo obrigatório ausente'" | YAML gerado incompleto | Verificar se `novo_projeto.yaml` tem: artefato, nome, tipo, extends, descrição |
-| "Rollback ocorreu" | Erro durante execução | Arquivo foi restaurado. Verificar saída e corrigir entrada |
+| "Falha de validação de payload" | YAML gerado incompleto | Verificar se `novo_projeto.yaml` tem: artefato, nome, tipo, extends, descrição |
+| "Execução abortada" | Erro em patch/edição de arquivo | Revisar preview, corrigir entrada e reexecutar |
 
 ---
 
@@ -392,7 +385,7 @@ Após invocar `/add-project-context D:\workspace\porto\[meu-projeto]`, verifique
 - [ ] **FASE 2.4**: Sugeriu adapter baseado no stack detectado?
 - [ ] **FASE 2.5**: Gerou `novo_projeto.yaml` + `<nome>.instructions.md` (se criar novo)?
 - [ ] **FASE 2.6**: Mostrou preview antes de confirmar?
-- [ ] **FASE 3**: Invocou script corretamente?
+- [ ] **FASE 3**: Aplicou plano de alterações por tools nativas?
 - [ ] **FASE 3**: Confirmou: ✅ "Artefato gerado com sucesso!"?
 - [ ] **Pós-execução**: `docs/ai-context/catalog.yaml` foi atualizado?
 - [ ] **Pós-execução**: `.github/instructions/README.md` foi sincronizado?

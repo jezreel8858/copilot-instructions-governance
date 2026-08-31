@@ -21,8 +21,8 @@ triggers:
 source_docs:
   - "../../../CLAUDE.md"
   - "../../../.github/copilot-instructions.md"
-  - "../../../tools/binding-scaffolder/SPEC.md"
-  - "../../../tools/binding-scaffolder/USAGE.md"
+  - "../../../.github/agents/adapter-generator.agent.md"
+  - "../../../.github/prompts/add-project-context.prompt.md"
   - "../../../docs/ai-context/catalog.yaml"
 tools:
   - "read_file"
