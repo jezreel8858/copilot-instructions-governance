@@ -115,30 +115,12 @@ Exemplos inválidos:
 
 ## Decision Tree
 
-```text
-Pedido recebido?
-├─ Criar novo .prompt.md?
-│   ├─ Coletar: nome, propósito, tools necessárias (ask_questions)
-│   ├─ Verificar: não duplica prompt existente (grep)
-│   ├─ Gerar usando prompt-template.md como base
-│   ├─ Validar checklist antes de criar
-│   ├─ Criar arquivo em .github/prompts/
-│   └─ Atualizar README.md de prompts (R-015)
-│
-├─ Revisar .prompt.md existente?
-│   ├─ Ler o arquivo atual
-│   ├─ Auditoria: 10 critérios do checklist de conformidade
-│   ├─ Propor ajustes (preview → confirmação → aplicar)
-│   └─ Atualizar README se título ou descrição mudou
-│
-├─ Auditar TODOS os prompts existentes?
-│   ├─ Listar .github/prompts/*.prompt.md
-│   ├─ Verificar frontmatter de cada um (description, tools, source_docs)
-│   ├─ Gerar tabela de conformidade com gaps
-│   └─ Aplicar correções em lote (com aprovação)
-│
-└─ Não reconhecido → ask_questions para clarificar
-```
+Aplicar o fluxo canônico de factory definido em [`governance-factory-patterns`](../skills/governance-factory-patterns/SKILL.md) §1.
+
+**Especialização deste agent:**
+- Artefato-alvo é `.github/prompts/<verbo>-<objeto>.prompt.md`.
+- Validar separação de responsabilidade entre `.prompt.md` (on-demand) e `.instructions.md` (always-on).
+- Atualizar `../prompts/README.md` na mesma entrega quando houver criação/remoção/renomeação.
 
 ## Padrões Obrigatórios
 
@@ -152,38 +134,23 @@ Pedido recebido?
 
 ## Formato de Saída
 
-```markdown
-Prompt criado/revisado: ✅
+Seguir o template parametrizável de validações em [`governance-factory-patterns`](../skills/governance-factory-patterns/SKILL.md) §4.
 
-Arquivo: `.github/prompts/<nome>.prompt.md`
-
-Auditoria de conformidade:
-- [✅/❌] description: presente + acionável
-- [✅/❌] model: declarado
-- [✅/❌] tools: menor privilégio aplicado
-- [✅/❌] source_docs: declarado quando necessário
-- [✅/❌] naming: kebab-case + verbo-objeto
-- [✅/❌] H1 com / de slash command
-- [✅/❌] Combina Com: presente
-- [✅/❌] PT-BR: conteúdo em português
-- [✅/❌] Guardrails: operações destrutivas protegidas
-- [✅/❌] README.md: atualizado
-
-Próximo passo: testar invocando /<nome> no Copilot Chat
-```
+**Especialização deste agent (campos obrigatórios no relatório):**
+- Caminho final: `.github/prompts/<nome>.prompt.md`.
+- Conformidade de naming (`kebab-case` + verbo-objeto + sufixo `.prompt.md`).
+- `H1` alinhado ao slash command (`# /<nome>`).
+- Status de atualização de `../prompts/README.md`.
 
 ## Checklist Antes de Criar/Revisar
 
-- [ ] Nome em kebab-case + verbo-objeto.
-- [ ] `description` presente e acionável (≤ 100 chars).
-- [ ] `tools` declara apenas o necessário (menor privilégio).
-- [ ] `source_docs` presente quando prompt acessa governança ou projeto.
-- [ ] H1 = `# /nome-do-comando` (alinhado com `name`).
-- [ ] Body segue estrutura canônica: Uso → Fluxo → Regras → Combina Com.
-- [ ] Não duplica prompt existente (verificar `ls .github/prompts/`).
-- [ ] Guardrails para operações destrutivas documentados.
-- [ ] Content em PT-BR com acentuação correta (R-017).
-- [ ] `.github/prompts/README.md` atualizado (R-015).
+Executar o checklist genérico da skill [`governance-factory-patterns`](../skills/governance-factory-patterns/SKILL.md) §3.
+
+**Acrescentar validações específicas deste agent:**
+- [ ] `description` imperativa e acionável (≤ 100 chars).
+- [ ] `tools` em menor privilégio e coerentes com o fluxo do prompt.
+- [ ] Guardrails explícitos para operações destrutivas.
+- [ ] Validação de que a demanda não deveria ser `.instructions.md`.
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
@@ -191,6 +158,7 @@ Próximo passo: testar invocando /<nome> no Copilot Chat
 
 - [`../prompts/README.md`](../prompts/README.md) — catálogo de prompts para não duplicar.
 - [`../prompts/templates/prompt-template.md`](../prompts/templates/prompt-template.md) — template canônico.
+- [`../skills/governance-factory-patterns/SKILL.md`](../skills/governance-factory-patterns/SKILL.md) — fluxo canônico de factory (decision tree, checklist e saída).
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais R-001..R-040.
 
 ## Diretrizes

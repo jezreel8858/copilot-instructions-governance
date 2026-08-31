@@ -22,10 +22,10 @@
 | Agent | `test-implementation` | ⭐ ***(NEW)*** Implementar suítes de testes unitários, integração e E2E com cobertura objetiva |
 | Agent | `test-fix` | 🔧 ***(NEW)*** Corrigir testes quebrados a partir de relatório de falhas — opera somente nos testes identificados |
 | Agent | `refactor-planner` | Planejamento de refatoração incremental com risco e rollback |
-| Agent | `impact-architect` | Análise de impacto técnico local, dependências e mitigação |
 | Agent | `docs-curator` | Curadoria e padronização de documentação/catálogo |
-| Agent | `research-router` | Triagem de pesquisa e fallback para investigação externa |
-| Agent | `analysis-architect` | Análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL) com metodologia B1/B2/B3 |
+| Agent | `deep-search` | 🔎 ***(NEW)*** Retriever/Researcher para pesquisa interna (repo + context-mode + terminal read-only) e externa (Tavily), com decomposição paralela de pesquisa composta |
+| Agent | `analysis-architect` | Análise técnica unificada: impacto local (tier B1), risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL) com metodologia B1/B2/B3 |
+| Agent | `agent-auditor` | 🧪 ***(NEW)*** Auditoria semântica de governança do próprio catálogo (agents/skills/prompts): detecta smells e gaps, classifica severidade e recomenda handoff para executores, sempre read-only |
 | Agent | `agent-factory` | Criação/revisão estrutural de agents e governança |
 | Agent | `context-builder` | Coletar, condensar e persistir contexto técnico em `docs/context/` |
 | Agent | `binding-initializer` | ⚡ ***(NEW)*** Criar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — Health Check R-034) |
@@ -37,7 +37,7 @@
 | Agent | `spring-boot` | ☕ Especialista backend Spring Boot **enterprise, perfil híbrido v2.0.0** — análise/recomendação (arquitetura, versões Java/JDK, performance, observabilidade, segurança, migração) **E** implementação de feature/bugfix (virtual threads vs reativo, testing-first) |
 | Agent | `spring-reactive` | ⚛️ Especialista backend reativo Spring WebFlux/Reactor **enterprise, perfil híbrido v2.0.0** — análise/recomendação (capacidade, resiliência, backpressure, observabilidade, segurança, compatibilidade Java/JDK) **E** implementação de feature/bugfix (sem bloqueio de event-loop, testing-first) |
 | Agent | `docs-writer` | 📝 ***(NEW)*** Perfil documentador agnóstico de domínio — gera/atualiza documentação técnica em Markdown (Diátaxis, ADR/MADR, README, runbook, postmortem), produz exclusivamente arquivos `.md` |
-| Agent | `code-review` | 🔎 Revisa código (diff/PR) antes do merge por correção, segurança, convenções, impacto, testes e performance; classifica achados por severidade; read-only; delega para `bug-triage`/`impact-architect`/`test-strategy`/`refactor-planner` |
+| Agent | `code-review` | 🔎 Revisa código (diff/PR) antes do merge por correção, segurança, convenções, impacto, testes e performance; classifica achados por severidade; read-only; delega para `bug-triage`/`analysis-architect`/`test-strategy`/`refactor-planner` |
 | Agent | `requirements-analyst` | 🧾 ***(NEW)*** Elicita e estrutura requisitos funcionais/não-funcionais a partir de pedido de negócio ambíguo (EARS, INVEST, Gherkin, FURPS+); detecta *solution-jumping* via Five Whys; prospectivo (não confundir com `business-rules-extractor`, que é reverso) |
 
 ## 3) Roteamento Rápido
@@ -51,10 +51,11 @@
 | Implementação de testes (unit/integration/E2E) | `test-implementation` |
 | Correção de testes quebrados (com relatório de falhas) | `test-fix` |
 | Planejamento de refactor | `refactor-planner` |
-| Impacto técnico local | `impact-architect` |
+| Impacto técnico local | `analysis-architect` (tier B1) |
 | Curadoria de documentação | `docs-curator` |
-| Pesquisa externa/triagem de pesquisa | `research-router` |
+| Pesquisa interna aprofundada (repo/context-mode/terminal) ou pesquisa externa composta | `deep-search` |
 | Análise técnica, impacto, contratos, integrações cross-sistema | `analysis-architect` |
+| 🧪 Auditoria semântica de governança do catálogo (smells/gaps em agents, skills e prompts) | `agent-auditor` |
 | Criação/revisão de agents | `agent-factory` |
 | Consolidação de contexto para execução posterior | `context-builder` |
 | ⚡ Binding context faltando (Health Check) | `binding-initializer` |

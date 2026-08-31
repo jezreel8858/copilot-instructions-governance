@@ -42,7 +42,7 @@ Pedido recebido?
 |  |- Sim -> pedir clarificação objetiva
 |  \- Não
 \- Exige análise de impacto de integração?
-   |- Sim -> delegar para @impact-architect ou @analysis-architect
+   |- Sim -> delegar para @analysis-architect (tier B1 para impacto local)
    \- Não -> finalizar estratégia e prioridade
 ```
 
@@ -105,8 +105,7 @@ Próximo passo mínimo:
 
 ## Quando Delegar
 
-- [`@impact-architect`](impact-architect.agent.md) para dependências de integração local.
-- [`@analysis-architect`](analysis-architect.agent.md) para impacto cross-sistema.
+- [`@analysis-architect`](analysis-architect.agent.md) para dependências de integração local (tier B1) e cross-sistema.
 - [`@docs-curator`](docs-curator.agent.md) para consolidar documentação final.
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

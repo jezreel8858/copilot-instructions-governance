@@ -20,9 +20,8 @@ agents:
       - "bug-triage"
       - "test-strategy"
       - "refactor-planner"
-      - "impact-architect"
+      - "deep-search"
       - "docs-curator"
-      - "research-router"
       - "analysis-architect"
     related_skills:
       - "context-mode"
@@ -94,8 +93,8 @@ agents:
       - ".github/agents/catalog.yaml"
     related_agents:
       - "agent-router"
-      - "impact-architect"
       - "analysis-architect"
+      - "test-implementation"
     related_skills:
       - "context-mode"
       - "terminal-governance"
@@ -129,7 +128,7 @@ agents:
     related_agents:
       - "agent-router"
       - "test-implementation"
-      - "impact-architect"
+      - "analysis-architect"
       - "docs-curator"
     related_skills:
       - "context-mode"
@@ -170,7 +169,7 @@ agents:
     related_agents:
       - "agent-router"
       - "test-strategy"
-      - "impact-architect"
+      - "analysis-architect"
       - "docs-curator"
     related_skills:
       - "context-mode"
@@ -181,6 +180,7 @@ agents:
       - "test-implementation-angular"
       - "test-implementation-backend"
       - "test-coverage-governance"
+      - "reflection-self-critique-patterns"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
@@ -219,7 +219,7 @@ agents:
       - "bug-triage"
       - "test-implementation"
       - "test-strategy"
-      - "impact-architect"
+      - "analysis-architect"
     related_skills:
       - "context-mode"
       - "terminal-governance"
@@ -261,8 +261,8 @@ agents:
       - ".github/agents/catalog.yaml"
     related_agents:
       - "agent-router"
-      - "impact-architect"
       - "analysis-architect"
+      - "test-implementation"
     related_skills:
       - "context-mode"
       - "agent-contracts"
@@ -277,87 +277,33 @@ agents:
       - ".github/agents/refactor-planner.agent.md"
     estimated_time_minutes: 30
 
-  impact-architect:
-    id: "impact-architect"
-    priority: 5
-    domain: "Analise de impacto tecnico local"
-    description: "Avaliar dependencias, contratos e riscos de mudancas no projeto atual"
-    keywords:
-      - "impacto"
-      - "dependencias"
-      - "contratos"
-      - "riscos"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-    related_agents:
-      - "agent-router"
-      - "analysis-architect"
-      - "research-router"
-    related_skills:
-      - "context-mode"
-      - "tavily"
-      - "agent-contracts"
-      - "handoff-governance"
-      - "agent-evals-lab"
-      - "agent-observability-otel"
-      - "code-tracing"
-      - "dependency-graph-mapping"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/impact-architect.agent.md"
-    estimated_time_minutes: 35
-
-  docs-curator:
-    id: "docs-curator"
-    priority: 6
-    domain: "Curadoria de documentacao"
-    description: "Padronizar e atualizar documentacao e catalogo com rastreabilidade"
-    keywords:
-      - "documentacao"
-      - "catalogo"
-      - "padronizacao"
-      - "rastreabilidade"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-    related_agents:
-      - "agent-router"
-      - "agent-factory"
-      - "context-builder"
-    related_skills:
-      - "context-mode"
-      - "agent-contracts"
-      - "agent-evals-lab"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/docs-curator.agent.md"
-    estimated_time_minutes: 20
-
-  research-router:
-    id: "research-router"
+  deep-search:
+    id: "deep-search"
     priority: 7
-    domain: "Orquestracao de pesquisa"
-    description: "Triar demandas de pesquisa e rotear para agents customizados"
+    version: "1.0.0"
+    domain: "Pesquisa interna e externa (Retriever/Researcher)"
+    description: "Pesquisar internamente (repo/context-mode/terminal read-only) e externamente (Tavily), com decisao atômica vs composta, paralelizacao por run_subagent e sintese com citacao de fonte."
     keywords:
-      - "rotear"
-      - "triagem"
-      - "pesquisa"
-      - "orquestrador"
+      - "deep search"
+      - "pesquisa interna"
+      - "pesquisa externa"
+      - "tavily"
+      - "context-mode"
+      - "retriever"
+      - "researcher"
     prerequisite_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
-      - ".github/skills/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/tavily/SKILL.md"
+      - ".github/skills/context-mode/SKILL.md"
+      - ".github/skills/prompt-engineering-patterns/SKILL.md"
+      - "docs/plan/plano-otimizacao-catalogo-agents.md"
     related_agents:
-      - "analysis-architect"
       - "agent-router"
+      - "analysis-architect"
+      - "agent-factory"
     related_skills:
       - "context-mode"
       - "tavily"
@@ -368,9 +314,12 @@ agents:
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/skills/README.md"
-    estimated_time_minutes: 20
+      - ".github/agents/deep-search.agent.md"
+      - ".github/skills/tavily/SKILL.md"
+      - ".github/skills/context-mode/SKILL.md"
+      - ".github/skills/prompt-engineering-patterns/SKILL.md"
+      - "docs/plan/plano-otimizacao-catalogo-agents.md"
+    estimated_time_minutes: 25
 
   analysis-architect:
     id: "analysis-architect"
@@ -424,6 +373,54 @@ agents:
       - ".github/skills/mermaid-diagrams/SKILL.md"
     estimated_time_minutes: 45
 
+  agent-auditor:
+    id: "agent-auditor"
+    priority: 8.4
+    version: "1.0.0"
+    domain: "Auditoria semantica de governanca do catalogo (meta-nivel, read-only)"
+    description: "Audita o proprio catalogo de governanca (agents/skills/prompts), detecta smells e gaps estruturais, classifica severidade (Bloqueador/Alto/Sugestao) e recomenda handoff para agentes executores; nunca aplica correcao diretamente."
+    keywords:
+      - "auditoria de governanca"
+      - "agent smell"
+      - "gap de perfil"
+      - "diretriz redundante"
+      - "cobertura de categoria"
+      - "auditar catalogo"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/governance-audit-patterns/SKILL.md"
+      - ".github/skills/agent-contracts/SKILL.md"
+      - "docs/plan/plano-otimizacao-catalogo-agents.md"
+    related_agents:
+      - "agent-router"
+      - "agent-factory"
+      - "skill-factory"
+      - "prompt-factory"
+      - "docs-curator"
+      - "analysis-architect"
+    related_skills:
+      - "governance-audit-patterns"
+      - "agent-contracts"
+      - "code-review-patterns"
+      - "agent-safety-guardrails"
+      - "context-mode"
+      - "handoff-governance"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/agent-auditor.agent.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/governance-audit-patterns/SKILL.md"
+      - ".github/skills/agent-contracts/SKILL.md"
+      - "docs/plan/plano-otimizacao-catalogo-agents.md"
+      - "docs/ai-context/routing-graph.yaml"
+      - "docs/ai-context/evals/casos-roteamento.yaml"
+    estimated_time_minutes: 30
+
   agent-factory:
     id: "agent-factory"
     priority: 9
@@ -441,7 +438,7 @@ agents:
       - ".github/agents/templates/research-agent.md"
       - ".github/agents/templates/operational-agent.md"
     related_agents:
-      - "research-router"
+      - "deep-search"
       - "analysis-architect"
       - "agent-router"
       - "docs-curator"
@@ -477,7 +474,7 @@ agents:
       - ".github/agents/templates/operational-agent.md"
       - "docs/ai-context/catalog.yaml"
     related_agents:
-      - "research-router"
+      - "deep-search"
       - "analysis-architect"
       - "agent-factory"
       - "docs-curator"
@@ -663,7 +660,7 @@ agents:
     related_agents:
       - "agent-router"
       - "refactor-planner"
-      - "impact-architect"
+      - "analysis-architect"
       - "docs-curator"
       - "bug-triage"
       - "test-strategy"
@@ -858,6 +855,7 @@ agents:
       - "business-rules-governance"
       - "agent-contracts"
       - "context-mode"
+      - "reflection-self-critique-patterns"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
@@ -886,7 +884,7 @@ agents:
       - ".github/agents/catalog.yaml"
     related_agents:
       - "bug-triage"
-      - "impact-architect"
+      - "analysis-architect"
       - "test-strategy"
       - "refactor-planner"
     related_skills:
@@ -923,7 +921,6 @@ agents:
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
     related_agents:
-      - "impact-architect"
       - "analysis-architect"
       - "refactor-planner"
       - "business-rules-extractor"
@@ -944,6 +941,5 @@ agents:
 
 metadata:
   total_agents: 24
-  last_updated: "2026-08-30T20:00:00Z"
-  changelog: "2026-08-30 (8) — Visibilidade de Fluxo (R-042): fechado gap de mercado onde apenas o agent-router declarava 'Agente Ativo' na propria resposta, deixando o usuario sem visibilidade quando um agent downstream respondia sozinho por varios turnos em task_mode. Pesquisa Tavily 2026 confirmou o padrao consolidado (LangGraph 'Stream the Active Agent' com campo active_agent streamado; OpenAI Agents SDK HandoffOutputItem imprimindo 'Handed off from X to Y'). Nova secao agent-contracts/SKILL.md § 0 (Banner Universal de Identidade) normatiza que TODO agent -- nao so o agent-router -- abre toda resposta com 'Agente Ativo: <name>', e declara 'Handoff: <origem> -> <destino> (motivo: ...)' quando a resposta e resultado de re-triagem. Propagado via script Node.js para os 23 agents downstream (paragrafo 'Banner obrigatorio' inserido na secao existente 'Retorno ao Router'), para os 2 templates (research-agent.md, operational-agent.md) e para o proprio agent-router.agent.md (novo campo 'Transicao' no Formato de Saida). agent-factory.agent.md passa a validar o banner em Padroes Obrigatorios, Checklist e Formato de Saida. Atualizado CLAUDE.md (R-042), copilot-instructions.md (fluxo garantido), agents/README.md § 8 e handoff-governance/SKILL.md § 5.2. | 2026-08-30 (7) — Fechado gap estrutural de tooling para R-042: run_subagent e obrigatorio e bloqueante no frontmatter tools de TODO agent (sem ele, o handoff de retorno a @agent-router descrito em prosa nao e executavel). Corrigidos 3 agents que nao tinham run_subagent (agent-factory, adapter-generator, binding-initializer). Fechada a causa raiz nos templates usados pelo agent-factory para criar novos agents: templates/research-agent.md (tools corrigidas para nomenclatura canonica + run_subagent + nova secao Retorno ao Router) e templates/operational-agent.md (run_subagent adicionado + nova secao Retorno ao Router, antes ausente). agent-factory.agent.md passou a validar essa regra em Padroes Obrigatorios, Checklist e Formato de Saida. Nova secao agent-contracts/SKILL.md § 9 (Ferramentas Minimas por Agent — Tooling Baseline) com tabela de tools minimas por perfil. Atualizado CLAUDE.md (R-042), copilot-instructions.md e agents/README.md § 8 com o pre-requisito de tooling. | 2026-08-30 (6) — Especialistas angular/spring-boot/spring-reactive migrados de perfil 'advisory puro' para perfil HIBRIDO (v2.0.0): agora tambem implementam feature nova/bugfix dentro do proprio dominio de stack, seguindo padroes de mercado 2026 pesquisados via Tavily (Angular: Signals/RxJS boundary, testing-first, Vitest; Spring Boot: virtual threads vs reativo, N+1/OSIV, DTOs de borda; Spring Reactive: sem bloqueio de event-loop, operadores de erro, StepVerifier/WebTestClient). Testing-first e diff minimo sao obrigatorios em modo Implementacao. Criadas 3 skills novas de implementacao (angular-implementation-patterns, spring-boot-implementation-patterns, spring-reactive-implementation-patterns), complementares as 3 skills de analise ja existentes. tools dos 3 agents expandidas com create_file/insert_edit_into_file/get_errors/run_in_terminal. routing-graph.yaml: tipo de no specialist_advisory -> specialist_hybrid; condicao intent_drift_detected ajustada para nao confundir implementacao dentro do dominio com deriva de intencao (R-042). Registrado em catalog.yaml, routing-graph.yaml, CLAUDE.md (R-042), copilot-instructions.md, agents/README.md, skills/.index.json, skills/README.md e casos-roteamento.yaml (R-015/R-040). | 2026-08-30 (5) — R-042 (Re-triagem Obrigatoria por Turno — Anti Sticky-Session): fechado gap onde agent downstream ativo perdia a inteligencia de roteamento apos o primeiro turno (requisito->implementacao, analise->codigo). Adicionada secao 'Retorno ao Router' em todos os 23 agents downstream/specialist (atualizacao atomica R-015), com gatilho de deriva de intencao especifico por agent. agent-router v1.5.0: Decision Tree com PASSO 0.3 (re-triagem por deriva), output com campo 'Agente Ativo' para auditoria. routing-graph.yaml: aresta reversa universal (de: *downstream -> para: agent-router, condicao intent_drift_detected, prioridade 0) + nos/arestas para os 3 specialists angular/spring-boot/spring-reactive (antes orfaos — nao rotaveis pelo router, so por @mencao manual). handoff-governance/SKILL.md § 5/5.2 atualizado. Evals: canon-015/016/017 (specialists rotaveis) + regr-014/015 (sticky-session). Pesquisa de mercado: OpenAI Agents SDK handoffs (transfer_back_to_supervisor), LangGraph supervisor pattern (add_handoff_back_messages), state machine de 2 modos (orchestrator_mode/task_mode) com deteccao conservadora de off-topic. | 2026-08-29 (4) — Criado agent requirements-analyst (perfil Operacional, prospectivo): elicita e estrutura requisitos funcionais/nao-funcionais a partir de pedido de negocio ambiguo, aplicando ISO/IEC/IEEE 29148, notacao EARS, INVEST, Gherkin/BDD e FURPS+; detecta solution-jumping via tecnica Five Whys; nunca decide arquitetura (handoff para impact-architect/analysis-architect/refactor-planner); nunca extrai regra de codigo existente (nao confundir com business-rules-extractor, que e reverso). Skill requirements-engineering-patterns criada (pesquisa de mercado). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040)."
-
+  last_updated: "2026-08-31T14:00:00Z"
+  changelog: "2026-08-31 (12) — Análise de gaps de mercado (docs/plan/categorizacao-agents-mercado.md §5) validada via pesquisa Tavily: Reflection puro e Fan-out/Parallelization NÃO justificam novo agent standalone (evita over-delegation/overengineering, R-011); total_agents permanece 24. Implementado como capacidade: skill nova reflection-self-critique-patterns referenciada por docs-writer/test-implementation; capacidade 'Fan-out — Análise Paralela' adicionada diretamente a analysis-architect (Decision Tree + payload via handoff-governance já relacionada). | 2026-08-31 (11) — Fase 3 do plano de otimização aplicada: removidos `research-router` e `impact-architect`; roteamento consolidado em `deep-search` (pesquisa interna/externa) e `analysis-architect` (impacto local tier B1 + cross-sistema). Atualizados `agent-router`, referências cruzadas no catálogo, README, routing-graph e casos de roteamento de forma atômica (R-015/R-040). | 2026-08-31 (10) — Adicionado `agent-auditor` (Critic/Analyst de meta-nivel, read-only) para auditoria semantica do catalogo de governanca (agents/skills/prompts), com deteccao das 5 categorias de smell definidas em `governance-audit-patterns`, classificacao por severidade (Bloqueador/Alto/Sugestao) e recomendacao de handoff para `agent-factory`/`skill-factory`/`prompt-factory`/`docs-curator`; `run_subagent` obrigatorio para R-042; catalogo e README atualizados atomicamente (R-015). | 2026-08-31 (9) — Adicionado `deep-search` (Retriever/Researcher) como novo agent de pesquisa interna+externa, mantendo `research-router` nesta fase de transição. `deep-search` herda decisão atômica vs composta, aplica hierarquia local/indexado → externo (context-mode/tavily), paraleliza sub-queries com `run_subagent` e permanece read-only (sem escrita de aplicação). Catálogo e README atualizados atomicamente (R-015). | 2026-08-30 (8) — Visibilidade de Fluxo (R-042): fechado gap de mercado onde apenas o agent-router declarava 'Agente Ativo' na propria resposta, deixando o usuario sem visibilidade quando um agent downstream respondia sozinho por varios turnos em task_mode. Pesquisa Tavily 2026 confirmou o padrao consolidado (LangGraph 'Stream the Active Agent' com campo active_agent streamado; OpenAI Agents SDK HandoffOutputItem imprimindo 'Handed off from X to Y'). Nova secao agent-contracts/SKILL.md § 0 (Banner Universal de Identidade) normatiza que TODO agent -- nao so o agent-router -- abre toda resposta com 'Agente Ativo: <name>', e declara 'Handoff: <origem> -> <destino> (motivo: ...)' quando a resposta e resultado de re-triagem. Propagado via script Node.js para os 23 agents downstream (paragrafo 'Banner obrigatorio' inserido na secao existente 'Retorno ao Router'), para os 2 templates (research-agent.md, operational-agent.md) e para o proprio agent-router.agent.md (novo campo 'Transicao' no Formato de Saida). agent-factory.agent.md passa a validar o banner em Padroes Obrigatorios, Checklist e Formato de Saida. Atualizado CLAUDE.md (R-042), copilot-instructions.md (fluxo garantido), agents/README.md § 8 e handoff-governance/SKILL.md § 5.2. | 2026-08-30 (7) — Fechado gap estrutural de tooling para R-042: run_subagent e obrigatorio e bloqueante no frontmatter tools de TODO agent (sem ele, o handoff de retorno a @agent-router descrito em prosa nao e executavel). Corrigidos 3 agents que nao tinham run_subagent (agent-factory, adapter-generator, binding-initializer). Fechada a causa raiz nos templates usados pelo agent-factory para criar novos agents: templates/research-agent.md (tools corrigidas para nomenclatura canonica + run_subagent + nova secao Retorno ao Router) e templates/operational-agent.md (run_subagent adicionado + nova secao Retorno ao Router, antes ausente). agent-factory.agent.md passa a validar essa regra em Padroes Obrigatorios, Checklist e Formato de Saida. Nova secao agent-contracts/SKILL.md § 9 (Ferramentas Minimas por Agent — Tooling Baseline) com tabela de tools minimas por perfil. Atualizado CLAUDE.md (R-042), copilot-instructions.md e agents/README.md § 8 com o pre-requisito de tooling. | 2026-08-30 (6) — Especialistas angular/spring-boot/spring-reactive migrados de perfil 'advisory puro' para perfil HIBRIDO (v2.0.0): agora tambem implementam feature nova/bugfix dentro do proprio dominio de stack, seguindo padroes de mercado 2026 pesquisados via Tavily (Angular: Signals/RxJS boundary, testing-first, Vitest; Spring Boot: virtual threads vs reativo, N+1/OSIV, DTOs de borda; Spring Reactive: sem bloqueio de event-loop, operadores de erro, StepVerifier/WebTestClient). Testing-first e diff minimo sao obrigatorios em modo Implementacao. Criadas 3 skills novas de implementacao (angular-implementation-patterns, spring-boot-implementation-patterns, spring-reactive-implementation-patterns), complementares as 3 skills de analise ja existentes. tools dos 3 agents expandidas com create_file/insert_edit_into_file/get_errors/run_in_terminal. routing-graph.yaml: tipo de no specialist_advisory -> specialist_hybrid; condicao intent_drift_detected ajustada para nao confundir implementacao dentro do dominio com deriva de intencao (R-042). Registrado em catalog.yaml, routing-graph.yaml, CLAUDE.md (R-042), copilot-instructions.md, agents/README.md, skills/.index.json, skills/README.md e casos-roteamento.yaml (R-015/R-040). | 2026-08-30 (5) — R-042 (Re-triagem Obrigatoria por Turno — Anti Sticky-Session): fechado gap onde agent downstream ativo perdia a inteligencia de roteamento apos o primeiro turno (requisito->implementacao, analise->codigo). Adicionada secao 'Retorno ao Router' em todos os 23 agents downstream/specialist (atualizacao atomica R-015), com gatilho de deriva de intencao especifico por agent. agent-router v1.5.0: Decision Tree com PASSO 0.3 (re-triagem por deriva), output com campo 'Agente Ativo' para auditoria. routing-graph.yaml: aresta reversa universal (de: *downstream -> para: agent-router, condicao intent_drift_detected, prioridade 0) + nos/arestas para os 3 specialists angular/spring-boot/spring-reactive (antes orfaos — nao rotaveis pelo router, so por @mencao manual). handoff-governance/SKILL.md § 5/5.2 atualizado. Evals: canon-015/016/017 (specialists rotaveis) + regr-014/015 (sticky-session). Pesquisa de mercado: OpenAI Agents SDK handoffs (transfer_back_to_supervisor), LangGraph supervisor pattern (add_handoff_back_messages), state machine de 2 modos (orchestrator_mode/task_mode) com deteccao conservadora de off-topic. | 2026-08-29 (4) — Criado agent requirements-analyst (perfil Operacional, prospectivo): elicita e estrutura requisitos funcionais/nao-funcionais a partir de pedido de negocio ambiguo, aplicando ISO/IEC/IEEE 29148, notacao EARS, INVEST, Gherkin/BDD e FURPS+; detecta solution-jumping via tecnica Five Whys; nunca decide arquitetura (handoff para impact-architect/analysis-architect/refactor-planner); nunca extrai regra de codigo existente (nao confundir com business-rules-extractor, que e reverso). Skill requirements-engineering-patterns criada (pesquisa de mercado). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040)."

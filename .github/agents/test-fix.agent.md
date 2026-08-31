@@ -71,24 +71,21 @@ Pedido recebido?
 
 ## Protocolo de Detecção de Contexto (Entrada Flexível)
 
-### Verificação automática ao iniciar
+Aplicar o padrão canônico da skill [`structured-intake-patterns`](../skills/structured-intake-patterns/SKILL.md) para estrutura `P1..PN`, classificação de campos e consolidação do pré-contexto.
 
-1. **Checar se há relatório na conversa** — procurar por: JSON de testes, output de terminal colado, arquivo `.txt`/`.json`/`.md` com resultados, ou saída de `vitest`/`karma`/`jest`/`pytest`/`mvn`.
+### Especialização deste agent
 
-2. **Se relatório presente** → extrair: nome do teste, arquivo, linha, mensagem de erro, stack trace.
+1. **Checar primeiro se há relatório de falhas anexado** (JSON/terminal/`.txt`/`.md`, outputs de `vitest`/`karma`/`jest`/`pytest`/`mvn`).
+2. **Se houver relatório**, extrair: nome do teste, arquivo, linha, mensagem de erro e stack trace.
+3. **Se não houver relatório**, disparar `ask_questions` com as perguntas abaixo.
 
-3. **Se relatório ausente** → acionar `ask_questions` antes de qualquer ação com as seguintes perguntas:
+| ID | Classe | Pergunta de domínio |
+|---|---|---|
+| P1 | Obrigatório | Quais testes estão quebrados? *(listar nomes, colar output, anexar relatório ou informar que não sabe)* |
+| P2 | Obrigatório | Qual é o framework/stack dos testes? *(Angular+Vitest, Angular+Jasmine/Karma, Spring Boot+JUnit5, Python+pytest, Playwright, outro)* |
+| P3 | Recomendado | Você tem a mensagem de erro ou stack trace? *(sim: colar \| não)* |
 
-- **P1 — Quais testes estão quebrados?**
-  - Opções: listar nomes manualmente · colar output do terminal · anexar arquivo de relatório · não sabe (precisa rodar primeiro)
-
-- **P2 — Qual é o framework/stack dos testes?**
-  - Opções: Angular + Vitest · Angular + Jasmine/Karma · Spring Boot + JUnit 5 · Python + pytest · E2E Playwright · Outro
-
-- **P3 — Você tem a mensagem de erro ou stack trace?**
-  - Opções: sim (colar aqui) · não (só sabe que estão falhando)
-
-4. **Se usuário não sabe quais testes estão quebrados** → fornecer o comando para ele rodar e colar o resultado (ver seção **Escalada de Execução Completa**).
+**Regra específica deste agent:** sem resposta útil de P1, não iniciar correção; orientar o usuário a executar a suíte e colar o output filtrado (seção **Escalada de Execução Completa**).
 
 ## Taxonomia de Falhas
 
@@ -345,6 +342,7 @@ Se a solicitação pivotar de "corrigir teste identificado" para "criar testes n
 - [`../../CLAUDE.md`](../../CLAUDE.md)
 - [`../copilot-instructions.md`](../copilot-instructions.md)
 - [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md)
+- [`../skills/structured-intake-patterns/SKILL.md`](../skills/structured-intake-patterns/SKILL.md)
 - Relatório de falhas **se disponível** (JSON/Markdown/output de terminal) — se ausente, `ask_questions` coleta
 - Skill da stack identificada (ex: `test-implementation-angular-vitest`)
 - Adapter do projeto (ex: `.github/instructions/<projeto>.instructions.md`)

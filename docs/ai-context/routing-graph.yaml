@@ -44,10 +44,6 @@ nos:
     tipo: downstream
     descricao: "Planejamento de refatoração segura"
 
-  - id: impact-architect
-    tipo: downstream
-    descricao: "Análise de impacto técnico local"
-
   - id: docs-curator
     tipo: downstream
     descricao: "Curadoria e atualização de documentação de governança"
@@ -64,13 +60,13 @@ nos:
     tipo: downstream
     descricao: "Elicitação e estruturação de requisitos funcionais/não-funcionais a partir de pedido de negócio ambíguo (EARS/INVEST/Gherkin/FURPS+); detecta solution-jumping via Five Whys; prospectivo (pedido → requisito), nunca decide arquitetura, não confundir com business-rules-extractor (reverso: código → regra)"
 
-  - id: research-router
+  - id: deep-search
     tipo: fallback
-    descricao: "Triagem de pesquisa externa — fallback primário"
+    descricao: "Pesquisa interna aprofundada e externa (atômica/composta) — fallback primário"
 
   - id: analysis-architect
     tipo: fallback
-    descricao: "Análise técnica cross-projeto e integrações cross-sistema (v2.0.0 — unificado com analysis-integration-architect)"
+    descricao: "Análise técnica cross-projeto e integrações cross-sistema; absorve impacto local via tier B1"
 
   - id: agent-factory
     tipo: downstream
@@ -169,7 +165,7 @@ arestas:
       sinal_r006: "É revisão preventiva de qualidade ANTES do merge (não bug já ocorrido)?"
       nao_confundir_com:
         - "bug em produção"        # → bug-triage (algo já quebrou)
-        - "impacto de mudar X"     # → impact-architect (análise isolada de impacto)
+        - "impacto de mudar X"     # → analysis-architect (tier B1 local)
 
   # Elicitação e estruturação de requisitos (pré-técnico, prospectivo)
   - de: agent-router
@@ -189,7 +185,7 @@ arestas:
       sinal_r006: "É elicitação de requisito NOVO a partir de pedido ambíguo (ainda sem análise técnica)?"
       nao_confundir_com:
         - "extrair regra de negócio de código existente"  # → business-rules-extractor (reverso)
-        - "impacto técnico de mudança já definida"          # → impact-architect (requisito já claro)
+        - "impacto técnico de mudança já definida"          # → analysis-architect (tier B1)
 
   # Estratégia de testes
   - de: agent-router
@@ -271,9 +267,9 @@ arestas:
         - "eliminar duplicação"
         - "reestruturar"
 
-  # Análise de impacto
+  # Análise de impacto local (tier B1)
   - de: agent-router
-    para: impact-architect
+    para: analysis-architect
     prioridade: 4
     threshold_score: 0.90
     nivel_routing: rule-based
@@ -285,6 +281,7 @@ arestas:
         - "o que muda"
         - "quem é afetado"
         - "breaking change"
+      sinal_r006: "Impacto local -> usar analysis-architect em tier B1"
 
   # Documentação
   - de: agent-router
@@ -426,8 +423,8 @@ arestas:
       gatilho: >
         Mudança de verbo de ação (elicitar->implementar, revisar->codar,
         analisar->corrigir, planejar->executar) quando o agent ativo NÃO
-        cobre implementação (analysis-architect|impact-architect|bug-triage|
-        requirements-analyst|test-strategy|refactor-planner|research-router)
+        cobre implementação (analysis-architect|bug-triage|
+        requirements-analyst|test-strategy|refactor-planner|deep-search)
         OU pedido de execução/código em stack fora da matriz de competência
         do agent ativo OU pedido de execução/código em agent estritamente
         read-only. Nota: angular|spring-boot|spring-reactive são perfil
@@ -438,15 +435,15 @@ arestas:
       aplica_a: "todos os nos tipo downstream e specialist_hybrid"
       acao: "handoff imediato para agent-router com motivo: deriva_de_intencao"
 
-  # Pesquisa externa — fallback primário
+  # Pesquisa interna/externa — fallback primário
   - de: agent-router
-    para: research-router
+    para: deep-search
     prioridade: 8
     threshold_score: 0.70
     nivel_routing: semantic
     condicoes:
-      sinal: "Dúvida técnica, pesquisa externa, benchmark de mercado"
-      gatilho: "Intenção clara mas requer informação externa ao repositório"
+      sinal: "Dúvida técnica, pesquisa interna aprofundada, pesquisa externa, benchmark de mercado"
+      gatilho: "Intenção clara que exige investigação além do contexto imediato"
 
   # Análise técnica genérica e cross-projeto — fallback secundário amplo
   - de: agent-router

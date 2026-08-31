@@ -68,6 +68,10 @@ Pedido recebido?
 │   ├─ Identificar consumidores downstream
 │   └─ Verificar acoplamento: tight | loose | eventual
 │
+├─ É análise multi-dimensional com eixos genuinamente independentes (2+ eixos, ex.: contrato de API + schema de banco + dependência de fila)?
+│   ├─ Sim → aplicar Fan-out (ver "Fan-out — Análise Paralela" abaixo)
+│   └─ Não → prosseguir sequencialmente pelas Etapas 1–5
+│
 ├─ É pedido de implementação de código?
 │   └─ Sim → delegar para fluxo de desenvolvimento (fora deste agent)
 │
@@ -94,6 +98,19 @@ Pedido recebido?
 | **B3** | Validação LLM + contexto de negócio | Decisão de breaking change crítico | Alto |
 
 **Etapa 5 — Emitir conclusão:** recomendações objetivas com evidências rastreáveis.
+
+## Fan-out — Análise Paralela (eixos independentes)
+
+> Capacidade adicionada (2026-08-31) em resposta ao gap de mercado "Fan-out/Parallelization" identificado em `docs/plan/categorizacao-agents-mercado.md` §5.4. Pesquisa de mercado (Beam AI, "6 Multi-Agent Orchestration Patterns", 2026) confirma fan-out/fan-in como padrão consolidado quando "4+ tarefas sem dependência entre si" — não justifica um agent dedicado (evita over-delegation), apenas uma capacidade explícita deste agent orquestrador.
+
+Quando os eixos de análise são **genuinamente independentes** (ex.: avaliar simultaneamente contrato de API, schema de banco e dependência de fila para a mesma mudança):
+
+1. **Dispatch:** para cada eixo independente, disparar 1 sub-análise via `run_subagent` (auto-invocação com escopo restrito ao eixo, ou delegação a `@deep-search` se o eixo for majoritariamente pesquisa).
+2. **Payload mínimo por eixo:** seguir `handoff-governance/SKILL.md` (contexto preservado: sistemas envolvidos, tier B1/B2/B3, evidências já coletadas).
+3. **Agregação (fan-in):** consolidar os resultados dos eixos em 1 relatório único — o agregador deve resolver conflitos/contradições entre eixos antes de reportar (não apenas concatenar).
+4. **Limite:** não paralelizar quando os eixos têm dependência sequencial real (ex.: schema de banco definindo o contrato de API) — nesse caso, seguir sequencial pelas Etapas 1–5.
+
+**Anti-padrão:** paralelizar eixos que dependem um do outro (resultado inconsistente); paralelizar sem etapa de agregação explícita (relatório final "de list de partes soltas").
 
 ## Padrões Obrigatórios
 
@@ -124,6 +141,22 @@ Próximo Passo: <ação objetiva e responsável>
 - **Dependências:** tabela origem → destino → tipo de acoplamento (tight/loose/eventual).
 - **Diagrama (opcional):** Mermaid flowchart ou sequence quando útil para visualização.
 - **Recomendação:** estratégia de migração, versionamento ou deprecação.
+
+### Tier B1 — Impacto Local (template obrigatório quando nível = B1)
+
+```markdown
+Resultado:
+- <conclusão de impacto local>
+
+Dependências/Contratos afetados:
+- <item>
+
+Riscos:
+- <risco> | <Alto|Médio|Baixo>
+
+Mitigação mínima:
+- <ação>
+```
 
 ### Formato compacto (análise genérica)
 
@@ -165,6 +198,7 @@ Próximo passo mínimo:
 - [`../skills/dependency-graph-mapping/SKILL.md`](../skills/dependency-graph-mapping/SKILL.md) — grafo de dependências e blast radius.
 - [`../skills/integration-contract-analysis/SKILL.md`](../skills/integration-contract-analysis/SKILL.md) — análise de contrato (OpenAPI/AsyncAPI/gRPC/GraphQL).
 - [`../skills/tavily/SKILL.md`](../skills/tavily/SKILL.md) — pesquisa externa apenas após esgotar artefatos locais.
+- [`../skills/handoff-governance/SKILL.md`](../skills/handoff-governance/SKILL.md) — payload mínimo de handoff, usado no Fan-out de análise paralela.
 
 ## Diretrizes
 
@@ -186,11 +220,10 @@ Próximo passo mínimo:
 
 ## Quando Delegar
 
-- [`@impact-architect`](impact-architect.agent.md) → análise de impacto restrita a 1 projeto (escopo local).
 - [`@business-rules-extractor`](business-rules-extractor.agent.md) → extrair regras de negócio do código.
 - [`@refactor-planner`](refactor-planner.agent.md) → quando a análise resultar em plano de refatoração.
 - [`@agent-factory`](agent-factory.agent.md) → quando a demanda for sobre estrutura de agents.
-- [`@research-router`](research-router.agent.md) → triagem de pesquisa genérica ou externa.
+- [`@deep-search`](deep-search.agent.md) → quando o objetivo principal for pesquisa interna/externa aprofundada.
 - [`@docs-curator`](docs-curator.agent.md) → documentar decisões de integração ou análise.
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

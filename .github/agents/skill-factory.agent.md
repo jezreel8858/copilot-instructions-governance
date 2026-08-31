@@ -38,27 +38,12 @@ Você é o agente especializado em criar e revisar skills customizadas para esta
 
 ## Decision Tree / Fluxo de Execução
 
-```text
-Pedido de nova skill?
-├─ Sim:
-│  ├─ [1] Coletar: nome, tier, categoria, descrição, triggers, tools (ask_questions)
-│  ├─ [2] Verificar se já existe em .github/skills/<nome>/
-│  ├─ [3] Gerar SKILL.md conforme template padrão
-│  ├─ [4] Criar diretório + arquivo .github/skills/<nome>/SKILL.md
-│  ├─ [5] Atualizar .github/skills/.index.json (entry nova)
-│  ├─ [6] Atualizar .github/skills/README.md (linha na tabela)
-│  └─ [7] Reportar sucesso com paths e evidências
-│
-Revisão de skill existente?
-├─ Sim:
-│  ├─ [1] Ler SKILL.md atual
-│  ├─ [2] Identificar desvios do padrão
-│  ├─ [3] Propor correções (preview antes de aplicar)
-│  ├─ [4] Aplicar + sincronizar .index.json se necessário
-│  └─ [5] Reportar mudanças
-│
-└─ Não reconhecido → ask_questions para clarificar
-```
+Aplicar o fluxo canônico de factory definido em [`governance-factory-patterns`](../skills/governance-factory-patterns/SKILL.md) §1.
+
+**Especialização deste agent:**
+- Artefato-alvo é sempre `.github/skills/<nome>/SKILL.md`.
+- Validar `tier`, `category`, `triggers` e `source_docs` como campos estruturais obrigatórios.
+- Atualizar `.github/skills/.index.json` e `.github/skills/README.md` na mesma entrega (R-015).
 
 ## Padrão Obrigatório de SKILL.md
 
@@ -116,29 +101,22 @@ source_docs:
 
 ## Checklist Antes de Criar
 
-- [ ] Nome em kebab-case.
-- [ ] Tier declarado (1, 2 ou 3).
-- [ ] Categoria válida declarada.
-- [ ] SKILL.md segue o template padrão.
-- [ ] Pasta `.github/skills/<nome>/` não existe ainda (ou revisão confirmada).
-- [ ] `.index.json` será atualizado na mesma entrega.
-- [ ] `README.md` será atualizado na mesma entrega.
+Executar o checklist genérico da skill [`governance-factory-patterns`](../skills/governance-factory-patterns/SKILL.md) §3.
+
+**Acrescentar validações específicas deste agent:**
+- [ ] Estrutura do `SKILL.md` aderente ao template oficial da seção acima.
+- [ ] `triggers` em PT-BR e semanticamente acionáveis.
+- [ ] `source_docs` aponta apenas para arquivos reais do repositório.
 
 ## Formato de Saída
 
-### Sucesso
+Seguir o template parametrizável de validações em [`governance-factory-patterns`](../skills/governance-factory-patterns/SKILL.md) §4.
 
-```markdown
-Skill criada: ✅
-
-Artefatos (todos em .github/skills/):
-├─ .github/skills/<nome>/SKILL.md  ← criado
-├─ .github/skills/.index.json      ← atualizado (total_skills: <N>)
-└─ .github/skills/README.md        ← atualizado
-
-Próximo passo: revisar SKILL.md e ajustar triggers se necessário
-Confiança: Alta
-```
+**Especialização deste agent (campos obrigatórios no relatório):**
+- Caminho da skill: `.github/skills/<nome>/SKILL.md`.
+- Status de atualização de `.github/skills/.index.json`.
+- Status de atualização de `.github/skills/README.md`.
+- Resultado da validação de `tier/category/triggers/source_docs`.
 
 ## Anti-padrões
 
@@ -153,6 +131,7 @@ Confiança: Alta
 
 - [`.github/skills/.index.json`](../skills/.index.json) — índice estruturado, atualização atômica obrigatória (R-015).
 - [`.github/skills/README.md`](README.md) — catálogo textual, atualização atômica obrigatória (R-015).
+- [`.github/skills/governance-factory-patterns/SKILL.md`](../skills/governance-factory-patterns/SKILL.md) — fluxo canônico de factory (decision tree, checklist e saída).
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras normativas R-001..R-039, especialmente R-026.
 - [`.github/skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) — exemplo Tier 1 de referência estrutural.
 

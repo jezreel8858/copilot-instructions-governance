@@ -49,128 +49,7 @@ Você é um agente operacional especializado em gerar automaticamente arquivos a
 
 ## 🔍 Scanner de Projeto — O Que Procurar
 
-### Objetivo
-Automaticamente detectar **linguagens, frameworks, padrões arquiteturais e convenções de codestyle** do projeto para **customizar os adapters gerados** conforme a realidade técnica.
-
-### Artefatos Analisados (Ordem de Prioridade)
-
-#### [1] Detecção de Linguagem & Runtime
-
-| Arquivo | Procurar | Interpretar |
-|---------|----------|-------------|
-| `package.json` | Presença + `"type": "module"` | Node.js / TypeScript / JavaScript |
-| `pom.xml` | `<modelVersion>` | Java / Maven |
-| `build.gradle` / `build.gradle.kts` | `gradle` | Kotlin / Java / Gradle |
-| `requirements.txt` / `Pipfile` | Presença | Python |
-| `Gemfile` | Presença | Ruby |
-| `go.mod` | Presença | Go |
-| `Cargo.toml` | Presença | Rust |
-| `.swift-version` / `Package.swift` | Presença | Swift |
-| `Dockerfile` | `FROM` + `RUN` refs | Detectar runtime base |
-
-#### [2] Detecção de Framework & Ecossistema
-
-| Framework | Sinais |
-|-----------|--------|
-| **Angular** | `angular.json` + `"@angular/core"` em `package.json` |
-| **React** | `react`, `react-dom` em `package.json` |
-| **Vue** | `"vue"` em `package.json` |
-| **Next.js** | `next` em `package.json` + `next.config.js` |
-| **Spring Boot** | `spring-boot-starter` em `pom.xml` / `build.gradle` |
-| **Nest.js** | `"@nestjs/core"` em `package.json` |
-| **Express** | `express` em `package.json` |
-| **Django** | `Django` em `requirements.txt` |
-| **FastAPI** | `fastapi` em `requirements.txt` |
-| **Gin** | `github.com/gin-gonic/gin` em `go.mod` |
-
-#### [3] Detecção de Estrutura & Padrões
-
-| Padrão | Sinais | Significado |
-|--------|--------|------------|
-| **Monorepo** | `lerna.json` / `nx.json` / `workspaces` em `package.json` | Múltiplos projetos no mesmo repo |
-| **Modular** | Subpastas organizadas (`/src/module-a`, `/src/module-b`) | Organização por features/domains |
-| **Componente** | Pasta `/components` (frontend) ou `/entity` (backend) | Pattern de componentes reutilizáveis |
-| **Microsserviços** | Múltiplos `docker-compose.yml` ou pastas `/services/` | Arquitetura orientada a serviços |
-| **Layered** | Pastas `/controllers`, `/services`, `/repositories`, `/models` | Arquitetura em camadas |
-
-#### [4] Detecção de Codestyle & Configuração
-
-| Arquivo | Procurar | Define |
-|---------|----------|--------|
-| `.eslintrc.json` / `.eslintrc.js` | `extends`, `rules` | Padrões JavaScript/TypeScript |
-| `.prettierrc` / `prettier.config.js` | `printWidth`, `semi` | Formatação |
-| `tsconfig.json` | `strict`, `target`, `module` | Rigor TypeScript |
-| `.editorconfig` | `indent_style`, `indent_size` | Convenção editor |
-| `.checkstyle.xml` (Java) | `<module>` rules | Padrões Java |
-| `sonar-project.properties` | `sonar.sources` | Configuração de qualidade |
-| `.github/workflows/*.yml` | `uses:`, `runs-on:` | CI/CD tools (GitHub Actions, Jenkins) |
-
-#### [5] Detecção de Type Safety & Testes
-
-| Indicador | Significa |
-|-----------|-----------|
-| `tsconfig.json` com `"strict": true` | Type-safety obrigatório |
-| `jest.config.js` / `karma.conf.js` | Framework de testes (Jest, Karma, Jasmine) |
-| `playwright.config.ts` / `protractor.conf.js` | E2E testing (Playwright, Protractor) |
-| `/test`, `/tests`, `/spec` folders | Padrão de organização de testes |
-| `coverage/` folder | Cobertura de testes habilitada |
-
-#### [6] Detecção de Integração & APIs
-
-| Artefato | Procurar | Significa |
-|----------|----------|-----------|
-| `@openapi`/`@swagger` comments em código | Presença | API bem documentada |
-| `gradle.properties` com `nexus` refs | Repository config | Jars customizados |
-| `docker-compose.yml` | Services | Infraestrutura local |
-| `values-*.yaml` | Helm templates | Deploy Kubernetes |
-
-### Resultado do Scanner
-
-```yaml
-project_profile:
-  language: "TypeScript"
-  primary_framework: "Angular"
-  secondary_frameworks: ["RxJS"]
-  architecture: "component-based"
-  structure: "monorepo"  # ou "single-package"
-  code_style:
-    linter: "eslint"
-    formatter: "prettier"
-    type_safety: "strict"
-  testing:
-    unit: "jasmine"
-    e2e: "playwright"
-    has_coverage: true
-  ci_cd: "github-actions"
-  database: null
-  api_docs: "openapi"
-```
-
-Exemplo de saída para o adapter gerado:
-
-```markdown
----
-applyTo: ["src/**/*.ts"]
-detected_stack: "TypeScript + Angular 21"
-source: "scanner-analysis"
----
-
-# Convenções: [Projeto] — Angular 21
-
-> Stack detectado: **TypeScript + Angular**, strict mode, Jasmine/Karma para testes.
-> Este adapter foi **customizado automaticamente** pelo scanner de projeto.
-
-## 1) Stack Detectado
-
-- **Linguagem**: TypeScript (strict mode)
-- **Framework**: Angular 21
-- **Type Safety**: ✅ Ativado
-- **Testing**: Jasmine + Karma
-- **E2E**: Playwright
-- **CI/CD**: GitHub Actions
-
-[... resto baseado em padrões do projeto ...]
-```
+Aplicar o checklist de scan definido em `project-scanner-governance` (skill já carregada em Docs Sempre Anexadas), mantendo scanner estritamente **read-only** nos projetos externos e usando o resultado para customizar o adapter gerado neste repositório.
 
 ## Decision Tree / Fluxo de Execução
 
@@ -185,7 +64,7 @@ Binding context inicializado (./docs/ai-context/catalog.yaml + binding.md existe
 │  │  ├─ [3c] Detectar frameworks (Spring, Angular, React, etc)
 │  │  ├─ [3d] Detectar estrutura (monorepo, modular, estrutura de pastas)
 │  │  ├─ [3e] Detectar codestyle (linter config, prettier, eslint rules)
-│  │  ├─ [3f] Detectar arquitetura (camadas, padrões, componentes)
+│  │  ├─ [3f] Detectar arquitetura (padrões, organização de pastas)
 │  │  └─ [3g] ❌ NÃO criar/modificar NADA no projeto externo
 │  ├─ [4] Para cada projeto registrado no catalog:
 │  │  ├─ [4a] Verificar se adapter já existe em ./.github/instructions/

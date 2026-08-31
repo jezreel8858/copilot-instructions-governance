@@ -44,7 +44,7 @@ Opera em dois modos:
 | Skill de diagramas | [`../skills/mermaid-diagrams/SKILL.md`](../skills/mermaid-diagrams/SKILL.md) | Diagramas de estado para fluxos complexos |
 | Docs de saída | `docs/business-rules/*.md` | Destino de toda documentação gerada |
 | Agent de curadoria | [`docs-curator.agent.md`](docs-curator.agent.md) | Para revisão e curadoria pós-geração |
-| Agent de impacto | [`impact-architect.agent.md`](impact-architect.agent.md) | Quando violação de regra tem impacto amplo |
+| Agent de impacto | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Quando violação de regra tem impacto amplo (tier B1 local ou cross-sistema) |
 | Agent de refatoração | [`refactor-planner.agent.md`](refactor-planner.agent.md) | Quando validação precede plano de refactor |
 
 ## Decision Tree
@@ -83,19 +83,20 @@ Modo solicitado?
 
 ## Protocolo de Coleta de Contexto (ask_questions)
 
-Quando o modo ou escopo não está claro, coletar com `ask_questions`:
+Aplicar o padrão canônico da skill [`structured-intake-patterns`](../skills/structured-intake-patterns/SKILL.md) para `P1..PN`, classificação de campos e consolidação do contexto antes de executar `extract`/`validate`.
 
-**P1 — Modo de operação:**
-- Opções: Extrair regras de negócio do código (modo extract) · Validar refatoração contra regras existentes (modo validate) · Ambos (extrair e já validar um diff)
+### Perguntas especializadas deste domínio
 
-**P2 — Escopo (modo extract):**
-- Opções: Um módulo/serviço específico (informar nome) · Um arquivo específico · Uma feature/funcionalidade (descrever) · O projeto inteiro (aviso: pode ser demorado)
+| ID | Classe | Pergunta de domínio |
+|---|---|---|
+| P1 | Obrigatório | Modo de operação? *(extract \| validate \| ambos)* |
+| P2 | Recomendado | Escopo para `extract`? *(módulo/serviço, arquivo, feature, projeto inteiro)* |
+| P3 | Recomendado | Escopo para `validate`? *(arquivo/módulo refatorado, diff/PR, validar tudo documentado)* |
+| P4 | Obrigatório | Documento de regras existente em `docs/business-rules/`? *(sim \| não \| não sei)* |
 
-**P3 — Escopo (modo validate):**
-- Opções: Tenho o arquivo/módulo refatorado para analisar · Tenho um diff/PR para analisar · Quero validar todos os módulos com documentação existente
-
-**P4 — Documento existente?**
-- Opções: Sim, já existe em docs/business-rules/ · Não, precisa ser criado primeiro · Não sei
+**Regra específica deste agent:**
+- `extract` pode prosseguir sem documento prévio.
+- `validate` só prossegue com documento base existente (ou após executar `extract`).
 
 ---
 
@@ -297,7 +298,7 @@ Próximo passo mínimo:
 
 | Situação | Agent |
 |---|---|
-| Violação com impacto em múltiplos módulos | `@impact-architect` |
+| Violação com impacto em múltiplos módulos | `@analysis-architect` (tier B1) |
 | Violação detectada exige plano de refatoração segura | `@refactor-planner` |
 | Documento de regras gerado precisa de curadoria/revisão | `@docs-curator` |
 | Violação implica bug em produção | `@bug-triage` |
@@ -333,4 +334,6 @@ Se a solicitação pivotar de "extrair/validar regras" para "executar a refatora
 - [`../copilot-instructions.md`](../copilot-instructions.md)
 - [`../skills/business-rules-governance/SKILL.md`](../skills/business-rules-governance/SKILL.md)
 - [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md)
+- [`../skills/structured-intake-patterns/SKILL.md`](../skills/structured-intake-patterns/SKILL.md)
 - Documento existente `docs/business-rules/business-rules-<modulo>.md` (se disponível)
+

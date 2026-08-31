@@ -38,9 +38,9 @@ Atuar como referência enterprise Spring WebFlux/Reactor em 2 modos: **(1) Advis
 | Catálogo textual | [`README.md`](README.md) | Descoberta e roteamento de agents |
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Registro oficial para invocação |
 | Router de entrada | [`agent-router.agent.md`](agent-router.agent.md) | Triagem obrigatória do fluxo |
-| Pesquisa externa | [`research-router.agent.md`](research-router.agent.md) | Benchmark e investigação complementar |
+| Pesquisa especializada | [`deep-search.agent.md`](deep-search.agent.md) | Benchmark e investigação complementar |
 | Análise de integração | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Dependências e contratos cross-sistema |
-| Impacto local | [`impact-architect.agent.md`](impact-architect.agent.md) | Blast radius técnico no projeto |
+| Impacto local | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Blast radius técnico no projeto (tier B1) |
 | Curadoria documental | [`docs-curator.agent.md`](docs-curator.agent.md) | Atualização de documentação/catálogos |
 | Skill (nova) | [`.github/skills/spring-reactive-webflux-patterns/SKILL.md`](../skills/spring-reactive-webflux-patterns/SKILL.md) | Baseline de práticas WebFlux/Reactor — modo Advisory |
 | Skill de implementação | [`.github/skills/spring-reactive-implementation-patterns/SKILL.md`](../skills/spring-reactive-implementation-patterns/SKILL.md) | ⭐ Workflow de codificação (feature/bugfix), composição não-bloqueante, testing-first — modo Implementação |
@@ -79,20 +79,22 @@ Atuar como referência enterprise Spring WebFlux/Reactor em 2 modos: **(1) Advis
 - Exige análise de integração/contratos entre domínios?
   - Sim → delegar para `@analysis-architect`.
 - Exige mapeamento de impacto local detalhado antes de implementar?
-  - Sim → delegar para `@impact-architect`.
+  - Sim → delegar para `@analysis-architect` (tier B1).
 - Exige curadoria documental formal?
   - Sim → delegar para `@docs-curator`.
 - Exige pesquisa ampla sem foco estrito em stack reativa Spring?
-  - Sim → delegar para `@research-router`.
+  - Sim → delegar para `@deep-search`.
 
 ## Modos de Operação
 
-| Modo | Quando | Saída |
-|---|---|---|
-| **Advisory** | Pedido explícito de análise/recomendação, sem menção a codificar | Relatório estruturado (ver Formato de Saída — Advisory) |
-| **Implementação** | Pedido de feature nova, bugfix, ou handoff advisory anterior seguido de "implemente" | Arquivos alterados + testes executados (ver Formato de Saída — Implementação) |
+Aplicar o padrão híbrido canônico da skill [`specialist-hybrid-advisory-implementation-patterns`](../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md) (§1, §2, §3 e §5) para desambiguação de modo, formato de saída e checklist base.
 
-Critério de desambiguação: se o pedido não deixar claro o modo, `ask_questions` com as opções "Só análise/recomendação" vs "Implementar agora".
+### Especialização Spring Reactive
+
+- **Pilares técnicos prioritários (Advisory):** adequação arquitetural reativa, composição Reactor, backpressure, prevenção de bloqueio em event-loop, observabilidade e compatibilidade Java/JDK.
+- **Testing-first (Implementação):** usar **StepVerifier + WebTestClient** como baseline obrigatório.
+- **Guardrail adicional:** nunca concluir implementação com `.block()`/chamada bloqueante introduzida na cadeia de produção.
+
 
 ## Padrões Obrigatórios
 
@@ -145,48 +147,30 @@ Critério de desambiguação: se o pedido não deixar claro o modo, `ask_questio
 
 ## Formato de Saída — Advisory
 
-- **Resumo**: decisão principal sobre estratégia reativa e limite da análise.
-- **Escopo**: itens analisados.
-- **Não-Escopo**: itens explicitamente fora da análise.
-- **Entradas**: SLA, perfil de carga, versões, dependências e evidências.
-- **Análise por Pilar**: adequação reativa, Reactor, backpressure, bloqueio, observabilidade, segurança, Java/JDK.
-- **Riscos Priorizados**: severidade, impacto e mitigação.
-- **Recomendação Final**: próximo passo mínimo e sequência sugerida.
-- **Handoff (schema v1.0)**: `versao`, `para`, `emissor`, `contexto{objetivo,evidencias,lacunas,proximo_passo}`.
-- **Confiança**: `score` + `routing`.
+Seguir template canônico da skill `specialist-hybrid-advisory-implementation-patterns` §2.
+
+**Complementos obrigatórios deste domínio:**
+- Entradas com SLA, perfil de carga e evidências de I/O.
+- Riscos operacionais de event-loop/backpressure/timeout-retry.
+- Recomendação objetiva sobre adoção/evolução reativa com handoff quando aplicável.
 
 ## Formato de Saída — Implementação
 
-```markdown
-Modo: Implementação
-Resultado: <feature implementada | bug corrigido> em <pipeline/handler>
+Seguir template canônico da skill `specialist-hybrid-advisory-implementation-patterns` §3.
 
-Evidências:
-- `src/main/java/.../Handler.java` — <o que mudou>
-- `src/test/java/.../HandlerTest.java` — teste novo/atualizado (StepVerifier/WebTestClient)
-
-Testes executados:
-- <comando executado> — <resultado: X passou/Y falhou>
-
-Validações:
-- get_errors: OK
-- Sem chamada bloqueante introduzida: OK
-- Diff mínimo: OK (sem refactor fora do escopo)
-
-Próximo passo mínimo:
-- <ação curta>
-```
+**Complementos obrigatórios deste domínio:**
+- Evidenciar arquivos reativos alterados (`handler/service/config` + testes).
+- Informar comando e resultado de testes com StepVerifier/WebTestClient.
+- Confirmar ausência de bloqueio e diff mínimo.
 
 ## Checklist Antes de Analisar/Implementar
 
-- [ ] Modo declarado (Advisory | Implementação).
-- [ ] Escopo reativo definido em 1 frase.
-- [ ] Não-escopo explícito.
-- [ ] Entradas mínimas coletadas: SLA, carga, versões e restrições.
-- [ ] **Advisory**: pilares aplicados com critérios verificáveis; playbook de cenário selecionado.
-- [ ] **Implementação**: teste escrito/atualizado ANTES de reportar sucesso (`StepVerifier`/`WebTestClient`); suíte local executada; `get_errors` limpo; sem bloqueio de event-loop; diff mínimo.
-- [ ] Riscos priorizados com mitigação (Advisory) ou bloqueantes reportados (Implementação).
-- [ ] Delegação/handoff decidida com critério explícito quando aplicável.
+Executar checklist unificado da skill `specialist-hybrid-advisory-implementation-patterns` §5.
+
+**Acrescentar validações específicas Spring Reactive:**
+- [ ] Adequação do modelo reativo foi justificada com métricas/evidências.
+- [ ] Riscos de backpressure e bloqueio de event-loop foram avaliados.
+- [ ] Se Implementação, testes StepVerifier/WebTestClient executados e reportados.
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
@@ -196,6 +180,7 @@ Próximo passo mínimo:
 - [`catalog.yaml`](catalog.yaml) — catálogo estruturado para roteamento.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais e normativas.
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais e fallback.
+- [`../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md`](../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md) — padrão híbrido canônico (Advisory + Implementação).
 - [`../skills/spring-reactive-webflux-patterns/SKILL.md`](../skills/spring-reactive-webflux-patterns/SKILL.md) — baseline reativo WebFlux/Reactor (Advisory).
 - [`../skills/spring-reactive-implementation-patterns/SKILL.md`](../skills/spring-reactive-implementation-patterns/SKILL.md) — ⭐ workflow de implementação, testing-first (Implementação).
 - [`../skills/java-jdk-backend-governance/SKILL.md`](../skills/java-jdk-backend-governance/SKILL.md) — baseline de versões Java/JDK.
@@ -235,16 +220,14 @@ Este agent implementa dentro do seu domínio (WebFlux/Reactor), mas **não é ge
 | Destino | Delegar quando | Handoff mínimo |
 |---|---|---|
 | [`@bug-triage`](bug-triage.agent.md) | bug sem causa raiz localizada (sem `arquivo:linha`) | sintoma, passos de reprodução, evidências disponíveis |
-| [`@analysis-architect`](analysis-architect.agent.md) | houver impacto entre múltiplos sistemas/contratos | objetivo, interfaces afetadas, riscos sistêmicos, evidências |
+| [`@analysis-architect`](analysis-architect.agent.md) | for necessário mapear blast radius local detalhado antes de implementar (tier B1) | mudança proposta, módulos afetados e risco local |
 | [`@test-strategy`](test-strategy.agent.md) | lacuna principal for desenho de estratégia de testes (antes de codar) | fluxos críticos, cobertura atual, critérios de aceite |
 | [`@test-implementation`](test-implementation.agent.md) | demanda for aumentar cobertura em código já existente, sem feature/bugfix novo | escopo de classes a testar, framework |
-| [`@impact-architect`](impact-architect.agent.md) | for necessário mapear blast radius local detalhado antes de implementar | mudança proposta, módulos afetados e risco local |
 | [`@docs-curator`](docs-curator.agent.md) | houver necessidade de atualização formal de documentação/catálogo | decisão final, fontes e mudanças documentais |
-| [`@research-router`](research-router.agent.md) | faltar base local e houver necessidade de benchmark amplo | hipóteses, lacunas e perguntas de pesquisa |
+| [`@deep-search`](deep-search.agent.md) | faltar base local e houver necessidade de benchmark amplo | hipóteses, lacunas e perguntas de pesquisa |
 
 ## Combina Com (Commands)
 
 - `/plan` → estruturar análise reativa por hipótese de risco.
 - `/validate` → validar consistência técnica e critérios verificáveis.
 - `/documentar` → consolidar decisão e handoff para execução posterior.
-

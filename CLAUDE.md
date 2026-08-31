@@ -94,9 +94,9 @@ Solicitação do Usuário (turno N)
   [Delega para downstream/specialist correto]
        ↙ ↓ ↘ ↙ ↓ ↘ ↙
   @bug-triage  @test-strategy  @refactor-planner
-  @impact-architect  @docs-curator
-  @research-router  @analysis-architect
-  @angular  @spring-boot  @spring-reactive (advisory — nunca implementam)
+  @deep-search  @docs-curator
+  @analysis-architect  @agent-auditor
+  @angular  @spring-boot  @spring-reactive (perfil híbrido — advisory + implementação testing-first)
            ↓
          [EXECUÇÃO]
            ↓

@@ -68,6 +68,11 @@ Toda skill deve declarar no topo:
 | **`documentation-writing-patterns`** | 📝 **Tier 2** | Diretrizes agnósticas de domínio para escrever documentação técnica em `.md` (Diátaxis, ADR/MADR, README, formatação chunking-friendly para IA) — base do agent `docs-writer` |
 | **`code-review-patterns`** | 🔎 **Tier 2** | Diretrizes de mercado para revisão de código por IA — severidade (bloqueador/alta/sugestão), dimensões (correção/segurança/convenções/impacto/testes/performance), critérios de bloqueio de merge — base do agent `code-review` |
 | **`requirements-engineering-patterns`** | 🧾 **Tier 2** | Engenharia de Requisitos (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+) para elicitar e estruturar requisitos a partir de pedido ambíguo, com detecção de *solution-jumping* (Five Whys) — base do agent `requirements-analyst` |
+| **`structured-intake-patterns`** | 📥 **Tier 2** | Padrão canônico de coleta estruturada via `ask_questions` (P1..PN), critério de "mínimo necessário para prosseguir" e template de consolidação — base de `bug-triage`, `test-fix`, `business-rules-extractor`, `requirements-analyst` |
+| **`governance-factory-patterns`** | 🏭 **Tier 1** | Fluxo canônico Factory Pattern (criar/revisar/auditar), checklist de qualidade estrutural e formato de saída ✅/❌ parametrizável — base de `agent-factory`, `skill-factory`, `prompt-factory` |
+| **`specialist-hybrid-advisory-implementation-patterns`** | 🧑‍🔧 **Tier 1** | Template canônico do perfil híbrido (Advisory + Implementação) para specialists de stack — base de `angular`, `spring-boot`, `spring-reactive` |
+| **`governance-audit-patterns`** | 🕵️ **Tier 1** | Catálogo de agent/governance smells (anti-padrão estrutural, gap de perfil, gap de diretriz, diretriz redundante, gap de cobertura de categoria) com sintoma, detecção, severidade e remediação — base do agent `agent-auditor` |
+| **`reflection-self-critique-patterns`** | 🪞 **Tier 2** | Padrão generate→critique→revise (Reflection) de baixo custo — self-reflection 1 round grounded para agents Executores reexaminarem o próprio artefato antes de reportar sucesso — base de `docs-writer`, `test-implementation` |
 
 ## 4) Instructions associadas
 

@@ -51,7 +51,7 @@ Pedido recebido?
 |
 |- Achado exige aprofundamento fora do escopo de revisão?
 |  |- Bug confirmado com evidência forte -> handoff @bug-triage
-|  |- Impacto amplo/dependências cross-módulo -> handoff @impact-architect
+|  |- Impacto amplo/dependências cross-módulo -> handoff @analysis-architect (tier B1 para impacto local)
 |  |- Gap de cobertura de teste -> handoff @test-strategy
 |  |- Dívida técnica estrutural -> handoff @refactor-planner
 |  \- Nenhum -> reportar diretamente
@@ -135,7 +135,7 @@ Próximo passo mínimo:
 ## Quando Delegar
 
 - [`@bug-triage`](bug-triage.agent.md) quando o achado for bug confirmado com evidência forte.
-- [`@impact-architect`](impact-architect.agent.md) quando o achado exigir análise de impacto/dependências mais profunda.
+- [`@analysis-architect`](analysis-architect.agent.md) quando o achado exigir análise de impacto/dependências mais profunda (tier B1 local ou cross-sistema).
 - [`@test-strategy`](test-strategy.agent.md) quando faltar cobertura de teste em caminho crítico.
 - [`@refactor-planner`](refactor-planner.agent.md) quando o achado indicar dívida técnica estrutural.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).

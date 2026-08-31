@@ -84,7 +84,7 @@ canonicos:
     input:
       solicitacao: "Analisar o impacto de mudar a assinatura do método processarPagamento() em PaymentService"
     expected:
-      agent_route: "impact-architect"
+      agent_route: "analysis-architect"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.90
@@ -333,7 +333,7 @@ regressao:
     expected:
       agent_route: "agent-router"
     nao_deve:
-      agent_route: "bug-triage|test-strategy|refactor-planner|impact-architect|docs-curator"
+      agent_route: "bug-triage|test-strategy|refactor-planner|analysis-architect|docs-curator"
     critico: true
     threshold: 1.00
 

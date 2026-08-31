@@ -593,12 +593,52 @@
       "description": "Padrões de mercado (2026) para IMPLEMENTAR features/bugs em Spring WebFlux/Reactor — composição não-bloqueante, tratamento de erro por operador, StepVerifier/WebTestClient. Contraparte de execução de spring-reactive-webflux-patterns.",
       "path": ".github/skills/spring-reactive-implementation-patterns/SKILL.md",
       "related_agents": ["@spring-reactive"]
+    },
+    {
+      "name": "structured-intake-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Padrão canônico de coleta estruturada via ask_questions (P1..PN), critério de mínimo necessário para prosseguir e template de consolidação.",
+      "path": ".github/skills/structured-intake-patterns/SKILL.md",
+      "related_agents": ["@bug-triage", "@test-fix", "@business-rules-extractor", "@requirements-analyst"]
+    },
+    {
+      "name": "governance-factory-patterns",
+      "tier": 1,
+      "category": "governance",
+      "description": "Fluxo canônico Factory Pattern (criar/revisar/auditar), checklist de qualidade estrutural e formato de saída com validações ✅/❌ parametrizável por tipo de artefato (agent/skill/prompt).",
+      "path": ".github/skills/governance-factory-patterns/SKILL.md",
+      "related_agents": ["@agent-factory", "@skill-factory", "@prompt-factory"]
+    },
+    {
+      "name": "specialist-hybrid-advisory-implementation-patterns",
+      "tier": 1,
+      "category": "governance",
+      "description": "Template canônico do perfil híbrido (Advisory + Implementação) para specialists de stack técnico — desambiguação de modo, formatos de saída e checklist unificado.",
+      "path": ".github/skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md",
+      "related_agents": ["@angular", "@spring-boot", "@spring-reactive"]
+    },
+    {
+      "name": "governance-audit-patterns",
+      "tier": 1,
+      "category": "governance",
+      "description": "Catálogo consolidado de agent/governance smells (anti-padrão estrutural, gap de perfil, gap de diretriz, diretriz redundante, gap de cobertura de categoria) com sintoma, detecção, severidade e remediação — base do agent agent-auditor.",
+      "path": ".github/skills/governance-audit-patterns/SKILL.md",
+      "related_agents": ["@agent-auditor"]
+    },
+    {
+      "name": "reflection-self-critique-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Padrão generate→critique→revise (Reflection) de baixo custo para agents Executores reexaminarem o próprio artefato antes de reportar sucesso, 1 round, grounded — evita agent 'critic' dedicado (overengineering).",
+      "path": ".github/skills/reflection-self-critique-patterns/SKILL.md",
+      "related_agents": ["@docs-writer", "@test-implementation"]
     }
   ],
   "metadata": {
     "total_agents": 24,
-    "total_skills": 45,
-    "last_updated": "2026-08-30T15:00:00Z",
-    "changelog": "2026-08-30 (6) — Especialistas angular/spring-boot/spring-reactive passam de perfil 'advisory puro' para perfil hibrido analise+implementacao (R-042 atualizado): criadas skills de implementacao consolidadas via pesquisa de mercado 2026 (angular-implementation-patterns, spring-boot-implementation-patterns, spring-reactive-implementation-patterns), complementares as skills de analise ja existentes (agora tambem registradas — gap pre-existente corrigido). total_skills 39->45. | 2026-08-29 (4) — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
+    "total_skills": 50,
+    "last_updated": "2026-08-31T14:00:00Z",
+    "changelog": "2026-08-31 (12) — Análise de gaps de mercado (docs/plan/categorizacao-agents-mercado.md §5) validada via pesquisa Tavily: Reflection puro e Fan-out/Parallelization NÃO justificam novo agent standalone (evita over-delegation/overengineering, R-011). Implementados como capacidades: (a) skill nova reflection-self-critique-patterns (Tier 2, process) consumida por docs-writer e test-implementation (self-reflection 1 round grounded antes de reportar sucesso); (b) capacidade 'Fan-out — Análise Paralela' adicionada diretamente a analysis-architect (Decision Tree + payload via handoff-governance), sem skill dedicada (1 único consumidor). total_skills 49->50. | 2026-08-31 (11) — Fase 3 do plano de otimização aplicada: removidos `research-router` e `impact-architect`; roteamento consolidado em `deep-search` (pesquisa interna/externa) e `analysis-architect` (impacto local tier B1 + cross-sistema). Atualizados `agent-router`, referências cruzadas no catálogo, README, routing-graph e casos de roteamento de forma atômica (R-015/R-040). — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
   }
 }

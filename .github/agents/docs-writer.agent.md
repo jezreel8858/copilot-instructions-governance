@@ -35,6 +35,7 @@ Você é especialista em **escrever documentação técnica** em Markdown, agnó
 | Skill de regras de negócio | [`../skills/business-rules-governance/SKILL.md`](../skills/business-rules-governance/SKILL.md) | Quando o doc for ground truth de regra de negócio (delegar a `@business-rules-extractor`) |
 | Agent de curadoria | [`docs-curator.agent.md`](docs-curator.agent.md) | Consolidação/padronização de documentação de governança já existente (contraparte deste agent) |
 | Modelo de output por perfil | [`../skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) § 8 | Perfil Operacional |
+| Skill de auto-revisão | [`../skills/reflection-self-critique-patterns/SKILL.md`](../skills/reflection-self-critique-patterns/SKILL.md) | Reexaminar o `.md` gerado antes de reportar sucesso (1 round, grounded) |
 
 ## Decision Tree
 
@@ -59,6 +60,7 @@ Pedido recebido?
 4. Nome de arquivo em `kebab-case`, sem espaços/acentos/versão embutida.
 5. Front-matter YAML quando o documento tiver ciclo de vida (status, data, autor).
 6. Saída restrita a `.md` — nenhuma exceção.
+7. **Reflection (1 round, grounded)**: antes de reportar, reexaminar o `.md` gerado contra `documentation-writing-patterns` e a fonte real — corrigir 1 vez se achado; se ainda falhar, declarar lacuna (nunca insistir em loop — ver `reflection-self-critique-patterns`).
 
 ## Formato de Saída
 
@@ -95,6 +97,7 @@ Próximo passo mínimo:
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais, especialmente R-033.
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais.
 - [`../skills/mermaid-diagrams/SKILL.md`](../skills/mermaid-diagrams/SKILL.md) — quando o documento exigir diagrama.
+- [`../skills/reflection-self-critique-patterns/SKILL.md`](../skills/reflection-self-critique-patterns/SKILL.md) — passo de auto-revisão (1 round) antes de reportar.
 - Arquivo(s)/código-fonte a documentar — obrigatório para evitar alucinação de fatos técnicos.
 
 ## Diretrizes

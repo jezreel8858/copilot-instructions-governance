@@ -3,7 +3,7 @@ name: agent-factory
 description: 
   Cria e revisa agents customizados do repositório, garantindo estrutura padrão,
   nomenclatura consistente e atualização de catálogo.
-model: "gpt-5.3-codex"
+model: ["claude-sonnet-5","claude-sonnet-4.6"]
 tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 # Agent Factory
@@ -38,18 +38,12 @@ Você é especialista em criar e revisar arquivos de agents no repositório, pre
 
 ## Decision Tree
 
-```text
-Pedido recebido?
-|- Criar agent novo?
-|  |- Sim -> gerar <name>.agent.md + atualizar README.md e catalog.yaml
-|  \- Não
-|- Revisar agent existente?
-|  |- Sim -> ajustar para seções obrigatórias + checklist estrutural
-|  \- Não
-\- Pedido é de implementação/correção da aplicação?
-   |- Sim -> delegar para agent de domínio adequado (fora deste agent)
-   \- Não -> seguir com padronização de agents
-```
+Aplicar o fluxo canônico de factory definido em [`governance-factory-patterns`](../skills/governance-factory-patterns/SKILL.md) §1 (criar vs revisar vs evitar duplicata, com atualização atômica).
+
+**Especialização deste agent:**
+- Para agent read-only, usar [`templates/research-agent.md`](templates/research-agent.md).
+- Para agent operacional, usar `templates/operational-agent.md`.
+- Sempre validar `tools:` com baseline de `agent-contracts` (incluindo `run_subagent` bloqueante para R-042).
 
 ## Padrões Obrigatórios
 
@@ -66,38 +60,22 @@ Pedido recebido?
 
 ## Formato de Saída
 
-```markdown
-Arquivo criado/alterado: `.github/agents/<name>.agent.md`
+Seguir o template parametrizável de validações em [`governance-factory-patterns`](../skills/governance-factory-patterns/SKILL.md) §4.
 
-Validações:
-- Frontmatter: OK (`name: <name>`)
-- Nome de arquivo: OK (`<name>.agent.md`)
-- Tools mínimas + `run_subagent` (R-042): OK
-- Bloco CRÍTICO com ❌/✅: OK
-- Regras Herdadas: OK
-- Seções obrigatórias: OK
-- Seção "Retorno ao Router" (R-042): OK
-- Banner de identidade (`Agente Ativo`): OK
-- Docs Sempre Anexadas: OK
-- `README.md`: atualizado
-- `catalog.yaml`: atualizado
-```
+**Especialização deste agent (campos obrigatórios no relatório):**
+- Caminho final em `.github/agents/<name>.agent.md`.
+- Template aplicado (`research-agent` ou `operational-agent`).
+- Resultado da validação de tooling mínimo (`run_subagent` + baseline por perfil).
+- Status de atualização de `README.md` e `catalog.yaml` (quando escopo incluir criação/revisão catalogável).
 
 ## Checklist Antes de Codar
 
-- [ ] Template oficial selecionado (`research-agent.md` ou `operational-agent.md`).
-- [ ] Perfil de output definido conforme `agent-contracts/SKILL.md` § 8 (Router | Analista | Especialista-Recomendação | Operacional).
-- [ ] Escopo do agent definido em 1 frase objetiva.
-- [ ] Nome do arquivo alinhado com `name` no frontmatter.
-- [ ] **`run_subagent` presente em `tools:`** — bloqueante, conforme `agent-contracts/SKILL.md` § 9 (pré-requisito estrutural de R-042).
-- [ ] Tools mínimas do perfil presentes (`agent-contracts/SKILL.md` § 9, tabela de baseline por perfil).
-- [ ] Bloco CRÍTICO com itens ❌ e ✅ planejado.
-- [ ] Seção Regras Herdadas com links para CLAUDE.md e copilot-instructions.md.
-- [ ] Seção "Retorno ao Router (R-042)" com gatilho de deriva específico deste agent.
-- [ ] Parágrafo "Banner obrigatório" presente na seção "Retorno ao Router", exigindo `Agente Ativo: <name>` como 1ª linha de toda resposta.
-- [ ] Seção Docs Sempre Anexadas definida.
-- [ ] Estratégia de atualização de `README.md` e `catalog.yaml` definida.
-- [ ] Verificação de não sobreposição com `research-router` e `analysis-architect`.
+Executar o checklist genérico da skill [`governance-factory-patterns`](../skills/governance-factory-patterns/SKILL.md) §3.
+
+**Acrescentar validações específicas deste agent:**
+- [ ] Template correto selecionado (`research-agent.md` vs `operational-agent.md`).
+- [ ] Ordem obrigatória de seções do `.agent.md` preservada.
+- [ ] Seção "Retorno ao Router (R-042)" inclui parágrafo de banner `Agente Ativo: <name>`.
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
@@ -106,6 +84,7 @@ Validações:
 - [`README.md`](README.md) — catálogo de agents para atualização.
 - [`templates/research-agent.md`](templates/research-agent.md) — template para agent read-only.
 - [`templates/operational-agent.md`](templates/operational-agent.md) — template para agent operacional.
+- [`../skills/governance-factory-patterns/SKILL.md`](../skills/governance-factory-patterns/SKILL.md) — fluxo canônico de factory (Decision Tree, checklist e saída).
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais e IDs normativos.
 
 ## Diretrizes
