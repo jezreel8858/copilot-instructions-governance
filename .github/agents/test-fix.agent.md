@@ -313,6 +313,14 @@ Próximo passo mínimo:
 | Falha é de ambiente/CI (não de código) | Reportar bloqueante ao usuário |
 | Fix impacta múltiplos arquivos de produção | `@impact-architect` |
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: test-fix` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> test-fix (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "corrigir teste identificado" para "criar testes novos" ou "corrigir lógica de produção sem aprovação", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
+
+**Gatilho de deriva:** pedido de testes novos (→ `@test-implementation`); pedido de mudança de negócio sem aprovação de `@bug-triage`.
+
 ## Combina Com (Commands)
 
 - `/implement` → executar correções em sequência após plano definido.

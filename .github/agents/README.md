@@ -33,9 +33,9 @@
 | Agent | `skill-factory` | ⭐ ***(NEW)*** Criar/revisar skills customizadas com padrão SKILL.md e `.index.json` atômico |
 | Agent | `prompt-factory` | 📝 ***(NEW)*** Criar/revisar `.prompt.md` seguindo padrão canônico Copilot 2026: frontmatter correto, body estruturado e README atualizado |
 | Agent | `business-rules-extractor` | 📋 ***(NEW)*** Extrair regras de negócio de código e documentar em `.md`; validar refatorações contra regras documentadas |
-| Agent | `angular` | 🅰️ Especialista Angular **enterprise** para análise/recomendação (arquitetura moderna, RxJS+Signals, performance CWV/SSR, segurança, acessibilidade, testes e upgrades), carregando skills de componentização, patterns Angular e contratos de API de componentes para design system, sem implementação direta |
-| Agent | `spring-boot` | ☕ ***(NEW)*** Especialista backend Spring Boot **enterprise** para análise/recomendação (arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração), sem implementação direta |
-| Agent | `spring-reactive` | ⚛️ ***(NEW)*** Especialista backend reativo Spring WebFlux/Reactor **enterprise** para análise/recomendação (capacidade, resiliência, backpressure, observabilidade, segurança e compatibilidade Java/JDK), sem implementação direta |
+| Agent | `angular` | 🅰️ Especialista Angular **enterprise, perfil híbrido v2.0.0** — análise/recomendação (arquitetura moderna, RxJS+Signals, performance CWV/SSR, segurança, acessibilidade, testes, upgrades) **E** implementação de feature/bugfix (testing-first, diff mínimo), carregando skills de componentização, patterns Angular e contratos de API para design system |
+| Agent | `spring-boot` | ☕ Especialista backend Spring Boot **enterprise, perfil híbrido v2.0.0** — análise/recomendação (arquitetura, versões Java/JDK, performance, observabilidade, segurança, migração) **E** implementação de feature/bugfix (virtual threads vs reativo, testing-first) |
+| Agent | `spring-reactive` | ⚛️ Especialista backend reativo Spring WebFlux/Reactor **enterprise, perfil híbrido v2.0.0** — análise/recomendação (capacidade, resiliência, backpressure, observabilidade, segurança, compatibilidade Java/JDK) **E** implementação de feature/bugfix (sem bloqueio de event-loop, testing-first) |
 | Agent | `docs-writer` | 📝 ***(NEW)*** Perfil documentador agnóstico de domínio — gera/atualiza documentação técnica em Markdown (Diátaxis, ADR/MADR, README, runbook, postmortem), produz exclusivamente arquivos `.md` |
 | Agent | `code-review` | 🔎 Revisa código (diff/PR) antes do merge por correção, segurança, convenções, impacto, testes e performance; classifica achados por severidade; read-only; delega para `bug-triage`/`impact-architect`/`test-strategy`/`refactor-planner` |
 | Agent | `requirements-analyst` | 🧾 ***(NEW)*** Elicita e estrutura requisitos funcionais/não-funcionais a partir de pedido de negócio ambíguo (EARS, INVEST, Gherkin, FURPS+); detecta *solution-jumping* via Five Whys; prospectivo (não confundir com `business-rules-extractor`, que é reverso) |
@@ -62,9 +62,9 @@
 | ⭐ Criar/revisar skill customizada | `skill-factory` |
 | 📝 Criar/revisar prompt `.prompt.md` | `prompt-factory` |
 | 📋 Extrair/documentar/validar regras de negócio | `business-rules-extractor` |
-| 🅰️ Análise e recomendação Angular | `angular` |
-| ☕ Análise e recomendação backend Spring Boot | `spring-boot` |
-| ⚛️ Análise e recomendação backend reativo WebFlux/Reactor | `spring-reactive` |
+| 🅰️ Análise, recomendação e implementação Angular (feature/bugfix) | `angular` |
+| ☕ Análise, recomendação e implementação backend Spring Boot (feature/bugfix) | `spring-boot` |
+| ⚛️ Análise, recomendação e implementação backend reativo WebFlux/Reactor (feature/bugfix) | `spring-reactive` |
 | 📝 Escrever/gerar documentação técnica em `.md` (qualquer domínio) | `docs-writer` |
 | 🔎 Revisar código (diff/PR) antes do merge, por severidade | `code-review` |
 | 🧾 Elicitar/estruturar requisitos a partir de pedido ambíguo (pré-técnico) | `requirements-analyst` |
@@ -105,6 +105,9 @@ Antes de tarefas não triviais, anexar ao contexto:
 - Todo agent deve preservar rastreabilidade (rota, evidências e próximo passo mínimo).
 - Todo agent pode declarar `version:` no frontmatter para rastrear mudanças de comportamento.
 - Nova rota de roteamento → atualizar `docs/ai-context/routing-graph.yaml` **antes** de editar a Decision Tree (R-040).
+- **Re-triagem por turno (R-042)**: todo agent downstream deve declarar seção **"Retorno ao Router"** com gatilho objetivo de deriva de intenção — roteamento não é evento único da conversa.
+- **Ferramentas mínimas obrigatórias (Tooling Baseline)**: TODO agent deve incluir `run_subagent` no frontmatter `tools:` — sem essa tool, o handoff de retorno exigido por R-042 não é executável (descrever em texto não basta). Ver tabela de baseline por perfil em `agent-contracts/SKILL.md` § 9. `agent-factory` valida essa regra em toda criação/revisão de agent.
+- **Visibilidade de fluxo (Banner de Identidade)**: TODO agent — não apenas o `agent-router` — abre toda resposta com `Agente Ativo: <name>`, mesmo continuando em `task_mode` sem handoff neste turno; se houve handoff/re-triagem, adiciona `Handoff: <origem> → <destino> (motivo: ...)`. Padrão de mercado (OpenAI Agents SDK `HandoffOutputItem`, LangGraph `active_agent` streaming) — detalhes em `agent-contracts/SKILL.md` § 0. Sem isso, o usuário perde visibilidade do fluxo assim que a conversa passa a ser respondida por um downstream por vários turnos.
 
 ## 9) Skills-base por função
 

@@ -140,6 +140,14 @@ Próximo passo mínimo:
 - [`@refactor-planner`](refactor-planner.agent.md) quando o achado indicar dívida técnica estrutural.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: code-review` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> code-review (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "revisar" para "corrigir o código revisado", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`) — este agent é read-only e nunca corrige.
+
+**Gatilho de deriva:** pedido de correção/implementação dos achados reportados; pivô para análise de impacto sistêmico não coberta pelo diff.
+
 ## Combina Com (Commands)
 
 - `/review` -> aciona este agent como fluxo manual on-demand.

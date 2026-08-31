@@ -7,7 +7,7 @@ description: >-
   arquitetura, gerando adapters customizados. Lê catalog.yaml + binding.md +
   projeto_path (P6) e cria templates com frontmatter YAML.
 model: "claude-haiku-4.5"
-tools: ['read_file', 'create_file', 'file_search', 'list_dir', 'get_errors', 'grep_search', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
+tools: ['read_file', 'create_file', 'file_search', 'list_dir', 'get_errors', 'grep_search', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 # Gerador de Adapters
 
@@ -389,6 +389,12 @@ Confiança: Baixa — aguardando correção manual
 - `./docs/ai-context/binding.md` — descobre templates applyTo.
 - `./docs/ai-context/catalog.yaml` — descobre projetos + paths externos.
 - `.github/instructions/README.md` — atualizar com novos arquivos criados.
+
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+Se a solicitação pivotar de "gerar adapter" para "editar código de aplicação nos projetos externos", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`) — este agent é read-only nos projetos externos.
+
+**Gatilho de deriva:** pedido de escrita/edição em projeto externo; pedido de inicializar binding do zero (→ `@binding-initializer`).
 
 ## Guardrail: Anti-padrões
 

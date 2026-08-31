@@ -109,6 +109,14 @@ Próximo passo:
 - `@impact-architect` (`impact-architect.agent.md`) para impacto local relevante.
 - [`@analysis-architect`](analysis-architect.agent.md) para impacto cross-sistema.
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: refactor-planner` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> refactor-planner (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "planejar refactor" para "executar a refatoração no código", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`) — este agent nunca implementa.
+
+**Gatilho de deriva:** pedido de execução direta do plano; pivô para triagem de bug não relacionado.
+
 ## Combina Com (Commands)
 
 - `/plan` -> decompor etapas.

@@ -3,7 +3,7 @@ description: >
   Grafo de roteamento declarado — fonte de verdade estrutural para o agent-router.
   Nós = agents disponíveis; arestas = condições de roteamento (keywords, sinais R-006, score threshold).
   A Decision Tree em agent-router.agent.md é documentação derivada deste arquivo.
-last_updated: "2026-08-29 (requirements-analyst: nó + aresta adicionados)"
+last_updated: "2026-08-30 (v2 specialists híbridos: angular/spring-boot/spring-reactive passam a ser specialist_hybrid — Advisory + Implementação; ajuste na condição de intent_drift_detected para não confundir implementação dentro do domínio com deriva)"
 
 # ─────────────────────────────────────────────
 # NÓS — agents disponíveis no catálogo
@@ -91,6 +91,18 @@ nos:
   - id: context-builder
     tipo: downstream
     descricao: "Coleta e consolidação de contexto técnico"
+
+  - id: angular
+    tipo: specialist_hybrid
+    descricao: "Especialista Angular enterprise — perfil híbrido v2.0.0: Advisory (arquitetura, reatividade, performance, segurança, acessibilidade, upgrade) E Implementação (feature/bugfix com testing-first, diff mínimo); retorna ao agent-router só se sair do domínio Angular"
+
+  - id: spring-boot
+    tipo: specialist_hybrid
+    descricao: "Especialista backend Spring Boot enterprise — perfil híbrido v2.0.0: Advisory (arquitetura, Java/JDK, observabilidade, segurança, migração) E Implementação (feature/bugfix com testing-first, diff mínimo); retorna ao agent-router só se sair do domínio Spring Boot"
+
+  - id: spring-reactive
+    tipo: specialist_hybrid
+    descricao: "Especialista backend reativo Spring WebFlux/Reactor — perfil híbrido v2.0.0: Advisory (capacidade, resiliência, backpressure, observabilidade) E Implementação (feature/bugfix com testing-first, sem bloqueio de event-loop); retorna ao agent-router só se sair do domínio reativo"
 
 # ─────────────────────────────────────────────
 # ARESTAS — condições de roteamento
@@ -355,6 +367,76 @@ arestas:
         - "blast radius"
         - "fluxo de dados cross-sistema"
         - "acoplamento entre serviços"
+
+  # Especialistas de recomendação de stack (perfil híbrido v2.0.0 — Advisory + Implementação)
+  - de: agent-router
+    para: angular
+    prioridade: 1.6
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "angular"
+        - "componente angular"
+        - "standalone"
+        - "signals"
+        - "rxjs"
+        - "core web vitals angular"
+      sinal_r006: "É análise/recomendação OU implementação de feature/bugfix em Angular?"
+
+  - de: agent-router
+    para: spring-boot
+    prioridade: 1.6
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "spring boot"
+        - "java lts"
+        - "jdk"
+        - "actuator"
+        - "migracao spring"
+      sinal_r006: "É análise/recomendação OU implementação de feature/bugfix em Spring Boot?"
+
+  - de: agent-router
+    para: spring-reactive
+    prioridade: 1.6
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "spring webflux"
+        - "project reactor"
+        - "backend reativo"
+        - "backpressure"
+        - "reactive streams"
+      sinal_r006: "É análise/recomendação OU implementação de feature/bugfix reativo (WebFlux/Reactor)?"
+
+  # Retorno universal (R-042) — qualquer downstream detecta deriva de intenção
+  # e devolve controle ao router. Prioridade 0 = avaliada ANTES de qualquer
+  # classificação de nova intenção, em todo turno subsequente ao primeiro.
+  - de: "*downstream"
+    para: agent-router
+    prioridade: 0
+    threshold_score: 0  # gatilho binário, não score de classificação
+    nivel_routing: rule-based
+    condicoes:
+      tipo: intent_drift_detected
+      regra: "R-042"
+      gatilho: >
+        Mudança de verbo de ação (elicitar->implementar, revisar->codar,
+        analisar->corrigir, planejar->executar) quando o agent ativo NÃO
+        cobre implementação (analysis-architect|impact-architect|bug-triage|
+        requirements-analyst|test-strategy|refactor-planner|research-router)
+        OU pedido de execução/código em stack fora da matriz de competência
+        do agent ativo OU pedido de execução/código em agent estritamente
+        read-only. Nota: angular|spring-boot|spring-reactive são perfil
+        hibrido (specialist_hybrid) — pedido de implementacao DENTRO do
+        proprio dominio de stack NAO e deriva; so dispara se o pedido sair
+        do dominio do specialist (ex.: pedir Angular enquanto spring-boot
+        esta ativo).
+      aplica_a: "todos os nos tipo downstream e specialist_hybrid"
+      acao: "handoff imediato para agent-router com motivo: deriva_de_intencao"
 
   # Pesquisa externa — fallback primário
   - de: agent-router

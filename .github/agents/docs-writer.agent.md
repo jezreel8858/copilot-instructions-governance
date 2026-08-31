@@ -119,6 +119,14 @@ Próximo passo mínimo:
 - [`@business-rules-extractor`](business-rules-extractor.agent.md) quando o pedido for extrair e validar regras de negócio (não apenas documentar).
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: docs-writer` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> docs-writer (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "escrever doc nova" para "curar doc existente" ou "implementar aplicação", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
+
+**Gatilho de deriva:** pedido de curadoria de doc já existente (→ `@docs-curator`); pedido de implementação de código.
+
 ## Combina Com (Commands)
 
 - `/plan` -> definir tipo de documento e estrutura antes de escrever.

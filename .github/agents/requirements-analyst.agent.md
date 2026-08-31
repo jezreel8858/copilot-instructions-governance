@@ -136,6 +136,14 @@ Próximo passo mínimo:
 - [`@test-strategy`](test-strategy.agent.md) após requisito estruturado, para planejar cobertura de testes.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: requirements-analyst` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> requirements-analyst (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "elicitar requisito" para "decidir arquitetura/implementar", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
+
+**Gatilho de deriva:** pedido de decisão técnica/arquitetural; pedido de implementação direta do requisito; pivô para extrair regra de código existente (→ `@business-rules-extractor`).
+
 ## Combina Com (Commands)
 
 - `/plan` -> consome o requisito estruturado como input do plano de implementação.

@@ -121,6 +121,14 @@ Bloqueantes (se houver):
 - **Para `@impact-architect`**: se mudança de teste impacta dependências upstream.
 - **Para `@docs-curator`**: para documentar cobertura e padrões finais.
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: test-implementation` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> test-implementation (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "implementar teste" para "corrigir lógica de negócio" ou "redefinir estratégia do zero", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
+
+**Gatilho de deriva:** unit test expõe bug e o pedido vira "corrija o bug" (→ `@bug-triage`); pedido de nova estratégia sem `@test-strategy`.
+
 ## Quando NÃO Executar Este Agent
 
 - Falta estratégia mapeada → use `@test-strategy` primeiro.

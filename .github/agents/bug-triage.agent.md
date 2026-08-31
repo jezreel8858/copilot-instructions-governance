@@ -349,6 +349,14 @@ C) PARCIALMENTE — Preciso de mais informações
 | Fix exige criação/correção de testes | `@test-fix` |
 | Fix está aprovado e precisa ser implementado | `@test-implementation` (se for teste) ou dev |
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: bug-triage` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> bug-triage (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "triagem do bug" para refatoração ampla, novo requisito de negócio, ou feature não relacionada à causa raiz investigada, retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
+
+**Gatilho de deriva:** pedido de refactor amplo sem relação com o bug; pivô para elicitar requisito novo; pedido de implementação de feature nova.
+
 ## Combina Com (Commands)
 
 - `/plan` → estruturar triagem.

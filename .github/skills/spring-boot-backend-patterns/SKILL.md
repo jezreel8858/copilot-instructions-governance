@@ -20,6 +20,8 @@ tools: []
 
 # Spring Boot Backend Patterns
 
+> Esta skill cobre o modo **Advisory** (análise/recomendação, sem código). Para o modo **Implementação** (codificar feature/bugfix), ver [`spring-boot-implementation-patterns`](../spring-boot-implementation-patterns/SKILL.md).
+
 ## Quando usar
 
 - Quando houver decisão técnica sobre arquitetura e operação em Spring Boot.

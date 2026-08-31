@@ -22,6 +22,55 @@ tools: []
 
 # Agent Contracts
 
+## 0) Banner Universal de Identidade (Visibilidade de Fluxo — R-042)
+
+### Problema de Mercado
+
+Em fluxos multi-agent com handoff (R-042 — Anti Sticky-Session), o usuário perde a visibilidade de **qual agent está respondendo** assim que a conversa deixa de passar pelo `@agent-router` a cada turno — especialmente quando um agent downstream permanece ativo em `task_mode` por vários turnos consecutivos. Pesquisa de mercado 2026 confirma o padrão consolidado para resolver isso:
+
+- **LangGraph** ("Stream the Active Agent"): inclui `active_agent` no state compartilhado e o transmite em toda atualização de stream; frontend exibe indicador tipo *"Currently active: Agent C"* e mostra a transição visualmente a cada handoff.
+- **OpenAI Agents SDK**: rastreia `current_agent = result.last_agent` entre turnos; cada item de saída carrega `agent_name`; todo handoff gera um evento explícito e visível — `HandoffOutputItem` imprime literalmente **"Handed off from X to Y"**.
+
+### Regra de Ouro
+
+**Toda resposta de TODO agent — sem exceção, inclusive downstream em `task_mode` — abre com a linha `Agente Ativo: <name-do-agent>` antes de qualquer outro conteúdo.** Isso vale mesmo quando não há handoff neste turno (o agent apenas continua respondendo). Se a resposta é resultado de um handoff/re-triagem recebido neste turno, uma segunda linha declara a transição: `Handoff: <agent-origem> → <agent-atual> (motivo: <motivo>)` — equivalente direto ao `HandoffOutputItem` do OpenAI Agents SDK.
+
+```markdown
+Agente Ativo: test-implementation
+Handoff: test-strategy → test-implementation (motivo: estratégia mapeada — pronto para implementar)
+
+[... restante da resposta no formato de saída do perfil do agent ...]
+```
+
+Quando **não** há handoff neste turno (agent continua em `task_mode`), a linha de handoff é omitida — apenas `Agente Ativo:` é obrigatória:
+
+```markdown
+Agente Ativo: spring-boot
+
+[... restante da resposta ...]
+```
+
+### Por que isso não é opcional
+
+- Sem o banner, o usuário fica "no escuro" sobre se o fluxo de roteamento está ocorrendo como previsto (R-042 só é auditável se visível a cada resposta, não apenas na primeira delegação do `@agent-router`).
+- O `@agent-router` já declara `Agente Ativo` + `Transição` no seu próprio Formato de Saída (ver `agent-router.agent.md`) — mas isso só cobre o turno em que o router responde. Nos turnos seguintes, quando o downstream responde sozinho em `task_mode` (R-042), é o **próprio downstream** quem precisa reafirmar o banner.
+- Um agent sem essa linha quebra a paridade com o padrão de mercado (OpenAI Agents SDK, LangGraph) e torna o fluxo indistinguível de um "black box" de agent único.
+
+### Checklist de Conformidade
+
+- [ ] Toda resposta abre com `Agente Ativo: <name>` — sem exceção, mesmo sem handoff.
+- [ ] Handoff/re-triagem recebido neste turno → segunda linha `Handoff: <origem> → <destino> (motivo: ...)`.
+- [ ] `<name>` corresponde exatamente ao campo `name:` do frontmatter do agent.
+- [ ] Seção "Retorno ao Router" de cada agent referencia este banner (ver `agents/templates/operational-agent.md` e `agents/templates/research-agent.md`).
+
+### Anti-padrões
+
+- ❌ Declarar `Agente Ativo` só na primeira resposta da conversa e omitir nas seguintes.
+- ❌ Confundir o banner com o campo `Motivo`/`Confiança` do Formato de Saída por perfil (Camada 2) — o banner é sempre a **primeira linha**, antes de qualquer outro conteúdo.
+- ❌ Omitir a linha `Handoff:` quando a resposta é claramente resultado de uma re-triagem (R-042).
+
+---
+
 ## 1) Estrutura de Contrato Padrão
 
 Todo agent deve declarar seu contrato operacional em 4 seções:
@@ -227,6 +276,37 @@ Já normatizado por R-016/R-020 e pelas seções 1-4 desta skill: confiança dec
 - [ ] Camada 1 (universal) presente no "Formato de Saída" do agent.
 - [ ] Camada 2 escolhida conforme a tabela acima — não inventar 5º template sem justificativa registrada aqui.
 - [ ] Se o perfil não se encaixa nos 4 acima, documentar o novo perfil nesta tabela antes de usá-lo em produção.
+
+## 9) Ferramentas Mínimas por Agent (Tooling Baseline — R-042)
+
+### Regra de Ouro
+
+**Todo agent do catálogo — sem exceção — DEVE declarar `run_subagent` no frontmatter `tools:`.** Sem essa tool, o agent não consegue **executar** o handoff de retorno exigido por R-042 (Anti Sticky-Session): descrever o handoff em texto/markdown **não é suficiente** — o retorno a `@agent-router` só é efetivo quando materializado via chamada real da tool `run_subagent(agentName: "agent-router", ...)`. Um agent sem `run_subagent` no frontmatter fica estruturalmente incapaz de cumprir R-042, mesmo declarando a seção "Retorno ao Router" em prosa.
+
+### Tools Mínimas por Perfil (baseline obrigatório)
+
+| Perfil | Tools mínimas obrigatórias | Tools adicionais conforme necessidade |
+|---|---|---|
+| **Todos os perfis (baseline universal)** | `read_file`, `grep_search`, `file_search`, `run_subagent` | — |
+| Router/Triagem | baseline + `list_dir` | `ask_questions` |
+| Analista/Read-only (pesquisa) | baseline + `list_dir` | `context-mode/ctx_search`, `context-mode/ctx_batch_execute` |
+| Especialista de Recomendação | baseline + `list_dir`, `get_errors` | `context-mode/*`, ferramentas de pesquisa externa |
+| Operacional/Executor (cria/edita arquivos) | baseline + `insert_edit_into_file`, `create_file`, `list_dir`, `get_errors` | `ask_questions`, `run_in_terminal`, `context-mode/*` |
+
+### Checklist de Conformidade (aplicar em toda criação/revisão de agent)
+
+- [ ] `run_subagent` presente no frontmatter `tools:` — **bloqueante**, sem exceção.
+- [ ] `read_file`, `grep_search`, `file_search` presentes (leitura mínima de contexto).
+- [ ] Se o agent cria/edita arquivos: `create_file`/`insert_edit_into_file` + `get_errors` presentes.
+- [ ] Seção "Retorno ao Router (R-042)" declarada em prosa **e** consistente com a presença de `run_subagent` no frontmatter.
+- [ ] Nenhuma tool supérflua fora do necessário para o perfil (menor privilégio, R-024).
+
+### Anti-padrões
+
+- ❌ Agent com seção "Retorno ao Router" em prosa mas **sem `run_subagent`** no frontmatter — handoff nunca é executável.
+- ❌ Copiar `tools:` de outro agent sem revisar se `run_subagent` foi preservado.
+- ❌ Templates (`templates/research-agent.md`, `templates/operational-agent.md`) desatualizados sem `run_subagent` — todo novo agent herda o gap.
+- ❌ Adicionar `run_subagent` sem declarar a seção "Retorno ao Router" correspondente (tool presente mas sem gatilho de uso documentado).
 
 ### Referências
 

@@ -303,6 +303,14 @@ Próximo passo mínimo:
 | Violação implica bug em produção | `@bug-triage` |
 | Regras novas detectadas precisam de testes | `@test-strategy` |
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: business-rules-extractor` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> business-rules-extractor (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "extrair/validar regras" para "executar a refatoração real", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`) — este agent nunca implementa.
+
+**Gatilho de deriva:** pedido de implementação/correção de código de produção; pedido de execução do refactor planejado (→ `@refactor-planner`).
+
 ## Combina Com (Commands)
 
 - `/implement` → executar extração ou validação após plano definido.

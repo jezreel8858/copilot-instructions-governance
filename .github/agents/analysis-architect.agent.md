@@ -193,6 +193,14 @@ Próximo passo mínimo:
 - [`@research-router`](research-router.agent.md) → triagem de pesquisa genérica ou externa.
 - [`@docs-curator`](docs-curator.agent.md) → documentar decisões de integração ou análise.
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: analysis-architect` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> analysis-architect (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "analisar" para "implementar código real", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`) — este agent é read-only.
+
+**Gatilho de deriva:** pedido de implementação/correção de código; pivô para elicitar requisito novo (→ `@requirements-analyst`).
+
 ## Combina Com (Commands)
 
 - `/research` → levantamento inicial de artefatos via context-mode.

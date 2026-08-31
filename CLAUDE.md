@@ -59,6 +59,7 @@ Em caso de conflito, siga esta ordem:
 - **R-039 (Diagramas em Markdown com Mermaid)**: Todo diagrama incorporado em arquivo `.md` **DEVE usar Mermaid** (sintaxe nativa de blocos code com linguagem `mermaid`). Razões: **(a)** versionabilidade — diagramas vivem no Git, não em binários; **(b)** portabilidade — renderização nativa em GitHub, GitLab, Notion e ferramentas de IA; **(c)** manutenibilidade — patches e reviews sem ferramentas específicas. Proibido: imagens PNG/SVG geradas externamente, Visio, Lucidchart embarcados. Se precisar de estilo avançado, use plugins Mermaid ou refatore para simplificar.
 - **R-040 (Grafo de Roteamento como Fonte de Verdade)**: O roteamento de agents **DEVE ser declarado como dado estruturado** (ex.: `docs/ai-context/routing-graph.yaml` com nós, arestas, thresholds e política de cascata). A Decision Tree em prosa de qualquer agent-router é **documentação derivada** — não fonte única. Toda nova rota ou agente adicionado ao ecossistema exige: **(a)** entrada no grafo estruturado; **(b)** atualização da Decision Tree (derivada); **(c)** novo caso de teste em `docs/ai-context/evals/casos-roteamento.yaml` (equivalente ao R-015 para evals). Threshold de confiança para cada rota deve ser declarado explicitamente no grafo e reportado no output do router.
 - **R-041 (Exceção de Loop Controlado — Agent `prompt-structuring`)**: por exceção formal a R-011 (sem overengineering), R-012 (clarificação progressiva, máx. 3 perguntas/ciclo) e R-027 (proibição de loop em `ask_questions`), o agent `prompt-structuring` é o **ÚNICO** agent do catálogo autorizado a operar em loop de auto-refinamento de prompt. Regras do loop: **(a)** limite rígido `loop_count <= 5` — ao atingir 5 iterações sem completude, o loop é interrompido compulsoriamente e o fluxo prossegue com o melhor prompt disponível, sinalizando a limitação; **(b)** cada iteração avalia o prompt contra o checklist estrutural `<task>/<context>/<constraints>/<output_format>`; se incompleto, faz **no máximo 1 pergunta objetiva por iteração** via `ask_questions` (nunca aberta); **(c)** encerramento antecipado é obrigatório assim que o prompt atingir completude — não force as 5 iterações; **(d)** o agent SEMPRE retorna para `@agent-router` ao final (sucesso ou limite atingido) — nunca roteia diretamente para downstream. Nenhum outro agent do catálogo pode adotar este padrão de loop sem nova exceção formalizada nesta regra.
+- **R-042 (Re-triagem Obrigatória por Turno — Anti Sticky-Session)**: R-037 ("toda solicitação começa em `@agent-router`") aplica-se a **cada novo turno do usuário**, não apenas ao primeiro. Todo agent downstream ativo opera em `task_mode` e deve checar deriva de intenção a cada nova mensagem contra seu **Não-Escopo** declarado. **Critério objetivo de deriva** (qualquer um): **(a)** mudança de verbo de ação (elicitar→implementar, revisar→codar, analisar→corrigir, planejar→executar) **quando o agent ativo não cobre implementação** (ex.: `impact-architect`, `analysis-architect`, `bug-triage`, `requirements-analyst`, `test-strategy`, `research-router`); **(b)** menção a stack/artefato fora da matriz de competência do agent ativo (ex.: pedir código Angular enquanto `@spring-boot` está ativo); **(c)** pedido explícito de execução/código quando o agent é estritamente read-only/analítico. **Nota (v2.0.0 dos specialists)**: `angular`, `spring-boot` e `spring-reactive` têm perfil híbrido (Advisory + Implementação) — pedir para "implementar" dentro do próprio domínio deles **não é deriva**; deriva só ocorre se o pedido sair do domínio de stack do specialist. **Ação obrigatória ao detectar deriva**: handoff imediato de retorno para `@agent-router` (payload do schema `handoff-governance` § 2.1, com `motivo: "deriva_de_intencao"`) — **nunca prosseguir silenciosamente fora do escopo**. Todo `.agent.md` deve declarar seção **"Retorno ao Router"** com o gatilho específico de deriva (atualização atômica conforme R-015). O `agent-router` declara `Agente Ativo: <nome>` em toda resposta para tornar a re-triagem auditável. Arestas de retorno universais (`de: <qualquer downstream> → para: agent-router`, condição `intent_drift_detected`) são declaradas em `docs/ai-context/routing-graph.yaml` (R-040). **Pré-requisito estrutural (tooling baseline)**: o handoff de retorno só é efetivo se **executado** via tool `run_subagent` (`agentName: "agent-router"`) — descrever o handoff apenas em texto/markdown não cumpre R-042. Por isso, `run_subagent` é **obrigatório e bloqueante** no frontmatter `tools:` de TODO agent do catálogo, incluindo os templates-base (`templates/research-agent.md`, `templates/operational-agent.md`); `agent-factory` valida essa regra em toda criação/revisão (baseline detalhado em `agent-contracts/SKILL.md` § 9). **Visibilidade de fluxo (banner obrigatório)**: para que R-042 seja auditável turno a turno (não apenas no turno em que `@agent-router` responde), **TODO agent — não apenas o `agent-router` — declara `Agente Ativo: <name>` como a primeira linha de toda resposta**, mesmo quando o agent apenas continua respondendo em `task_mode` sem handoff neste turno; quando a resposta é resultado de handoff/re-triagem recebido, uma segunda linha declara a transição (`Handoff: <origem> → <destino> (motivo: ...)`), equivalente ao `HandoffOutputItem` do OpenAI Agents SDK e ao campo `active_agent` streamado pelo LangGraph (padrão de mercado consolidado — detalhes em `agent-contracts/SKILL.md` § 0).
 
 ## 3.1) Regra de Autoria de Agents
 
@@ -67,36 +68,52 @@ Em caso de conflito, siga esta ordem:
 
 ## 4) Fluxo Operacional Base
 
-**SEM EXCEÇÃO: Todo fluxo deve começar com `@agent-router`**
+**SEM EXCEÇÃO: Todo fluxo deve começar com `@agent-router`, e todo turno subsequente é re-triado (R-042)**
 
 ```
-Solicitação do Usuário
+Solicitação do Usuário (turno N)
            ↓
     @agent-router ←── OBRIGATÓRIO (Health Check R-034)
            ↓
+    Existe agent ativo de turno anterior? (R-042)
+           ├─ Não (1º turno) ──────────────────────┐
+           └─ Sim -> checar deriva de intenção      │
+                (verbo de ação | stack fora de       │
+                 competência | pedido de execução     │
+                 em agent read-only)                  │
+                ├─ Sem deriva -> devolve ao agent ativo (sem re-rotear)
+                └─ Deriva detectada (handoff          │
+                   motivo: "deriva_de_intencao") ──────┤
+                                                        ↓
     @prompt-structuring ←── OBRIGATÓRIO (R-041 — loop máx. 5 iterações)
     (refina prompt em <task>/<context>/<constraints>/<output_format>)
            ↓
     @agent-router ←── retorno obrigatório (loop nunca roteia direto)
-    (classificação de intenção com prompt refinado)
+    (classificação de intenção com prompt refinado; declara "Agente Ativo")
            ↓
-  [Delega para downstream correto]
-       ↙ ↓ ↘ ↙ ↓ ↘
+  [Delega para downstream/specialist correto]
+       ↙ ↓ ↘ ↙ ↓ ↘ ↙
   @bug-triage  @test-strategy  @refactor-planner
   @impact-architect  @docs-curator
   @research-router  @analysis-architect
+  @angular  @spring-boot  @spring-reactive (advisory — nunca implementam)
            ↓
-        [EXECUÇÃO]
+         [EXECUÇÃO]
            ↓
-      [RESULTADO]
+    Turno seguinte muda de fase/escopo? (R-042)
+           ├─ Sim -> agent ativo retorna a @agent-router (handoff de deriva)
+           └─ Não -> agent ativo continua em task_mode
+           ↓
+       [RESULTADO]
 ```
 
 **Fases de Execução:**
 
-1. **Triagem** (agent-router): classificar intenção e decidir rota
-2. **Análise** (agent downstream): executar análise específica
-3. **Validação** (self-check): revisar consistência
-4. **Resumo**: reportar resultado, evidências e próximos passos
+1. **Triagem** (agent-router): classificar intenção, decidir rota e declarar `Agente Ativo`
+2. **Análise** (agent downstream): executar análise específica em `task_mode`
+3. **Re-triagem por turno** (R-042): a cada nova mensagem, o agent ativo checa deriva de intenção contra seu Não-Escopo antes de responder; ao detectar deriva, devolve controle ao `@agent-router` via handoff (nunca prossegue fora do escopo)
+4. **Validação** (self-check): revisar consistência
+5. **Resumo**: reportar resultado, evidências e próximos passos
 
 ## 5) Estrutura de Governança
 

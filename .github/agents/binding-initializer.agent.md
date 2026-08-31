@@ -6,7 +6,7 @@ description:
   ecossistema via `ask_questions` (1 pergunta) e gera o esqueleto dos artefatos.
   Projetos são adicionados depois via `/add-project-context`.
 model: "claude-haiku-4.5"
-tools: ['ask_questions', 'read_file', 'create_file', 'grep_search', 'file_search', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
+tools: ['ask_questions', 'read_file', 'create_file', 'grep_search', 'file_search', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 
 # Inicializador de Binding Context
@@ -245,4 +245,12 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
 
 > ❌ `adapter-generator` NÃO é combinado diretamente com este agent.
 >    É chamado por `/add-project-context` ao registrar cada projeto.
+
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: binding-initializer` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> binding-initializer (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "inicializar binding" para "adicionar projeto/gerar adapter", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`) — este agent nunca invoca `adapter-generator` diretamente.
+
+**Gatilho de deriva:** pedido de adicionar/registrar projeto (→ fluxo `/add-project-context` → `@adapter-generator`).
 

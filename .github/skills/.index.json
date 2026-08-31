@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "domain": "governanca-ai-generica",
-  "generated_at": "2026-08-29T09:00:00Z",
+  "generated_at": "2026-08-30T16:00:00Z",
   "summary": {
-    "total_skills": 36
+    "total_skills": 45
   },
   "skills": [
     {
@@ -545,12 +545,60 @@
         "@impact-architect",
         "@analysis-architect"
       ]
+    },
+    {
+      "name": "angular-frontend-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Boas práticas e patterns de análise/recomendação Angular para componentes modernos, templates, reatividade, segurança e consistência arquitetural.",
+      "path": ".github/skills/angular-frontend-patterns/SKILL.md",
+      "related_agents": ["@angular"]
+    },
+    {
+      "name": "angular-implementation-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Padrões de mercado (2026) para IMPLEMENTAR features/bugs em Angular — fronteira Signals/RxJS, testing-first, checklist de PR. Contraparte de execução de angular-frontend-patterns.",
+      "path": ".github/skills/angular-implementation-patterns/SKILL.md",
+      "related_agents": ["@angular"]
+    },
+    {
+      "name": "spring-boot-backend-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Diretrizes enterprise para análise/recomendação de arquitetura, operação e evolução de serviços Spring Boot.",
+      "path": ".github/skills/spring-boot-backend-patterns/SKILL.md",
+      "related_agents": ["@spring-boot"]
+    },
+    {
+      "name": "spring-boot-implementation-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Padrões de mercado (2026) para IMPLEMENTAR features/bugs em Spring Boot — virtual threads vs reativo, N+1/OSIV, DTOs de borda, testing-first. Contraparte de execução de spring-boot-backend-patterns.",
+      "path": ".github/skills/spring-boot-implementation-patterns/SKILL.md",
+      "related_agents": ["@spring-boot"]
+    },
+    {
+      "name": "spring-reactive-webflux-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Diretrizes enterprise para análise/recomendação de arquiteturas reativas com Spring WebFlux e Project Reactor.",
+      "path": ".github/skills/spring-reactive-webflux-patterns/SKILL.md",
+      "related_agents": ["@spring-reactive"]
+    },
+    {
+      "name": "spring-reactive-implementation-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Padrões de mercado (2026) para IMPLEMENTAR features/bugs em Spring WebFlux/Reactor — composição não-bloqueante, tratamento de erro por operador, StepVerifier/WebTestClient. Contraparte de execução de spring-reactive-webflux-patterns.",
+      "path": ".github/skills/spring-reactive-implementation-patterns/SKILL.md",
+      "related_agents": ["@spring-reactive"]
     }
   ],
   "metadata": {
     "total_agents": 24,
-    "total_skills": 39,
-    "last_updated": "2026-08-29T13:00:00Z",
-    "changelog": "2026-08-29 (4) — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
+    "total_skills": 45,
+    "last_updated": "2026-08-30T15:00:00Z",
+    "changelog": "2026-08-30 (6) — Especialistas angular/spring-boot/spring-reactive passam de perfil 'advisory puro' para perfil hibrido analise+implementacao (R-042 atualizado): criadas skills de implementacao consolidadas via pesquisa de mercado 2026 (angular-implementation-patterns, spring-boot-implementation-patterns, spring-reactive-implementation-patterns), complementares as skills de analise ja existentes (agora tambem registradas — gap pre-existente corrigido). total_skills 39->45. | 2026-08-29 (4) — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
   }
 }

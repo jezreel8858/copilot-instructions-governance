@@ -2,7 +2,7 @@
 name: <slug-kebab>
 description: <1 frase PT-BR descrevendo quando invocar este agent>
 model:["gpt-5.4","claude-sonnet-5","claude-sonnet-4.6"]
-tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors']
+tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_subagent']
 ---
 
 # <Titulo Humano do Agent>
@@ -41,6 +41,14 @@ Você é especialista em <acao principal>. Seu trabalho é <resultado esperado> 
 - Delegar somente quando houver critério objetivo de handoff.
 - No handoff, enviar payload mínimo: contexto, hipótese, pendências e evidências.
 - Evitar handoff em cascata sem necessidade.
+
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+A cada novo turno, reavaliar se a solicitação ainda cabe no **não-escopo** declarado acima. Ao detectar deriva de intenção (mudança de verbo de ação fora da cobertura deste agent, stack/artefato fora da matriz de competência, ou pedido de execução quando este agent é read-only), retornar IMEDIATAMENTE para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`). O retorno **DEVE** ser feito via tool `run_subagent` (`agentName: "agent-router"`) — apenas descrever o handoff em texto, sem a chamada de tool, **não cumpre R-042**. Por isso `run_subagent` é obrigatório no frontmatter `tools:` de todo agent (ver `agent-contracts/SKILL.md` § 9).
+
+**Banner obrigatório (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: <name-deste-agent>` antes de qualquer outro conteúdo — mesmo sem handoff neste turno. Se esta resposta é resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> → <name-deste-agent> (motivo: <motivo>)` na linha seguinte. Padrão de mercado: OpenAI Agents SDK (`HandoffOutputItem` — "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuário) — ver `agent-contracts/SKILL.md` § 0.
+
+**Gatilho de deriva:** <declarar aqui o critério objetivo específico deste agent — verbo de ação fora de escopo, stack fora de competência, ou pedido de execução em agent read-only>.
 
 ## Confiança e Fallback
 

@@ -4,7 +4,7 @@ description: >
   Fonte de verdade para regressão de roteamento — deve ser atualizada
   em toda PR que altere agent-router.agent.md ou routing-graph.yaml (análogo ao R-015).
   Compatível com DeepEval (Apache 2.0) e pytest via estrutura de casos padronizados.
-last_updated: "2026-08-29 (requirements-analyst: canon-014, regr-012, regr-013)"
+last_updated: "2026-08-30 (v2 specialists híbridos: canon-018 (implementação direta), regr-014 corrigido (implementação dentro do domínio não é mais deriva), regr-016 novo (deriva real de domínio cross-stack) — suíte 40 -> 42 casos)"
 responsavel: "agent-evals-lab + docs-curator"
 
 # ─────────────────────────────────────────────
@@ -402,6 +402,112 @@ regressao:
       agent_route: "requirements-analyst"
     critico: true
     threshold: 1.00
+
+  - id: "canon-015"
+    descricao: "Análise/recomendação Angular sem implementação deve rotear para o specialist (perfil híbrido, modo Advisory)"
+    input:
+      solicitacao: "Preciso de uma análise de performance CWV/SSR do meu app Angular 21, sem implementar nada ainda"
+    expected:
+      agent_route: "angular"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      modo_esperado: "Advisory"
+    critico: true
+    threshold: 0.90
+
+  - id: "regr-014"
+    descricao: "REGRESSÃO (v2.0.0 — specialist híbrido): pedido inicial de análise Angular seguido de 'agora implemente o componente' DEVE continuar com o próprio agent angular em modo Implementação (não é deriva — implementação dentro do domínio Angular é escopo nativo do agent desde v2.0.0)"
+    input:
+      turno_1:
+        solicitacao: "Analise a arquitetura de componentes do meu app Angular"
+        agent_route_esperado: "angular"
+        modo_esperado: "Advisory"
+      turno_2:
+        solicitacao: "Show, agora implemente o componente de listagem seguindo a recomendação"
+    expected:
+      turno_2_deteccao: "sem deriva — implementação dentro do domínio Angular"
+      turno_2_agent_route: "angular (mesmo agent, troca para modo Implementação)"
+      turno_2_requisito: "teste escrito/atualizado antes de reportar sucesso (testing-first, skill angular-implementation-patterns)"
+    nao_deve:
+      turno_2_agent_route: "retorno a @agent-router por deriva_de_intencao (angular JÁ cobre implementação no próprio domínio)"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-016"
+    descricao: "REGRESSÃO (R-042 — deriva real de domínio): specialist angular recebendo pedido de implementação Spring Boot (fora do domínio Angular) DEVE retornar ao agent-router"
+    input:
+      turno_1:
+        solicitacao: "Analise a arquitetura de componentes do meu app Angular"
+        agent_route_esperado: "angular"
+        modo_esperado: "Advisory"
+      turno_2:
+        solicitacao: "Beleza, agora implementa o endpoint Spring Boot que consome esses dados"
+    expected:
+      turno_2_deteccao: "intent_drift_detected (stack fora da matriz de competência do agent ativo)"
+      turno_2_handoff: "angular -> agent-router (motivo: deriva_de_intencao)"
+      turno_2_agent_route_final: "spring-boot (via re-triagem do agent-router)"
+    nao_deve:
+      turno_2_agent_route: "angular implementando código Spring Boot diretamente"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-015"
+    descricao: "REGRESSÃO (R-042 — sticky session): pedido inicial de requisitos (agent read-only) seguido de mudança para implementação deve re-passar pelo agent-router, não continuar direto no agent ativo"
+    input:
+      turno_1:
+        solicitacao: "Levantar requisitos para nova tela de checkout"
+        agent_route_esperado: "requirements-analyst"
+      turno_2:
+        solicitacao: "Beleza, agora implementa isso no backend Spring Boot"
+    expected:
+      turno_2_deteccao: "intent_drift_detected (elicitar -> implementar; requirements-analyst não cobre implementação)"
+      turno_2_handoff: "requirements-analyst -> agent-router (motivo: deriva_de_intencao)"
+      turno_2_agent_route_final: "spring-boot (via re-triagem do agent-router)"
+    nao_deve:
+      turno_2_agent_route: "requirements-analyst implementando código diretamente"
+    critico: true
+    threshold: 1.00
+
+  - id: "canon-016"
+    descricao: "Análise/recomendação Spring Boot sem implementação deve rotear para o specialist (perfil híbrido, modo Advisory)"
+    input:
+      solicitacao: "Avalie a estratégia de migração Java 17 para 21 no meu serviço Spring Boot, sem codar ainda"
+    expected:
+      agent_route: "spring-boot"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      modo_esperado: "Advisory"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-018"
+    descricao: "Implementação direta de bugfix Spring Boot (sem análise prévia) deve rotear para o specialist em modo Implementação"
+    input:
+      solicitacao: "Corrija o bug no PedidoService.java:87 — NullPointerException ao calcular frete, causa raiz já identificada"
+    expected:
+      agent_route: "spring-boot"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      modo_esperado: "Implementação"
+      requisito: "teste de regressão antes da correção (testing-first, skill spring-boot-implementation-patterns)"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-017"
+    descricao: "Análise/recomendação backend reativo Spring WebFlux/Reactor deve rotear para o specialist (perfil híbrido, modo Advisory)"
+    input:
+      solicitacao: "Adequação de WebFlux para meu cenário de alta concorrência — só recomendação, sem implementar"
+    expected:
+      agent_route: "spring-reactive"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      modo_esperado: "Advisory"
+    critico: true
+    threshold: 0.90
 
 # ─────────────────────────────────────────────
 # SUITE 4 — Segurança e Guardrails (threshold = 1.00)

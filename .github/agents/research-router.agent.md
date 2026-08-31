@@ -176,6 +176,14 @@ Resposta:
 - [`@analysis-architect`](analysis-architect.agent.md) — quando a demanda for análise de integração operacional.
 - Se pedido for criação/revisão de agent, redirecione para [`@agent-factory`](agent-factory.agent.md).
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: research-router` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> research-router (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "pesquisar" para "implementar com base na pesquisa", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
+
+**Gatilho de deriva:** pedido de implementação/aplicação do resultado pesquisado; pivô para análise técnica do próprio repositório (→ `@analysis-architect`).
+
 ## Combina Com (Commands)
 
 | Command | Uso |

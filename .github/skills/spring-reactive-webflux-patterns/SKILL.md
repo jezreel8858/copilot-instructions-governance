@@ -20,6 +20,8 @@ tools: []
 
 # Spring Reactive / WebFlux Patterns
 
+> Esta skill cobre o modo **Advisory** (análise/recomendação, sem código). Para o modo **Implementação** (codificar feature/bugfix), ver [`spring-reactive-implementation-patterns`](../spring-reactive-implementation-patterns/SKILL.md).
+
 ## Quando usar
 
 - Quando a solução exigir alta concorrência I/O-bound e latência previsível.

@@ -49,22 +49,32 @@
 **Fluxo garantido:**
 
 ```
-Solicitação
+Solicitação (turno N)
     ↓
 @agent-router (triagem)
     ↓
+Agent ativo de turno anterior? (R-042)
+    ├─ Não -> triagem normal
+    └─ Sim -> checar deriva de intenção antes de responder
+              ├─ Sem deriva -> devolve ao agent ativo (sem re-rotear)
+              └─ Deriva -> handoff (motivo: "deriva_de_intencao") -> triagem completa
+    ↓
 @prompt-structuring (R-041 — obrigatório, loop máx. 5 iterações)
     ↓
-@agent-router (retomada com prompt refinado)
+@agent-router (retomada com prompt refinado; declara "Agente Ativo")
     ↓
 [Rota decidida]
     ↓
 @bug-triage | @test-strategy | @refactor-planner |
 @impact-architect | @docs-curator | @code-review |
-@requirements-analyst |
+@requirements-analyst | @angular | @spring-boot | @spring-reactive |
 @research-router | @analysis-architect
     ↓
-[Execução específica]
+[Execução específica — em task_mode]
+    ↓ (toda resposta abre com "Agente Ativo: <name>" — visibilidade de fluxo, agent-contracts § 0)
+Turno seguinte muda de fase/escopo? (R-042)
+    ├─ Sim -> agent ativo retorna a @agent-router (handoff de deriva; resposta seguinte mostra "Handoff: <origem> → <destino>")
+    └─ Não -> agent ativo continua respondendo (reafirma "Agente Ativo: <mesmo-name>")
 ```
 
 ---
@@ -82,6 +92,7 @@ Esta matriz é **responsabilidade do roteador** — não é regra global.
 ## 2) 🛑 Regras de Autonomia (não negociáveis)
 
 - **Agent Router First (R-037)**: TODA solicitação começa com `@agent-router`. Pular router é violação de governança.
+- **Re-triagem Obrigatória por Turno (R-042 — Anti Sticky-Session)**: R-037 aplica-se a CADA novo turno, não só ao primeiro. Agent downstream ativo deve checar deriva de intenção (mudança de verbo de ação, stack fora de competência, pedido de execução em agent read-only) a cada mensagem; ao detectar deriva, retorna IMEDIATAMENTE ao `@agent-router` (payload `handoff-governance` § 2.1, `motivo: "deriva_de_intencao"`) — nunca prossegue silenciosamente fora do escopo. **Visibilidade obrigatória**: TODO agent (não apenas o `agent-router`) abre toda resposta com `Agente Ativo: <name>`; se houve handoff/re-triagem neste turno, adiciona `Handoff: <origem> → <destino> (motivo: ...)` — padrão de mercado (OpenAI Agents SDK `HandoffOutputItem`, LangGraph `active_agent` streaming; detalhes em `agent-contracts/SKILL.md` § 0). **Pré-requisito de tooling**: o handoff só é efetivo via tool `run_subagent`; por isso `run_subagent` é obrigatório e bloqueante no frontmatter `tools:` de todo agent (`agent-contracts/SKILL.md` § 9).
 - **Prompt Structuring Obrigatório (R-041)**: após o Health Check (R-034), o `@agent-router` SEMPRE delega ao `@prompt-structuring` antes de classificar intenção. Esse é o **único** agent do catálogo autorizado a operar em loop de auto-refinamento, limitado a **5 iterações** — ao atingir o limite, prossegue compulsoriamente com o melhor prompt disponível e retorna ao `@agent-router`. Nenhum outro agent pode adotar esse padrão de loop.
 - **Não gere documentação automaticamente (R-033)**: nunca gere documentos `.md` se não for solicitado ou sem a aprovação por `ask_questions`.
 - **Sem loops de correção**: se falhar, PARE, explique e aguarde aprovação.
@@ -322,6 +333,9 @@ Escolha uma ação:
 - `docs-curator` -> curadoria de documentação de governança.
 - `research-router` -> triagem e roteamento de pesquisa.
 - `analysis-architect` -> análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL); metodologia B1/B2/B3.
+- `angular` -> especialista Angular com perfil híbrido: análise/recomendação (arquitetura, reatividade, performance, segurança, acessibilidade, testes, upgrade) E implementação de feature/bugfix (testing-first, diff mínimo).
+- `spring-boot` -> especialista Spring Boot com perfil híbrido: análise/recomendação (arquitetura, Java/JDK, performance, observabilidade, segurança, migração) E implementação de feature/bugfix (virtual threads vs reativo, testing-first).
+- `spring-reactive` -> especialista Spring WebFlux/Reactor com perfil híbrido: análise/recomendação (capacidade, resiliência, backpressure, observabilidade) E implementação de feature/bugfix (sem bloqueio de event-loop, testing-first).
 - `agent-factory` -> criar/revisar agents customizados com padrão estrutural.
 - `binding-initializer` -> ⚡ inicializar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — R-034)
 - `adapter-generator` -> ⚡ gerar automaticamente adapters em `.github/instructions/` via `/add-project-context`

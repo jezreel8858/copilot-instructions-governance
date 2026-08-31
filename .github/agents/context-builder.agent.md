@@ -147,6 +147,14 @@ Documento gerado:
 - [`@analysis-architect`](analysis-architect.agent.md) quando a demanda exigir análise técnica, impacto ou dependência.
 - [`@agent-factory`](agent-factory.agent.md) quando a demanda for criar ou revisar agents customizados.
 
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: context-builder` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> context-builder (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "consolidar contexto" para "executar/implementar usando o contexto coletado", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
+
+**Gatilho de deriva:** pedido de execução/implementação com o contexto consolidado; pivô para análise técnica profunda (→ `@analysis-architect`).
+
 ## Combina Com (Commands)
 
 - `/research` -> levantar artefatos e evidências mínimas.

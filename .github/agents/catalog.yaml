@@ -684,8 +684,9 @@ agents:
   angular:
     id: "angular"
     priority: 8.6
-    domain: "Analise e recomendacao tecnica Angular"
-    description: "Especialista Angular enterprise para análise e recomendação técnica (arquitetura moderna, RxJS+Signals, performance CWV/SSR/hydration, segurança OWASP, acessibilidade WCAG, estratégia de testes e upgrade/migração), sem implementar código."
+    version: "2.0.0"
+    domain: "Analise, recomendacao e implementacao Angular (perfil hibrido)"
+    description: "Especialista Angular enterprise com perfil hibrido: análise/recomendação técnica (arquitetura moderna, RxJS+Signals, performance CWV/SSR/hydration, segurança OWASP, acessibilidade WCAG, estratégia de testes e upgrade/migração) E implementação de feature nova/bugfix seguindo padrões de mercado (testing-first, diff mínimo)."
     keywords:
       - "angular"
       - "standalone"
@@ -702,11 +703,15 @@ agents:
       - "deprecations"
       - "analise angular"
       - "recomendacao tecnica"
+      - "implementar componente angular"
+      - "corrigir bug angular"
     prerequisite_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
+    related_agents:
+      - "agent-router"
     related_skills:
       - "context-mode"
       - "tavily"
@@ -717,6 +722,7 @@ agents:
       - "code-tracing"
       - "frontend-componentization-patterns"
       - "angular-frontend-patterns"
+      - "angular-implementation-patterns"
       - "design-system-component-contracts"
     source_docs:
       - "CLAUDE.md"
@@ -726,14 +732,17 @@ agents:
       - ".github/agents/catalog.yaml"
       - ".github/skills/frontend-componentization-patterns/SKILL.md"
       - ".github/skills/angular-frontend-patterns/SKILL.md"
+      - ".github/skills/angular-implementation-patterns/SKILL.md"
       - ".github/skills/design-system-component-contracts/SKILL.md"
+      - ".github/instructions/frontend.instructions.md"
     estimated_time_minutes: 30
 
   spring-boot:
     id: "spring-boot"
     priority: 8.7
-    domain: "Analise e recomendacao tecnica backend Spring Boot"
-    description: "Especialista backend Spring Boot enterprise para análise e recomendação técnica (arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração), sem implementar código."
+    version: "2.0.0"
+    domain: "Analise, recomendacao e implementacao backend Spring Boot (perfil hibrido)"
+    description: "Especialista backend Spring Boot enterprise com perfil hibrido: análise/recomendação técnica (arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração) E implementação de feature nova/bugfix seguindo padrões de mercado (virtual threads vs reativo, testing-first, diff mínimo)."
     keywords:
       - "spring boot"
       - "java lts"
@@ -743,11 +752,15 @@ agents:
       - "seguranca backend"
       - "migracao spring"
       - "analise backend"
+      - "implementar service spring boot"
+      - "corrigir bug spring boot"
     prerequisite_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
+    related_agents:
+      - "agent-router"
     related_skills:
       - "context-mode"
       - "tavily"
@@ -757,6 +770,7 @@ agents:
       - "agent-evals-lab"
       - "code-tracing"
       - "spring-boot-backend-patterns"
+      - "spring-boot-implementation-patterns"
       - "java-jdk-backend-governance"
     source_docs:
       - "CLAUDE.md"
@@ -765,14 +779,17 @@ agents:
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
       - ".github/skills/spring-boot-backend-patterns/SKILL.md"
+      - ".github/skills/spring-boot-implementation-patterns/SKILL.md"
       - ".github/skills/java-jdk-backend-governance/SKILL.md"
+      - ".github/instructions/spring-boot-backend.instructions.md"
     estimated_time_minutes: 35
 
   spring-reactive:
     id: "spring-reactive"
     priority: 8.8
-    domain: "Analise e recomendacao tecnica backend reativo Spring"
-    description: "Especialista backend reativo Spring WebFlux/Reactor para análise e recomendação técnica (capacidade, resiliência, backpressure, observabilidade, segurança e compatibilidade Java/JDK), sem implementação."
+    version: "2.0.0"
+    domain: "Analise, recomendacao e implementacao backend reativo Spring (perfil hibrido)"
+    description: "Especialista backend reativo Spring WebFlux/Reactor com perfil hibrido: análise/recomendação técnica (capacidade, resiliência, backpressure, observabilidade, segurança e compatibilidade Java/JDK) E implementação de feature nova/bugfix seguindo padrões de mercado (composição não-bloqueante, testing-first, diff mínimo)."
     keywords:
       - "spring webflux"
       - "project reactor"
@@ -782,11 +799,15 @@ agents:
       - "reactive streams"
       - "latencia p95"
       - "migracao java"
+      - "implementar endpoint reativo"
+      - "corrigir bug webflux"
     prerequisite_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
+    related_agents:
+      - "agent-router"
     related_skills:
       - "context-mode"
       - "tavily"
@@ -796,6 +817,7 @@ agents:
       - "agent-evals-lab"
       - "code-tracing"
       - "spring-reactive-webflux-patterns"
+      - "spring-reactive-implementation-patterns"
       - "java-jdk-backend-governance"
     source_docs:
       - "CLAUDE.md"
@@ -804,6 +826,7 @@ agents:
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
       - ".github/skills/spring-reactive-webflux-patterns/SKILL.md"
+      - ".github/skills/spring-reactive-implementation-patterns/SKILL.md"
       - ".github/skills/java-jdk-backend-governance/SKILL.md"
     estimated_time_minutes: 35
 
@@ -921,6 +944,6 @@ agents:
 
 metadata:
   total_agents: 24
-  last_updated: "2026-08-29T13:00:00Z"
-  changelog: "2026-08-29 (4) — Criado agent requirements-analyst (perfil Operacional, prospectivo): elicita e estrutura requisitos funcionais/nao-funcionais a partir de pedido de negocio ambiguo, aplicando ISO/IEC/IEEE 29148, notacao EARS, INVEST, Gherkin/BDD e FURPS+; detecta solution-jumping via tecnica Five Whys; nunca decide arquitetura (handoff para impact-architect/analysis-architect/refactor-planner); nunca extrai regra de codigo existente (nao confundir com business-rules-extractor, que e reverso). Skill requirements-engineering-patterns criada (pesquisa de mercado). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review (perfil Analista/Read-only): revisao de diff/PR por 6 dimensoes (correcao/seguranca/convencoes/impacto/testes/performance), taxonomia de severidade bloqueador/alta/sugestao, nunca corrige, delega para bug-triage/impact-architect/test-strategy/refactor-planner. Skill code-review-patterns criada (Google Eng Practices, OWASP, taxonomia de mercado CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040). | 2026-08-29 (2) — Criado agent docs-writer (perfil documentador, Operacional): gera documentacao tecnica agnostica de dominio em .md, com base na skill nova documentation-writing-patterns (Diataxis, MADR, standard-readme, llms.txt, anti-alucinacao), pesquisada via research-router/tavily. Registrado em catalog.yaml, README.md, skills/.index.json e skills/README.md (R-015)."
+  last_updated: "2026-08-30T20:00:00Z"
+  changelog: "2026-08-30 (8) — Visibilidade de Fluxo (R-042): fechado gap de mercado onde apenas o agent-router declarava 'Agente Ativo' na propria resposta, deixando o usuario sem visibilidade quando um agent downstream respondia sozinho por varios turnos em task_mode. Pesquisa Tavily 2026 confirmou o padrao consolidado (LangGraph 'Stream the Active Agent' com campo active_agent streamado; OpenAI Agents SDK HandoffOutputItem imprimindo 'Handed off from X to Y'). Nova secao agent-contracts/SKILL.md § 0 (Banner Universal de Identidade) normatiza que TODO agent -- nao so o agent-router -- abre toda resposta com 'Agente Ativo: <name>', e declara 'Handoff: <origem> -> <destino> (motivo: ...)' quando a resposta e resultado de re-triagem. Propagado via script Node.js para os 23 agents downstream (paragrafo 'Banner obrigatorio' inserido na secao existente 'Retorno ao Router'), para os 2 templates (research-agent.md, operational-agent.md) e para o proprio agent-router.agent.md (novo campo 'Transicao' no Formato de Saida). agent-factory.agent.md passa a validar o banner em Padroes Obrigatorios, Checklist e Formato de Saida. Atualizado CLAUDE.md (R-042), copilot-instructions.md (fluxo garantido), agents/README.md § 8 e handoff-governance/SKILL.md § 5.2. | 2026-08-30 (7) — Fechado gap estrutural de tooling para R-042: run_subagent e obrigatorio e bloqueante no frontmatter tools de TODO agent (sem ele, o handoff de retorno a @agent-router descrito em prosa nao e executavel). Corrigidos 3 agents que nao tinham run_subagent (agent-factory, adapter-generator, binding-initializer). Fechada a causa raiz nos templates usados pelo agent-factory para criar novos agents: templates/research-agent.md (tools corrigidas para nomenclatura canonica + run_subagent + nova secao Retorno ao Router) e templates/operational-agent.md (run_subagent adicionado + nova secao Retorno ao Router, antes ausente). agent-factory.agent.md passou a validar essa regra em Padroes Obrigatorios, Checklist e Formato de Saida. Nova secao agent-contracts/SKILL.md § 9 (Ferramentas Minimas por Agent — Tooling Baseline) com tabela de tools minimas por perfil. Atualizado CLAUDE.md (R-042), copilot-instructions.md e agents/README.md § 8 com o pre-requisito de tooling. | 2026-08-30 (6) — Especialistas angular/spring-boot/spring-reactive migrados de perfil 'advisory puro' para perfil HIBRIDO (v2.0.0): agora tambem implementam feature nova/bugfix dentro do proprio dominio de stack, seguindo padroes de mercado 2026 pesquisados via Tavily (Angular: Signals/RxJS boundary, testing-first, Vitest; Spring Boot: virtual threads vs reativo, N+1/OSIV, DTOs de borda; Spring Reactive: sem bloqueio de event-loop, operadores de erro, StepVerifier/WebTestClient). Testing-first e diff minimo sao obrigatorios em modo Implementacao. Criadas 3 skills novas de implementacao (angular-implementation-patterns, spring-boot-implementation-patterns, spring-reactive-implementation-patterns), complementares as 3 skills de analise ja existentes. tools dos 3 agents expandidas com create_file/insert_edit_into_file/get_errors/run_in_terminal. routing-graph.yaml: tipo de no specialist_advisory -> specialist_hybrid; condicao intent_drift_detected ajustada para nao confundir implementacao dentro do dominio com deriva de intencao (R-042). Registrado em catalog.yaml, routing-graph.yaml, CLAUDE.md (R-042), copilot-instructions.md, agents/README.md, skills/.index.json, skills/README.md e casos-roteamento.yaml (R-015/R-040). | 2026-08-30 (5) — R-042 (Re-triagem Obrigatoria por Turno — Anti Sticky-Session): fechado gap onde agent downstream ativo perdia a inteligencia de roteamento apos o primeiro turno (requisito->implementacao, analise->codigo). Adicionada secao 'Retorno ao Router' em todos os 23 agents downstream/specialist (atualizacao atomica R-015), com gatilho de deriva de intencao especifico por agent. agent-router v1.5.0: Decision Tree com PASSO 0.3 (re-triagem por deriva), output com campo 'Agente Ativo' para auditoria. routing-graph.yaml: aresta reversa universal (de: *downstream -> para: agent-router, condicao intent_drift_detected, prioridade 0) + nos/arestas para os 3 specialists angular/spring-boot/spring-reactive (antes orfaos — nao rotaveis pelo router, so por @mencao manual). handoff-governance/SKILL.md § 5/5.2 atualizado. Evals: canon-015/016/017 (specialists rotaveis) + regr-014/015 (sticky-session). Pesquisa de mercado: OpenAI Agents SDK handoffs (transfer_back_to_supervisor), LangGraph supervisor pattern (add_handoff_back_messages), state machine de 2 modos (orchestrator_mode/task_mode) com deteccao conservadora de off-topic. | 2026-08-29 (4) — Criado agent requirements-analyst (perfil Operacional, prospectivo): elicita e estrutura requisitos funcionais/nao-funcionais a partir de pedido de negocio ambiguo, aplicando ISO/IEC/IEEE 29148, notacao EARS, INVEST, Gherkin/BDD e FURPS+; detecta solution-jumping via tecnica Five Whys; nunca decide arquitetura (handoff para impact-architect/analysis-architect/refactor-planner); nunca extrai regra de codigo existente (nao confundir com business-rules-extractor, que e reverso). Skill requirements-engineering-patterns criada (pesquisa de mercado). Registrado em catalog.yaml, README.md, routing-graph.yaml, casos-roteamento.yaml e skills/.index.json (R-015/R-040)."
 
