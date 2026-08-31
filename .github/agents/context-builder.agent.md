@@ -33,7 +33,7 @@ Você é especialista em engenharia de contexto e preparação de prompts. Seu t
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Fonte de descoberta e roteamento |
 | Índice de instructions | [`../instructions/README.md`](../instructions/README.md) | Adapters de convenções por projeto/stack |
 | Template operacional | [`templates/operational-agent.md`](templates/operational-agent.md) | Estrutura oficial de agents operacionais |
-| Agent roteador | [`research-router.agent.md`](research-router.agent.md) | Triagem e roteamento de demandas |
+| Agent de pesquisa | [`deep-search.agent.md`](deep-search.agent.md) | Pesquisa interna e externa sob demanda |
 | Agent analítico | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Análise técnica e de impacto |
 | Agent de autoria | [`agent-factory.agent.md`](agent-factory.agent.md) | Criação e revisão de agents customizados |
 | Skill de compactação | [`../skills/context-compact/SKILL.md`](../skills/context-compact/SKILL.md) | Compactar contexto pós-leitura em resumo executável |
@@ -45,8 +45,8 @@ Pedido recebido?
 |- É preparação, consolidação ou compactação de contexto?
 |  |- Sim -> seguir com o processo do Construtor de Contexto
 |  \- Não
-|- É triagem/roteamento de pesquisa?
-|  |- Sim -> delegar para @research-router
+|- É pesquisa técnica interna ou externa?
+|  |- Sim -> delegar para @deep-search
 |  \- Não
 |- É análise técnica, impacto, risco ou dependência?
 |  |- Sim -> delegar para @analysis-architect
@@ -143,7 +143,7 @@ Documento gerado:
 
 ## Quando Delegar
 
-- [`@research-router`](research-router.agent.md) quando a demanda for triagem/roteamento de pesquisa.
+- [`@deep-search`](deep-search.agent.md) quando a demanda for pesquisa técnica interna ou externa.
 - [`@analysis-architect`](analysis-architect.agent.md) quando a demanda exigir análise técnica, impacto ou dependência.
 - [`@agent-factory`](agent-factory.agent.md) quando a demanda for criar ou revisar agents customizados.
 

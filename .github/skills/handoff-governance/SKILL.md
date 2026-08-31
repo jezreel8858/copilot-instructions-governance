@@ -150,7 +150,7 @@ handoff_payload:
        ├──→ @refactor-planner (planejar refatoração)
        │         └──→ @impact-architect (análise de impacto necessária antes)
        │
-       ├──→ @research-router (pesquisa técnica)
+       ├──→ @deep-search (pesquisa técnica interna/externa)
        │         └──→ @analysis-architect (análise cross-projeto)
        │
        └──→ @docs-curator (documentar resultado)
@@ -184,7 +184,7 @@ Agent receptor confirma:
 | Bug com impacto sistêmico desconhecido | `@bug-triage` → `@impact-architect` |
 | Refatoração sem análise de dependências | `@refactor-planner` → `@impact-architect` |
 | Implementação sem estratégia definida | `@test-implementation` → `@test-strategy` primeiro |
-| Dúvida técnica que precisa de pesquisa | Qualquer agent → `@research-router` |
+| Dúvida técnica que precisa de pesquisa | Qualquer agent → `@deep-search` |
 | Documentação a atualizar após mudança | Qualquer agent → `@docs-curator` |
 | **Mudança de fase na mesma conversa** (requisito→implementação, análise→código, revisão→correção) | Downstream atual **DEVE** retornar a `@agent-router` (R-042, re-triagem obrigatória) — **nunca prosseguir sozinho** |
 | Especialista híbrido (`@angular`/`@spring-boot`/`@spring-reactive`) recebe pedido de código **fora** do próprio domínio de stack | Specialist → `@agent-router` com handoff (dentro do próprio domínio, o specialist implementa diretamente — não é deriva) |

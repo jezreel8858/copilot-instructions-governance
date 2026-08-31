@@ -68,7 +68,7 @@ Agent ativo de turno anterior? (R-042)
 @bug-triage | @test-strategy | @refactor-planner |
 @impact-architect | @docs-curator | @code-review |
 @requirements-analyst | @angular | @spring-boot | @spring-reactive |
-@research-router | @analysis-architect
+@deep-search | @analysis-architect
     ↓
 [Execução específica — em task_mode]
     ↓ (toda resposta abre com "Agente Ativo: <name>" — visibilidade de fluxo, agent-contracts § 0)
@@ -331,7 +331,7 @@ Escolha uma ação:
 - `refactor-planner` -> planejamento de refatoração.
 - `impact-architect` -> análise de impacto técnico.
 - `docs-curator` -> curadoria de documentação de governança.
-- `research-router` -> triagem e roteamento de pesquisa.
+- `deep-search` -> triagem e roteamento de pesquisa interna e externa.
 - `analysis-architect` -> análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL); metodologia B1/B2/B3.
 - `angular` -> especialista Angular com perfil híbrido: análise/recomendação (arquitetura, reatividade, performance, segurança, acessibilidade, testes, upgrade) E implementação de feature/bugfix (testing-first, diff mínimo).
 - `spring-boot` -> especialista Spring Boot com perfil híbrido: análise/recomendação (arquitetura, Java/JDK, performance, observabilidade, segurança, migração) E implementação de feature/bugfix (virtual threads vs reativo, testing-first).

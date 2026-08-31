@@ -171,7 +171,7 @@ Para pesquisa **composta** (2+ subtemas, comparação, "melhores práticas de X 
 
 ```text
 1. Decompor o tema em N sub-queries objetivas (1 subtema cada)
-2. Delegar cada sub-query via run_subagent (research-router) em paralelo
+2. Delegar cada sub-query via run_subagent (deep-search) em paralelo
 3. Coletar resultados brutos de cada subagent (título + URL + ano + snippet)
 4. Sintetizar com checklist de citação (nenhuma fonte inventada)
 ```

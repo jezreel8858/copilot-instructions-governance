@@ -21,7 +21,7 @@ Agente de pesquisa (read-only) para apoiar decisões técnicas no repositório a
 
 | Tipo | Itens permitidos |
 |---|---|
-| Agents | `analysis-architect`, `research-router` |
+| Agents | `analysis-architect`, `deep-search` |
 | Skills | `context-mode`, `tavily` |
 
 ## Processo padrão

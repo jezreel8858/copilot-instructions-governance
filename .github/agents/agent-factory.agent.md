@@ -28,7 +28,7 @@ Você é especialista em criar e revisar arquivos de agents no repositório, pre
 |---|---|---|
 | Catálogo textual | [`README.md`](README.md) | Deve refletir novos agents e revisões relevantes |
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Fonte para descoberta/roteamento |
-| Agent roteador | [`research-router.agent.md`](research-router.agent.md) | Triagem e orquestração de pesquisa |
+| Agent de pesquisa | [`deep-search.agent.md`](deep-search.agent.md) | Pesquisa interna (terminal/ctx) e externa (Tavily) |
 | Agent analítico | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Análise operacional de integração |
 | Template research | [`templates/research-agent.md`](templates/research-agent.md) | Padrão de agents read-only |
 | Template operacional | `templates/operational-agent.md` | Padrão de agents com execução operacional |
@@ -99,7 +99,7 @@ Executar o checklist genérico da skill [`governance-factory-patterns`](../skill
 - Criar agent sem bloco CRÍTICO com ❌/✅.
 - Criar/revisar agent sem atualizar catálogo quando necessário.
 - Misturar autoria de agent com implementação da aplicação.
-- Duplicar escopo já coberto por `research-router` ou `analysis-architect`.
+- Duplicar escopo já coberto por `deep-search` ou `analysis-architect`.
 - Omitir seção "Docs Sempre Anexadas".
 - **Criar/revisar agent sem `run_subagent` em `tools:`** — torna R-042 estruturalmente impossível de cumprir (bloqueante).
 - Declarar seção "Retorno ao Router" sem o agent ter `run_subagent` no frontmatter (handoff nunca executável).
@@ -107,7 +107,7 @@ Executar o checklist genérico da skill [`governance-factory-patterns`](../skill
 
 ## Quando Delegar
 
-- [`@research-router`](research-router.agent.md) quando a demanda for triagem/roteamento de pesquisa.
+- [`@deep-search`](deep-search.agent.md) quando a demanda for pesquisa técnica interna ou externa.
 - [`@analysis-architect`](analysis-architect.agent.md) quando a demanda for análise de integração.
 - Demandas de implementação técnica da aplicação devem seguir fluxo de desenvolvimento apropriado.
 

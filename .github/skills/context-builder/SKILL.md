@@ -110,7 +110,7 @@ Transformar material bruto em um documento único, enxuto e útil para execuçã
 ## 9. Combina com
 
 - `@context-builder` para preparar o contexto final.
-- `@research-router` quando a solicitação ainda estiver ambígua.
+- `@deep-search` quando a solicitação ainda estiver ambígua ou precisar de pesquisa técnica interna/externa.
 - `@analysis-architect` quando houver necessidade de análise técnica, impacto ou dependências.
 - `@agent-factory` quando a tarefa envolver criação ou revisão de agents.
 

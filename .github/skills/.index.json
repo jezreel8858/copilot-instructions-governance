@@ -14,7 +14,7 @@
       "related_agents": [
         "@prompt-structuring",
         "@agent-router",
-        "@research-router"
+        "@deep-search"
       ]
     },
     {
@@ -24,7 +24,7 @@
       "path": ".github/skills/context-mode/SKILL.md",
       "related_agents": [
         "@agent-router",
-        "@research-router",
+        "@deep-search",
         "@analysis-architect",
         "@bug-triage",
         "@impact-architect",
@@ -56,7 +56,7 @@
       ],
       "related_agents": [
         "@context-builder",
-        "@research-router",
+        "@deep-search",
         "@analysis-architect"
       ]
     },
@@ -70,7 +70,7 @@
       ],
       "related_agents": [
         "@context-builder",
-        "@research-router",
+        "@deep-search",
         "@analysis-architect"
       ]
     },
@@ -92,7 +92,7 @@
       "category": "research",
       "path": ".github/skills/tavily/SKILL.md",
       "related_agents": [
-        "@research-router",
+        "@deep-search",
         "@analysis-architect",
         "@angular",
         "@spring-boot",
@@ -105,7 +105,7 @@
       "category": "documentation",
       "path": ".github/skills/mermaid-diagrams/SKILL.md",
       "related_agents": [
-        "@research-router",
+        "@deep-search",
         "@analysis-architect"
       ]
     },
@@ -134,7 +134,7 @@
       ],
       "related_agents": [
         "@agent-router",
-        "@research-router",
+        "@deep-search",
         "@analysis-architect"
       ]
     },
@@ -152,7 +152,7 @@
         "@bug-triage",
         "@impact-architect",
         "@analysis-architect",
-        "@research-router"
+        "@deep-search"
       ]
     },
     {
@@ -216,7 +216,7 @@
       "related_agents": [
         "@agent-router",
         "@analysis-architect",
-        "@research-router",
+        "@deep-search",
         "@impact-architect"
       ]
     },

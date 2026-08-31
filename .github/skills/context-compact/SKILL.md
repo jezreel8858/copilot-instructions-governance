@@ -114,7 +114,7 @@ Esta skill transforma leituras extensas, diffs, logs e notas dispersas em um res
 - `@context-builder` para transformar o resumo compacto em documento final persistido.
 - `@context-mode` para recuperar e revisar material já indexado.
 - `@analysis-architect` quando a compactação servir de base para análise técnica.
-- `@research-router` quando ainda houver ambiguidade de rota.
+- `@deep-search` quando ainda houver ambiguidade de rota ou necessidade de pesquisa.
 
 ## 10) Referências
 

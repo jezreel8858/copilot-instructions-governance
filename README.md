@@ -113,7 +113,7 @@ flowchart TD
     E --> H["refactor-planner\nimpact-architect"]
     E --> M["requirements-analyst"]
     E --> I["docs-curator\ndocs-writer"]
-    E --> J["research-router\nanalysis-architect"]
+    E --> J["deep-search\nanalysis-architect"]
     E --> N["angular\nspring-boot\nspring-reactive"]
     F & G & H & I & J & M & N --> K["Resultado\n(turno N)"]
     K --> L["/commit\nmensagem gerada"]
@@ -193,7 +193,7 @@ flowchart TD
   - **Triagem/Qualidade:** `bug-triage`, `test-strategy`, `test-implementation`, `test-fix`
   - **Planejamento/Impacto/Requisitos:** `requirements-analyst`, `refactor-planner`, `impact-architect`, `business-rules-extractor`
   - **Documentação:** `docs-curator` (curadoria de doc existente), `docs-writer` (escrita de doc nova em `.md`, perfil documentador)
-  - **Pesquisa/Análise:** `research-router`, `analysis-architect` (unificado com integrações cross-sistema OpenAPI/AsyncAPI/gRPC/GraphQL)
+  - **Pesquisa/Análise:** `deep-search`, `analysis-architect` (unificado com integrações cross-sistema OpenAPI/AsyncAPI/gRPC/GraphQL)
   - **Especialistas de Recomendação e Implementação (enterprise, perfil híbrido v2.0.0):** `angular`, `spring-boot`, `spring-reactive`
   - **Governança de Agents/Skills/Prompts:** `agent-factory`, `skill-factory`, `prompt-factory`
   - **Contexto/Binding:** `context-builder`, `binding-initializer`, `adapter-generator`

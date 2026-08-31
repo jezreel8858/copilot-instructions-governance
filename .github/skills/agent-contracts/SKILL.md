@@ -263,7 +263,7 @@ Já normatizado por R-016/R-020 e pelas seções 1-4 desta skill: confiança dec
 
 | Perfil | Template | Agents exemplo | Racional (pesquisa) |
 |---|---|---|---|
-| Router/Triagem | Bloco de decisão compacto: Rota·Delegado·Motivo·Confiança·Score·Nível Routing·Entradas·Lacunas·Próximo Passo | `agent-router`, `research-router`, `prompt-structuring` | Orchestrator decide, não narra (Product School: planner→executor) |
+| Router/Triagem | Bloco de decisão compacto: Rota·Delegado·Motivo·Confiança·Score·Nível Routing·Entradas·Lacunas·Próximo Passo | `agent-router`, `prompt-structuring` | Orchestrator decide, não narra (Product School: planner→executor) |
 | Analista/Read-only | 5 seções: Abordagem·Componentes·Evidências·Riscos·Próximo Passo | `analysis-architect`, `impact-architect`, `bug-triage`, `business-rules-extractor` | "Data/Insight Agent" exige leitura humana rica — tabelas/bullets |
 | Especialista de Recomendação | 5 seções + Trade-offs/Riscos explícitos, sem implementar | `angular`, `spring-boot`, `spring-reactive` | Mesma classe de Insight Agent, com recomendação técnica declarada |
 | Operacional/Executor | Resultado·Evidências·Validações·Próximo Passo (compacto, checklist) | `test-implementation`, `agent-factory`, `skill-factory`, `binding-initializer`, `adapter-generator`, `docs-curator` | "Specialist Skills" tem output estreito e determinístico |
