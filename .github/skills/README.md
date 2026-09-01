@@ -72,6 +72,11 @@ Toda skill deve declarar no topo:
 | **`specialist-hybrid-advisory-implementation-patterns`** | 🧑‍🔧 **Tier 1** | Template canônico do perfil híbrido (Advisory + Implementação) para specialists de stack — base de `angular`, `spring-boot`, `spring-reactive` |
 | **`governance-audit-patterns`** | 🕵️ **Tier 1** | Catálogo de agent/governance smells (anti-padrão estrutural, gap de perfil, gap de diretriz, diretriz redundante, gap de cobertura de categoria) com sintoma, detecção, severidade e remediação — base do agent `agent-auditor` |
 | **`reflection-self-critique-patterns`** | 🪞 **Tier 2** | Padrão generate→critique→revise (Reflection) de baixo custo — self-reflection 1 round grounded para agents Executores reexaminarem o próprio artefato antes de reportar sucesso — base de `docs-writer`, `test-implementation` |
+| **`security-review-patterns`** | 🔒 **Tier 2** | ⭐ ***(NEW)*** OWASP Top 10:2025, ASVS 5.0, OWASP LLM/Agentic AI, SCA (CVE/CVSS), detecção de secrets e rubrica de triagem — base do agent `security-reviewer` |
+| **`performance-engineering-patterns`** | ⚡ **Tier 2** | ⭐ ***(NEW)*** Core Web Vitals (LCP/INP/CLS), N+1 queries, profiling de latência e otimização de query — base do agent `performance-agent` |
+| **`compliance-governance-patterns`** | 🛡️ **Tier 2** | ⭐ ***(NEW)*** SOC 2/GDPR/LGPD/HIPAA/ISO 27001, audit trails, least privilege e retenção de dado pessoal — base do agent `compliance-guardrails` |
+| **`task-decomposition-patterns`** | 📋 **Tier 2** | ⭐ ***(NEW)*** Decomposição sequencial/hierárquica/paralela, granularidade 2-3 níveis, validação de dependências — base do agent `feature-planner` |
+| **`devops-agent-patterns`** | 🐳 **Tier 2** | ⭐ ***(NEW)*** Checklists de revisão Dockerfile/Kubernetes/CI-CD/IaC e estratégias de deployment — base do agent `devops-engineer` |
 
 ## 4) Instructions associadas
 

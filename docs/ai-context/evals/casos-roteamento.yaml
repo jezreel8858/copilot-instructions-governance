@@ -4,7 +4,7 @@ description: >
   Fonte de verdade para regressão de roteamento — deve ser atualizada
   em toda PR que altere agent-router.agent.md ou routing-graph.yaml (análogo ao R-015).
   Compatível com DeepEval (Apache 2.0) e pytest via estrutura de casos padronizados.
-last_updated: "2026-08-31 (v4 — +4 casos code-summarizer §4 da estratégia: ambig-005, regr-017, regr-018, canon-019; suíte 43 -> 47 casos)"
+last_updated: "2026-09-01 (v5 — +8 casos canônicos (canon-020..027) + 1 caso ambíguo (ambig-006) para os 9 agents novos: security-reviewer, performance-agent, compliance-guardrails, feature-planner, devops-engineer, debugger, refactor-executor, code-style-enforcer; agentic-memory-manager coberto indiretamente por ambig-006-adjacent scope; suíte 47 -> 56 casos)"
 responsavel: "agent-evals-lab + docs-curator + test-implementation"
 
 # ─────────────────────────────────────────────
@@ -232,11 +232,146 @@ canonicos:
     critico: true
     threshold: 0.90
 
+  - id: "canon-020"
+    descricao: "Revisão especializada de segurança (OWASP/CVE)"
+    input:
+      solicitacao: "Revisar este endpoint por segurança — quero saber se há risco de SQL injection ou vulnerabilidade OWASP"
+    expected:
+      agent_route: "security-reviewer"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @security-reviewer"
+    nao_confundir_com:
+      - "revisão geral de código"  # → code-review
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-021"
+    descricao: "Revisão especializada de performance (Core Web Vitals)"
+    input:
+      solicitacao: "Avaliar se esta página tem problema de Core Web Vitals — LCP parece alto"
+    expected:
+      agent_route: "performance-agent"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @performance-agent"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-022"
+    descricao: "Avaliação de compliance/GDPR"
+    input:
+      solicitacao: "Avaliar se este fluxo de dado pessoal está conforme GDPR/LGPD — existe audit trail?"
+    expected:
+      agent_route: "compliance-guardrails"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @compliance-guardrails"
+    nao_confundir_com:
+      - "segurança do próprio agent de IA"  # → agent-safety-guardrails (skill)
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-023"
+    descricao: "Decomposição de feature nova em subtasks"
+    input:
+      solicitacao: "Preciso decompor esta feature nova de checkout em subtarefas para o time executar"
+    expected:
+      agent_route: "feature-planner"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @feature-planner"
+    nao_confundir_com:
+      - "refatoração de código existente"  # → refactor-planner
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-024"
+    descricao: "Revisão de artefato DevOps (Dockerfile)"
+    input:
+      solicitacao: "Revisar este Dockerfile antes do merge — está seguindo boas práticas?"
+    expected:
+      agent_route: "devops-engineer"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @devops-engineer"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-025"
+    descricao: "Investigação de causa raiz com stack trace complexo"
+    input:
+      solicitacao: "Preciso investigar a causa raiz deste erro — o stack trace atravessa 4 serviços e não é óbvio onde está o problema"
+    expected:
+      agent_route: "debugger"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      output_contains:
+        - "Delegado: @debugger"
+    nao_confundir_com:
+      - "bug simples/classificação inicial"  # → bug-triage
+    critico: true
+    threshold: 0.85
+
+  - id: "canon-026"
+    descricao: "Execução de plano de refactor já aprovado"
+    input:
+      solicitacao: "O plano de refactor do módulo de pagamentos já foi aprovado — pode executar a Fase 1 agora"
+    expected:
+      agent_route: "refactor-executor"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @refactor-executor"
+    nao_confundir_com:
+      - "criar plano de refactor do zero"  # → refactor-planner
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-027"
+    descricao: "Verificação de estilo/convenção documentada"
+    input:
+      solicitacao: "Verificar se este arquivo segue as convenções de nomenclatura do adapter Spring Boot do projeto"
+    expected:
+      agent_route: "code-style-enforcer"
+      nivel_routing: "rule-based"
+      confianca: "média"
+      score_minimo: 0.85
+      output_contains:
+        - "Delegado: @code-style-enforcer"
+    critico: false
+    threshold: 0.85
+
 # ─────────────────────────────────────────────
 # SUITE 2 — Casos Ambíguos (threshold ≥ 0.70)
 # Intenção ambígua que exige clarificação ou roteamento defensivo.
 # ─────────────────────────────────────────────
 ambiguos:
+
+  - id: "ambig-006"
+    descricao: "Ambiguidade entre security-reviewer e agent-safety-guardrails (skill, não agent) — pedido menciona 'segurança do agent' de forma vaga"
+    input:
+      solicitacao: "Quero garantir que está seguro"
+    expected:
+      agent_route: "SEM_SPAWN"
+      acao: "ask_questions"
+      pergunta_esperada: "Segurança de qual escopo: da aplicação sendo desenvolvida (código/dependências) ou do comportamento do próprio agent de IA (prompt injection/blast radius)?"
+      score_minimo: 0.70
+    critico: false
+    threshold: 0.70
+
   - id: "ambig-001"
     descricao: "Solicitação muito vaga sem escopo"
     input:

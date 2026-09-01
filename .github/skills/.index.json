@@ -619,12 +619,52 @@
       "description": "Padrão generate→critique→revise (Reflection) de baixo custo para agents Executores reexaminarem o próprio artefato antes de reportar sucesso, 1 round, grounded — evita agent 'critic' dedicado (overengineering).",
       "path": ".github/skills/reflection-self-critique-patterns/SKILL.md",
       "related_agents": ["@docs-writer", "@test-implementation"]
+    },
+    {
+      "name": "security-review-patterns",
+      "tier": 2,
+      "category": "security",
+      "description": "OWASP Top 10:2025, ASVS 5.0, OWASP LLM Top 10 e Agentic AI Security (2026), SCA/CVE, detecção de secrets e rubrica de triagem para revisão especializada de segurança de aplicação — base do agent security-reviewer.",
+      "path": ".github/skills/security-review-patterns/SKILL.md",
+      "related_agents": ["@security-reviewer"]
+    },
+    {
+      "name": "performance-engineering-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Core Web Vitals (LCP/INP/CLS), padrões de degradação backend (N+1, cache, payload), otimização de query e ferramentas de medição — base do agent performance-agent.",
+      "path": ".github/skills/performance-engineering-patterns/SKILL.md",
+      "related_agents": ["@performance-agent"]
+    },
+    {
+      "name": "compliance-governance-patterns",
+      "tier": 2,
+      "category": "security",
+      "description": "SOC 2 (Type I/II), GDPR/LGPD, HIPAA, ISO 27001, audit trails, least privilege/RBAC e retenção de dado pessoal para avaliação de conformidade regulatória de aplicação — base do agent compliance-guardrails, distinto de agent-safety-guardrails (segurança do próprio agent de IA).",
+      "path": ".github/skills/compliance-governance-patterns/SKILL.md",
+      "related_agents": ["@compliance-guardrails"]
+    },
+    {
+      "name": "task-decomposition-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Estratégias de decomposição sequencial/hierárquica/paralela, granularidade ideal (2-3 níveis) e validação de dependências para planejamento de feature nova — base do agent feature-planner, distinto de refactor-planner (refatoração de código existente).",
+      "path": ".github/skills/task-decomposition-patterns/SKILL.md",
+      "related_agents": ["@feature-planner"]
+    },
+    {
+      "name": "devops-agent-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Checklists de revisão para Dockerfile, Kubernetes, CI/CD pipelines e Infrastructure-as-Code, com estratégias de deployment — base do agent devops-engineer, complementa o adapter devops.instructions.md.",
+      "path": ".github/skills/devops-agent-patterns/SKILL.md",
+      "related_agents": ["@devops-engineer"]
     }
   ],
   "metadata": {
-    "total_agents": 24,
-    "total_skills": 49,
-    "last_updated": "2026-09-01T15:00:00Z",
-    "changelog": "2026-09-01 (13) — Removida a skill dependency-graph-mapping (Tier 2) do índice: capacidades absorvidas pelo agent code-knowledge-graph, apos Gate de Paridade Funcional (RNF-012) validado 9/9 com evidencia de execucao real. total_skills 50->49. | 2026-08-31 (12) — Análise de gaps de mercado (docs/plan/categorizacao-agents-mercado.md §5) validada via pesquisa Tavily: Reflection puro e Fan-out/Parallelization NÃO justificam novo agent standalone (evita over-delegation/overengineering, R-011). Implementados como capacidades: (a) skill nova reflection-self-critique-patterns (Tier 2, process) consumida por docs-writer e test-implementation (self-reflection 1 round grounded antes de reportar sucesso); (b) capacidade 'Fan-out — Análise Paralela' adicionada diretamente a analysis-architect (Decision Tree + payload via handoff-governance), sem skill dedicada (1 único consumidor). total_skills 49->50. | 2026-08-31 (11) — Fase 3 do plano de otimização aplicada: removidos `research-router` e `impact-architect`; roteamento consolidado em `deep-search` (pesquisa interna/externa) e `analysis-architect` (impacto local tier B1 + cross-sistema). Atualizados `agent-router`, referências cruzadas no catálogo, README, routing-graph e casos de roteamento de forma atômica (R-015/R-040). — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
+    "total_agents": 35,
+    "total_skills": 52,
+    "last_updated": "2026-09-01T20:00:00Z",
+    "changelog": "2026-09-01 (14) — A pedido do usuário ('revise o levantamento feito pelo Haiku... crie todos os agents identificados'), criadas 5 novas skills após pesquisa web (Tavily: OWASP Top 10:2025/ASVS 5.0/Agentic AI Security 2026, Core Web Vitals/N+1 2026, SOC 2/GDPR/LGPD 2026, task decomposition 2026): security-review-patterns, performance-engineering-patterns, compliance-governance-patterns, task-decomposition-patterns, devops-agent-patterns — base de conhecimento para os 9 novos agents (security-reviewer, performance-agent, compliance-guardrails, feature-planner, agentic-memory-manager, devops-engineer, debugger, code-style-enforcer, refactor-executor). agent-memory-policy e code-tracing (já existentes) reaproveitados sem duplicação (R-003) para agentic-memory-manager e debugger respectivamente. total_skills 47->52 (corrigido de inconsistência histórica 45/49 para contagem real de pastas). total_agents 26->35. | 2026-09-01 (13) — Removida a skill dependency-graph-mapping (Tier 2) do índice: capacidades absorvidas pelo agent code-knowledge-graph, apos Gate de Paridade Funcional (RNF-012) validado 9/9 com evidencia de execucao real. total_skills 50->49. | 2026-08-31 (12) — Análise de gaps de mercado (docs/plan/categorizacao-agents-mercado.md §5) validada via pesquisa Tavily: Reflection puro e Fan-out/Parallelization NÃO justificam novo agent standalone (evita over-delegation/overengineering, R-011). Implementados como capacidades: (a) skill nova reflection-self-critique-patterns (Tier 2, process) consumida por docs-writer e test-implementation (self-reflection 1 round grounded antes de reportar sucesso); (b) capacidade 'Fan-out — Análise Paralela' adicionada diretamente a analysis-architect (Decision Tree + payload via handoff-governance), sem skill dedicada (1 único consumidor). total_skills 49->50. | 2026-08-31 (11) — Fase 3 do plano de otimização aplicada: removidos `research-router` e `impact-architect`; roteamento consolidado em `deep-search` (pesquisa interna/externa) e `analysis-architect` (impacto local tier B1 + cross-sistema). Atualizados `agent-router`, referências cruzadas no catálogo, README, routing-graph e casos de roteamento de forma atômica (R-015/R-040). — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
   }
 }

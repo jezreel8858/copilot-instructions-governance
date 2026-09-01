@@ -41,6 +41,15 @@
 | Agent | `requirements-analyst` | 🧾 ***(NEW)*** Elicita e estrutura requisitos funcionais/não-funcionais a partir de pedido de negócio ambíguo (EARS, INVEST, Gherkin, FURPS+); detecta *solution-jumping* via Five Whys; prospectivo (não confundir com `business-rules-extractor`, que é reverso) |
 | Agent | `code-summarizer` | 🗜️ ***(NEW)*** Ponto de entrada único para sumarização de código-fonte agnóstica a linguagem (RF-008); modelo híbrido — heurística/AST determinística primeiro, LLM leve como fallback; nunca substituído por chamada direta a lib de parsing |
 | Agent | `code-knowledge-graph` | 🕸️ Ponto de entrada único para construção/consulta do grafo de conhecimento de código-fonte cross-projeto — nível código (arquivo/classe/função; import/chamada/herança/tabela-SQL) **e** nível arquitetural (sistema/serviço, HTTP/fila/evento, blast radius, ciclo, acoplamento tight/loose/eventual/circular, risco, diagrama Mermaid); puramente determinístico (sem fallback LLM). **v2.1.0**: motor de extração único consolidado em **Semgrep CLI** (RF-021), com cobertura de framework (RF-022) para Angular, Spring Boot, Spring Reactive/WebFlux e EJB/Jakarta EE; validado em produção real cross-stack e cross-repo em escala (2213 arquivos, 849 nós, 28 arestas cross-repo) |
+| Agent | `security-reviewer` | 🔒 ***(NEW)*** Revisa código de aplicação por segurança especializada (OWASP Top 10:2025, ASVS 5.0, SCA/CVE, secrets) — complementa `code-review` (dimensão genérica) com profundidade de security specialist; read-only |
+| Agent | `performance-agent` | ⚡ ***(NEW)*** Revisa código por performance especializada — Core Web Vitals (frontend), N+1/latência (backend), otimização de query (banco); read-only |
+| Agent | `compliance-guardrails` | 🛡️ ***(NEW)*** Avalia conformidade regulatória de aplicação (SOC 2, GDPR/LGPD, HIPAA, ISO 27001) — audit trails, least privilege, retenção de dado pessoal; distinto de `agent-safety-guardrails` (segurança do próprio agent de IA); read-only |
+| Agent | `feature-planner` | 📋 ***(NEW)*** Decompõe requisito de feature nova em subtasks executáveis com dependências e paralelização; distinto de `refactor-planner` (refatoração de código existente) |
+| Agent | `agentic-memory-manager` | 🧠 ***(NEW)*** Persiste/recupera memória long-term entre sessões (episódica, semântica, procedimental) via `agent-memory-policy`; memória procedimental exige aprovação humana explícita |
+| Agent | `devops-engineer` | 🐳 ***(NEW)*** Revisa Dockerfile, Kubernetes, CI/CD e IaC por segurança/resiliência/boas práticas; read-only |
+| Agent | `debugger` | 🐛 ***(NEW)*** Investiga causa raiz a partir de stack trace/log — call graph, hipótese testável, reprodução mínima; não corrige, complementa `bug-triage` com investigação mais profunda |
+| Agent | `code-style-enforcer` | 🎨 ***(NEW)*** Verifica aderência a convenções de estilo documentadas no adapter de stack; nunca bloqueador, apenas sugestão |
+| Agent | `refactor-executor` | 🔧 ***(NEW)*** Executa plano de refatoração já aprovado por `refactor-planner`, fase a fase, validando contra regras de negócio documentadas |
 
 ## 3) Roteamento Rápido
 
@@ -73,6 +82,15 @@
 | 🧾 Elicitar/estruturar requisitos a partir de pedido ambíguo (pré-técnico) | `requirements-analyst` |
 | 🗜️ Sumarizar código-fonte para reduzir bytes/tokens no contexto (pós-`/init-context` ou sob demanda) | `code-summarizer` |
 | 🕸️ Construir/consultar grafo de conhecimento de código — nível código (arquivo/classe/função, import/chamada/herança/tabela-SQL) e nível arquitetural (sistema/serviço, blast radius, ciclo, acoplamento, risco, diagrama Mermaid), cross-projeto | `code-knowledge-graph` |
+| 🔒 Revisão especializada de segurança de aplicação (OWASP, CVE, secrets), read-only | `security-reviewer` |
+| ⚡ Revisão especializada de performance (Core Web Vitals, N+1, query), read-only | `performance-agent` |
+| 🛡️ Avaliação de conformidade regulatória de aplicação (SOC 2, GDPR/LGPD, HIPAA), read-only | `compliance-guardrails` |
+| 📋 Decomposição de feature nova em subtasks executáveis | `feature-planner` |
+| 🧠 Persistência/recuperação de memória long-term entre sessões | `agentic-memory-manager` |
+| 🐳 Revisão de artefatos DevOps (Dockerfile/K8s/CI-CD/IaC), read-only | `devops-engineer` |
+| 🐛 Investigação de causa raiz a partir de stack trace/log | `debugger` |
+| 🎨 Verificação de aderência a convenções de estilo documentadas | `code-style-enforcer` |
+| 🔧 Execução de plano de refatoração já aprovado por `refactor-planner` | `refactor-executor` |
 
 ## 4) Pre-fetch Recomendado
 
@@ -127,3 +145,10 @@ Antes de tarefas não triviais, anexar ao contexto:
 | Documentação (escrita) | `documentation-writing-patterns`, `mermaid-diagrams`, `agent-contracts` |
 | Revisão de código | `code-review-patterns`, `code-tracing`, `agent-contracts` |
 | Elicitação de requisitos | `requirements-engineering-patterns`, `agent-contracts` |
+| Segurança de aplicação (especialista) | `security-review-patterns`, `agent-contracts` |
+| Performance (especialista) | `performance-engineering-patterns`, `agent-contracts` |
+| Compliance/auditoria de aplicação | `compliance-governance-patterns`, `agent-contracts` |
+| Planejamento/decomposição de feature | `task-decomposition-patterns`, `agent-contracts` |
+| Memória long-term de agent | `agent-memory-policy`, `agent-contracts` |
+| Revisão DevOps | `devops-agent-patterns`, `agent-contracts` |
+| Investigação de causa raiz | `code-tracing`, `agent-contracts` |

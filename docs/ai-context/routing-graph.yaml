@@ -3,7 +3,7 @@ description: >
   Grafo de roteamento declarado — fonte de verdade estrutural para o agent-router.
   Nós = agents disponíveis; arestas = condições de roteamento (keywords, sinais R-006, score threshold).
   A Decision Tree em agent-router.agent.md é documentação derivada deste arquivo.
-last_updated: "2026-09-01 (v4 — adicionado node code-knowledge-graph (RF-001/RF-002/RF-011 do REQ de grafo de conhecimento) + aresta rule-based agent-router→code-knowledge-graph + aresta interna *downstream→code-knowledge-graph para delegação sob demanda RF-002; RF-012/RNF-009 (remocao de dependency-graph-mapping) fora de escopo, nao registrados aqui)"
+last_updated: "2026-09-01 (v5 — adicionados 9 nós/arestas após validação de gaps de perfil de agents: security-reviewer, performance-agent, compliance-guardrails, feature-planner, agentic-memory-manager, devops-engineer, debugger, code-style-enforcer, refactor-executor; v4 anterior preservado)"
 
 # ─────────────────────────────────────────────
 # NÓS — agents disponíveis no catálogo
@@ -108,6 +108,42 @@ nos:
     tipo: specialist_hybrid
     descricao: "Especialista backend reativo Spring WebFlux/Reactor — perfil híbrido v2.0.0: Advisory (capacidade, resiliência, backpressure, observabilidade) E Implementação (feature/bugfix com testing-first, sem bloqueio de event-loop); retorna ao agent-router só se sair do domínio reativo"
 
+  - id: security-reviewer
+    tipo: downstream
+    descricao: "Revisão especializada de segurança de aplicação (OWASP Top 10:2025, ASVS 5.0, SCA/CVE, secrets) — read-only; distinto de agent-safety-guardrails (segurança do próprio agent de IA)"
+
+  - id: performance-agent
+    tipo: downstream
+    descricao: "Revisão especializada de performance (Core Web Vitals frontend, N+1/latência backend, otimização de query banco) — read-only"
+
+  - id: compliance-guardrails
+    tipo: downstream
+    descricao: "Avaliação de conformidade regulatória de aplicação (SOC 2, GDPR/LGPD, HIPAA, ISO 27001) — audit trails, least privilege; read-only; distinto de agent-safety-guardrails"
+
+  - id: feature-planner
+    tipo: downstream
+    descricao: "Decomposição de requisito de feature nova em subtasks executáveis com dependências e paralelização; distinto de refactor-planner (refatoração de código existente)"
+
+  - id: agentic-memory-manager
+    tipo: downstream
+    descricao: "Persistência/recuperação de memória long-term entre sessões (episódica/semântica/procedimental); memória procedimental exige aprovação humana explícita"
+
+  - id: devops-engineer
+    tipo: downstream
+    descricao: "Revisão de artefatos DevOps (Dockerfile/Kubernetes/CI-CD/IaC) por segurança/resiliência/boas práticas — read-only"
+
+  - id: debugger
+    tipo: downstream
+    descricao: "Investigação de causa raiz a partir de stack trace/log — call graph, hipótese testável; complementa bug-triage com investigação mais profunda"
+
+  - id: code-style-enforcer
+    tipo: downstream
+    descricao: "Verificação de aderência a convenções de estilo documentadas no adapter de stack; nunca bloqueador"
+
+  - id: refactor-executor
+    tipo: downstream
+    descricao: "Execução de plano de refatoração já aprovado por refactor-planner, fase a fase, com validação contra regras de negócio"
+
 # ─────────────────────────────────────────────
 # ARESTAS — condições de roteamento
 # Cada aresta define: origem, destino, sinais de ativação e threshold mínimo
@@ -174,6 +210,164 @@ arestas:
       nao_confundir_com:
         - "bug em produção"        # → bug-triage (algo já quebrou)
         - "impacto de mudar X"     # → analysis-architect (tier B1 local)
+
+  # Revisão especializada de segurança (OWASP/CVE/secrets)
+  - de: agent-router
+    para: security-reviewer
+    prioridade: 1.55
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "revisão de segurança"
+        - "security review"
+        - "owasp"
+        - "cve"
+        - "vulnerabilidade"
+        - "sql injection"
+        - "secrets no código"
+        - "sast"
+        - "sca"
+      sinal_r006: "É revisão ESPECIALIZADA de segurança de aplicação (profundidade OWASP/CVE), não apenas a dimensão genérica de code-review?"
+      nao_confundir_com:
+        - "segurança do próprio agent de IA"  # → agent-safety-guardrails (skill, não agent)
+        - "revisão geral de código"            # → code-review (dimensão genérica)
+
+  # Revisão especializada de performance (CWV/N+1/query)
+  - de: agent-router
+    para: performance-agent
+    prioridade: 1.56
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "performance"
+        - "otimização"
+        - "latência"
+        - "n+1"
+        - "core web vitals"
+        - "lcp"
+        - "inp"
+        - "query lenta"
+        - "throughput"
+      sinal_r006: "É revisão ESPECIALIZADA de performance (CWV/N+1/profiling), não apenas a dimensão genérica de code-review?"
+      nao_confundir_com:
+        - "revisão geral de código"  # → code-review (dimensão genérica)
+
+  # Avaliação de compliance/conformidade regulatória
+  - de: agent-router
+    para: compliance-guardrails
+    prioridade: 1.57
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "compliance"
+        - "auditoria"
+        - "soc 2"
+        - "gdpr"
+        - "lgpd"
+        - "hipaa"
+        - "audit trail"
+        - "least privilege"
+      sinal_r006: "É avaliação de conformidade regulatória da APLICAÇÃO (SOC 2/GDPR/HIPAA), não segurança do próprio agent de IA?"
+      nao_confundir_com:
+        - "segurança do próprio agent de IA"  # → agent-safety-guardrails (skill, não agent)
+        - "vulnerabilidade técnica explorável"  # → security-reviewer
+
+  # Decomposição de feature nova em subtasks
+  - de: agent-router
+    para: feature-planner
+    prioridade: 1.6
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "decompor tarefa"
+        - "planejar feature"
+        - "task decomposition"
+        - "plano de execução"
+        - "quebrar em subtarefas"
+      sinal_r006: "É decomposição de FEATURE NOVA (não refatoração de código existente)?"
+      nao_confundir_com:
+        - "refatoração de código existente"  # → refactor-planner
+
+  # Memória long-term de agent
+  - de: agent-router
+    para: agentic-memory-manager
+    prioridade: 1.65
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "memória de agent"
+        - "agent memory"
+        - "memória entre sessões"
+        - "memória procedimental"
+      sinal_r006: "É persistência/recuperação de memória ENTRE SESSÕES (não consolidação pontual)?"
+      nao_confundir_com:
+        - "consolidação pontual de contexto"  # → context-builder
+
+  # Revisão de artefatos DevOps
+  - de: agent-router
+    para: devops-engineer
+    prioridade: 1.7
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "revisar dockerfile"
+        - "revisar kubernetes"
+        - "revisar pipeline"
+        - "revisar ci/cd"
+        - "infrastructure as code"
+        - "terraform"
+        - "helm chart"
+
+  # Investigação de causa raiz (debugging profundo)
+  - de: agent-router
+    para: debugger
+    prioridade: 1.05
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "investigar causa raiz"
+        - "call graph"
+        - "stack trace"
+        - "root cause"
+      sinal_r006: "Exige investigação PROFUNDA de call chain/causa raiz, além da triagem inicial de bug-triage?"
+      nao_confundir_com:
+        - "bug simples/classificação inicial"  # → bug-triage
+
+  # Verificação de estilo/convenção
+  - de: agent-router
+    para: code-style-enforcer
+    prioridade: 1.58
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "estilo de código"
+        - "convenção de nomenclatura"
+        - "lint"
+        - "eslint"
+        - "checkstyle"
+
+  # Execução de plano de refatoração já aprovado
+  - de: agent-router
+    para: refactor-executor
+    prioridade: 4.05
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "executar refactor"
+        - "aplicar refatoração"
+        - "executar plano de refactor"
+      sinal_r006: "Já existe plano APROVADO de refactor-planner para executar?"
+      nao_confundir_com:
+        - "criar plano de refactor do zero"  # → refactor-planner
 
   # Elicitação e estruturação de requisitos (pré-técnico, prospectivo)
   - de: agent-router

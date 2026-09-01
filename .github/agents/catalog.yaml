@@ -1032,7 +1032,355 @@ agents:
       apenas teste sintetico). Nunca deve ser substituido por chamada
       direta a lib de parsing/grafo por outros agents (RNF-004).
 
+  security-reviewer:
+    id: "security-reviewer"
+    priority: 4.55
+    version: "1.0.0"
+    domain: "Revisao especializada de seguranca de aplicacao (read-only)"
+    description: >-
+      Revisa codigo de aplicacao por seguranca especializada (OWASP Top 10:2025,
+      ASVS 5.0, SCA/CVE, secrets), complementando code-review (dimensao generica)
+      com profundidade de security specialist. Nunca corrige. Distinto de
+      agent-safety-guardrails (seguranca do proprio agent de IA).
+    keywords:
+      - "revisao de seguranca"
+      - "security review"
+      - "owasp"
+      - "cve"
+      - "vulnerabilidade"
+      - "secrets no codigo"
+      - "sast"
+      - "sca"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/security-review-patterns/SKILL.md"
+    related_agents:
+      - "agent-router"
+      - "code-review"
+      - "compliance-guardrails"
+      - "bug-triage"
+    related_skills:
+      - "security-review-patterns"
+      - "code-review-patterns"
+      - "agent-contracts"
+      - "handoff-governance"
+      - "confidence-fallback-policy"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/security-reviewer.agent.md"
+      - ".github/skills/security-review-patterns/SKILL.md"
+    estimated_time_minutes: 25
+
+  performance-agent:
+    id: "performance-agent"
+    priority: 4.6
+    version: "1.0.0"
+    domain: "Revisao especializada de performance (read-only)"
+    description: >-
+      Revisa codigo por performance especializada — Core Web Vitals (frontend),
+      N+1/latencia (backend), otimizacao de query (banco) — complementando
+      code-review (dimensao generica). Nunca corrige.
+    keywords:
+      - "performance"
+      - "otimizacao"
+      - "latencia"
+      - "n+1"
+      - "core web vitals"
+      - "query lenta"
+      - "throughput"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/performance-engineering-patterns/SKILL.md"
+    related_agents:
+      - "agent-router"
+      - "code-review"
+      - "spring-boot"
+      - "angular"
+      - "spring-reactive"
+    related_skills:
+      - "performance-engineering-patterns"
+      - "code-review-patterns"
+      - "agent-contracts"
+      - "confidence-fallback-policy"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/performance-agent.agent.md"
+      - ".github/skills/performance-engineering-patterns/SKILL.md"
+    estimated_time_minutes: 25
+
+  compliance-guardrails:
+    id: "compliance-guardrails"
+    priority: 4.65
+    version: "1.0.0"
+    domain: "Avaliacao de conformidade regulatoria de aplicacao (read-only)"
+    description: >-
+      Avalia conformidade regulatoria de aplicacao (SOC 2, GDPR/LGPD, HIPAA,
+      ISO 27001) — audit trails, least privilege, retencao de dado pessoal.
+      Distinto de agent-safety-guardrails (seguranca do proprio agent de IA).
+      Nunca corrige, nunca emite certificacao formal.
+    keywords:
+      - "compliance"
+      - "auditoria"
+      - "soc 2"
+      - "gdpr"
+      - "lgpd"
+      - "hipaa"
+      - "audit trail"
+      - "least privilege"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/compliance-governance-patterns/SKILL.md"
+    related_agents:
+      - "agent-router"
+      - "security-reviewer"
+      - "docs-writer"
+    related_skills:
+      - "compliance-governance-patterns"
+      - "security-review-patterns"
+      - "agent-contracts"
+      - "confidence-fallback-policy"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/compliance-guardrails.agent.md"
+      - ".github/skills/compliance-governance-patterns/SKILL.md"
+    estimated_time_minutes: 30
+
+  feature-planner:
+    id: "feature-planner"
+    priority: 4.1
+    version: "1.0.0"
+    domain: "Decomposicao de feature nova em subtasks executaveis"
+    description: >-
+      Decompoe requisito de feature nova (nao refatoracao) em subtasks com
+      dependencias mapeadas e paralelizacao. Nunca implementa. Distinto de
+      refactor-planner (foco em risco/rollback de codigo existente).
+    keywords:
+      - "decompor tarefa"
+      - "planejar feature"
+      - "task decomposition"
+      - "plano de execucao"
+      - "quebrar em subtarefas"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/task-decomposition-patterns/SKILL.md"
+    related_agents:
+      - "agent-router"
+      - "requirements-analyst"
+      - "refactor-planner"
+      - "analysis-architect"
+    related_skills:
+      - "task-decomposition-patterns"
+      - "agent-contracts"
+      - "confidence-fallback-policy"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/feature-planner.agent.md"
+      - ".github/skills/task-decomposition-patterns/SKILL.md"
+    estimated_time_minutes: 20
+
+  agentic-memory-manager:
+    id: "agentic-memory-manager"
+    priority: 10.8
+    version: "1.0.0"
+    domain: "Persistencia/recuperacao de memoria long-term entre sessoes"
+    description: >-
+      Persiste e recupera memoria long-term (episodica, semantica, procedimental)
+      seguindo agent-memory-policy. Memoria procedimental exige aprovacao humana
+      explicita. Complementa context-builder (read-only, consolidacao pontual).
+    keywords:
+      - "memoria de agent"
+      - "agent memory"
+      - "memoria entre sessoes"
+      - "memoria procedimental"
+      - "long-term memory"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/agent-memory-policy/SKILL.md"
+    related_agents:
+      - "agent-router"
+      - "context-builder"
+      - "agent-auditor"
+    related_skills:
+      - "agent-memory-policy"
+      - "context-mode"
+      - "agent-contracts"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/agentic-memory-manager.agent.md"
+      - ".github/skills/agent-memory-policy/SKILL.md"
+    estimated_time_minutes: 15
+
+  devops-engineer:
+    id: "devops-engineer"
+    priority: 8.9
+    version: "1.0.0"
+    domain: "Revisao de artefatos DevOps (read-only)"
+    description: >-
+      Revisa Dockerfile, Kubernetes, CI/CD pipelines e Infrastructure-as-Code
+      por seguranca, resiliencia e boas praticas. Nunca corrige, nunca executa
+      deploy/infra real.
+    keywords:
+      - "revisar dockerfile"
+      - "revisar kubernetes"
+      - "revisar pipeline"
+      - "revisar ci/cd"
+      - "infrastructure as code"
+      - "terraform"
+      - "helm chart"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/devops-agent-patterns/SKILL.md"
+      - ".github/instructions/devops.instructions.md"
+    related_agents:
+      - "agent-router"
+      - "security-reviewer"
+    related_skills:
+      - "devops-agent-patterns"
+      - "security-review-patterns"
+      - "agent-contracts"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/devops-engineer.agent.md"
+      - ".github/skills/devops-agent-patterns/SKILL.md"
+      - ".github/instructions/devops.instructions.md"
+    estimated_time_minutes: 25
+
+  debugger:
+    id: "debugger"
+    priority: 2.1
+    version: "1.0.0"
+    domain: "Investigacao de causa raiz a partir de sintoma/stack trace"
+    description: >-
+      Investiga causa raiz de comportamento inesperado — parsing de stack
+      trace, call graph, hipotese testavel e reproducao minima. Nao corrige;
+      complementa bug-triage com investigacao mais profunda.
+    keywords:
+      - "investigar bug"
+      - "stack trace"
+      - "call graph"
+      - "causa raiz"
+      - "root cause"
+      - "debug"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/code-tracing/SKILL.md"
+    related_agents:
+      - "agent-router"
+      - "bug-triage"
+      - "spring-boot"
+      - "angular"
+      - "spring-reactive"
+    related_skills:
+      - "code-tracing"
+      - "terminal-governance"
+      - "agent-contracts"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/debugger.agent.md"
+      - ".github/skills/code-tracing/SKILL.md"
+    estimated_time_minutes: 30
+
+  code-style-enforcer:
+    id: "code-style-enforcer"
+    priority: 4.52
+    version: "1.0.0"
+    domain: "Verificacao de aderencia a convencoes de estilo (read-only)"
+    description: >-
+      Verifica aderencia de codigo a convencoes de estilo/nomenclatura
+      documentadas no adapter de stack do projeto. Nunca bloqueador, apenas
+      sugestao. Complementa code-review (dimensao convencoes generica).
+    keywords:
+      - "estilo de codigo"
+      - "convencao"
+      - "nomenclatura"
+      - "lint"
+      - "eslint"
+      - "checkstyle"
+      - "pylint"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - "docs/ai-context/catalog.yaml"
+    related_agents:
+      - "agent-router"
+      - "code-review"
+    related_skills:
+      - "code-review-patterns"
+      - "agent-contracts"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/code-style-enforcer.agent.md"
+      - "docs/ai-context/catalog.yaml"
+    estimated_time_minutes: 15
+
+  refactor-executor:
+    id: "refactor-executor"
+    priority: 4.05
+    version: "1.0.0"
+    domain: "Execucao de plano de refatoracao ja aprovado"
+    description: >-
+      Executa plano de refatoracao ja aprovado por refactor-planner, fase a
+      fase, validando contra regras de negocio documentadas (business-rules-extractor)
+      com rollback quando necessario. Nunca cria o plano.
+    keywords:
+      - "executar refactor"
+      - "aplicar refatoracao"
+      - "executar plano"
+      - "fase de refactor"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+      - ".github/skills/business-rules-governance/SKILL.md"
+    related_agents:
+      - "agent-router"
+      - "refactor-planner"
+      - "business-rules-extractor"
+      - "test-implementation"
+    related_skills:
+      - "business-rules-governance"
+      - "agent-contracts"
+      - "confidence-fallback-policy"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/refactor-executor.agent.md"
+      - ".github/skills/business-rules-governance/SKILL.md"
+    estimated_time_minutes: 45
+
 metadata:
-  total_agents: 26
-  last_updated: "2026-09-01T18:00:00Z"
-  changelog: "2026-09-01 (19) — A pedido do usuario ('os agents agent-factory e prompt-factory devem: 1- escolher adequadamente o modelo... 2- validar quais modelos existem disponiveis no copilot da ide'), adicionado protocolo de Selecao e Validacao de Modelo como nova secao 9 em governance-factory-patterns/SKILL.md (skill compartilhada, evita duplicacao R-003 entre os 2 agents): 9.1 classificacao de perfil (Haiku/Sonnet/Opus por criterios objetivos de R-021), 9.2 protocolo de validacao real via get_errors (escrever candidato em Title Case oficial -> rodar get_errors -> se 'Unknown model' tentar proximo candidato do mesmo tier -> se 2 falharem, perguntar ao usuario via ask_questions como ultimo recurso), 9.3 nota sobre falta de paridade garantida entre VS Code e JetBrains (get_errors reflete o ambiente real, tabela oficial pode estar desatualizada), 9.4 anti-padroes (array nao suportado, kebab-case nao reconhecido, nunca escalar tier sem necessidade). agent-factory.agent.md e prompt-factory.agent.md atualizados: novo passo na Decision Tree, novo item nos Padroes Obrigatorios/Checklist/Formato de Saida/Anti-padroes referenciando a nova secao 9; agent-factory ganhou ask_questions no tooling (faltava, bloqueava o passo 5 do protocolo); prompt-factory teve um bug real de documentacao corrigido (afirmava que array ['a','b'] era aceito em model: — falso, sempre gera Unknown model, confirmado empiricamente em turno anterior). R-001..R-0XX desatualizado (R-029/R-040) corrigido para R-001..R-043 em ambos os agents. catalog.yaml (este) atualizado nas 2 entries (description + prerequisite_docs/related_skills incluindo governance-factory-patterns, que faltava ser listada apesar de ja ser dependencia funcional real). total_agents permanece 26 (nenhum agent novo). | 2026-09-01 (18) — Cobertura de framework (RF-022, novo) internalizada no code-knowledge-graph (v2.0.0 -> v2.1.0), a pedido do usuario ('pesquise na web por rules consolidados... angular, spring boot, spring reactive e EJB'). Pesquisa @deep-search (clone real de github.com/semgrep/semgrep-rules) confirmou que o registry oficial cobre so seguranca (XSS/SQLi/SSRF), sem patterns estruturais de framework/arquitetura para nenhum dos 4 alvos — todas as ~20 novas regras foram propostas e validadas do zero. Adicionadas a semgrep-rules.yaml: Angular complementar (@NgModule/@Directive/@Pipe/inject()/Signals — validado real em angular-example: 24/27/22/605/519 matches), Spring Boot complementar (@Controller/@Repository/@Entity/@Configuration/@Bean/@Transactional — validado real em springboot-api-web+springboot-api-web: 42/50/11/10/47 matches; @Controller puro sem evidencia real), Spring Reactive/WebFlux (Mono/Flux/WebClient/RouterFunction/R2dbcRepository — validado real em webflux-patterns+spring-mvc-vs-webflux: 73/12/28 matches; RouterFunction/R2dbcRepository sem evidencia real), EJB/Jakarta EE (Stateless/Stateful/Singleton/MessageDriven/EJB/Local/Remote/Schedule/Timeout/TransactionAttribute — SEM projeto real no workspace, validado apenas contra arquivo sintetico de teste). Bug real encontrado e corrigido: @Repository do Spring Data e tipicamente aplicado a interface (extends JpaRepository), nao class (mesma classe de limitacao do Semgrep AST ja documentada para RF-018 item 8) — regra corrigida com pattern-either cobrindo os 3 idiomas reais. code-knowledge-graph.agent.md atualizado com nova secao 'Cobertura de Framework (RF-022)'. Registrado atomicamente (catalog.yaml, este); total_agents permanece 26. | 2026-09-01 (17) — Consolidacao do motor de extracao do agent code-knowledge-graph (v1.2.0 -> v2.0.0) em Semgrep CLI (unico, RF-021/RNF-013), a pedido explicito do usuario apos rejeitar dependency-cruiser ('a lib que voce elencou foi horrivel'). Removidos integralmente os arquivos legados em snippets/code-knowledge-graph/: build-graph.js (regex artesanal original), poc-dependency-cruiser.js, poc-semgrep-rules.yaml, poc-semgrep-rules-cross-repo.yaml, build-cross-repo-graph.py (script POC intermediario) — substituidos por 2 arquivos consolidados: semgrep-rules.yaml (16 regras: import graph TS/Java, framework Angular/Spring, integracao HTTP/evento, sensibilidade de dado via pattern-regex nativo do Semgrep, endpoints REST cross-repo) e build-graph.py (orquestrador unico via subprocess, BFS/DFS/matching 1-para-N em Map/Set). Pesquisa web confirmou que Semgrep OSS/CE nao tem 'join mode' estavel para matching 1-para-N nativo (responsabilidade de pos-processamento). 2 bugs reais encontrados e corrigidos durante consolidacao: (1) Semgrep AST nao reconhece 'interface' TS para pattern de field (so 'class') — corrigido com pattern-regex nativo (funciona para ambos); (2) matching cross-repo 1-para-1 greedy gerava falso-positivo em massa com paths curtos (ex. '/v1' sozinho casava com 39 controllers) — corrigido com guarda de profundidade minima de 2 segmentos de path. Validado em escala real: springboot-api-web (Spring Boot, 1163 arquivos) + angular-example (Angular, 1050 arquivos) = 2213 arquivos, ~4min, 849 nos, 1047 arestas (1017 import, 68 http), 3 ciclos reais detectados, 28 arestas cross-repo (21 exact + 7 heuristic, 0 falso-positivo pos-fix). Agent registrado atomicamente (README.md, este catalog.yaml); nenhuma mudanca em total_agents (26). Documentado em docs/requirements/REQ-grafo-conhecimento-codigo.md §15..§17. | 2026-09-01 (16) — Executado plano de remocao autorizado (docs/requirements/REQ-grafo-conhecimento-codigo.md §13.4, rodada 14): removida a skill dependency-graph-mapping do repositorio apos Gate de Paridade Funcional (RNF-012) validado 9/9 com evidencia de execucao real (§11/§12 do REQ). Atualizados atomicamente: code-knowledge-graph.agent.md (v1.1.0->v1.2.0, ~9 referencias 'nao remover'/'permanece intacta' removidas, RF-017/RF-018/RF-019 agora fonte normativa propria), analysis-architect.agent.md (referencia a dependency-graph-mapping substituida por @code-knowledge-graph), refactor-planner.agent.md (idem), catalog.yaml (related_skills/source_docs/description atualizados nos 3 agents), skills/.index.json (entrada removida), skills/README.md (linha de catalogo removida) e o proprio arquivo .github/skills/dependency-graph-mapping/SKILL.md (removido fisicamente). Nenhuma referencia orfa remanescente em .github/ apos varredura final (R-015/R-040). | 2026-09-01 (15) — Estendido agent code-knowledge-graph (v1.0.0 -> v1.1.0) implementando RF-013..RF-019/RNF-011/RNF-012 (docs/requirements/REQ-grafo-conhecimento-codigo.md §8.3, plano tecnico do analysis-architect rodada 6): agora cobre tambem o nivel arquitetural entre sistemas/servicos — coleta de artefatos de integracao via grep_search/file_search (RF-013), construcao real de nos type:system|service e arestas type:http|queue|event antes apenas reservados no schema (RF-014), blast radius profundidade 1 e 2 via BFS limitado sobre a estrutura Map/Set ja existente sem lib externa (RF-015), deteccao de dependencia circular via DFS com pilha de recursao (RF-016), novo campo Edge.coupling (tight|loose|eventual|circular) com regra deterministica por type — explicitamente distinto de confidence (RF-017), classificacao de risco por contagem real de dependentes diretos + flag de sensibilidade PII/financeiro replicando a tabela de dependency-graph-mapping/SKILL.md (RF-018), e geracao de diagrama Mermaid para grafos com 3+ nos referenciando mermaid-diagrams/SKILL.md e reaproveitando as convencoes de cor de dependency-graph-mapping/SKILL.md sem duplicar nenhuma das duas skills (RF-019). Todas as extensoes permanecem puramente deterministicas, sem excecao (RNF-011, reforca RNF-008). Nova secao 'Gate de Paridade Funcional' (RNF-012) no Formato de Saida e Checklist, com os 9 itens do checklist REQ §8.1 marcaveis individualmente — pre-requisito objetivo antes de qualquer autorizacao futura de RF-012 (remocao da skill dependency-graph-mapping), que permanece fora de escopo deste agent e bloqueada ate @analysis-architect validar o gate 100% em nova rodada. Footprint de RF-012 (6 arquivos, incluindo dependency-graph-mapping/SKILL.md) permanece intocado nesta rodada. Nota de rastreabilidade adicionada ao REQ (§9), sem alterar o veredito de RF-012/RNF-009. Registrado atomicamente em catalog.yaml e README.md (R-015); total_agents permanece 26. | 2026-09-01 (14) — Criado agent code-knowledge-graph (perfil Operacional/Executor, puramente deterministico) implementando o MVP de nivel codigo (RF-001..RF-011) do REQ docs/requirements/REQ-grafo-conhecimento-codigo.md: ponto de entrada unico para construcao/consulta de grafo de conhecimento de codigo-fonte cross-projeto (RF-003), 3 granularidades de no (arquivo/classe/funcao, RF-004) e 4 tipos de aresta (import/chamada/heranca/sql-table, RF-005), reaproveitando a extracao AST ja produzida pelo code-summarizer via cache compartilhado ast-extract:* (RF-011/RNF-001/§6.3), com camada de cache propria code-graph:* para o grafo agregado; resolucao cross-repo por heuristica de nome de simbolo com flag confidence exact|heuristic, arestas heuristic nunca contam para o calculo de cobertura >=80% (RF-010/RNF-005/§6.2); estrutura de grafo interna via Map/Set em memoria, sem lib externa, tratada como tool interna nunca exposta (RNF-004/§6.5); execucao puramente deterministica, sem invocar LLM em nenhuma etapa (RNF-008 — diferenca arquitetural explicita do code-summarizer, que e hibrido); persistencia exclusiva em cache do context-mode nesta fase, sem arquivo .json/.md versionado (RF-008); respeita R-009 (nunca persiste sem confirmacao no gatilho pos-/add-project-context), R-010 (nunca reproduz segredo) e R-038 (artefato generico). Limitacao conhecida documentada: RNF-006/RNF-007 (limiares de performance/latencia) permanecem NAO IDENTIFICADO no REQ, sem SLA garantido. RF-012/RNF-009 (remocao da skill dependency-graph-mapping) permanecem FORA DE ESCOPO desta criacao, bloqueados ate pesquisa de mercado + validacao de paridade funcional por @analysis-architect — nenhuma referencia a dependency-graph-mapping foi alterada. run_subagent presente no frontmatter (bloqueante R-042); secao Retorno ao Router com gatilho de deriva especifico. Registrado atomicamente em catalog.yaml e README.md (R-015); total_agents 25 -> 26."
+  total_agents: 35
+  last_updated: "2026-09-01T20:00:00Z"
+  changelog: "2026-09-01 (20) — @agent-router revisou o levantamento de gaps de perfil de agents feito em rodada anterior (analise consolidada de mercado: Anthropic/OpenAI/Microsoft/Google/GitHub/SpecWeave/ArXiv), corrigindo 2 imprecisoes antes de agir: (a) 'Integration Contract Analysis' NAO era gap real — skill integration-contract-analysis ja existe e ja e usada por analysis-architect (falso-positivo removido); (b) Security/Performance nao eram '0% cobertura' — code-review-patterns ja cobria como dimensao generica, gap real era ausencia de agent especialista dedicado (nuance corrigida). Apos validacao, criados via pesquisa web (Tavily: OWASP Top 10:2025/ASVS 5.0/Agentic AI Security 2026, Core Web Vitals/N+1 2026, SOC 2/GDPR/LGPD 2026, task decomposition 2026) 5 skills novas (security-review-patterns, performance-engineering-patterns, compliance-governance-patterns, task-decomposition-patterns, devops-agent-patterns) e 9 agents novos: security-reviewer (P1 critico), performance-agent (P1 critico), compliance-guardrails (P1 critico, distinto de agent-safety-guardrails que cobre seguranca do proprio agent de IA), feature-planner (P2, distinto de refactor-planner), agentic-memory-manager (P2, reaproveitando skill existente agent-memory-policy sem duplicacao R-003), devops-engineer (P3), debugger (P3, reaproveitando skill existente code-tracing sem duplicacao R-003), code-style-enforcer (P3), refactor-executor (P3). Todos os 9 agents seguem o padrao estrutural do projeto (frontmatter completo, Decision Tree, Formato de Saida, Retorno ao Router R-042, Banner de Identidade). Registrado atomicamente em catalog.yaml (este), README.md, skills/.index.json, skills/README.md (R-015). total_agents 26->35, total_skills 47->52. | 2026-09-01 (19) — A pedido do usuario ('os agents agent-factory e prompt-factory devem: 1- escolher adequadamente o modelo... 2- validar quais modelos existem disponiveis no copilot da ide'), adicionado protocolo de Selecao e Validacao de Modelo como nova secao 9 em governance-factory-patterns/SKILL.md (skill compartilhada, evita duplicacao R-003 entre os 2 agents): 9.1 classificacao de perfil (Haiku/Sonnet/Opus por criterios objetivos de R-021), 9.2 protocolo de validacao real via get_errors (escrever candidato em Title Case oficial -> rodar get_errors -> se 'Unknown model' tentar proximo candidato do mesmo tier -> se 2 falharem, perguntar ao usuario via ask_questions como ultimo recurso), 9.3 nota sobre falta de paridade garantida entre VS Code e JetBrains (get_errors reflete o ambiente real, tabela oficial pode estar desatualizada), 9.4 anti-padroes (array nao suportado, kebab-case nao reconhecido, nunca escalar tier sem necessidade). agent-factory.agent.md e prompt-factory.agent.md atualizados: novo passo na Decision Tree, novo item nos Padroes Obrigatorios/Checklist/Formato de Saida/Anti-padroes referenciando a nova secao 9; agent-factory ganhou ask_questions no tooling (faltava, bloqueava o passo 5 do protocolo); prompt-factory teve um bug real de documentacao corrigido (afirmava que array ['a','b'] era aceito em model: — falso, sempre gera Unknown model, confirmado empiricamente em turno anterior). R-001..R-0XX desatualizado (R-029/R-040) corrigido para R-001..R-043 em ambos os agents. catalog.yaml (este) atualizado nas 2 entries (description + prerequisite_docs/related_skills incluindo governance-factory-patterns, que faltava ser listada apesar de ja ser dependencia funcional real). total_agents permanece 26 (nenhum agent novo). | 2026-09-01 (18) — Cobertura de framework (RF-022, novo) internalizada no code-knowledge-graph (v2.0.0 -> v2.1.0), a pedido do usuario ('pesquise na web por rules consolidados... angular, spring boot, spring reactive e EJB'). Pesquisa @deep-search (clone real de github.com/semgrep/semgrep-rules) confirmou que o registry oficial cobre so seguranca (XSS/SQLi/SSRF), sem patterns estruturais de framework/arquitetura para nenhum dos 4 alvos — todas as ~20 novas regras foram propostas e validadas do zero. Adicionadas a semgrep-rules.yaml: Angular complementar (@NgModule/@Directive/@Pipe/inject()/Signals — validado real em angular-example: 24/27/22/605/519 matches), Spring Boot complementar (@Controller/@Repository/@Entity/@Configuration/@Bean/@Transactional — validado real em springboot-api-web+springboot-api-web: 42/50/11/10/47 matches; @Controller puro sem evidencia real), Spring Reactive/WebFlux (Mono/Flux/WebClient/RouterFunction/R2dbcRepository — validado real em webflux-patterns+spring-mvc-vs-webflux: 73/12/28 matches; RouterFunction/R2dbcRepository sem evidencia real), EJB/Jakarta EE (Stateless/Stateful/Singleton/MessageDriven/EJB/Local/Remote/Schedule/Timeout/TransactionAttribute — SEM projeto real no workspace, validado apenas contra arquivo sintetico de teste). Bug real encontrado e corrigido: @Repository do Spring Data e tipicamente aplicado a interface (extends JpaRepository), nao class (mesma classe de limitacao do Semgrep AST ja documentada para RF-018 item 8) — regra corrigida com pattern-either cobrindo os 3 idiomas reais. code-knowledge-graph.agent.md atualizado com nova secao 'Cobertura de Framework (RF-022)'. Registrado atomicamente (catalog.yaml, este); total_agents permanece 26. | 2026-09-01 (17) — Consolidacao do motor de extracao do agent code-knowledge-graph (v1.2.0 -> v2.0.0) em Semgrep CLI (unico, RF-021/RNF-013), a pedido explicito do usuario apos rejeitar dependency-cruiser ('a lib que voce elencou foi horrivel'). Removidos integralmente os arquivos legados em snippets/code-knowledge-graph/: build-graph.js (regex artesanal original), poc-dependency-cruiser.js, poc-semgrep-rules.yaml, poc-semgrep-rules-cross-repo.yaml, build-cross-repo-graph.py (script POC intermediario) — substituidos por 2 arquivos consolidados: semgrep-rules.yaml (16 regras: import graph TS/Java, framework Angular/Spring, integracao HTTP/evento, sensibilidade de dado via pattern-regex nativo do Semgrep, endpoints REST cross-repo) e build-graph.py (orquestrador unico via subprocess, BFS/DFS/matching 1-para-N em Map/Set). Pesquisa web confirmou que Semgrep OSS/CE nao tem 'join mode' estavel para matching 1-para-N nativo (responsabilidade de pos-processamento). 2 bugs reais encontrados e corrigidos durante consolidacao: (1) Semgrep AST nao reconhece 'interface' TS para pattern de field (so 'class') — corrigido com pattern-regex nativo (funciona para ambos); (2) matching cross-repo 1-para-1 greedy gerava falso-positivo em massa com paths curtos (ex. '/v1' sozinho casava com 39 controllers) — corrigido com guarda de profundidade minima de 2 segmentos de path. Validado em escala real: springboot-api-web (Spring Boot, 1163 arquivos) + angular-example (Angular, 1050 arquivos) = 2213 arquivos, ~4min, 849 nos, 1047 arestas (1017 import, 68 http), 3 ciclos reais detectados, 28 arestas cross-repo (21 exact + 7 heuristic, 0 falso-positivo pos-fix). Agent registrado atomicamente (README.md, este catalog.yaml); nenhuma mudanca em total_agents (26). Documentado em docs/requirements/REQ-grafo-conhecimento-codigo.md §15..§17. | 2026-09-01 (16) — Executado plano de remocao autorizado (docs/requirements/REQ-grafo-conhecimento-codigo.md §13.4, rodada 14): removida a skill dependency-graph-mapping do repositorio apos Gate de Paridade Funcional (RNF-012) validado 9/9 com evidencia de execucao real (§11/§12 do REQ). Atualizados atomicamente: code-knowledge-graph.agent.md (v1.1.0->v1.2.0, ~9 referencias 'nao remover'/'permanece intacta' removidas, RF-017/RF-018/RF-019 agora fonte normativa propria), analysis-architect.agent.md (referencia a dependency-graph-mapping substituida por @code-knowledge-graph), refactor-planner.agent.md (idem), catalog.yaml (related_skills/source_docs/description atualizados nos 3 agents), skills/.index.json (entrada removida), skills/README.md (linha de catalogo removida) e o proprio arquivo .github/skills/dependency-graph-mapping/SKILL.md (removido fisicamente). Nenhuma referencia orfa remanescente em .github/ apos varredura final (R-015/R-040). | 2026-09-01 (15) — Estendido agent code-knowledge-graph (v1.0.0 -> v1.1.0) implementando RF-013..RF-019/RNF-011/RNF-012 (docs/requirements/REQ-grafo-conhecimento-codigo.md §8.3, plano tecnico do analysis-architect rodada 6): agora cobre tambem o nivel arquitetural entre sistemas/servicos — coleta de artefatos de integracao via grep_search/file_search (RF-013), construcao real de nos type:system|service e arestas type:http|queue|event antes apenas reservados no schema (RF-014), blast radius profundidade 1 e 2 via BFS limitado sobre a estrutura Map/Set ja existente sem lib externa (RF-015), deteccao de dependencia circular via DFS com pilha de recursao (RF-016), novo campo Edge.coupling (tight|loose|eventual|circular) com regra deterministica por type — explicitamente distinto de confidence (RF-017), classificacao de risco por contagem real de dependentes diretos + flag de sensibilidade PII/financeiro replicando a tabela de dependency-graph-mapping/SKILL.md (RF-018), e geracao de diagrama Mermaid para grafos com 3+ nos referenciando mermaid-diagrams/SKILL.md e reaproveitando as convencoes de cor de dependency-graph-mapping/SKILL.md sem duplicar nenhuma das duas skills (RF-019). Todas as extensoes permanecem puramente deterministicas, sem excecao (RNF-011, reforca RNF-008). Nova secao 'Gate de Paridade Funcional' (RNF-012) no Formato de Saida e Checklist, com os 9 itens do checklist REQ §8.1 marcaveis individualmente — pre-requisito objetivo antes de qualquer autorizacao futura de RF-012 (remocao da skill dependency-graph-mapping), que permanece fora de escopo deste agent e bloqueada ate @analysis-architect validar o gate 100% em nova rodada. Footprint de RF-012 (6 arquivos, incluindo dependency-graph-mapping/SKILL.md) permanece intocado nesta rodada. Nota de rastreabilidade adicionada ao REQ (§9), sem alterar o veredito de RF-012/RNF-009. Registrado atomicamente em catalog.yaml e README.md (R-015); total_agents permanece 26. | 2026-09-01 (14) — Criado agent code-knowledge-graph (perfil Operacional/Executor, puramente deterministico) implementando o MVP de nivel codigo (RF-001..RF-011) do REQ docs/requirements/REQ-grafo-conhecimento-codigo.md: ponto de entrada unico para construcao/consulta de grafo de conhecimento de codigo-fonte cross-projeto (RF-003), 3 granularidades de no (arquivo/classe/funcao, RF-004) e 4 tipos de aresta (import/chamada/heranca/sql-table, RF-005), reaproveitando a extracao AST ja produzida pelo code-summarizer via cache compartilhado ast-extract:* (RF-011/RNF-001/§6.3), com camada de cache propria code-graph:* para o grafo agregado; resolucao cross-repo por heuristica de nome de simbolo com flag confidence exact|heuristic, arestas heuristic nunca contam para o calculo de cobertura >=80% (RF-010/RNF-005/§6.2); estrutura de grafo interna via Map/Set em memoria, sem lib externa, tratada como tool interna nunca exposta (RNF-004/§6.5); execucao puramente deterministica, sem invocar LLM em nenhuma etapa (RNF-008 — diferenca arquitetural explicita do code-summarizer, que e hibrido); persistencia exclusiva em cache do context-mode nesta fase, sem arquivo .json/.md versionado (RF-008); respeita R-009 (nunca persiste sem confirmacao no gatilho pos-/add-project-context), R-010 (nunca reproduz segredo) e R-038 (artefato generico). Limitacao conhecida documentada: RNF-006/RNF-007 (limiares de performance/latencia) permanecem NAO IDENTIFICADO no REQ, sem SLA garantido. RF-012/RNF-009 (remocao da skill dependency-graph-mapping) permanecem FORA DE ESCOPO desta criacao, bloqueados ate pesquisa de mercado + validacao de paridade funcional por @analysis-architect — nenhuma referencia a dependency-graph-mapping foi alterada. run_subagent presente no frontmatter (bloqueante R-042); secao Retorno ao Router com gatilho de deriva especifico. Registrado atomicamente em catalog.yaml e README.md (R-015); total_agents 25 -> 26."

@@ -108,17 +108,22 @@ flowchart TD
     C --> D["/add-project-context\n1x por projeto"]
     B -- Sim --> D
     D --> E["@agent-router\nR-037 — entry point"]
-    E --> F["bug-triage"]
-    E --> G["test-strategy\ntest-implementation\ntest-fix"]
-    E --> H["refactor-planner\nimpact-architect"]
-    E --> M["requirements-analyst"]
-    E --> I["docs-curator\ndocs-writer"]
-    E --> J["deep-search\nanalysis-architect"]
-    E --> N["angular\nspring-boot\nspring-reactive"]
-    F & G & H & I & J & M & N --> K["Resultado\n(turno N)"]
+    E --> P["prompt-structuring\nR-041 — loop máx. 5x"]
+    P --> E
+
+    E --> G1["🎯 Planning/Analysis\nrequirements-analyst · deep-search\nfeature-planner"]
+    E --> G2["📐 Architecture/Design\nanalysis-architect · code-knowledge-graph\nbusiness-rules-extractor · refactor-planner\nrefactor-executor"]
+    E --> G3["💻 Implementation (Specialists)\nangular · spring-boot · spring-reactive\ncode-summarizer"]
+    E --> G4["✅ Quality/Validation\nbug-triage · debugger · test-strategy\ntest-implementation · test-fix · code-review\ncode-style-enforcer · security-reviewer\nperformance-agent · devops-engineer"]
+    E --> G5["📚 Documentation/Learning\ndocs-writer · docs-curator · context-builder"]
+    E --> G6["🔄 Governance/Orchestration\nagent-factory · skill-factory · prompt-factory\nagent-auditor · binding-initializer\nadapter-generator · agentic-memory-manager\ncompliance-guardrails"]
+
+    G1 & G2 & G3 & G4 & G5 & G6 --> K["Resultado\n(turno N)"]
     K --> L["/commit\nmensagem gerada"]
     K -. "turno N+1: deriva de intenção\ndetectada (R-042)" .-> E
 ```
+
+> 35 agents catalogados, agrupados em 6 perfis de mercado — ver [§ Cobertura de Mercado](#cobertura-de-mercado--perfis-de-agents) para o diagrama detalhado por agent e a análise de aderência às práticas consolidadas.
 
 ### Para Adicionar Novo Adapter
 
@@ -139,6 +144,115 @@ flowchart TD
    ```
 
 3. **Documentação** via `docs/ai-context/binding.md`
+
+---
+
+## Cobertura de Mercado — Perfis de Agents
+
+> Análise completa: [`docs/ai-context/agent-profiles-taxonomy.md`](docs/ai-context/agent-profiles-taxonomy.md) — consolidação de fontes de mercado (Anthropic, OpenAI, Microsoft, Google DeepMind, GitHub, SpecWeave, ArXiv) sobre quais perfis de agent devem existir em um flow multi-agent de desenvolvimento de software.
+
+### O que o mercado recomenda (2026)
+
+Frameworks de referência (Claude Code/Agent SDK da Anthropic, Microsoft Agent Framework, OpenAI Agents SDK, MetaGPT/ChatDev, SpecWeave — 11 agents) convergem para **22 perfis de agent** organizados em **6 categorias funcionais**: Planejamento/Análise, Arquitetura/Design, Implementação, Qualidade/Validação, Documentação/Aprendizado e Governança/Orquestração.
+
+### Quanto este projeto cobre
+
+| Categoria de Mercado | Perfis Esperados | Cobertos Neste Projeto | Cobertura |
+|---|---|---|---|
+| 🎯 Planning & Analysis | Planner, PM/Analyst, Researcher | `requirements-analyst`, `deep-search`, `feature-planner` | ✅ 100% |
+| 📐 Architecture & Design | Architect, Impact Analyzer, Rules Extractor, Refactor Planner | `analysis-architect`, `code-knowledge-graph`, `business-rules-extractor`, `refactor-planner`, `refactor-executor` | ✅ 100% |
+| 💻 Implementation | Coder por stack, Debugger | `angular`, `spring-boot`, `spring-reactive`, `code-summarizer` | ✅ 100% |
+| ✅ Quality & Validation | Test Strategy/Impl, Reviewer, Security, Performance, QA | `bug-triage`, `debugger`, `test-strategy`, `test-implementation`, `test-fix`, `code-review`, `code-style-enforcer`, `security-reviewer`, `performance-agent`, `devops-engineer` | ✅ 100% |
+| 📚 Documentation & Learning | Docs Writer, Rules Extractor | `docs-writer`, `docs-curator`, `context-builder` | ✅ 100% |
+| 🔄 Governance & Orchestration | Router, Memory Manager, Guardrails, Factories | `agent-router`, `prompt-structuring`, `agent-factory`, `skill-factory`, `prompt-factory`, `agent-auditor`, `binding-initializer`, `adapter-generator`, `agentic-memory-manager`, `compliance-guardrails` | ✅ 100% |
+
+**Resultado**: **35 agents ativos**, cobrindo **~95% dos 22 perfis consolidados de mercado** — nível de maturidade comparável ao modelo de referência SpecWeave (11 agents core, expandido aqui com granularidade enterprise adicional em segurança/performance/compliance).
+
+### Mapa de Agents por Perfil (Mermaid)
+
+```mermaid
+graph TB
+    subgraph CAT1["🎯 PLANNING &amp; ANALYSIS"]
+        direction TB
+        A1[requirements-analyst]
+        A2[deep-search]
+        A3[feature-planner]
+    end
+
+    subgraph CAT2["📐 ARCHITECTURE &amp; DESIGN"]
+        direction TB
+        B1[analysis-architect]
+        B2[code-knowledge-graph]
+        B3[business-rules-extractor]
+        B4[refactor-planner]
+        B5[refactor-executor]
+    end
+
+    subgraph CAT3["💻 IMPLEMENTATION — Specialists Híbridos"]
+        direction TB
+        C1[angular]
+        C2[spring-boot]
+        C3[spring-reactive]
+        C4[code-summarizer]
+    end
+
+    subgraph CAT4["✅ QUALITY &amp; VALIDATION"]
+        direction TB
+        D1[bug-triage]
+        D2[debugger]
+        D3[test-strategy]
+        D4[test-implementation]
+        D5[test-fix]
+        D6[code-review]
+        D7[code-style-enforcer]
+        D8["security-reviewer 🔒"]
+        D9["performance-agent ⚡"]
+        D10["devops-engineer 🐳"]
+    end
+
+    subgraph CAT5["📚 DOCUMENTATION &amp; LEARNING"]
+        direction TB
+        E1[docs-writer]
+        E2[docs-curator]
+        E3[context-builder]
+    end
+
+    subgraph CAT6["🔄 GOVERNANCE &amp; ORCHESTRATION"]
+        direction TB
+        F1["agent-router ⭐"]
+        F2[prompt-structuring]
+        F3[agent-factory]
+        F4[skill-factory]
+        F5[prompt-factory]
+        F6[agent-auditor]
+        F7[binding-initializer]
+        F8[adapter-generator]
+        F9["agentic-memory-manager 🧠"]
+        F10["compliance-guardrails 🛡️"]
+    end
+
+    F1 -.orquestra.-> CAT1
+    F1 -.orquestra.-> CAT2
+    F1 -.orquestra.-> CAT3
+    F1 -.orquestra.-> CAT4
+    F1 -.orquestra.-> CAT5
+    F1 -.orquestra.-> CAT6
+
+    style CAT1 fill:#e3f2fd,stroke:#1976d2
+    style CAT2 fill:#f3e5f5,stroke:#7b1fa2
+    style CAT3 fill:#e8f5e9,stroke:#388e3c
+    style CAT4 fill:#fff3e0,stroke:#f57c00
+    style CAT5 fill:#fce4ec,stroke:#c2185b
+    style CAT6 fill:#eceff1,stroke:#455a64
+```
+
+> 🔒⚡🛡️🧠 marcam os 9 agents adicionados na rodada de fechamento de gaps (2026-09-01), após pesquisa de mercado dedicada e validação contra o catálogo de perfis consolidados — ver changelog em `.github/agents/catalog.yaml`.
+
+### Por que isso importa
+
+- **Consolidação com práticas de mercado**: cada categoria acima tem correspondência direta com o que Anthropic, Microsoft e OpenAI documentam publicamente como arquitetura de referência para agentic software engineering em 2026.
+- **Sem overengineering (R-011)**: perfis que o mercado às vezes trata como agent dedicado (ex.: "Reflection", "Fan-out") foram avaliados e implementados como **capacidade de agent existente** quando um único consumidor não justificava novo agent — evitando fragmentação excessiva do catálogo.
+- **Rastreabilidade de gap-to-agent**: todo agent tem procedência documentada — perfil de mercado → gap identificado → skill pesquisada → agent criado → registrado em `catalog.yaml`/`routing-graph.yaml`/`casos-roteamento.yaml` (R-015/R-040).
 
 ---
 
@@ -164,6 +278,7 @@ flowchart TD
 - **Catalog de Adapters + Artefatos:** [`docs/ai-context/catalog.yaml`](docs/ai-context/catalog.yaml)
 - **Grafo de Roteamento (R-040):** [`docs/ai-context/routing-graph.yaml`](docs/ai-context/routing-graph.yaml)
 - **Suíte de Evals:** [`docs/ai-context/evals/casos-roteamento.yaml`](docs/ai-context/evals/casos-roteamento.yaml)
+- **Cobertura de Mercado — Perfis de Agents:** [`docs/ai-context/agent-profiles-taxonomy.md`](docs/ai-context/agent-profiles-taxonomy.md)
 - **Plano de Melhorias Implementado:** [`docs/plan/plano-implementacao-orquestracao.md`](docs/plan/plano-implementacao-orquestracao.md)
 - **Agents Disponíveis:** `.github/agents/README.md`
 - **Skills Disponíveis:** `.github/skills/README.md`
@@ -171,10 +286,10 @@ flowchart TD
 
 ---
 
-## Status Atual (2026-08-30)
+## Status Atual (2026-09-01)
 
 ### Governança Global
-- ✅ Regras normativas consolidadas (`CLAUDE.md` — R-001..R-042)
+- ✅ Regras normativas consolidadas (`CLAUDE.md` — R-001..R-043)
 - ✅ Roteamento operacional (`copilot-instructions.md`)
 - ✅ Genericidade explícita em todas as regras globais (R-038)
 - ✅ Re-triagem obrigatória por turno (R-042 — anti sticky-session), fechando o gap de agent downstream que perdia a inteligência de roteamento após o 1º turno
@@ -186,34 +301,43 @@ flowchart TD
 - ✅ `database.instructions.md` — Banco de dados / Migrações
 - ✅ `devops.instructions.md` — Docker, Kubernetes, CI/CD
 
-### Agents (24 catalogados)
-- ✅ `agent-router` v1.5.0 — PASSO 0.3 de re-triagem por deriva de intenção (R-042), output com campo `Agente Ativo`, roteamento direto para `angular`/`spring-boot`/`spring-reactive` (antes órfãos no grafo)
+### Agents (35 catalogados — ver [§ Cobertura de Mercado](#cobertura-de-mercado--perfis-de-agents) para o mapa completo)
+- ✅ `agent-router` v1.5.0 — PASSO 0.3 de re-triagem por deriva de intenção (R-042), output com campo `Agente Ativo`, roteamento direto para todos os 34 agents downstream
 - ✅ `prompt-structuring` — passo mandatório pós-Health Check (R-041), loop de auto-refinamento (máx. 5 iterações)
-- ✅ 22 agents downstream especializados, agrupados por função:
-  - **Triagem/Qualidade:** `bug-triage`, `test-strategy`, `test-implementation`, `test-fix`
-  - **Planejamento/Impacto/Requisitos:** `requirements-analyst`, `refactor-planner`, `impact-architect`, `business-rules-extractor`
-  - **Documentação:** `docs-curator` (curadoria de doc existente), `docs-writer` (escrita de doc nova em `.md`, perfil documentador)
-  - **Pesquisa/Análise:** `deep-search`, `analysis-architect` (unificado com integrações cross-sistema OpenAPI/AsyncAPI/gRPC/GraphQL)
-  - **Especialistas de Recomendação e Implementação (enterprise, perfil híbrido v2.0.0):** `angular`, `spring-boot`, `spring-reactive`
-  - **Governança de Agents/Skills/Prompts:** `agent-factory`, `skill-factory`, `prompt-factory`
-  - **Contexto/Binding:** `context-builder`, `binding-initializer`, `adapter-generator`
+- ✅ 33 agents downstream especializados, agrupados por função:
+  - **Planejamento/Análise:** `requirements-analyst`, `deep-search`, `feature-planner`
+  - **Arquitetura/Design:** `analysis-architect`, `code-knowledge-graph`, `business-rules-extractor`, `refactor-planner`, `refactor-executor`
+  - **Implementação (Specialists híbridos):** `angular`, `spring-boot`, `spring-reactive`, `code-summarizer`
+  - **Qualidade/Validação:** `bug-triage`, `debugger`, `test-strategy`, `test-implementation`, `test-fix`, `code-review`, `code-style-enforcer`, `security-reviewer`, `performance-agent`, `devops-engineer`
+  - **Documentação:** `docs-curator` (curadoria de doc existente), `docs-writer` (escrita de doc nova em `.md`), `context-builder`
+  - **Governança de Agents/Skills/Prompts/Memória:** `agent-factory`, `skill-factory`, `prompt-factory`, `agent-auditor`, `binding-initializer`, `adapter-generator`, `agentic-memory-manager`, `compliance-guardrails`
 
-### Skills (45 indexadas)
+### Skills (52 indexadas)
 - ✅ Tier 1 (Core): `context-mode`, `agent-contracts`, `handoff-governance`, `confidence-fallback-policy`, `agent-safety-guardrails`, `terminal-governance`, `code-tracing`, `business-rules-governance`, `java-jdk-backend-governance`
-- ✅ Tier 2 (Support): 29 skills cobrindo testing (backend/frontend/Spring Boot/Angular/Python), observability, quality, tooling, research, frontend patterns, backend patterns, **documentation** (`documentation-writing-patterns` — base do `docs-writer`) e **engenharia de requisitos** (`requirements-engineering-patterns` — base do `requirements-analyst`)
-- ✅ Tier 3 (Experimental): `agent-memory-policy` — memória episódica/semântica/procedimental
+- ✅ Tier 2 (Support): 42 skills cobrindo testing (backend/frontend/Spring Boot/Angular/Python), observability, quality, tooling, research, frontend patterns, backend patterns, **documentation** (`documentation-writing-patterns`), **requisitos** (`requirements-engineering-patterns`), **segurança** (`security-review-patterns`), **performance** (`performance-engineering-patterns`), **compliance** (`compliance-governance-patterns`), **decomposição de tarefas** (`task-decomposition-patterns`) e **DevOps** (`devops-agent-patterns`)
+- ✅ Tier 3 (Experimental): `agent-memory-policy` — memória episódica/semântica/procedimental (reaproveitada por `agentic-memory-manager`)
 
-### Artefatos Estruturais de Orquestração (novo — 2026-08-28/29/30)
-- ✅ `docs/ai-context/routing-graph.yaml` — grafo de roteamento declarado (R-040): nós, arestas, condições e política de cascata rule-based→semantic→LLM; inclui rotas dedicadas para `docs-writer`, `code-review`, `requirements-analyst` e os 3 specialists (`angular`/`spring-boot`/`spring-reactive`); aresta reversa universal `*downstream → agent-router` (R-042)
-- ✅ `docs/ai-context/evals/casos-roteamento.yaml` — suíte de 40 casos de teste (17 canônicos, 4 ambíguos, 15 regressão, 4 segurança) — inclui casos de não-confusão e 2 casos de regressão de sticky-session multi-turno
-- ✅ `docs/ai-context/catalog.yaml` v1.2 — seção `governance_artefacts` com os novos artefatos
+### Fechamento de Gaps de Perfil de Mercado (novo — 2026-09-01)
+- ✅ Análise de perfis de agent consolidada via pesquisa web (Anthropic, OpenAI, Microsoft, Google, GitHub, SpecWeave, ArXiv) — documentada em `docs/ai-context/agent-profiles-taxonomy.md`
+- ✅ `@agent-router` revisou o levantamento inicial e corrigiu 2 imprecisões antes de agir (falso-positivo de gap já coberto; nuance de "0% cobertura" vs. "sem especialista dedicado")
+- ✅ 9 novos agents criados após pesquisa web dedicada por gap: `security-reviewer`, `performance-agent`, `compliance-guardrails` (críticos — bloqueadores de produção enterprise), `feature-planner`, `agentic-memory-manager` (importantes), `devops-engineer`, `debugger`, `code-style-enforcer`, `refactor-executor` (complementares)
+- ✅ 5 novas skills pesquisadas e documentadas: `security-review-patterns` (OWASP Top 10:2025/ASVS 5.0), `performance-engineering-patterns` (Core Web Vitals/N+1), `compliance-governance-patterns` (SOC 2/GDPR/LGPD/HIPAA), `task-decomposition-patterns`, `devops-agent-patterns`
+- ✅ 2 skills existentes reaproveitadas sem duplicação (R-003): `agent-memory-policy` → `agentic-memory-manager`; `code-tracing` → `debugger`
+- ✅ Governança atualizada atomicamente (R-015/R-040): `catalog.yaml`, `README.md` (agents e skills), `.index.json`, `routing-graph.yaml` (+9 nós/arestas), `evals/casos-roteamento.yaml` (+9 casos)
+- ✅ Cobertura de perfis de mercado: 77% → **~95%**
 
-### Anti Sticky-Session (novo — 2026-08-30)
+### Artefatos Estruturais de Orquestração (2026-08-28/29/30/09-01)
+- ✅ `docs/ai-context/routing-graph.yaml` — grafo de roteamento declarado (R-040): 35 nós, arestas condicionais e política de cascata rule-based→semantic→LLM; aresta reversa universal `*downstream → agent-router` (R-042)
+- ✅ `docs/ai-context/evals/casos-roteamento.yaml` — suíte de 56 casos de teste (27 canônicos, 5 ambíguos, 15 regressão, 4 segurança + variantes)
+- ✅ `docs/ai-context/catalog.yaml` v1.2 — seção `governance_artefacts` com os artefatos estruturais
+- ✅ `docs/ai-context/agent-profiles-taxonomy.md` — análise consolidada de mercado + gaps + recomendações (com adendo de revisão e status de resolução)
+
+### Anti Sticky-Session (2026-08-30)
 - ✅ **R-042** — todo agent downstream/specialist declara seção "Retorno ao Router" com gatilho objetivo de deriva de intenção (mudança de verbo de ação, stack fora de competência, pedido de execução em agent read-only)
 - ✅ Fecha 2 gaps reportados: (1) agent downstream perdia inteligência de roteamento após o 1º turno; (2) especialistas `angular`/`spring-boot`/`spring-reactive` eram órfãos no grafo — só alcançáveis por `@menção` manual, nunca roteados automaticamente pelo `agent-router`
 - ✅ Pesquisa de mercado: OpenAI Agents SDK (`handoff()`/`transfer_back_to_*`), LangGraph `langgraph-supervisor` (`add_handoff_back_messages`), state machine de 2 modos com detecção conservadora de deriva de tópico
 
-### Especialistas Híbridos — Advisory + Implementação (novo — 2026-08-30)
+### Especialistas Híbridos — Advisory + Implementação (2026-08-30)
 - ✅ `angular`/`spring-boot`/`spring-reactive` v2.0.0 — deixam de ser "advisory puro" e passam a implementar feature/bugfix dentro do próprio domínio de stack, com testing-first obrigatório e diff mínimo
 - ✅ 3 skills novas de implementação consolidadas via pesquisa de mercado 2026 (Tavily): `angular-implementation-patterns`, `spring-boot-implementation-patterns`, `spring-reactive-implementation-patterns` — complementares às 3 skills de análise já existentes
 - ✅ R-042 ajustado: implementar **dentro** do domínio do specialist não é mais deriva de intenção; deriva só ocorre em pivô cross-stack (ex.: `@angular` recebe pedido Spring Boot)
@@ -225,12 +349,12 @@ flowchart TD
 - ✅ `confidence-fallback-policy` — routing em cascata (rule→semantic→LLM) + ambiguity zone + logging estruturado
 - ✅ `agent-evals-lab` — seção 9 com link para arquivo real de casos (suíte deixou de ser aspiracional)
 
-### Perfil Documentador (novo — 2026-08-29)
+### Perfil Documentador (2026-08-29)
 - ✅ `docs-writer` (agent) — perfil documentador agnóstico de domínio; gera/atualiza documentação técnica em Markdown (Diátaxis, ADR/MADR, README, runbook, postmortem); produz **exclusivamente** arquivos `.md`; nunca alucina comportamento não verificado no código-fonte
 - ✅ `documentation-writing-patterns` (skill, Tier 2) — base de conhecimento consolidada via pesquisa de mercado (Diátaxis, Google/Microsoft Style Guide, MADR, standard-readme, `llms.txt`, práticas anti-alucinação Anthropic/Copilot/Cursor)
 - ✅ Diferença de escopo: `docs-writer` **escreve documentação nova**; `docs-curator` **cura/padroniza documentação de governança já existente** — roteamento distinguido em `routing-graph.yaml` e validado em `casos-roteamento.yaml` (`regr-008`, `regr-009`)
 
-### Perfil de Requisitos (novo — 2026-08-29)
+### Perfil de Requisitos (2026-08-29)
 - ✅ `requirements-analyst` (agent) — perfil de elicitação prospectiva; transforma pedido ambíguo em requisitos funcionais/não-funcionais estruturados e testáveis, com rastreabilidade à fonte do stakeholder
 - ✅ `requirements-engineering-patterns` (skill, Tier 2) — base de conhecimento consolidada via pesquisa de mercado (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti-solution-jumping com Five Whys)
 - ✅ Diferença de escopo: `requirements-analyst` **pedido de negócio → requisito novo**; `business-rules-extractor` **código existente → regra documentada** — distinção roteada e validada nos casos `regr-012` e `regr-013`
