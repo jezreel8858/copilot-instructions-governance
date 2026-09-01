@@ -169,8 +169,6 @@ agents:
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
-      - ".github/instructions/backend.instructions.md"
-      - ".github/instructions/frontend.instructions.md"
     related_agents:
       - "agent-router"
       - "test-strategy"
@@ -191,8 +189,6 @@ agents:
       - ".github/copilot-instructions.md"
       - ".github/agents/test-implementation.agent.md"
       - ".github/skills/terminal-governance/SKILL.md"
-      - ".github/instructions/backend.instructions.md"
-      - ".github/instructions/frontend.instructions.md"
       - ".github/skills/test-implementation-angular/SKILL.md"
       - ".github/skills/test-implementation-backend/SKILL.md"
       - ".github/skills/test-coverage-governance/SKILL.md"
@@ -219,7 +215,6 @@ agents:
       - ".github/copilot-instructions.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
-      - ".github/instructions/frontend.instructions.md"
     related_agents:
       - "agent-router"
       - "bug-triage"
@@ -244,7 +239,6 @@ agents:
       - ".github/copilot-instructions.md"
       - ".github/agents/test-fix.agent.md"
       - ".github/skills/terminal-governance/SKILL.md"
-      - ".github/instructions/frontend.instructions.md"
       - ".github/skills/test-implementation-angular-vitest/SKILL.md"
       - ".github/skills/test-implementation-angular-jasmine/SKILL.md"
       - ".github/skills/test-coverage-governance/SKILL.md"
@@ -665,7 +659,7 @@ agents:
     model: "Claude Sonnet 5"
     priority: 5
     domain: "Extracao e validacao de regras de negocio"
-    description: "Extrair regras de negócio de qualquer código-fonte e documentá-las em .md estruturado. Validar código refatorado contra regras documentadas para garantir que nenhuma regra existente foi quebrada."
+    description: "Extrair regras de negocio de qualquer código-fonte e documentá-las em .md estruturado. Validar código refatorado contra regras documentadas para garantir que nenhuma regra existente foi quebrada."
     keywords:
       - "business rule"
       - "regra de negocio"
@@ -756,7 +750,7 @@ agents:
       - ".github/skills/angular-frontend-patterns/SKILL.md"
       - ".github/skills/angular-implementation-patterns/SKILL.md"
       - ".github/skills/design-system-component-contracts/SKILL.md"
-      - ".github/instructions/frontend.instructions.md"
+      - ".github/instructions/angular-v21-frontend.instructions.md"
     estimated_time_minutes: 30
 
   spring-boot:
@@ -877,6 +871,7 @@ agents:
       - "docs-curator"
       - "business-rules-extractor"
       - "agent-router"
+      - "feature-planner"
     related_skills:
       - "documentation-writing-patterns"
       - "mermaid-diagrams"
@@ -1232,7 +1227,9 @@ agents:
     description: >-
       Decompoe requisito de feature nova (nao refatoracao) em subtasks com
       dependencias mapeadas e paralelizacao. Nunca implementa. Distinto de
-      refactor-planner (foco em risco/rollback de codigo existente).
+      refactor-planner (foco em risco/rollback de codigo existente). Ao
+      finalizar, oferece via ask_questions (R-033) a persistencia do plano
+      como .md, delegando a escrita a @docs-writer.
     keywords:
       - "decompor tarefa"
       - "planejar feature"
@@ -1250,6 +1247,7 @@ agents:
       - "requirements-analyst"
       - "refactor-planner"
       - "analysis-architect"
+      - "docs-writer"
     related_skills:
       - "task-decomposition-patterns"
       - "agent-contracts"

@@ -6,12 +6,13 @@ description:
   Execute UMA ÚNICA VEZ no início da sessão ANTES de /add-project-context ou qualquer agent.
   NÃO REPITA na mesma sessão — faz 1x apenas.
 model: "Claude Haiku 4.5"
-tools: ['read_file', 'list_dir', 'run_subagent']
+tools: ['read_file', 'list_dir', 'run_subagent', 'run_in_terminal', 'context-mode/ctx_execute', 'context-mode/ctx_batch_execute', 'context-mode/ctx_search', 'context-mode/ctx_stats']
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - docs/ai-context/catalog.yaml
   - docs/ai-context/catalog.local.yaml.example
+  - .github/skills/terminal-governance/SKILL.md
 ---
 
 # `/init-context`
@@ -63,7 +64,7 @@ Copilot **EXATAMENTE**:
 
 ---
 
-## 📋 Execução em 6 Passos
+## 📋 Execução em 8 Passos
 
 ### **PASSO 1: Validar Carregamento de Diretrizes Base**
 
@@ -90,7 +91,79 @@ Arquivo faltando: <arquivo>
 
 ---
 
-### **PASSO 2: Informar Modelo Ativo (R-021)**
+### **PASSO 2: Detectar Ambiente de Execução (Environment Fingerprint)**
+
+Detecta terminal(is) disponível(is), versão de Python, versão de Node.js e versão de Java/JDK nesta máquina — registra em `catalog.local.yaml` (gitignored, R-043) para reuso por agents downstream (`test-implementation`, `devops-engineer`, `spring-boot`, `spring-reactive`, etc.) sem repetir a detecção a cada sessão.
+
+> Preferir `context-mode/ctx_execute` (sandbox, Think in Code — R-008); `run_in_terminal` é fallback apenas se o MCP estiver indisponível. Nunca bloqueia a sessão — item ausente é registrado como `available: false`.
+
+```
+[Health Check] Environment Fingerprint
+├─ Cache existente em catalog.local.yaml → environment.detected_at com menos de 7 dias?
+│   ├─ Sim → reutilizar cache, pular detecção (exibir "✅ cache reaproveitado")
+│   └─ Não → executar detecção completa (abaixo), em lote (1 execução, não 1 comando por item)
+```
+
+**Detecção completa (comandos não-interativos, sem paginação — R-035):**
+
+| Item | Como detectar | Observação |
+|---|---|---|
+| Shells instalados | `where powershell` / `where cmd` / `where bash` / `where wsl` (Windows) ou `which -a bash zsh fish` (Unix) | Apenas existência no PATH — nunca executar/abrir o shell |
+| Shell ativo nesta sessão | `$SHELL`, `$OSTYPE`, `$ComSpec`, nome do processo pai (heurística, best-effort) | Informativo — não crítico se impreciso |
+| Python | tentar `python --version`, depois `python3 --version`, depois `py --version` (Windows launcher) — usar o **primeiro que executa com sucesso** | ⚠️ Aliases de app-store (ex.: `WindowsApps\python.exe`) podem existir no PATH mas apontar para instalação quebrada/ausente — sempre validar rodando `--version`, nunca confiar só na existência do caminho |
+| Node.js | `node --version` | Capturar também `npm --version` se disponível |
+| Java/JDK | `java -version` (saída vai para **stderr**, capturar com `2>&1`) + `echo $JAVA_HOME` (Unix) / `echo %JAVA_HOME%` (Windows) | Relevante para `spring-boot`, `spring-reactive` e a skill `java-jdk-backend-governance` (LTS: 17, 21) — registrar mesmo se não for LTS, apenas informativo |
+
+Se algum item não for encontrado ou falhar, registrar `available: false` — **nunca falhar/bloquear a sessão** por isso.
+
+**Persistir em `catalog.local.yaml`** (nova chave de topo, irmã de `projetos:`):
+
+```yaml
+environment:
+  detected_at: "<ISO-8601>"
+  os: "<windows|linux|macos>"
+  shells_available:
+    - name: "powershell"
+      path: "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+    - name: "cmd"
+      path: "C:\\Windows\\System32\\cmd.exe"
+    - name: "git-bash"
+      path: "C:\\Program Files\\Git\\usr\\bin\\bash.exe"
+    - name: "wsl"
+      path: "C:\\Windows\\System32\\wsl.exe"
+  shell_ativo_na_sessao: "<ex.: MINGW64 (Git Bash)>"
+  python:
+    available: true
+    version: "<major.minor.patch>"
+    path: "<caminho-que-de-fato-executou>"
+  nodejs:
+    available: true
+    version: "<major.minor.patch>"
+    path: "<caminho>"
+  java:
+    available: true
+    version: "<major.minor.patch>"
+    java_home: "<caminho-ou-null-se-nao-definido>"
+```
+
+**Exibir:**
+
+```
+[Environment Fingerprint]
+├─ SO: <windows|linux|macos>
+├─ Shells disponíveis: <lista>
+├─ Shell ativo nesta sessão: <shell>
+├─ Python: ✅/❌ <versão> (<path>)
+├─ Node.js: ✅/❌ <versão> (<path>)
+├─ Java/JDK: ✅/❌ <versão> (JAVA_HOME: <path-ou-"não definido">)
+└─ Registrado em: docs/ai-context/catalog.local.yaml (gitignored — nunca commitado, R-043)
+```
+
+**Depois, prosseguir para PASSO 3.**
+
+---
+
+### **PASSO 3: Informar Modelo Ativo (R-021)**
 
 Exibir modelo em uso — apenas **informativo**, não bloqueante:
 
@@ -109,9 +182,9 @@ Exibir modelo em uso — apenas **informativo**, não bloqueante:
 
 ---
 
-### **PASSO 3: Exibir Regras Críticas**
+### **PASSO 4: Exibir Regras Críticas**
 
-O nível de detalhe é **condicional** — verificar se binding context existe (PASSO 4 antecipa resultado):
+O nível de detalhe é **condicional** — verificar se binding context existe (PASSO 5 antecipa resultado):
 
 #### Se binding context **JÁ EXISTE** (sessão recorrente):
 
@@ -159,7 +232,7 @@ Status: ✅ R-001..R-040 ativas — Agents respeitarão
 
 ---
 
-### **PASSO 4: Validar Binding Context (R-034) + Overlay Local (R-043)**
+### **PASSO 5: Validar Binding Context (R-034) + Overlay Local (R-043)**
 
 Verificar se estrutura de binding existe **NESTE repositório de governança**:
 
@@ -223,7 +296,7 @@ Faltando:
 
 ---
 
-### **PASSO 5: Verificar Herança de Instruções Genéricas**
+### **PASSO 6: Verificar Herança de Instruções Genéricas**
 
 Para cada projeto registrado em `catalog.local.yaml` (gitignored, R-043), verificar se o campo `extends:` está configurado, conectando o projeto aos adapters genéricos disponíveis em `catalog.yaml` (compartilhado).
 
@@ -273,7 +346,7 @@ Opções:
 
 ---
 
-### **PASSO 6: Validar Atividade do Context Mode (Dashboard Health)**
+### **PASSO 7: Validar Atividade do Context Mode (Dashboard Health)**
 
 Verificar se a sessão atual do Context Mode está sendo rastreada para evitar "Dashboard vazia" no JetBrains:
 1. Execute `ctx_stats()`.
@@ -281,7 +354,7 @@ Verificar se a sessão atual do Context Mode está sendo rastreada para evitar "
 
 ---
 
-### **PASSO 7: Verificar Cache de Grafo de Conhecimento e Sumarização (por Projeto)**
+### **PASSO 8: Verificar Cache de Grafo de Conhecimento e Sumarização (por Projeto)**
 
 Para cada projeto registrado em `catalog.local.yaml` (gitignored, R-043 — nunca em `catalog.yaml`), verificar se já existe cache de **grafo de conhecimento** (`@code-knowledge-graph`) e de **sumarização** (`@code-summarizer`) no Context Mode — evita reconstrução/reprocessamento desnecessário e informa ao usuário o que já está disponível para consulta imediata.
 
@@ -340,6 +413,11 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
 ║ [✅] Diretrizes base carregadas                          ║
 ║      CLAUDE.md + copilot-instructions.md                 ║
 ║                                                           ║
+║ [✅] Environment Fingerprint (PASSO 2)                   ║
+║      Shell ativo: <shell> | Python: <versão ou ausente>  ║
+║      Node.js: <versão ou ausente> | Java: <versão ou ausente> ║
+║      Registrado em: catalog.local.yaml (gitignored)      ║
+║                                                           ║
 ║ [✅] Modelo conforme (R-036)                             ║
 ║      Esperado: <model-frontmatter>                       ║
 ║      Atual: <model-sessão>                               ║
@@ -352,15 +430,15 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
 ║      Projetos registrados: <n-projetos>                  ║
 ║      Adapters em .github/instructions/: <n-adapters>     ║
 ║                                                           ║
-║ [✅] Herança de instruções verificada (PASSO 5)          ║
+║ [✅] Herança de instruções verificada (PASSO 6)          ║
 ║      Projetos com extends: <n-projetos-com-extends>      ║
 ║      Projetos sem extends: <n-projetos-sem-extends>      ║
 ║                                                           ║
-║ [✅] Context Mode Session (PASSO 6)                      ║
+║ [✅] Context Mode Session (PASSO 7)                      ║
 ║      Estatísticas: <Total calls> chamadas               ║
 ║      Status: ✅ Ativo (rastreável no Dashboard)         ║
 ║                                                           ║
-║ [✅] Cache de Grafo/Sumarização por Projeto (PASSO 7)    ║
+║ [✅] Cache de Grafo/Sumarização por Projeto (PASSO 8)    ║
 ║      Grafo (code-graph:*): <n-com-grafo>/<n-total>       ║
 ║      Sumarização (code-summary:*): <n-com-sumario>/<n-total> ║
 ║                                                           ║
@@ -384,22 +462,23 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
 
 ### 💡 Recomendações ao Usuário
 
-Ao final do checklist, Copilot **SEMPRE** sintetiza em bullets objetivos as recomendações derivadas do que foi observado nos Passos 1-7 — nunca genéricas, sempre condicionadas ao estado real detectado nesta execução:
+Ao final do checklist, Copilot **SEMPRE** sintetiza em bullets objetivos as recomendações derivadas do que foi observado nos Passos 1-8 — nunca genéricas, sempre condicionadas ao estado real detectado nesta execução:
 
 ```
 💡 RECOMENDAÇÕES PARA ESTA SESSÃO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[Model]     <se mismatch: "Troque para <model-esperado> antes de agents de implementação (R-036)">
-[Binding]   <se incompleto: "Execute binding-initializer — catalog.yaml/binding.md ausentes (R-034)">
-[Extends]   <se houver projeto sem extends: "Configure herança em <n> projeto(s) pendente(s) — PASSO 5">
-[Cache]     <se houver projeto sem grafo/sumário: "Considere @code-knowledge-graph/@code-summarizer para <projeto(s)> antes de análises profundas">
-[Sessão]    <se Context Mode inativo: "Rode /ctx-start — Total calls = 0, dashboard não vai rastrear">
-[Fluxo]     "Toda solicitação a partir daqui deve começar por @agent-router (R-037)"
+[Environment] <se python/node ausente: "Instale <ferramenta> antes de invocar agents que dependem dele (ex.: test-implementation, devops-engineer)">
+[Model]       <se mismatch: "Troque para <model-esperado> antes de agents de implementação (R-036)">
+[Binding]     <se incompleto: "Execute binding-initializer — catalog.yaml/binding.md ausentes (R-034)">
+[Extends]     <se houver projeto sem extends: "Configure herança em <n> projeto(s) pendente(s) — PASSO 6">
+[Cache]       <se houver projeto sem grafo/sumário: "Considere @code-knowledge-graph/@code-summarizer para <projeto(s)> antes de análises profundas">
+[Sessão]      <se Context Mode inativo: "Rode /ctx-start — Total calls = 0, dashboard não vai rastrear">
+[Fluxo]       "Toda solicitação a partir daqui deve começar por @agent-router (R-037)"
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
 **Regras de geração:**
-- Cada linha só aparece se a condição correspondente foi de fato detectada nos Passos 1-7 desta execução — nunca listar recomendação para item já ✅/conforme.
+- Cada linha só aparece se a condição correspondente foi de fato detectada nos Passos 1-8 desta execução — nunca listar recomendação para item já ✅/conforme.
 - Se **nenhuma** condição de alerta foi detectada (tudo ✅), exibir apenas:
   ```
   💡 RECOMENDAÇÕES PARA ESTA SESSÃO
@@ -409,7 +488,7 @@ Ao final do checklist, Copilot **SEMPRE** sintetiza em bullets objetivos as reco
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   ```
 - Recomendações são **sempre informativas** — nunca bloqueiam a sessão nem disparam ação autônoma (R-009); apenas apontam o próximo comando/agent que o usuário pode invocar.
-- Ordem fixa: Model → Binding → Extends → Cache → Sessão → Fluxo (reflete a ordem dos Passos 2/4/5/7/6/router).
+- Ordem fixa: Environment → Model → Binding → Extends → Cache → Sessão → Fluxo (reflete a ordem dos Passos 2/3/5/6/8/7/router).
 
 ---
 
@@ -457,6 +536,9 @@ Invoque `/init-context` **manualmente** em caso de:
 | "Model mismatch" | Modelo não é o esperado | Escolher opção (A), deixar (B) ou cancelar (C) |
 | "Binding context ausente" | `catalog.yaml` ou `binding.md` faltando | Disparar `binding-initializer` automaticamente |
 | "Copilot não respeita regras após" | Regras não foram relevantes no downstream | Reexecutar `/init-context` ou ativar diagnostics com `/ctx-doctor` |
+| "Python/Node não encontrado" | Ferramenta não instalada ou fora do PATH | Normal — registrado como `available: false`, não bloqueia a sessão; instalar se necessário para o agent alvo |
+| "Path de Python existe mas `--version` falha" | Alias quebrado (ex.: stub da Microsoft Store apontando para instalação removida) | Detecção deve tentar o próximo candidato (`python3`, `py`) — nunca considerar `available: true` só pela existência do path |
+| "Java não encontrado / JAVA_HOME vazio" | JDK não instalado ou não configurado no PATH | Normal — registrado como `available: false`; relevante apenas antes de invocar `spring-boot`/`spring-reactive` |
 
 ---
 
@@ -468,12 +550,13 @@ Ao completar `/init-context`, você verá:
 CONTEXTO INICIALIZADO COM SUCESSO
 
 [PASSO 1] Diretrizes base — OK
-[PASSO 2] Modelo ativo — INFORMADO
-[PASSO 3] Regras criticas — ATIVAS (R-001..R-040)
-[PASSO 4] Binding context — VALIDO (<n> projetos registrados)
-[PASSO 5] Herança de instruções — OK (<n-com-extends> c/ extends | <n-sem-extends> sem extends)
-[PASSO 6] Context Mode Session — ATIVA (<n> chamadas)
-[PASSO 7] Cache grafo/sumarização — <n-com-grafo>/<n-total> com grafo | <n-com-sumario>/<n-total> com sumarização
+[PASSO 2] Environment fingerprint — DETECTADO (shell/python/node/java registrados em catalog.local.yaml)
+[PASSO 3] Modelo ativo — INFORMADO
+[PASSO 4] Regras criticas — ATIVAS (R-001..R-040)
+[PASSO 5] Binding context — VALIDO (<n> projetos registrados)
+[PASSO 6] Herança de instruções — OK (<n-com-extends> c/ extends | <n-sem-extends> sem extends)
+[PASSO 7] Context Mode Session — ATIVA (<n> chamadas)
+[PASSO 8] Cache grafo/sumarização — <n-com-grafo>/<n-total> com grafo | <n-com-sumario>/<n-total> com sumarização
 
 Proximo: /add-project-context <path> | /pesquisar | @agent-router
 ```
@@ -491,4 +574,10 @@ Seção "💡 Recomendações ao Usuário" adicionada ao final do checklist de v
 
 *v1.5 — 2026-09-01*
 PASSO 4/5/7 atualizados para o Local Overlay Pattern (R-043): projetos deixam de viver em `catalog.yaml` (compartilhado/commitado) e passam a viver em `catalog.local.yaml` (gitignored). Toda leitura de projeto agora faz merge em memória dos dois arquivos; nenhuma escrita de projeto/adapter toca o arquivo compartilhado.
+
+*v1.6 — 2026-09-01*
+Novo PASSO 2 (Environment Fingerprint): detecta shells disponíveis (PowerShell/CMD/Git Bash/WSL/bash/zsh), shell ativo na sessão, versão de Python e versão de Node.js — registra em `catalog.local.yaml` (chave `environment:`, gitignored, R-043) para reuso por agents downstream sem repetir detecção a cada sessão. PASSOs 2-7 renumerados para 3-8. Adicionado `run_in_terminal` e as tools `context-mode/ctx_execute`, `ctx_batch_execute`, `ctx_search`, `ctx_stats` ao frontmatter (corrige gap pré-existente onde PASSO 6/7 antigos já as citavam no corpo sem declará-las). Cache de detecção válido por 7 dias (evita reexecução redundante). Tratamento explícito de aliases quebrados de Python (ex.: stub da Microsoft Store) — nunca considerar `available: true` apenas pela existência do path, sempre validar `--version`. Complementado por `.githooks/pre-commit` (defesa em profundidade — bloqueia commit acidental de `catalog.local.yaml` mesmo com `git add -f`).
+
+*v1.7 — 2026-09-01*
+PASSO 2 estendido com detecção de Java/JDK (`java -version` + `JAVA_HOME`) — relevante para os agents `spring-boot`/`spring-reactive` e a skill `java-jdk-backend-governance` (LTS 17/21). Nova chave `environment.java` no schema persistido em `catalog.local.yaml`. `/health` ganhou CAT-7 (Environment Fingerprint) — auditoria read-only de presença/idade do fingerprint (TTL 7 dias), sem redetectar nem escrever no overlay local (isso permanece exclusivo do `/init-context`).
 

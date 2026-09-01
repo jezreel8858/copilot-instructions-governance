@@ -16,7 +16,7 @@ Atuar como referência enterprise Angular em 2 modos: **(1) Advisory** — anál
 
 - ❌ NÃO implementar sem teste que cubra o comportamento (testing-first é obrigatório, não opcional).
 - ❌ NÃO gerar diff maior que o necessário — refactor oportunista fora do pedido é proibido.
-- ❌ NÃO ignorar convenções do adapter do projeto (`.github/instructions/<projeto>-frontend.instructions.md` ou `frontend.instructions.md` genérico) em favor de preferência pessoal.
+- ❌ NÃO ignorar convenções do adapter do projeto (`.github/instructions/<projeto>-frontend.instructions.md` ou `angular-v21-frontend.instructions.md`) em favor de preferência pessoal.
 - ❌ NÃO acoplar recomendações/implementação a stack/produto específico sem evidência explícita.
 - ❌ NÃO inferir versão Angular, estratégia de build/deploy ou postura de segurança sem artefato verificável.
 - ❌ NÃO fazer commit/push autônomo nem instalar dependências sem confirmação (R-009/R-031).
@@ -49,7 +49,7 @@ Atuar como referência enterprise Angular em 2 modos: **(1) Advisory** — anál
 | Skill de implementação | [`.github/skills/angular-implementation-patterns/SKILL.md`](../skills/angular-implementation-patterns/SKILL.md) | ⭐ Workflow de codificação (feature/bugfix), testing-first — modo Implementação |
 | Skill base (responsividade) | `.github/skills/angular-responsive-ui-patterns/SKILL.md` | Responsividade, layout fluido, breakpoints, container queries e validação multi-viewport |
 | Skill base (contratos) | [`.github/skills/design-system-component-contracts/SKILL.md`](../skills/design-system-component-contracts/SKILL.md) | Governança de API pública de componentes, semver e breaking change |
-| Adapter do projeto | `.github/instructions/<projeto>-frontend.instructions.md` ou [`frontend.instructions.md`](../instructions/frontend.instructions.md) | Convenções de codificação obrigatórias no modo Implementação |
+| Adapter do projeto | `.github/instructions/<projeto>-frontend.instructions.md` ou `angular-v21-frontend.instructions.md` | Convenções de codificação obrigatórias no modo Implementação |
 | Skill de testes | `test-implementation-angular-vitest` / `test-implementation-angular-jasmine` | Padrões detalhados de teste conforme runner do projeto |
 
 ### Skills recomendadas para carregar (angular)
@@ -150,7 +150,7 @@ Executar checklist unificado da skill `specialist-hybrid-advisory-implementation
 - [`../skills/angular-implementation-patterns/SKILL.md`](../skills/angular-implementation-patterns/SKILL.md) — ⭐ workflow de implementação, testing-first (Implementação).
 - [`../skills/angular-responsive-ui-patterns/SKILL.md`](../skills/angular-responsive-ui-patterns/SKILL.md) — baseline de responsividade, layout fluido e validação multi-viewport.
 - [`../skills/design-system-component-contracts/SKILL.md`](../skills/design-system-component-contracts/SKILL.md) — baseline de contratos de API de componentes em design system.
-- Adapter do projeto (`.github/instructions/<projeto>-frontend.instructions.md` ou `frontend.instructions.md`) — **obrigatório no modo Implementação**.
+- Adapter do projeto (`.github/instructions/<projeto>-frontend.instructions.md` ou `angular-v21-frontend.instructions.md`) — **obrigatório no modo Implementação**.
 - (Quando existir no contexto do projeto) evidências Angular: `package.json`, `angular.json`, configurações de build/SSR, rotas e relatórios de qualidade.
 
 ## Diretrizes

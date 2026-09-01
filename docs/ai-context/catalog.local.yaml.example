@@ -36,3 +36,39 @@
 
 projetos: []
 
+# ============================================
+# ENVIRONMENT FINGERPRINT (preenchido por /init-context — nunca manualmente)
+# ============================================
+# Detectado automaticamente no PASSO 2 de init-context.prompt.md: shells
+# disponíveis, shell ativo na sessão, versão de Python e versão de Node.js.
+# Cache reaproveitado por até 7 dias (evita redetecção redundante a cada sessão).
+#
+#   Exemplo de entry gerada automaticamente:
+#   environment:
+#     detected_at: "2026-09-01T14:00:00Z"
+#     os: "windows"
+#     shells_available:
+#       - name: "powershell"
+#         path: "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe"
+#       - name: "cmd"
+#         path: "C:\\Windows\\System32\\cmd.exe"
+#       - name: "git-bash"
+#         path: "C:\\Program Files\\Git\\usr\\bin\\bash.exe"
+#       - name: "wsl"
+#         path: "C:\\Windows\\System32\\wsl.exe"
+#     shell_ativo_na_sessao: "MINGW64 (Git Bash)"
+#     python:
+#       available: true
+#       version: "3.12.4"
+#       path: "C:\\Users\\<user>\\AppData\\Local\\Programs\\Python\\Python312\\python.exe"
+#     nodejs:
+#       available: true
+#       version: "24.15.0"
+#       path: "C:\\Program Files\\nodejs\\node.exe"
+#     java:
+#       available: true
+#       version: "22.0.2"
+#       java_home: "C:\\Program Files\\Java\\jdk-22"
+
+environment: {}
+

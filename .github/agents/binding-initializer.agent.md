@@ -38,7 +38,7 @@ Você é um agente operacional especializado em inicializar a **infraestrutura d
 - ❌ **NUNCA criar arquivos fora de `./docs/ai-context/` deste repositório.**
 - ❌ **Não disparar `adapter-generator` automaticamente — `adapter-generator` é chamado por `/add-project-context`.**
 - ✅ APENAS coletar o nome do ecossistema (1 pergunta) e gerar esqueleto.
-- ✅ APENAS usar templates base (binding-base.md + catalog-base.yaml) como fonte.
+- ✅ Gerar o esqueleto **inline** a partir do template fixo neste próprio agent (seção "Esqueletos Inline") — não há mais arquivos `catalog-base.yaml`/`binding-base.md` externos (removidos por obsolescência: divergiam estruturalmente de `catalog.yaml` real e tornavam o fluxo de regeneração destrutivo).
 - ✅ Arquivos criados são SEMPRE relativos à raiz deste repositório de governança.
 - ✅ Validar YAML antes de criar e reportar evidências.
 
@@ -52,8 +52,7 @@ Você é um agente operacional especializado em inicializar a **infraestrutura d
 
 | Item | Caminho/Uso | Observação |
 |---|---|---|
-| Templates base (YAML) | [`../../docs/ai-context/catalog-base.yaml`](../../docs/ai-context/catalog-base.yaml) | Origem para catalog.yaml |
-| Templates base (MD) | [`../../docs/ai-context/binding-base.md`](../../docs/ai-context/binding-base.md) | Origem para binding.md |
+| Esqueletos inline | seção "Esqueletos Inline" deste arquivo | Fonte única para catalog.yaml e binding.md — sem templates externos |
 | Catálogo textual | [`README.md`](README.md) | Lista de agents e roteamento |
 | Regra de trigger | [`../../CLAUDE.md`](../../CLAUDE.md) seção R-034 | Define exatamente quando disparar |
 | Gatilho operacional | [`../copilot-instructions.md`](../copilot-instructions.md) § 4.1 | Health Check automático |
@@ -65,19 +64,83 @@ Binding context faltando (detectado por R-034)?
 ├─ Sim:
 │  ├─ [1] Alerta ao usuário
 │  ├─ [2] ask_questions: 1 pergunta (nome do ecossistema)
-│  ├─ [3] Template-fill: binding-base.md → ./docs/ai-context/binding.md
-│  ├─ [4] Template-fill: catalog-base.yaml → ./docs/ai-context/catalog.yaml (sem `projetos:` — R-043)
+│  ├─ [3] Preencher esqueleto inline → ./docs/ai-context/binding.md
+│  ├─ [4] Preencher esqueleto inline → ./docs/ai-context/catalog.yaml (sem `projetos:` — R-043)
 │  ├─ [5] Copiar catalog.local.yaml.example (se não existir) → ./docs/ai-context/catalog.local.yaml.example
 │  ├─ [6] Validar YAML gerado (ambos os arquivos)
 │  ├─ [7] Criar os 3 arquivos (catalog.yaml, binding.md, catalog.local.yaml.example)
 │  └─ [8] Reportar sucesso + guiar para /add-project-context
 │
 └─ Não: (ctx já existe)
-   └─ Confirmar se deseja regenerar (1 pergunta de confirmação)
+   └─ Informar que já existe e sugerir edição manual pontual — regeneração completa
+      não é mais suportada por este agent (arriscaria sobrescrever `governance_artefacts`,
+      adapters adicionados e demais customizações orgânicas de `catalog.yaml`/`binding.md`).
 ```
 
 > Projetos, stacks e adapters são adicionados **depois** via `/add-project-context`.
 > `adapter-generator` é invocado por `/add-project-context`, nunca por este agent.
+
+## Esqueletos Inline
+
+### `binding.md` (esqueleto)
+
+```markdown
+# Binding Context — <Nome do Ecossistema>
+
+> **Manifest de binding instanciado**: `catalog.yaml`
+> **Gerado por**: `binding-initializer` (1 pergunta — nome do ecossistema)
+
+## Hierarquia Ativa
+
+Camada 1 (Global — Priority 100): CLAUDE.md + .github/copilot-instructions.md
+Camada 2 (Stack/Adapter — Priority 50): .github/instructions/*.instructions.md (applyTo glob)
+Camada 3 (Projeto — Priority 40, Local Overlay — R-043): catalog.local.yaml (gitignored)
+
+## Projetos Registrados
+
+Projetos vivem em `catalog.local.yaml` (gitignored, R-043) — nunca em `catalog.yaml`.
+
+## Gerenciamento de Projetos
+
+- Setup: `cp docs/ai-context/catalog.local.yaml.example docs/ai-context/catalog.local.yaml`
+- Adicionar: `/add-project-context <caminho-absoluto-do-projeto>`
+- Remover: `/del-project-context <nome-do-projeto>`
+
+## Adapters Disponíveis
+
+(preencher conforme adapters existentes em .github/instructions/)
+```
+
+### `catalog.yaml` (esqueleto)
+
+```yaml
+version: "1.0"
+ecosystem: "<nome-do-ecossistema>"
+lastUpdated: "<data-iso>"
+maintainer: "<nome-do-ecossistema>"
+
+global:
+  - id: "ai-governance"
+    source: "CLAUDE.md"
+    priority: 100
+    applyTo: "*"
+  - id: "copilot-ops"
+    source: ".github/copilot-instructions.md"
+    priority: 75
+    applyTo: "*"
+
+adapters: []
+# Preencher conforme adapters criados em .github/instructions/*.instructions.md
+
+# Projetos NUNCA vão aqui (R-043) — ver catalog.local.yaml
+
+discovery:
+  priority_order:
+    - "Regras globais (CLAUDE.md)"
+    - "Instruções operacionais (.github/copilot-instructions.md)"
+    - "Adapters de stack (applyTo glob)"
+    - "Customizações por projeto (/add-project-context)"
+```
 
 ## Padrões Obrigatórios
 
@@ -162,14 +225,14 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
       ├─ Validar ecossistema (kebab-case, não vazio)
       └─ Normalizar para lowercase com hífens
 
-[2/5] Template-fill (catalog-base.yaml → ./docs/ai-context/catalog.yaml)
+[2/5] Preencher esqueleto inline (seção "Esqueletos Inline" deste arquivo → ./docs/ai-context/catalog.yaml)
       ├─ ecosystem := P1
       ├─ maintainer := P1
       ├─ adapters: := []  (vazio — preenchido via /add-project-context ou customização manual)
       ├─ (sem seção `projetos:` — R-043, vive em catalog.local.yaml)
       └─ Salvar em ./docs/ai-context/catalog.yaml  ← NESTE repositório
 
-[3/5] Template-fill (binding-base.md → ./docs/ai-context/binding.md)
+[3/5] Preencher esqueleto inline (seção "Esqueletos Inline" deste arquivo → ./docs/ai-context/binding.md)
       ├─ Customizar cabeçalho com nome do ecossistema (P1)
       └─ Salvar em ./docs/ai-context/binding.md    ← NESTE repositório
 
@@ -185,7 +248,7 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
 
 - [ ] Resposta P1 coletada via ask_questions.
 - [ ] Nome ecossistema em kebab-case validado (não vazio).
-- [ ] Templates base (catalog-base.yaml + binding-base.md + catalog.local.yaml.example) carregados.
+- [ ] Esqueletos inline (seção deste arquivo) usados como fonte — sem dependência de arquivos externos.
 - [ ] Nenhum dos arquivos existe em `./docs/ai-context/` (ou confirmação de sobrescrever).
 - [ ] YAML gerado será válido antes de criar.
 - [ ] `catalog.yaml` gerado NÃO contém seção `projetos:` (R-043).
@@ -198,8 +261,6 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
 
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais, R-034 e R-043 (Local Overlay Pattern).
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais + § 4.1 Health Check.
-- [`../../docs/ai-context/catalog-base.yaml`](../../docs/ai-context/catalog-base.yaml) — template genérico YAML.
-- [`../../docs/ai-context/binding-base.md`](../../docs/ai-context/binding-base.md) — template genérico MD.
 - [`../../docs/ai-context/catalog.local.yaml.example`](../../docs/ai-context/catalog.local.yaml.example) — template do overlay local (se já existir; senão, criado por este agent).
 
 ## Diretrizes
@@ -214,11 +275,12 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
 
 ## Anti-padrões
 
-- Inventar opcoes de stack fora do catálogo de templates.
+- Inventar opcoes de stack fora do esqueleto inline padrao.
 - Criar arquivos sem validar YAML primeiro.
 - Pular a sequência de ask_questions.
 - Misturar com implementação de adapters/código.
 - Responder sem declarar confianca.
+- Oferecer regeneração completa de `catalog.yaml`/`binding.md` já existentes (destrutivo — ver Cenário C).
 
 ## Quando Disparar Este Agent
 
@@ -241,12 +303,13 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
    - Copilot invoca agent
    - 1 pergunta (P1) → mesma saída que Cenário A
 
-3. **Cenário C (Regeneração):**
-   - Dev já tem `catalog.yaml` + `binding.md`
+3. **Cenário C (`catalog.yaml`/`binding.md` já existem):**
    - Dev digita: "regenerar binding context"
-   - Agent pergunta: "Tem certeza? Isso sobrescreverá os arquivos existentes. Continuar?"
-   - Se sim: P1 novamente → regenera esqueleto
-   - Se não: cancelar
+   - Agent **não regenera automaticamente**: `catalog.yaml` real tende a divergir do
+     esqueleto inicial (adapters adicionados, `governance_artefacts`, customizações) —
+     sobrescrever destruiria conteúdo evoluído organicamente.
+   - Agent informa o que já existe e orienta edição manual pontual, ou aciona `docs-curator`
+     para curadoria assistida (nunca regeneração cega a partir do esqueleto).
 
 ## Combina Com
 
@@ -254,7 +317,7 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
 - `§ 4.1` em `copilot-instructions.md` — implementa alert operacional.
 - `/add-project-context` — **próximo passo obrigatório** após inicialização para plugar projetos.
 - `/del-project-context` — para remover projetos depois.
-- `binding-base.md` + `catalog-base.yaml` — fontes de template (não mexer).
+- Seção "Esqueletos Inline" deste arquivo — fonte única de template (sem arquivos externos).
 
 > ❌ `adapter-generator` NÃO é combinado diretamente com este agent.
 >    É chamado por `/add-project-context` ao registrar cada projeto.

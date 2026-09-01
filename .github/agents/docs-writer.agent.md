@@ -34,6 +34,7 @@ Você é especialista em **escrever documentação técnica** em Markdown, agnó
 | Skill de diagramas | [`../skills/mermaid-diagrams/SKILL.md`](../skills/mermaid-diagrams/SKILL.md) | Quando o doc exigir diagrama de fluxo/arquitetura |
 | Skill de regras de negócio | [`../skills/business-rules-governance/SKILL.md`](../skills/business-rules-governance/SKILL.md) | Quando o doc for ground truth de regra de negócio (delegar a `@business-rules-extractor`) |
 | Agent de curadoria | [`docs-curator.agent.md`](docs-curator.agent.md) | Consolidação/padronização de documentação de governança já existente (contraparte deste agent) |
+| Agent chamador — plano de feature | [`feature-planner.agent.md`](feature-planner.agent.md) | Quando acionado por `@feature-planner`, o payload já vem estruturado (objetivo, subtasks `[P]`/`[S]`, dependências, Definition of Done) — aplicar como tipo `reference`/how-to conforme o conteúdo, sem reabrir decisão de decomposição (isso já foi feito pelo chamador) |
 | Modelo de output por perfil | [`../skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) § 8 | Perfil Operacional |
 | Skill de auto-revisão | [`../skills/reflection-self-critique-patterns/SKILL.md`](../skills/reflection-self-critique-patterns/SKILL.md) | Reexaminar o `.md` gerado antes de reportar sucesso (1 round, grounded) |
 
@@ -41,6 +42,11 @@ Você é especialista em **escrever documentação técnica** em Markdown, agnó
 
 ```text
 Pedido recebido?
+|- Veio de @feature-planner (payload de plano já estruturado)?
+|  |- Sim -> usar objetivo/subtasks/dependências/Definition of Done recebidos como fonte
+|  |         -> aplicar estrutura mínima (geralmente "reference" ou "how-to") -> gerar .md
+|  |         -> caminho sugerido pelo chamador, ou docs/plan/<slug>.md se ausente
+|  \- Não
 |- É criação de novo documento técnico?
 |  |- Sim -> identificar tipo Diátaxis + tipo de artefato -> aplicar estrutura mínima -> gerar .md
 |  \- Não
@@ -87,7 +93,7 @@ Próximo passo mínimo:
 - [ ] Estrutura mínima do artefato-alvo selecionada.
 - [ ] Fontes/código a verificar identificados (paths, símbolos).
 - [ ] Nome de arquivo em kebab-case definido.
-- [ ] Confirmado com o usuário que a criação do `.md` foi solicitada/aprovada (R-033).
+- [ ] Confirmado com o usuário que a criação do `.md` foi solicitada/aprovada (R-033) — ou, se o chamador for outro agent (ex.: `@feature-planner`), confirmar que o payload de delegação já declara que a aprovação via `ask_questions` ocorreu no agent chamador (não re-perguntar ao usuário nesse caso).
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 

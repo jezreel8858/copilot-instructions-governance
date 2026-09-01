@@ -1,10 +1,9 @@
 # Binding Context — Eco-Sistema 
 
 > **Manifest de binding instanciado**: `catalog.yaml`
-> **Template base**: `catalog-base.yaml`
 > **Gerado por**: `binding-initializer` (1 pergunta — nome do ecossistema)
 
-Este arquivo documenta o mecanismo de binding hierárquico do ecossistema. Para a referência completa do padrão, consulte `binding-base.md`.
+Este arquivo documenta o mecanismo de binding hierárquico do ecossistema.
 
 ---
 
