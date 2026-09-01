@@ -22,7 +22,7 @@ Comando de reprodução manual (Java/TS/SQL): `npm install` nesta pasta, depois 
 
 ## Validação "no quente" (código de produção real, fora dos golden fixtures)
 
-Em 2026-08-31, `extract-treesitter.js` foi testado manualmente contra arquivos reais do projeto externo `worship-scale-app` (Angular 20 + Capacitor + Firebase), sem qualquer alteração nesse projeto (apenas leitura):
+Em 2026-08-31, `extract-treesitter.js` foi testado manualmente contra arquivos reais do projeto externo, sem qualquer alteração nesse projeto (apenas leitura):
 
 | Arquivo real | Linhas/Bytes | Resultado |
 |---|---|---|

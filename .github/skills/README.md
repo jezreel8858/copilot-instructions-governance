@@ -53,7 +53,6 @@ Toda skill deve declarar no topo:
 | **`code-tracing`** | 🔧 **Tier 1** | Rastrear código do sintoma à causa raiz — grep vs semântico, stack trace parsing, call graph, rastreio de API/método, coleta mínima de evidências |
 | **`business-rules-governance`** | 📋 **Tier 1** | Taxonomia, templates e protocolos para extrair, documentar e validar regras de negócio em markdown — ground truth para validação de refatorações |
 | **`integration-contract-analysis`** | 🔗 **Tier 2** | Análise de contratos de integração (OpenAPI, AsyncAPI, gRPC, GraphQL): detecção de **breaking changes**, classificação BREAKING/COMPATIBLE/DEPRECIAÇÃO, consumidores afetados |
-| **`dependency-graph-mapping`** | 🔗 **Tier 2** | Mapeamento de grafo de dependências cross-sistema: fluxo origem→transformação→destino, acoplamento tight/loose/eventual, blast radius e dependências circulares |
 | **`agent-memory-policy`** | 🧠 **Tier 3** | Política de memória long-term para agents: tipos episódico, semântico e procedimental. Foco em memória procedimental (agents auto-adaptativos) com guardrails e aprovação humana obrigatória |
 | **`frontend-componentization-patterns`** | 🧩 **Tier 2** | Padrões genéricos de componentização frontend (responsabilidade única, composição, contrato de componente, fronteiras de estado) |
 | **`angular-frontend-patterns`** | 🅰️ **Tier 2** | Boas práticas/patterns de codificação Angular (standalone, template/binding, Signals+RxJS, segurança e consistência) |

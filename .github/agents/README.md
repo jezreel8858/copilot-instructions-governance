@@ -40,6 +40,7 @@
 | Agent | `code-review` | 🔎 Revisa código (diff/PR) antes do merge por correção, segurança, convenções, impacto, testes e performance; classifica achados por severidade; read-only; delega para `bug-triage`/`analysis-architect`/`test-strategy`/`refactor-planner` |
 | Agent | `requirements-analyst` | 🧾 ***(NEW)*** Elicita e estrutura requisitos funcionais/não-funcionais a partir de pedido de negócio ambíguo (EARS, INVEST, Gherkin, FURPS+); detecta *solution-jumping* via Five Whys; prospectivo (não confundir com `business-rules-extractor`, que é reverso) |
 | Agent | `code-summarizer` | 🗜️ ***(NEW)*** Ponto de entrada único para sumarização de código-fonte agnóstica a linguagem (RF-008); modelo híbrido — heurística/AST determinística primeiro, LLM leve como fallback; nunca substituído por chamada direta a lib de parsing |
+| Agent | `code-knowledge-graph` | 🕸️ Ponto de entrada único para construção/consulta do grafo de conhecimento de código-fonte cross-projeto — nível código (arquivo/classe/função; import/chamada/herança/tabela-SQL) **e** nível arquitetural (sistema/serviço, HTTP/fila/evento, blast radius, ciclo, acoplamento tight/loose/eventual/circular, risco, diagrama Mermaid); puramente determinístico (sem fallback LLM). **v2.1.0**: motor de extração único consolidado em **Semgrep CLI** (RF-021), com cobertura de framework (RF-022) para Angular, Spring Boot, Spring Reactive/WebFlux e EJB/Jakarta EE; validado em produção real cross-stack e cross-repo em escala (2213 arquivos, 849 nós, 28 arestas cross-repo) |
 
 ## 3) Roteamento Rápido
 
@@ -71,6 +72,7 @@
 | 🔎 Revisar código (diff/PR) antes do merge, por severidade | `code-review` |
 | 🧾 Elicitar/estruturar requisitos a partir de pedido ambíguo (pré-técnico) | `requirements-analyst` |
 | 🗜️ Sumarizar código-fonte para reduzir bytes/tokens no contexto (pós-`/init-context` ou sob demanda) | `code-summarizer` |
+| 🕸️ Construir/consultar grafo de conhecimento de código — nível código (arquivo/classe/função, import/chamada/herança/tabela-SQL) e nível arquitetural (sistema/serviço, blast radius, ciclo, acoplamento, risco, diagrama Mermaid), cross-projeto | `code-knowledge-graph` |
 
 ## 4) Pre-fetch Recomendado
 

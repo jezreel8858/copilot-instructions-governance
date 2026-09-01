@@ -30,7 +30,7 @@ Você atua como arquiteto sênior para análise técnica de mudanças, requisito
 - Regras normativas `R-001..R-040` em [`../../CLAUDE.md`](../../CLAUDE.md).
 - Regras de autonomia, compact error report e Context Mode em [`../copilot-instructions.md`](../copilot-instructions.md).
 - R-027: dúvida → `ask_questions`. Proibido inferir intenção.
-- R-028: toda resposta abre com resumo em 5 seções (Abordagem · Componentes · Evidências · Riscos · Próximo Passo).
+- R-028: toda resposta abre com resumo em 5 seções (Abordagem · Componentes · Evidências · Riscos �� Próximo Passo).
 - R-029: bullets/tabelas > parágrafos; tom direto sem filler.
 
 ## Catálogo / Conhecimento Base
@@ -41,7 +41,7 @@ Você atua como arquiteto sênior para análise técnica de mudanças, requisito
 | Instructions por projeto/stack | [`../instructions/README.md`](../instructions/README.md) | Carregamento sob demanda via adapters |
 | Catálogo de Agents | [`README.md`](README.md) | Roteamento entre agentes especializados |
 | Skill — Contrato de Integração | `.github/skills/integration-contract-analysis/SKILL.md` | Padrões OpenAPI/AsyncAPI/gRPC/GraphQL |
-| Skill — Grafo de Dependências | `.github/skills/dependency-graph-mapping/SKILL.md` | Blast radius, acoplamento, fluxo origem→destino |
+| Agent — Grafo de Conhecimento de Código | [`code-knowledge-graph.agent.md`](code-knowledge-graph.agent.md) | Fonte de blast radius, acoplamento (tight/loose/eventual/circular) e risco de código/arquitetura via `run_subagent` — substitui a antiga skill `dependency-graph-mapping` (removida, ver `docs/requirements/REQ-grafo-conhecimento-codigo.md` §14) |
 | Skill — Diagramas Mermaid | `.github/skills/mermaid-diagrams/SKILL.md` | Visualização de fluxos e dependências |
 | Skill — Context Mode | `.github/skills/context-mode/SKILL.md` | Coleta eficiente de artefatos |
 | Skill — Rastreio de Código | `.github/skills/code-tracing/SKILL.md` | Localizar dependências/símbolos no código (grep → semântico → call chain) |
@@ -59,8 +59,8 @@ Pedido recebido?
 │   └─ Classificar: BREAKING | COMPATIBLE | DEPRECIAÇÃO
 │
 ├─ É mapeamento de dependências cross-sistema?
-│   ├─ Coletar grafo via ctx_batch_execute (grep por imports, clients, urls)
-│   ├─ Aplicar skill dependency-graph-mapping
+│   ├─ Coletar grafo via ctx_batch_execute (grep por imports, clients, urls) ou delegar a @code-knowledge-graph via run_subagent
+│   ├─ Consumir blast radius/acoplamento/risco reportados por @code-knowledge-graph
 │   └─ Gerar diagrama Mermaid com skill mermaid-diagrams (opcional)
 │
 ├─ É rastreamento de fluxo de dados?
@@ -195,8 +195,6 @@ Próximo passo mínimo:
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais de governança.
 - [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta eficiente sem poluir contexto.
 - [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) — rastreio de dependências e símbolos no código.
-- [`../skills/dependency-graph-mapping/SKILL.md`](../skills/dependency-graph-mapping/SKILL.md) — grafo de dependências e blast radius.
-- [`../skills/integration-contract-analysis/SKILL.md`](../skills/integration-contract-analysis/SKILL.md) — análise de contrato (OpenAPI/AsyncAPI/gRPC/GraphQL).
 - [`../skills/handoff-governance/SKILL.md`](../skills/handoff-governance/SKILL.md) — payload mínimo de handoff, usado no Fan-out de análise paralela.
 - [`../skills/tavily/SKILL.md`](../skills/tavily/SKILL.md) — não invocada diretamente por este agent; delegar a `@deep-search`, que aplica esta skill para pesquisa externa.
 
@@ -240,3 +238,4 @@ Se a solicitação pivotar de "analisar" para "implementar código real", retorn
 - `/plan` → estruturar as fases da análise de impacto, risco ou dependência.
 - `/validate` → checar se todas as dependências e riscos foram mapeados.
 - `/documentar` → persistir análise em `docs/context/` via `@context-builder`.
+

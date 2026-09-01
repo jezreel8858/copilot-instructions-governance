@@ -1,0 +1,9 @@
+.venv-semgrep/
+graph.json
+graph.mmd
+graph.html
+tmp-*.json
+tmp-*.log
+__pycache__/
+*.pyc
+
