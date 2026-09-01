@@ -871,6 +871,7 @@ agents:
       - "docs-curator"
       - "business-rules-extractor"
       - "agent-router"
+      - "feature-planner"
     related_skills:
       - "documentation-writing-patterns"
       - "mermaid-diagrams"
@@ -1226,7 +1227,9 @@ agents:
     description: >-
       Decompoe requisito de feature nova (nao refatoracao) em subtasks com
       dependencias mapeadas e paralelizacao. Nunca implementa. Distinto de
-      refactor-planner (foco em risco/rollback de codigo existente).
+      refactor-planner (foco em risco/rollback de codigo existente). Ao
+      finalizar, oferece via ask_questions (R-033) a persistencia do plano
+      como .md, delegando a escrita a @docs-writer.
     keywords:
       - "decompor tarefa"
       - "planejar feature"
@@ -1244,6 +1247,7 @@ agents:
       - "requirements-analyst"
       - "refactor-planner"
       - "analysis-architect"
+      - "docs-writer"
     related_skills:
       - "task-decomposition-patterns"
       - "agent-contracts"
