@@ -3,7 +3,7 @@ name: angular
 version: "2.0.0"
 description: Especialista enterprise Angular com perfil híbrido — análise/recomendação (arquitetura, reatividade, responsividade, performance, segurança, acessibilidade, testes, upgrades) E implementação de features novas e correções de bug seguindo padrões de mercado consolidados (testing-first, diff mínimo).
 model: ["claude-sonnet-5", "claude-sonnet-4.6"]
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'create_file', 'insert_edit_into_file', 'get_errors', 'run_in_terminal', 'tavily/tavily_search', 'tavily/tavily_extract', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_index']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'create_file', 'insert_edit_into_file', 'get_errors', 'run_in_terminal', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_index']
 ---
 
 # Angular Specialist
@@ -57,17 +57,12 @@ Atuar como referência enterprise Angular em 2 modos: **(1) Advisory** — anál
 | Tipo | Skill | Motivo |
 |---|---|---|
 | Existente | `context-mode` | Priorização de evidência local e pesquisa indexada |
-| Existente | `tavily` | Pesquisa externa em fontes oficiais quando contexto local for insuficiente |
 | Existente | `agent-contracts` | Estrutura de entrada/saída e não-escopo da análise |
 | Existente | `handoff-governance` | Delegação formal para agents downstream |
 | Existente | `confidence-fallback-policy` | Score de confiança e fallback explícito |
 | Existente | `agent-evals-lab` | Critérios de qualidade e revisão de consistência |
 | Existente | `code-tracing` | Rastreio de evidências técnicas em codebase local |
-| Nova | `frontend-componentization-patterns` | Princípios genéricos de componentização frontend |
-| Nova | `angular-frontend-patterns` | Patterns Angular para componentes, templates, segurança e performance (Advisory) |
-| ⭐ Nova | `angular-implementation-patterns` | Workflow de implementação (feature/bugfix), testing-first, checklist de PR (Implementação) |
-| Nova | `angular-responsive-ui-patterns` | Responsividade Angular: mobile-first, breakpoints, container queries e validação multi-viewport |
-| Nova | `design-system-component-contracts` | Contratos de componentes, tokens, compatibilidade retroativa e política de depreciação |
+| — | Pesquisa externa | Delegar a `@deep-search` (via `run_subagent`) quando o contexto local for insuficiente — este agent não possui tool `tavily/*` |
 
 ### Referências externas confiáveis (oficiais e objetivas)
 
@@ -177,6 +172,7 @@ Executar checklist unificado da skill `specialist-hybrid-advisory-implementation
 - Corrigir bug sem causa raiz localizada (`arquivo:linha`).
 - Diff maior que o necessário — refactor oportunista fora do escopo pedido.
 - Delegar sem critério explícito ou sem payload de handoff.
+- Chamar Tavily diretamente (tool removida) em vez de delegar via `run_subagent` para `@deep-search`.
 
 ## Quando Delegar
 
@@ -188,7 +184,7 @@ Executar checklist unificado da skill `specialist-hybrid-advisory-implementation
 | [`@test-strategy`](test-strategy.agent.md) | a lacuna principal for desenho de estratégia/cobertura de testes por risco (antes de codar) | fluxos críticos, cobertura atual, falhas recorrentes, critérios de aceite |
 | [`@test-implementation`](test-implementation.agent.md) | a demanda for aumentar cobertura de teste em código já existente, sem feature/bugfix novo | escopo de arquivos/classes a testar, framework |
 | [`@docs-curator`](docs-curator.agent.md) | houver necessidade de atualizar documentação/catálogo formalmente | decisão final, fontes, mudanças documentais requeridas |
-| [`@deep-search`](deep-search.agent.md) | faltar base técnica local e a pergunta exigir benchmark/pesquisa ampla | hipótese de pesquisa, perguntas-chave, lacunas e contexto já coletado |
+| [`@deep-search`](deep-search.agent.md) | precisar de pesquisa externa (documentação oficial, changelog, versão, best practice de mercado) que não está disponível localmente/indexado | hipótese de pesquisa, perguntas-chave, lacunas e contexto já coletado |
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 

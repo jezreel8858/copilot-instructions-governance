@@ -157,7 +157,7 @@ Se a solicitação pivotar de "consolidar contexto" para "executar/implementar u
 
 ## Combina Com (Commands)
 
-- `/research` -> levantar artefatos e evidências mínimas.
+- `/deep-search` -> levantar artefatos e evidências mínimas.
 - `/plan` -> estruturar escopo, projetos e dependências.
 - `/validate` -> checar completude e rastreabilidade do contexto.
 - `/implement` -> entregar o contexto consolidado para o agent executor.

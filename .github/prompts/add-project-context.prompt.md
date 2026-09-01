@@ -272,7 +272,7 @@ O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de 
 🎉 Artefato gerado com sucesso!
 ```
 
-**Output Fase 3**: Projeto registrado em catalog.yaml + adapters em .github/instructions/ → pronto para `/research`, `/plan`
+**Output Fase 3**: Projeto registrado em catalog.yaml + adapters em .github/instructions/ → pronto para `/deep-search`, `/plan`
 
 ### FASE 3.5: **Sugestão de Sumarização de Código-Fonte** (não-bloqueante, opcional)
 
@@ -334,14 +334,14 @@ Deseja iniciar a sumarização de código-fonte via agent especialista agora? (A
 ├─ Validação pós: ✅ YAML válido, entrada presente em catalog
 └─ Resultado: 🎉 Artefato gerado com sucesso!
 
-🚀 Projeto adicionado! Agora pronto para: /research, /plan, /implement
+🚀 Projeto adicionado! Agora pronto para: /deep-search, /plan, /implement
 ```
 
 ---
 
 ## 🔄 Quando Usar
 
-- **Início de tarefa em projeto novo** ← Use ANTES de `/research`
+- **Início de tarefa em projeto novo** ← Use ANTES de `/deep-search`
 - **Mudança de contexto entre projetos** ← Use quando trocar de repo
 - **Preparação para refatoração** ← Use ANTES de `/plan`
 - **Validação de padrões** ← Use quando não tem certeza de convenção
@@ -418,7 +418,7 @@ Após invocar `/add-project-context D:\workspace\[meu-projeto]`, verifique:
 
 Após `/add-project-context` completar com sucesso:
 
-- **`/research <tema>`** — explorar padrões específicos com contexto já estruturado
+- **`/deep-search <tema>`** — explorar padrões específicos com contexto já estruturado
 - **`/plan`** — planejar mudanças com knowledge base do projeto pronto
 - **`/implement`** — executar com `/ctx-checkpoint` para continuidade
 - **`/validate`** — validar qualidade do projeto
@@ -426,7 +426,7 @@ Após `/add-project-context` completar com sucesso:
 Exemplo típico:
 ```bash
 /add-project-context meu-projeto-backend
-/research "como usar @EmbeddedId"
+/deep-search "como usar @EmbeddedId"
 /plan "refatorar Entity para usar EmbeddedId"
 ```
 

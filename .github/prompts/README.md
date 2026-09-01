@@ -33,7 +33,7 @@ Prompts operacionais para workflow de execução no chat.
    └─ Descobre stack + cria binding
    └─ Reutilizável (repete para cada projeto)
 
-4. /research, /plan, /implement, /validate
+4. /deep-search, /plan, /implement, /validate
    └─ Usa contexto governança + binding já pronto
 ```
 
@@ -61,7 +61,7 @@ Prompts operacionais para workflow de execução no chat.
 | Command | Arquivo | Descrição |
 |---|---|---|
 | `/agent-router` | `.github/prompts/agent-router.prompt.md` | ⭐ **(NEW)** Alias fino do agent `@agent-router` — ponto de entrada obrigatório agent-first (R-037): Health Check (R-034), Prompt Structuring (R-041), classificação de intenção e delegação ao downstream correto. |
-| `/research` | `.github/prompts/research.prompt.md` | Pesquisa exaustiva no codebase via levantamento paralelo de contexto |
+| `/deep-search` | `.github/prompts/deep-search.prompt.md` | ⭐ **(v2.0)** Alias fino do agent `@deep-search` — Retriever/Researcher interno (codebase/context-mode) e externo (Tavily, budget de 3 chamadas), com decisão atômica vs composta e síntese com citação de fonte. Renomeado de `/research`. |
 | `/plan` | `.github/prompts/plan.prompt.md` | Cria plano de implementação detalhado com processo interativo |
 | `/implement` | `.github/prompts/implement.prompt.md` | Executa plano aprovado com checkpoints e pausas para verificação |
 | `/validate` | `.github/prompts/validate.prompt.md` | Valida implementação contra plano e identifica desvios |

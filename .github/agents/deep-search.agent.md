@@ -153,6 +153,6 @@ Se a solicitação pivotar de "pesquisar" para "implementar/aplicar alteração"
 
 | Command | Uso |
 |---|---|
-| `/research` | Iniciar investigação técnica/documental |
+| `/deep-search` | Iniciar investigação técnica/documental |
 | `/plan` | Definir escopo e decomposição de sub-queries |
 | `/validate` | Conferir qualidade de síntese e citações |

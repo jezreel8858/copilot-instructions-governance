@@ -3,7 +3,7 @@ name: spring-reactive
 version: "2.0.0"
 description: Especialista enterprise Spring WebFlux/Reactor com perfil híbrido — análise/recomendação (capacidade, resiliência, backpressure, observabilidade, segurança, compatibilidade Java/JDK) E implementação de features novas e correções de bug seguindo padrões de mercado consolidados (testing-first, diff mínimo, sem bloqueio de event-loop).
 model: "claude-sonnet-5"
-tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'create_file', 'insert_edit_into_file', 'get_errors', 'run_in_terminal', 'tavily/tavily_search', 'tavily/tavily_extract', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_index']
+tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'create_file', 'insert_edit_into_file', 'get_errors', 'run_in_terminal', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_index']
 ---
 
 # Spring Reactive Specialist
@@ -52,15 +52,12 @@ Atuar como referência enterprise Spring WebFlux/Reactor em 2 modos: **(1) Advis
 | Tipo | Skill | Motivo |
 |---|---|---|
 | Existente | `context-mode` | Evidência local e pesquisa indexada com rastreabilidade |
-| Existente | `tavily` | Complemento de pesquisa externa em fontes oficiais |
 | Existente | `agent-contracts` | Contrato de entrada/saída e não-escopo |
 | Existente | `handoff-governance` | Delegação formal entre agents |
 | Existente | `confidence-fallback-policy` | Score de confiança e fallback explícito |
 | Existente | `agent-evals-lab` | Checklist de qualidade da recomendação |
 | Existente | `code-tracing` | Mapeamento de fluxos e pontos bloqueantes |
-| Nova | `spring-reactive-webflux-patterns` | Práticas de composição reativa, backpressure e resiliência (Advisory) |
-| ⭐ Nova | `spring-reactive-implementation-patterns` | Workflow de implementação, operadores de erro, StepVerifier/WebTestClient (Implementação) |
-| Nova | `java-jdk-backend-governance` | Compatibilidade Java/JDK, LTS e migração |
+| — | Pesquisa externa | Delegar a `@deep-search` (via `run_subagent`) quando necessário — este agent não possui tool `tavily/*` |
 
 ## Decision Tree
 
@@ -206,6 +203,7 @@ Executar checklist unificado da skill `specialist-hybrid-advisory-implementation
 - Introduzir chamada bloqueante na cadeia reativa (`.block()`, `Thread.sleep`, JDBC clássico sem isolamento).
 - Diff maior que o necessário — refactor oportunista fora do escopo pedido.
 - Delegar sem handoff formal e sem evidência.
+- Chamar Tavily diretamente (tool removida) em vez de delegar via `run_subagent` para `@deep-search`.
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 
@@ -224,7 +222,7 @@ Este agent implementa dentro do seu domínio (WebFlux/Reactor), mas **não é ge
 | [`@test-strategy`](test-strategy.agent.md) | lacuna principal for desenho de estratégia de testes (antes de codar) | fluxos críticos, cobertura atual, critérios de aceite |
 | [`@test-implementation`](test-implementation.agent.md) | demanda for aumentar cobertura em código já existente, sem feature/bugfix novo | escopo de classes a testar, framework |
 | [`@docs-curator`](docs-curator.agent.md) | houver necessidade de atualização formal de documentação/catálogo | decisão final, fontes e mudanças documentais |
-| [`@deep-search`](deep-search.agent.md) | faltar base local e houver necessidade de benchmark amplo | hipóteses, lacunas e perguntas de pesquisa |
+| [`@deep-search`](deep-search.agent.md) | precisar de pesquisa externa (documentação oficial, changelog, versão, best practice de mercado) que não está disponível localmente/indexado | hipóteses, lacunas e perguntas de pesquisa |
 
 ## Combina Com (Commands)
 

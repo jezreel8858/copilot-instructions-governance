@@ -163,6 +163,6 @@ Se a solicitação pivotar de "elicitar requisito" para "decidir arquitetura/imp
 ## Combina Com (Commands)
 
 - `/plan` -> consome o requisito estruturado como input do plano de implementação.
-- `/research` -> quando o requisito exigir pesquisa externa antes de estruturar.
+- `/deep-search` -> quando o requisito exigir pesquisa externa antes de estruturar.
 - `/validate` -> checar se implementação atende aos critérios de aceite documentados.
 
