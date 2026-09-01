@@ -58,6 +58,7 @@ Gap de mercado identificado em `docs/plan/categorizacao-agents-mercado.md` §5.1
 | Artefato de baixo risco, reversível (doc `.md`, teste unitário isolado) | Sim — self-reflection, 1 round | Checklist objetivo do próprio agent |
 | Artefato de alto risco, difícil de reverter (mudança de contrato, decisão de arquitetura) | Não neste padrão — usar critic separado já existente (`code-review`, `analysis-architect`) | Handoff explícito, não self-reflection |
 | Falha grounded já disponível (teste rodou e falhou, lint apontou erro) | Sim — sempre corrigir antes de reportar (isso já é regra implícita em vários agents; esta skill formaliza o nome do padrão) | Corrigir e re-executar validação 1×, então reportar |
+| Artefato de governança gerado referencia outro artefato como "dependente/consumidor" (ex.: agent X consome skill Y) | Sim — confirmar que a referência é dependência funcional real, não só rótulo semântico (ver `governance-factory-patterns` § 3.1) | Gate de autocrítica semântica, 1 round, antes do checklist estrutural |
 
 ## 4) Checklist de Conformidade
 
@@ -72,11 +73,13 @@ Gap de mercado identificado em `docs/plan/categorizacao-agents-mercado.md` §5.1
 - ❌ Loop de revisão sem limite (thrashing — 4+ rounds sem convergência, achado de mercado).
 - ❌ Crítica puramente intrínseca quando existe fonte grounded disponível (teste, lint, fonte real).
 - ❌ Confundir esta skill com `code-review-patterns` (aquela é crítica externa formal de PR/diff por outro agent; esta é auto-revisão interna de 1 round pelo próprio agent gerador).
+- ❌ Registrar um agent/skill como "consumidor" desta skill quando o mecanismo real não é generate→critique→revise de um artefato (scope-creep — ex.: um Retriever decidindo parar/continuar chamadas externas usa *stop-condition*, não Reflection; caso corrigido: `deep-search` registrado indevidamente, depois removido).
 
 ## 6) Consumidores Mapeados
 
 - `docs-writer` — reexamina o `.md` gerado contra `documentation-writing-patterns` + fonte real antes de reportar (1 round).
 - `test-implementation` — reexamina cobertura/resultado do comando de teste executado antes de reportar `SUCESSO` (grounded — já é comportamento parcialmente presente na "Regra de Ouro: Bloqueia Teste Falhando"; esta skill formaliza como passo de Reflection nomeado).
+- `agent-factory` / `skill-factory` / `prompt-factory` — aplicam o gate de autocrítica semântica de [`governance-factory-patterns/SKILL.md`](../governance-factory-patterns/SKILL.md) § 3.1 antes do checklist estrutural: confirmam que toda referência cruzada a outro artefato (ex.: "agent X consome skill Y") é dependência funcional real, não rótulo. Caso concreto que motivou o gate: `deep-search` registrado incorretamente como consumidor desta própria skill (corrigido — ver §5 anti-padrões, item de scope-creep).
 - **Futuro:** qualquer novo agent Executor que produza artefato revisável antes de reportar sucesso.
 
 ## 7) Referências

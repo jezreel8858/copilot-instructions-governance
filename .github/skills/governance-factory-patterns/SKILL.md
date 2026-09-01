@@ -45,6 +45,8 @@ para o padrão de intake, se aplicável)
     ↓
 Gerar arquivo seguindo template canônico do tipo de artefato
     ↓
+Autocrítica grounded, 1 round (§3.1 — gate obrigatório antes de finalizar)
+    ↓
 Executar Checklist de Qualidade Estrutural (§3 desta skill)
     ↓
 Atualizar catálogo(s) + README na MESMA entrega (R-015 — atomicidade obrigatória)
@@ -75,6 +77,18 @@ Reportar no Formato de Saída (§4 desta skill)
 - [ ] Se `agent`: `run_subagent` presente no frontmatter `tools:` (bloqueante — R-042); seção "Retorno ao Router" declarada; banner "Agente Ativo" presente no Formato de Saída.
 - [ ] Se `skill`: `tier`, `category`, `triggers` em PT-BR presentes; `source_docs` aponta para arquivos reais (não inventados).
 - [ ] Se `prompt`: nomenclatura `.prompt.md`, frontmatter mínimo (`description`, `model` quando aplicável), separação de responsabilidade clara com `.instructions.md` (não duplicar regra já coberta por adapter).
+
+### 3.1) Gate de Autocrítica Semântica (grounded, 1 round — obrigatório)
+
+> Fecha o gap que a checklist estrutural acima **não cobre**: coerência de *conteúdo*, não de *forma*. Baseado no padrão single-shot de [`reflection-self-critique-patterns/SKILL.md`](../reflection-self-critique-patterns/SKILL.md) §2 — aplicado aqui porque os 3 factory agents **geram artefato revisável** (diferente de um Retriever decidindo parar/continuar uma chamada externa, que é anti-padrão de uso desta mesma skill).
+
+Antes de finalizar o conteúdo (antes do Checklist §3), responder objetivamente, com evidência (não opinião):
+
+1. **Toda referência cruzada a outra skill/agent no conteúdo gerado é uma dependência FUNCIONAL real, ou apenas um rótulo semântico?** (ex.: registrar um agent como "consumidor" de uma skill exige que o mecanismo do agent dependa daquela skill — não basta o tema "parecer" relacionado).
+2. **O escopo declarado da skill/agent sendo referenciado bate com o uso real proposto?** Reler a `description`/§0 do artefato referenciado e confirmar, não assumir pelo nome.
+3. **Esta mudança introduz acoplamento novo entre 2 artefatos que antes eram independentes?** Se sim, esse acoplamento é necessário ou é conveniência de redação?
+
+Se qualquer resposta indicar inconsistência: corrigir o conteúdo (remover referência indevida, ajustar redação) **antes** de prosseguir para o Checklist §3 — máximo 1 round de correção automática (alinhado a R-011/regra "Sem Loops"); se ainda inconsistente após 1 round, reportar como bloqueante (R-020) e aguardar orientação.
 
 ## 4) Formato de Saída — Bloco de Validações ✅/❌ (parametrizável)
 
@@ -108,6 +122,7 @@ Nenhuma criação/revisão de artefato de governança é considerada completa se
 - ❌ Agent criado sem `run_subagent` no frontmatter (estruturalmente incapaz de cumprir R-042).
 - ❌ Skill criada sem `triggers` em PT-BR ou com `source_docs` apontando para arquivo inexistente.
 - ❌ Reinventar o fluxo de Decision Tree em vez de referenciar esta skill — risco de drift entre os 3 factory agents.
+- ❌ Registrar referência cruzada a outra skill/agent (ex.: "consumidor de X") sem confirmar dependência funcional real — pular o gate §3.1 e validar só a estrutura (achado real: `deep-search` registrado como consumidor de `reflection-self-critique-patterns` sem uso funcional).
 
 ## 7) Consumidores Mapeados
 
@@ -121,4 +136,6 @@ Nenhuma criação/revisão de artefato de governança é considerada completa se
 - `CLAUDE.md` — R-015 (atualização atômica de catálogo).
 - `.github/copilot-instructions.md` — R-042 (tooling mínimo, `run_subagent` bloqueante).
 - `.github/skills/agent-contracts/SKILL.md` §8-9 — baseline de formato de saída e tooling mínimo por perfil.
+- `.github/skills/reflection-self-critique-patterns/SKILL.md` — padrão de autocrítica grounded 1-round usado no gate §3.1.
+- `.github/skills/governance-audit-patterns/SKILL.md` — taxonomia de smells usada como referência de coerência semântica no gate §3.1 (auditoria pós-hoc equivalente feita por `agent-auditor`).
 

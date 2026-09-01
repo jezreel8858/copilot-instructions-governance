@@ -150,22 +150,13 @@ tavily_research(
 - ❌ Chamar Tavily sem verificar ctx_search antes
 - ❌ Usar `tavily_research` para Q&A simples (muito caro — use `tavily_search`)
 - ❌ Passar resultado bruto de Tavily direto para o contexto sem sumarizar (usa tokens)
-- ❌ Executar pesquisa multi-subtema sequencialmente em vez de decompor e paralelizar (ver § 8)
+- ❌ Executar pesquisa multi-subtema sequencialmente em vez de decompor e paralelizar (ver § 7)
+- ❌ Exceder o budget de 3 chamadas Tavily por pergunta/sub-query sem aplicar o checkpoint de autocrítica (ver § 9)
+- ❌ Encadear rodadas de confirmação quando a evidência já coletada já responde com confiança média/alta
 
 ---
 
-## 7) Referências
-
-- Tavily MCP Docs: https://docs.tavily.com/
-- R-019 (Busca web proativa): `CLAUDE.md`
-- Integração ctx: `.github/skills/context-mode/SKILL.md`
-- Anthropic, "How we built our multi-agent research system" (2026) — https://www.anthropic.com/engineering/multi-agent-research-system — padrão orchestrator-worker (base da § 8).
-- Encytics, "The Router-Planner Pattern" (2026) — https://www.encytics.ai/insights/blog/router-planner-pattern-multi-agent-architecture
-- arXiv:2506.18096, "Deep Research Agents: A Systematic Examination" (2025) — retrieval planning dinâmico e síntese estruturada.
-
----
-
-## 8) Decomposição e Paralelização (Orchestrator-Worker)
+## 7) Decomposição e Paralelização (Orchestrator-Worker)
 
 Para pesquisa **composta** (2+ subtemas, comparação, "melhores práticas de X e Y"), siga o padrão orchestrator-worker do Anthropic Multi-Agent Research System em vez de buscar tudo sequencialmente em uma única chamada:
 
@@ -178,9 +169,48 @@ Para pesquisa **composta** (2+ subtemas, comparação, "melhores práticas de X 
 
 **Quando NÃO paralelizar:** pergunta atômica (1 fato, 1 tema) — buscar direto com `tavily_search`, sem overhead de decomposição.
 
-## 9) Checklist de Síntese e Citação
+## 8) Checklist de Síntese e Citação
 
 - [ ] Cada afirmação relevante cita fonte (título + URL + ano).
 - [ ] Fontes contraditórias foram reconciliadas ou explicitamente apontadas.
 - [ ] Nenhuma fonte foi inventada — lacuna declarada quando a busca não retornar dado.
 - [ ] Veredito final explícito (não apenas lista de achados soltos).
+
+---
+
+## 9) Budget de Chamadas por Pesquisa (Anti-Overuse)
+
+Problema observado: agents consumidores (ex.: `deep-search`) podem se aprofundar além do necessário, encadeando chamadas Tavily sucessivas "só para garantir" e consumindo cota de forma desproporcional ao ganho de confiança marginal.
+
+**Regra de budget (aplicável a qualquer consumidor desta skill):**
+
+```
+Budget: no máximo 3 chamadas Tavily (tavily_search/tavily_extract/tavily_crawl/
+        tavily_map/tavily_research, combinadas) por pergunta atômica ou por
+        sub-query em pesquisa composta (workers paralelos NÃO somam budget entre si).
+
+Checkpoint (após a 2ª chamada, antes da 3ª):
+  "A evidência já coletada responde com confiança média/alta?"
+    ├─ Sim -> parar, sintetizar, não fazer 3ª chamada.
+    └─ Não -> 1 chamada final; encerrar independentemente do resultado e
+              declarar lacuna explícita (nunca insistir além do budget).
+
+Exceder o budget exige justificativa explícita no relatório final
+(ex.: fontes conflitantes que exigem desempate) — nunca silenciosa.
+```
+
+Este checkpoint é uma aplicação restrita do padrão de autocrítica de 1 round descrito em `reflection-self-critique-patterns/SKILL.md` — usado aqui como **critério de parada** (stop-condition) antes de escalar para nova chamada externa, não como revisão de qualidade de um artefato gerado.
+
+**Por que 3 e não um número maior:** pesquisa profunda (`tavily_research`, `search_depth="advanced"`) já retorna múltiplas fontes por chamada — 3 chamadas cobrem o padrão hierárquico (busca ampla → refinamento → extração/desempate) sem justificar rodadas adicionais de "confirmação".
+
+---
+
+## 10) Referências
+
+- Tavily MCP Docs: https://docs.tavily.com/
+- R-019 (Busca web proativa): `CLAUDE.md`
+- Integração ctx: `.github/skills/context-mode/SKILL.md`
+- Critério de parada (checkpoint de autocrítica): `.github/skills/reflection-self-critique-patterns/SKILL.md`
+- Anthropic, "How we built our multi-agent research system" (2026) — https://www.anthropic.com/engineering/multi-agent-research-system — padrão orchestrator-worker (base da § 7).
+- Encytics, "The Router-Planner Pattern" (2026) — https://www.encytics.ai/insights/blog/router-planner-pattern-multi-agent-architecture
+- arXiv:2506.18096, "Deep Research Agents: A Systematic Examination" (2025) — retrieval planning dinâmico e síntese estruturada.
