@@ -1,6 +1,6 @@
 # code-knowledge-graph — Script de Referência (100% Semgrep)
 
-> Script de referência (R-026) do agent [`code-knowledge-graph.agent.md`](../../code-knowledge-graph.agent.md). Única fonte de extração: **Semgrep CLI** (determinístico, RNF-008) — substitui integralmente o regex artesanal (`build-graph.js`, removido) e a lib `dependency-cruiser` (avaliada e rejeitada — ver histórico em `docs/requirements/REQ-grafo-conhecimento-codigo.md` §15).
+> Script de referência (R-026) do agent [`code-knowledge-graph.agent.md`](../../code-knowledge-graph.agent.md).
 
 ## Arquivos
 

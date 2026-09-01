@@ -213,6 +213,8 @@ Seguir o template da skill `business-rules-governance` §5 (Formato de Relatóri
 | INTG (Integração) | ⚠️ Média | Quebra contrato com sistema externo |
 | AUD (Auditoria) | ⚠️ Média | Perda de rastreabilidade, mas não funcional |
 
+**Enriquecimento opcional de severidade (blast radius/risco estrutural):** quando um grafo de conhecimento (`@code-knowledge-graph`) **já existir/estiver cacheado** para o módulo violado, consultar blast radius (RF-015) e risco por dependentes reais + sensibilidade PII/financeiro (RF-018) para complementar — nunca substituir — a severidade por categoria acima. Ex.: "BR-014 (CALC) violada — Alta por categoria **e** 6 dependentes diretos no grafo, incluindo serviço financeiro". Nunca acionar construção de grafo sob demanda dentro deste fluxo (custo/escopo de `code-knowledge-graph` é projeto/cross-repo, não por-BR) — só reaproveitar o que já existir.
+
 ---
 
 ## Contrato Operacional
@@ -303,6 +305,7 @@ Próximo passo mínimo:
 | Documento de regras gerado precisa de curadoria/revisão | `@docs-curator` |
 | Violação implica bug em produção | `@bug-triage` |
 | Regras novas detectadas precisam de testes | `@test-strategy` |
+| Modo `validate` precisa enriquecer severidade com blast radius/risco estrutural, ou modo `extract` em escopo de projeto grande/cross-repo precisa mapear "Dependências" da regra a partir de grafo já construído (nunca construir grafo sob demanda) | `@code-knowledge-graph` |
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 

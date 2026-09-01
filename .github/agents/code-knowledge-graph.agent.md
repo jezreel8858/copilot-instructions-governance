@@ -55,7 +55,6 @@ Estes 6 valores **substituem** qualquer autoavaliação subjetiva nas seções D
 
 | Item | Caminho/Uso | Observação |
 |---|---|---|
-| Requisito de origem (RF-001..RF-019, RNF-001..RNF-012, decisões §6/§8, execução §11..§14) | [`docs/requirements/REQ-grafo-conhecimento-codigo.md`](../../docs/requirements/REQ-grafo-conhecimento-codigo.md) | Fonte normativa deste agent; §8.3 é o plano técnico das extensões RF-013..RF-019; §11..§14 registram a validação real 9/9 e a execução da remoção de `dependency-graph-mapping` |
 | Catálogo de projetos cross-repo | [`docs/ai-context/catalog.yaml`](../../docs/ai-context/catalog.yaml) | Escopo multi-repo (RF-003) — busca de resolução cross-repo limitada aos projetos aqui registrados |
 | Agent de sumarização (fonte de AST compartilhada) | [`code-summarizer.agent.md`](code-summarizer.agent.md) | Camada de cache `ast-extract:*` compartilhada (§6.3 do REQ) — sempre checar antes de reparsear |
 | Tabela de acoplamento e de risco (fonte normativa própria deste agent) | ver §RF-017/§RF-018 abaixo | Executado RF-012/RNF-009: não é mais replicada de skill externa — este agent é a fonte única de verdade para `coupling`/risco de código |
@@ -280,7 +279,6 @@ Próximo passo mínimo:
 
 > Antes de invocar este agent, anexe os arquivos abaixo. Se faltar, **PEÇA o anexo** — nunca infira.
 
-- [`docs/requirements/REQ-grafo-conhecimento-codigo.md`](../../docs/requirements/REQ-grafo-conhecimento-codigo.md) — requisito de origem, decisões técnicas §6, plano de extensão §8 e execução da remoção §11..§14.
 - [`docs/ai-context/catalog.yaml`](../../docs/ai-context/catalog.yaml) — escopo cross-repo (RF-003).
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais (R-009, R-010, R-038).
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais e Context Mode.

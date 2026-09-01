@@ -41,7 +41,7 @@ Você atua como arquiteto sênior para análise técnica de mudanças, requisito
 | Instructions por projeto/stack | [`../instructions/README.md`](../instructions/README.md) | Carregamento sob demanda via adapters |
 | Catálogo de Agents | [`README.md`](README.md) | Roteamento entre agentes especializados |
 | Skill — Contrato de Integração | `.github/skills/integration-contract-analysis/SKILL.md` | Padrões OpenAPI/AsyncAPI/gRPC/GraphQL |
-| Agent — Grafo de Conhecimento de Código | [`code-knowledge-graph.agent.md`](code-knowledge-graph.agent.md) | Fonte de blast radius, acoplamento (tight/loose/eventual/circular) e risco de código/arquitetura via `run_subagent` — substitui a antiga skill `dependency-graph-mapping` (removida, ver `docs/requirements/REQ-grafo-conhecimento-codigo.md` §14) |
+| Agent — Grafo de Conhecimento de Código | [`code-knowledge-graph.agent.md`](code-knowledge-graph.agent.md) | Fonte de blast radius, acoplamento (tight/loose/eventual/circular) e risco de código/arquitetura via `run_subagent` |
 | Skill — Diagramas Mermaid | `.github/skills/mermaid-diagrams/SKILL.md` | Visualização de fluxos e dependências |
 | Skill — Context Mode | `.github/skills/context-mode/SKILL.md` | Coleta eficiente de artefatos |
 | Skill — Rastreio de Código | `.github/skills/code-tracing/SKILL.md` | Localizar dependências/símbolos no código (grep → semântico → call chain) |
