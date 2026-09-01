@@ -169,9 +169,9 @@ orquestracao_rf008:
     expected:
       ordem_esperada:
         - "1. Verificar cache (ctx_search)"
-        - "2. Tentar via determinística (heurística/AST via ctx_execute/ctx_execute_file)"
+        - "2. Tentar via determinístico (heurística/AST via ctx_execute/ctx_execute_file)"
         - "3. Somente se insuficiente (RF-004), acionar fallback LLM (RNF-001)"
-      nao_deve: "acionar fallback LLM antes de tentar via determinística"
+      nao_deve: "acionar fallback LLM antes de tentar via determinístico"
     metricas: ["tool_correctness", "plan_adherence"]
     critico: true
     threshold: 1.00
@@ -186,7 +186,7 @@ custo_hibrido_rnf001:
     descricao: "RNF-001 — via determinística suficiente NÃO deve acionar LLM"
     input:
       arquivo: "docs/ai-context/evals/fixtures/code-summarizer/pricing.py"
-      condicao: "parser determinístico extrai assinatura pública + cobre >= 60% dos blocos de decisão (ver TODO-b abaixo)"
+      condicao: "parser determinístico (ast nativo) extrai 100% da assinatura pública E cobre >= 80% dos blocos de decisão (If/IfExp/Compare/Raise)"
     expected:
       modo_usado: "Determinístico"
       chamadas_llm_esperadas: 0
@@ -194,18 +194,12 @@ custo_hibrido_rnf001:
       chamadas_llm: "> 0"
     critico: true
     threshold: 1.00
-    provisorio: true
-    nota_provisorio: >
-      Threshold de "via determinística suficiente" usa a hipótese registrada no próprio
-      agent (TODO-b: cobertura AST < 60% OU ausência de assinatura pública OU erro de
-      parsing aciona fallback) — provisório, sujeito a revisão quando @analysis-architect
-      fechar o critério objetivo (ver TEST-STRATEGY-code-summarizer.md §5).
 
   - id: "rnf001-002"
     descricao: "RNF-001 — via determinística insuficiente deve acionar fallback LLM leve, mesmo provedor"
     input:
       arquivo_simulado: "arquivo com sintaxe não suportada pelo parser (stack fora do catalog.yaml ou erro de parsing forçado)"
-      condicao: "parser lança erro de sintaxe/stack não suportada (gatilho iii do TODO-b)"
+      condicao: "parser lança erro de sintaxe/stack não suportada (critério iii do threshold fechado), OU <100% assinatura pública, OU <80% blocos de decisão"
     expected:
       modo_usado: "Fallback LLM"
       chamadas_llm_esperadas: 1
@@ -214,8 +208,6 @@ custo_hibrido_rnf001:
       provedor_llm: "provedor de terceiro não relacionado ao ecossistema em uso"
     critico: true
     threshold: 1.00
-    provisorio: true
-    nota_provisorio: "Mesmo TODO-b acima — gatilho (iii) erro de parsing usado como hipótese válida, não threshold fechado."
 
 # ─────────────────────────────────────────────
 # SUITE 4 — Custo Não Pode Superar Economia (RNF-002)
@@ -343,6 +335,7 @@ execucao:
     - "RF-007 (ausência de meta numérica não bloqueia) — risco Médio/P2"
     - "RNF-003 (idempotência/cache) — risco Médio/P2"
   limitacoes_conhecidas:
-    - "Suíte descreve comportamento esperado (contrato) — NÃO foi executada contra o agent real via run_subagent nesta rodada; requer execução real (DeepEval/pytest harness) para virar PASS/FAIL mensurável."
-    - "rnf001-001/rnf001-002 dependem de TODO-b (threshold de fallback), ainda não fechado por @analysis-architect — marcados como provisorio: true."
-
+    - "Smoke test real executado em 2026-08-31 contra a função extract() isolada (não a orquestração completa do agent — cache/Decision Tree/Formato de Saída): Java, TypeScript (padrão Signals/computed) e Python PASSARAM com 100% assinatura pública + 100% blocos de decisão. SQL FALHOU no fixture golden-sql (node-sql-parser não suporta GENERATED ALWAYS AS...STORED do Postgres) — comportamento correto, aciona fallback Modo 2 via critério (iii). Evidência em .github/agents/snippets/code-summarizer/README.md."
+    - "Threshold de fallback (TODO-b) fechado em 2026-08-31 por @analysis-architect: <100% assinatura pública OU <80% blocos de decisão OU erro de parsing/stack não suportada. Libs fechadas por stack: web-tree-sitter (Java/TS), ast nativo (Python), node-sql-parser (SQL) — ver code-summarizer.agent.md § 'Libs de Parsing por Stack (Modo 1)'. rnf001-001/rnf001-002 atualizados para refletir o threshold fechado (não são mais provisórios)."
+    - "Suíte YAML PARCIALMENTE automatizada por @test-implementation via pytest em tests/code-summarizer/ (ver README próprio): grupos fidelidade_multistack (4/4 casos) e seguranca_rnf005 (4/4 casos) rodam como testes reais contra extract-treesitter.js/extract-sql.js/extract-python-ast.py — 9 testes passed (incluindo gov-cs-002, que é grep estático executável). Grupos orquestracao_rf008, custo_hibrido_rnf001, custo_economia_rnf002 e o caso gov-cs-001 permaneciam SKIPPED/pending — dependiam de orquestração completa do agent (run_subagent, cache, Decision Tree) ainda não implementada como harness executável; nenhum mock de LLM foi criado para simular esse comportamento."
+    - "ATUALIZAÇÃO (@test-strategy + @test-implementation, abordagem HÍBRIDA): orquestracao_rf008 (orq-001, orq-002), custo_hibrido_rnf001 (rnf001-001, rnf001-002), custo_economia_rnf002→rnf002-002 e gov-cs-001 foram PROMOVIDOS de pending para trilha CI (contrato/lógica documentada), via test_orquestracao_contrato.py, test_custo_contrato.py e test_pending_suites.py::test_gov_cs_001_bypass_por_agent_solicitante. Implementação: (1) grep estático confirmando que code-summarizer.agent.md DECLARA as exigências de RF-008 e que nenhum .agent.md do catálogo tem instrução ESCRITA de bypass; (2) máquina de estados PURA (decision_tree_contrato.py::decidir_modo) que espelha a ordem cache→determinístico→fallback, alimentada com resultados REAIS de extract-python-ast.py/extract-sql.js contra os golden fixtures; (3) função de cálculo pura custo×economia (avaliar_custo_economia). NENHUM destes testes invoca LLM real nem o agent via run_subagent — validam CONTRATO/LÓGICA DOCUMENTADA, não comportamento real do LLM em runtime. A trilha Canary E2E (execução real via run_subagent, cache real, contagem real de chamadas LLM) permanece como TODO explícito, documentado em tests/code-summarizer/README.md, fora de escopo desta rodada por falta de harness de execução de agent disponível no pytest local. rnf002-001 permanece pending individualmente (prioridade 'Could', sem urgência nesta rodada). Suíte completa: 19 passed, 1 skipped (rnf002-001)."

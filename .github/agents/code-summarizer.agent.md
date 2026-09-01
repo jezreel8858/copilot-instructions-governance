@@ -20,12 +20,11 @@ Ser o **único ponto de entrada** para sumarização de código-fonte no reposit
 - ❌ NÃO reproduzir credencial/token/segredo do código-fonte original no sumário (R-010/RNF-005).
 - ❌ NÃO persistir/gravar sumário sem confirmação quando invocado via sugestão pós-`/add-project-context` FASE 3.5 (R-009/RF-001).
 - ❌ NÃO implementar feature/bugfix de aplicação — este agent apenas sumariza, nunca corrige ou refatora o código-fonte.
-- ❌ NÃO decidir sozinho o threshold de fallback determinístico→LLM (ver nota abaixo) — apenas propor.
 - ✅ SEMPRE medir e reportar tamanho original vs. sumarizado (bytes e/ou tokens estimados) a cada execução (RF-006), mesmo sem meta numérica definida (RF-007 — não bloqueia).
 - ✅ SEMPRE tentar granularidade de arquivo inteiro no MVP (RF-003); granularidade fina (função/classe) é Should, fase 2.
 - ✅ SEMPRE preservar assinatura pública + regras de negócio identificáveis no sumário (RF-004) — ver critérios objetivos abaixo.
 
-> **Nota interna (threshold de fallback, pendente de decisão técnica):** acionar o Modo 2 (LLM) quando (i) o parser determinístico não extrair assinatura pública de ≥1 símbolo exportado, OU (ii) a heurística de regra de negócio cobrir <60% dos blocos de decisão identificados por AST, OU (iii) o parser lançar erro de sintaxe/stack não suportada. Valor **provisório** — decisão final cabe a `@analysis-architect`/`@spring-boot`/`@angular` conforme a stack; este agent nunca fecha esse threshold sozinho.
+> **Threshold de fallback (FECHADO — decisão técnica de `@analysis-architect`, 2026-08-31):** acionar o Modo 2 (LLM) quando **qualquer uma** das condições ocorrer: **(i)** menos de 100% dos símbolos exportados/públicos tiveram assinatura extraída pelo parser determinístico; **(ii)** menos de 80% dos blocos de decisão identificados pela AST/heurística foram mencionados no sumário (mesmo par de números de "Critérios Objetivos e Mensuráveis" — não existe threshold intermediário separado); **(iii)** o parser lançar erro de sintaxe, ou a extensão do arquivo não corresponder a nenhum parser registrado (stack não suportada). Definição operacional de "bloco de decisão" por stack — ver "Libs de Parsing por Stack (Modo 1)" abaixo.
 
 ## Critérios Objetivos e Mensuráveis
 
@@ -51,13 +50,47 @@ Estes 4 valores **substituem** qualquer autoavaliação subjetiva de "preservei 
 | Item | Caminho/Uso | Observação |
 |---|---|---|
 | Catálogo de stacks cobertas | [`docs/ai-context/catalog.yaml`](../../docs/ai-context/catalog.yaml) | Escopo multi-stack (RF-005) — Java/Spring Boot, Angular/TS, Python, SQL |
-| Casos de eval e golden files | [`docs/ai-context/evals/casos-code-summarizer.yaml`](../../docs/ai-context/evals/casos-code-summarizer.yaml) | Fixtures por stack para autoteste/validação de fidelidade (RF-004/RF-005) |
+| Casos de eval e golden files | [`docs/ai-context/evals/casos-code-summarizer.yaml`](../../docs/ai-context/evals/casos-code-summarizer.yaml) | Fixtures por stack para autoteste/validação de fidelidade (RF-004/RF-005) — usados na validação do threshold fechado |
 | Catálogo textual de agents | [`README.md`](README.md) | Registro deste agent como ponto de entrada único |
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Registro oficial para invocação via `run_subagent` |
-| Análise técnica de threshold (nota interna) | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Handoff para fechar critério objetivo de fallback |
-| Especialistas de stack (apoio a threshold) | [`spring-boot.agent.md`](spring-boot.agent.md), [`angular.agent.md`](angular.agent.md) | Consultar para calibrar heurística por stack quando necessário |
+| Especialistas de stack (apoio a heurística) | [`spring-boot.agent.md`](spring-boot.agent.md), [`angular.agent.md`](angular.agent.md) | Consultar para calibrar heurística por stack quando necessário |
 | Skill de operação em sandbox | [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) | `ctx_execute`/`ctx_execute_file` executam a via determinística; `ctx_index` persiste cache (RNF-003) |
 | Skill de contratos de agent | [`../skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) | Tooling baseline (§9) e formato de saída por perfil (§8) |
+
+## Libs de Parsing por Stack (Modo 1) — FECHADO (decisão `@analysis-architect`, 2026-08-31)
+
+> Pesquisa externa por `@deep-search` + validação técnica por `@analysis-architect` no contexto real do sandbox `ctx_execute`/`ctx_execute_file`.
+
+| Stack | Lib (tool interna, nunca exposta — RNF-007) | Motivo |
+|---|---|---|
+| Java | `web-tree-sitter` (grammar `tree-sitter-java`) | WASM puro, sem compilação nativa; roda sob `ctx_execute(language:"javascript")` |
+| Angular/TypeScript | `web-tree-sitter` (grammar `tree-sitter-typescript`) | Mesma lib/API de Java — 1 Query Language (S-expression) reaproveitada para 2 stacks |
+| Python | `ast` (módulo nativo da stdlib) | `ctx_execute` já roda `language:"python"` nativamente; `ast` é canônico, sem custo de download/init de WASM — supera `tree-sitter-python` no contexto deste sandbox |
+| SQL | `node-sql-parser` (npm, ~1k⭐, Apache-2.0) | Gramática comunitária `tree-sitter-sql` é imatura; `node-sql-parser` retorna AST semântico (`tableList`/`columnList`) pronto, multi-dialeto |
+
+**Definição operacional de "bloco de decisão" por stack** (usada nos critérios de 80% acima):
+
+| Stack | Nós a contar como bloco de decisão |
+|---|---|
+| Java/TS (tree-sitter) | `if_statement`, `switch_statement`, `conditional_expression` (ternário), **e** `binary_expression` com operador relacional (`>`,`<`,`>=`,`<=`,`==`,`!=`) em posição de retorno/atribuição (cobre padrão `computed(() => x > y)` do Angular Signals) |
+| Python (`ast`) | `If`, `IfExp` (ternário), `Compare`, `Raise` |
+| SQL (`node-sql-parser`) | `CHECK` constraint, coluna `GENERATED ALWAYS AS`, cláusula `WHERE`/`HAVING` |
+
+**Riscos conhecidos (mitigar na implementação):**
+- Overhead de `Parser.init()` do `web-tree-sitter` por chamada — agrupar múltiplos arquivos por chamada `ctx_execute`, não 1-arquivo-por-vez (RNF-002).
+- **CONFIRMADO por smoke test (2026-08-31):** `node-sql-parser` **falha** ao parsear DDL Postgres com `GENERATED ALWAYS AS (...) STORED` (erro: `Expected "--", "/*", "BY"...`). Comportamento correto e esperado: `parseErrorDetected: true` aciona automaticamente o critério (iii) do threshold → fallback para Modo 2. Não requer correção no script — é o design funcionando como projetado.
+- `npm install web-tree-sitter tree-sitter-java tree-sitter-typescript node-sql-parser` é permitido por `context-mode/SKILL.md` §5/§6.
+
+**Implementação de referência (R-026 — código real vive fora deste arquivo):**
+
+| Stack | Script | Executado via |
+|---|---|---|
+| Java / Angular-TS | [`snippets/code-summarizer/extract-treesitter.js`](snippets/code-summarizer/extract-treesitter.js) | `ctx_execute_file(language:"javascript")` |
+| Python | [`snippets/code-summarizer/extract-python-ast.py`](snippets/code-summarizer/extract-python-ast.py) | `ctx_execute_file(language:"python")` |
+| SQL | [`snippets/code-summarizer/extract-sql.js`](snippets/code-summarizer/extract-sql.js) | `ctx_execute_file(language:"javascript")` |
+| Segredo/credencial (cross-stack) | [`snippets/code-summarizer/secret-redaction.js`](snippets/code-summarizer/secret-redaction.js) | Importado pelos scripts acima — garante RNF-005 |
+
+Índice completo e status de validação: [`snippets/code-summarizer/README.md`](snippets/code-summarizer/README.md).
 
 ## Decision Tree
 
@@ -132,13 +165,13 @@ Próximo passo mínimo:
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais (R-009, R-010, R-038).
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais e Context Mode.
 - [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — execução em sandbox (`ctx_execute`/`ctx_execute_file`) e cache (`ctx_index`).
+- [`snippets/code-summarizer/README.md`](snippets/code-summarizer/README.md) — scripts de referência do Modo 1 por stack.
 - Arquivo(s)-alvo a sumarizar (caminho explícito) — nunca inferir qual arquivo sumarizar sem o solicitante informar.
 
 ## Diretrizes
 
 - Manter todo o sumário em texto objetivo, sem opinião ou refatoração sugerida (fora de escopo).
 - Preferir sempre o Modo Determinístico; documentar por que o Modo Fallback foi necessário quando usado.
-- Nunca confundir "insuficiente para o threshold" com "preferência de qualidade" — o threshold de fallback ainda é provisório (ver nota interna em "CRÍTICO: ESCOPO DO AGENT").
 - Reportar sempre as métricas de RF-006, mesmo quando o delta for pequeno ou negativo.
 
 ## Anti-padrões
@@ -147,15 +180,13 @@ Próximo passo mínimo:
 - Acionar o LLM de fallback por padrão, sem tentar a via determinística primeiro (viola RNF-001).
 - Persistir sumário em cache sem confirmação quando o gatilho for RF-001 (viola R-009).
 - Reproduzir segredo/credencial do código original no texto do sumário (viola R-010/RNF-005).
-- Fechar sozinho o threshold de fallback como decisão própria, sem handoff/validação técnica.
 - Sumarizar em granularidade fina (função/classe) como se fosse MVP — isso é Should, fase 2 (RF-003).
 
 ## Quando Delegar
 
 | Destino | Delegar quando | Handoff mínimo |
 |---|---|---|
-| [`@analysis-architect`](analysis-architect.agent.md) | fechamento do threshold objetivo de fallback ou decisão de onde no pipeline `context-mode` a sumarização se encaixa | hipótese de threshold (ver nota interna) + evidências de fidelidade |
-| [`@spring-boot`](spring-boot.agent.md) / [`@angular`](angular.agent.md) | calibrar heurística determinística específica da stack (ex.: o que conta como "regra de negócio identificável" em Java vs TS) | trecho de código, stack, critério de fidelidade atual |
+| [`@spring-boot`](spring-boot.agent.md) / [`@angular`](angular.agent.md) | calibrar heurística determinística específica da stack (ex.: ajustar definição de "bloco de decisão" para novos padrões de Java/TS) | trecho de código, stack, critério de fidelidade atual |
 | [`@agent-factory`](agent-factory.agent.md) | qualquer ajuste estrutural deste próprio agent (rename, nova ferramenta, etc.) | proposta de mudança + justificativa |
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
@@ -164,7 +195,7 @@ Próximo passo mínimo:
 
 Se a solicitação pivotar de "sumarizar código-fonte" para implementar/corrigir/refatorar o código sumarizado, retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
 
-**Gatilho de deriva:** pedido de correção/refatoração do código sumarizado (→ `@bug-triage`/`@refactor-planner`/stack specialist); pedido de definir threshold de fallback ou nome do agent como decisão fechada (→ `@analysis-architect`/`@agent-factory`, nunca decidir sozinho); pedido de expor a lib de parsing diretamente a outro agent (bloquear, é violação de RF-008/RNF-007).
+**Gatilho de deriva:** pedido de correção/refatoração do código sumarizado (→ `@bug-triage`/`@refactor-planner`/stack specialist); pedido de expor a lib de parsing diretamente a outro agent (bloquear, é violação de RF-008/RNF-007); pedido de recalibrar o threshold já fechado ou a lib de uma stack (→ `@analysis-architect`, decisão técnica, não deste agent sozinho).
 
 ## Combina Com (Commands)
 
