@@ -5,7 +5,7 @@ description: >-
   Entry point obrigatório agent-first para classificar solicitações e delegar ao
   agent downstream correto, com fallback para pesquisa e análise de integração.
   Re-triagem obrigatória por turno (R-042 — anti sticky-session).
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['list_dir', 'read_file', 'file_search', 'grep_search', 'ask_questions', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Agent Router

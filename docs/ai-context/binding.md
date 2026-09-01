@@ -22,27 +22,32 @@ Camada 2 (Stack/Adapter — Priority 50)
   ├─ database.instructions.md             → applyTo: migrations/**, **/*.sql
   └─ devops.instructions.md               → applyTo: **/Dockerfile*, kubernetes/**
        ↓
-Camada 3 (Projeto — Priority 40)
+Camada 3 (Projeto — Priority 40, Local Overlay — R-043)
 ```
+
+> ⚠️ **Desacoplamento total (R-043)**: a Camada 3 vive em `catalog.local.yaml` (gitignored), NUNCA em `catalog.yaml` (compartilhado/commitado). Todo agent/prompt faz merge em memória dos dois arquivos ao ler a lista de projetos — a escrita de projeto/adapter NUNCA toca `catalog.yaml`.
 
 ---
 
 ## Projetos Registrados
 
-| Projeto | Tipo | Adapter | Caminho |
-|---------|------|---------|---------|
+> Projetos vivem em `catalog.local.yaml` (gitignored, R-043) — **nunca** em `catalog.yaml`.
+> Este arquivo (`binding.md`) é compartilhado/commitado e nunca lista projetos reais.
 
-> Para a lista completa e atualizada, consulte `catalog.yaml` seção `projetos:`.
+Para a lista real desta máquina, consulte `catalog.local.yaml` (se existir localmente).
 
 ---
 
 ## Gerenciamento de Projetos
 
 ```bash
-# Adicionar projeto
+# Setup único (1x por clone/máquina) — cria o overlay local gitignored
+cp docs/ai-context/catalog.local.yaml.example docs/ai-context/catalog.local.yaml
+
+# Adicionar projeto (grava em catalog.local.yaml, nunca em catalog.yaml)
 /add-project-context <caminho-absoluto-do-projeto>
 
-# Remover projeto
+# Remover projeto (remove de catalog.local.yaml)
 /del-project-context <nome-do-projeto>
 
 # Verificar saúde do binding

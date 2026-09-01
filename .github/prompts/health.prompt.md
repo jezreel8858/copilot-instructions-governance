@@ -4,7 +4,7 @@ description:
   Verifica saúde completa da infraestrutura de governança. Valida catalog.yaml,
   .index.json, binding context, agents acessíveis e sincronização entre arquivos.
   Vai além do /ctx-doctor (que cobre apenas Context Mode MCP).
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['read_file', 'list_dir', 'file_search', 'run_in_terminal', 'run_subagent']
 source_docs:
   - CLAUDE.md

@@ -2,7 +2,7 @@
 name: angular
 version: "2.0.0"
 description: Especialista enterprise Angular com perfil híbrido — análise/recomendação (arquitetura, reatividade, responsividade, performance, segurança, acessibilidade, testes, upgrades) E implementação de features novas e correções de bug seguindo padrões de mercado consolidados (testing-first, diff mínimo).
-model: ["claude-sonnet-5", "claude-sonnet-4.6"]
+model: "Claude Sonnet 5"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'create_file', 'insert_edit_into_file', 'get_errors', 'run_in_terminal', 'context-mode/ctx_search', 'context-mode/ctx_fetch_and_index', 'context-mode/ctx_batch_execute', 'context-mode/ctx_index']
 ---
 

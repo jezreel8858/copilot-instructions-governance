@@ -6,7 +6,7 @@ description: >-
   2026: frontmatter correto (description, model, tools, source_docs), estrutura de
   body canônica, separação de responsabilidade com .instructions.md, nomenclatura
   kebab-case e atualização atômica do README de prompts (R-015).
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'ask_questions', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 
@@ -27,7 +27,7 @@ Você é especialista em criar e revisar arquivos `.prompt.md` no repositório, 
 
 ## Regras Herdadas
 
-- Regras normativas `R-001..R-040` em [`../../CLAUDE.md`](../../CLAUDE.md).
+- Regras normativas `R-001..R-043` em [`../../CLAUDE.md`](../../CLAUDE.md).
 - Regras de autonomia, compact error report e Context Mode em [`../copilot-instructions.md`](../copilot-instructions.md).
 - R-026: blocos de código > 8 linhas com implementações → `templates/`; use `prompt-template.md` como referência.
 - R-038: content PT-BR; sem projetos/tecnologias específicos no prompt body genérico.
@@ -41,7 +41,7 @@ Você é especialista em criar e revisar arquivos `.prompt.md` no repositório, 
 | Prompts existentes | `.github/prompts/*.prompt.md` | Referência de padrão vigente |
 | Padrão de agents | [`agent-factory.agent.md`](agent-factory.agent.md) | Contraparte para `.agent.md` |
 | Padrão de skills | [`skill-factory.agent.md`](skill-factory.agent.md) | Contraparte para `SKILL.md` |
-| Regras globais | [`../../CLAUDE.md`](../../CLAUDE.md) | R-001..R-040 |
+| Regras globais | [`../../CLAUDE.md`](../../CLAUDE.md) | R-001..R-043 |
 
 ## Diferença: `.prompt.md` vs `.instructions.md`
 
@@ -60,7 +60,7 @@ Você é especialista em criar e revisar arquivos `.prompt.md` no repositório, 
 ---
 name: '<nome-kebab-case>'
 description: '<Ação imperativa em 1 linha>'
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['read_file']
 source_docs:
   - CLAUDE.md
@@ -70,7 +70,7 @@ source_docs:
 
 **Regras de frontmatter:**
 - `description`: sempre presente; frase imperativa acionável ≤ 100 chars
-- `model`: string simples; array `["a","b"]` é aceito neste projeto para fallback
+- `model`: **string única sempre** — array `["a","b"]` **NÃO é suportado** (confirmado empiricamente: sempre gera `Unknown model`); usar o **display name oficial em Title Case** (ex.: `"Claude Haiku 4.5"`, `"Claude Sonnet 5"`), nunca slug kebab-case (`claude-haiku-4.5` também falha — ver `governance-factory-patterns/SKILL.md` § 9 para o protocolo completo de seleção e validação)
 - `tools`: princípio de menor privilégio; listar apenas as ferramentas usadas
 - `source_docs`: quando o prompt precisa de contexto de governança ou projeto
 - Sem aspas desnecessárias em `model:` quando é string simples
@@ -121,6 +121,7 @@ Aplicar o fluxo canônico de factory definido em [`governance-factory-patterns`]
 - Artefato-alvo é `.github/prompts/<verbo>-<objeto>.prompt.md`.
 - Validar separação de responsabilidade entre `.prompt.md` (on-demand) e `.instructions.md` (always-on).
 - Atualizar `../prompts/README.md` na mesma entrega quando houver criação/remoção/renomeação.
+- **Sempre executar Seleção e Validação de Modelo** (`governance-factory-patterns/SKILL.md` § 9) quando o prompt tiver `model:`: classificar o perfil (Haiku/Sonnet/Opus por §9.1), escrever o candidato em Title Case oficial, e confirmar via `get_errors` que não há `Unknown model` (§9.2).
 
 ## Padrões Obrigatórios
 
@@ -131,6 +132,7 @@ Aplicar o fluxo canônico de factory definido em [`governance-factory-patterns`]
 5. Guardrails explícitos para operações destrutivas (editar/criar/deletar arquivos).
 6. Atualização de `.github/prompts/README.md` ao criar ou remover prompt (R-015).
 7. Content 100% PT-BR (R-013, R-017).
+8. **`model:` sempre string única, Title Case oficial** (ex.: `"Claude Haiku 4.5"`, `"Claude Sonnet 5"`) — nunca array, nunca kebab-case — validado via `get_errors` antes de finalizar (`governance-factory-patterns/SKILL.md` § 9).
 
 ## Formato de Saída
 
@@ -141,6 +143,7 @@ Seguir o template parametrizável de validações em [`governance-factory-patter
 - Conformidade de naming (`kebab-case` + verbo-objeto + sufixo `.prompt.md`).
 - `H1` alinhado ao slash command (`# /<nome>`).
 - Status de atualização de `../prompts/README.md`.
+- Modelo escolhido (tier + justificativa de perfil, §9.1) e resultado da validação `get_errors` (§9.2), quando o prompt tiver `model:`.
 
 ## Checklist Antes de Criar/Revisar
 
@@ -151,6 +154,7 @@ Executar o checklist genérico da skill [`governance-factory-patterns`](../skill
 - [ ] `tools` em menor privilégio e coerentes com o fluxo do prompt.
 - [ ] Guardrails explícitos para operações destrutivas.
 - [ ] Validação de que a demanda não deveria ser `.instructions.md`.
+- [ ] `model:` (quando presente) classificado por perfil (§9.1 de `governance-factory-patterns`), escrito em Title Case oficial e validado via `get_errors` sem `Unknown model` (§9.2).
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
@@ -181,6 +185,8 @@ Executar o checklist genérico da skill [`governance-factory-patterns`](../skill
 - ❌ Operações destrutivas sem `ask_questions` de confirmação.
 - ❌ Criar mais de 5 prompts de uma vez sem validar os existentes primeiro.
 - ❌ Criar `.prompt.md` quando a necessidade real é um `.instructions.md` (regra always-on).
+- ❌ **Definir `model:` como array ou slug kebab-case** — não suportado pelo validador; sempre string única em Title Case oficial, confirmada via `get_errors` (`governance-factory-patterns/SKILL.md` § 9).
+- ❌ **Escalar tier de modelo (Sonnet/Opus) sem necessidade** — se o prompt só orquestra/formata (ex.: comandos `ctx-*`, `commit`, `health`), usar Haiku; escalar é desperdício de crédito.
 
 ## Quando Delegar
 

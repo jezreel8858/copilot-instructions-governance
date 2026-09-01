@@ -2,7 +2,7 @@
 name: code-knowledge-graph
 version: "2.1.0"
 description: Agent especialista dedicado de grafo de conhecimento de código-fonte, cross-projeto, puramente determinístico (sem fallback LLM); ponto de entrada único para RF-001/RF-002 do REQ de grafo de conhecimento — cobre nível de código (RF-001..RF-011) e nível arquitetural (sistema/serviço, blast radius, ciclo, acoplamento, risco — RF-013..RF-019), com Gate de Paridade Funcional (RNF-012) validado 9/9 e a skill legada `dependency-graph-mapping` já removida do repositório (RF-012/RNF-009 executados). Motor de extração único (RF-021/RNF-013) é o Semgrep CLI, validado em produção real cross-stack Angular+Spring Boot e cross-repo em escala de 2200+ arquivos, com cobertura de framework para Angular, Spring Boot, Spring Reactive/WebFlux e EJB/Jakarta EE (RF-022) — nunca substituído por chamada direta a lib de parsing/grafo.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'run_subagent', 'run_in_terminal', 'context-mode/ctx_search', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_batch_execute']
 ---
 

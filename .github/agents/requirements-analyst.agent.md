@@ -5,7 +5,7 @@ description: >-
   pedido de negócio ambíguo, antes de qualquer análise técnica de impacto ou
   plano de implementação. Nunca decide arquitetura, nunca extrai regra de
   código existente, sempre rastreia requisito à fonte do pedido original.
-model: ["claude-sonnet-5","claude-sonnet-4.6"]
+model: "Claude Sonnet 5"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'create_file', 'insert_edit_into_file', 'get_errors', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Requirements Analyst

@@ -5,7 +5,7 @@ description:
   `catalog.yaml` e `binding.md` via Health Check (R-034), coleta o nome do
   ecossistema via `ask_questions` (1 pergunta) e gera o esqueleto dos artefatos.
   Projetos são adicionados depois via `/add-project-context`.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['ask_questions', 'read_file', 'create_file', 'grep_search', 'file_search', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 
@@ -24,9 +24,12 @@ Você é um agente operacional especializado em inicializar a **infraestrutura d
 │                                                                 │
 │  ✅ CRIA EM:  ./docs/ai-context/catalog.yaml                   │
 │  ✅ CRIA EM:  ./docs/ai-context/binding.md                     │
+│  ✅ CRIA EM:  ./docs/ai-context/catalog.local.yaml.example     │
+│               (template tracked, sem dados reais — R-043)      │
 │                                                                 │
 │  ❌ NUNCA cria em: qualquer projeto externo                     │
 │  ❌ NUNCA injeta binding.md ou catalog.yaml em outro repo      │
+│  ❌ NUNCA escreve `projetos:` em catalog.yaml (R-043)          │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -63,10 +66,11 @@ Binding context faltando (detectado por R-034)?
 │  ├─ [1] Alerta ao usuário
 │  ├─ [2] ask_questions: 1 pergunta (nome do ecossistema)
 │  ├─ [3] Template-fill: binding-base.md → ./docs/ai-context/binding.md
-│  ├─ [4] Template-fill: catalog-base.yaml → ./docs/ai-context/catalog.yaml (projetos: [])
-│  ├─ [5] Validar YAML gerado
-│  ├─ [6] Criar ambos os arquivos
-│  └─ [7] Reportar sucesso + guiar para /add-project-context
+│  ├─ [4] Template-fill: catalog-base.yaml → ./docs/ai-context/catalog.yaml (sem `projetos:` — R-043)
+│  ├─ [5] Copiar catalog.local.yaml.example (se não existir) → ./docs/ai-context/catalog.local.yaml.example
+│  ├─ [6] Validar YAML gerado (ambos os arquivos)
+│  ├─ [7] Criar os 3 arquivos (catalog.yaml, binding.md, catalog.local.yaml.example)
+│  └─ [8] Reportar sucesso + guiar para /add-project-context
 │
 └─ Não: (ctx já existe)
    └─ Confirmar se deseja regenerar (1 pergunta de confirmação)
@@ -94,20 +98,23 @@ Binding context faltando (detectado por R-034)?
 Inicialização: ✅ OK
 
 Arquivos criados (NESTE repositório de governança):
-├─ ./docs/ai-context/catalog.yaml  (esqueleto — projetos: [] vazio)
-└─ ./docs/ai-context/binding.md    (referência de binding para o ecossistema)
+├─ ./docs/ai-context/catalog.yaml               (esqueleto — sem `projetos:`, R-043)
+├─ ./docs/ai-context/binding.md                 (referência de binding para o ecossistema)
+└─ ./docs/ai-context/catalog.local.yaml.example (template do overlay local — sem dados reais)
 
 ⚠️  Nenhum arquivo foi criado ou modificado nos projetos externos.
+⚠️  Projetos NUNCA vão em catalog.yaml — próximo passo cria catalog.local.yaml (gitignored) automaticamente.
 
 Validações:
 - YAML catalog.yaml: ✅ válido
 - Ecossistema: <nome-P1>
-- Projetos registrados: 0 (adicione via /add-project-context)
+- Projetos registrados: 0 (adicione via /add-project-context — grava em catalog.local.yaml, gitignored)
 
 Próximos passos:
   1. Execute `/add-project-context <caminho-do-projeto>` para cada projeto externo
      → Scanner detectará o stack automaticamente
-     → Adapter será criado em .github/instructions/<projeto>.instructions.md
+     → Overlay local criado a partir de catalog.local.yaml.example (se ainda não existir)
+     → Adapter será criado em .github/instructions/local/<projeto>.instructions.md (gitignored)
   2. Execute `/del-project-context <nome>` para remover projetos quando necessário
   3. Execute @agent-router para qualquer tarefa de desenvolvimento
 
@@ -149,23 +156,27 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
 ⚠️  TODOS os arquivos abaixo são criados NESTE repositório de governança.
     Nenhum arquivo é criado, modificado ou injetado nos projetos externos.
     adapter-generator NÃO é disparado aqui — apenas pelo /add-project-context.
+    `projetos:` NUNCA é escrito em catalog.yaml (R-043) — só em catalog.local.yaml, criado depois.
 
-[1/4] Parsing resposta P1
+[1/5] Parsing resposta P1
       ├─ Validar ecossistema (kebab-case, não vazio)
       └─ Normalizar para lowercase com hífens
 
-[2/4] Template-fill (catalog-base.yaml → ./docs/ai-context/catalog.yaml)
+[2/5] Template-fill (catalog-base.yaml → ./docs/ai-context/catalog.yaml)
       ├─ ecosystem := P1
       ├─ maintainer := P1
-      ├─ projetos: := []  (vazio — preenchido via /add-project-context)
-      ├─ adapters: := []  (vazio — preenchido via /add-project-context)
+      ├─ adapters: := []  (vazio — preenchido via /add-project-context ou customização manual)
+      ├─ (sem seção `projetos:` — R-043, vive em catalog.local.yaml)
       └─ Salvar em ./docs/ai-context/catalog.yaml  ← NESTE repositório
 
-[3/4] Template-fill (binding-base.md → ./docs/ai-context/binding.md)
+[3/5] Template-fill (binding-base.md → ./docs/ai-context/binding.md)
       ├─ Customizar cabeçalho com nome do ecossistema (P1)
       └─ Salvar em ./docs/ai-context/binding.md    ← NESTE repositório
 
-[4/4] Validação + Relatório
+[4/5] Copiar template do overlay local (se ainda não existir)
+      └─ ./docs/ai-context/catalog.local.yaml.example ← NESTE repositório (tracked, sem dados reais)
+
+[5/5] Validação + Relatório
       ├─ python -c "import yaml; yaml.safe_load(open('./docs/ai-context/catalog.yaml'))"
       └─ Reportar sucesso + guiar para /add-project-context
 ```
@@ -174,9 +185,10 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
 
 - [ ] Resposta P1 coletada via ask_questions.
 - [ ] Nome ecossistema em kebab-case validado (não vazio).
-- [ ] Templates base (catalog-base.yaml + binding-base.md) carregados.
-- [ ] Nenhum dos dois arquivos existe em `./docs/ai-context/` (ou confirmação de sobrescrever).
+- [ ] Templates base (catalog-base.yaml + binding-base.md + catalog.local.yaml.example) carregados.
+- [ ] Nenhum dos arquivos existe em `./docs/ai-context/` (ou confirmação de sobrescrever).
 - [ ] YAML gerado será válido antes de criar.
+- [ ] `catalog.yaml` gerado NÃO contém seção `projetos:` (R-043).
 - [ ] **Confirmar: nenhum arquivo será criado fora de `./docs/ai-context/`.**
 - [ ] **Confirmar: adapter-generator NÃO será disparado automaticamente.**
 
@@ -184,10 +196,11 @@ Projetos, stacks e adapters serão configurados depois via /add-project-context.
 
 > Antes de invocar este agent, anexe os arquivos abaixo. Se faltar, **PEÇA o anexo** — nunca infira.
 
-- [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais e R-034.
+- [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais, R-034 e R-043 (Local Overlay Pattern).
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais + § 4.1 Health Check.
 - [`../../docs/ai-context/catalog-base.yaml`](../../docs/ai-context/catalog-base.yaml) — template genérico YAML.
 - [`../../docs/ai-context/binding-base.md`](../../docs/ai-context/binding-base.md) — template genérico MD.
+- [`../../docs/ai-context/catalog.local.yaml.example`](../../docs/ai-context/catalog.local.yaml.example) — template do overlay local (se já existir; senão, criado por este agent).
 
 ## Diretrizes
 

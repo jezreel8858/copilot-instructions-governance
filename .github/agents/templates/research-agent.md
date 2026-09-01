@@ -1,7 +1,7 @@
 ---
 name: <nome-do-agent>
 description: <objetivo de pesquisa/read-only em 1 frase>
-model: ["claude-sonnet-5","claude-sonnet-4.6"]
+model: "Claude Sonnet 5"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'run_subagent', 'context-mode/ctx_search']
 ---
 

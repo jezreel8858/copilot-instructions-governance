@@ -3,7 +3,7 @@ name: test-implementation
 description: >-
   Implementar suítes de testes unitários, integração e E2E com cobertura
   objetiva, padrões consolidados e rastreabilidade de código.
-model: ["gpt-5.4","claude-sonnet-5","claude-sonnet-4.6"]
+model: "Claude Sonnet 5"
 tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
 # Test Implementation

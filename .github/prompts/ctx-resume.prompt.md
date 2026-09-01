@@ -1,7 +1,7 @@
 ---
 name: ctx-resume
 description: Retoma contexto específico via `ctx_search(source:"checkpoint::<slug>")`. Cobre cenário de múltiplos chats abertos com checkpoints distintos — lista e seleciona o correto.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 ---
 
 # /ctx-resume

@@ -7,7 +7,7 @@ description: >-
   controlado (máximo 5 iterações — exceção R-041) até estruturar o prompt no
   formato canônico <task>/<context>/<constraints>/<output_format>, retornando
   em seguida ao agent-router para roteamento downstream.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['ask_questions', 'run_subagent']
 ---
 # Prompt Structuring

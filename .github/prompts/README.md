@@ -120,7 +120,7 @@ Use `@prompt-factory` para auditar e corrigir automaticamente:
 | Campo | Status | Significado |
 |---|---|---|
 | `description` | **OBRIGATÓRIO** | Habilita discoverability no Quick Pick do Copilot |
-| `model` | Recomendado | claude-haiku-4.5 / gpt-5.1 / claude-opus-4 |
+| `model` | Recomendado | "Claude Haiku 4.5" / "Claude Sonnet 5" / "Claude Opus 5" (string única — arrays não são suportados) |
 | `tools` | Quando usa ferramentas | Princípio de menor privilégio — listar apenas o necessário |
 | `source_docs` | Quando precisa de contexto | Pre-fetch de governança ou projeto |
 | `name` | Opcional | Override do filename como slash command |

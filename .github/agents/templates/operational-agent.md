@@ -1,7 +1,7 @@
 ---
 name: <slug-kebab>
 description: <1 frase PT-BR descrevendo quando invocar este agent>
-model:["gpt-5.4","claude-sonnet-5","claude-sonnet-4.6"]
+model: "Claude Haiku 4.5"
 tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_subagent']
 ---
 

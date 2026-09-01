@@ -6,7 +6,7 @@ description:
   profundidade (atômica vs composta), budget de chamadas Tavily e síntese com
   citação de fonte. Perfil read-only — não implementa código nem sugere
   refatoração/análise crítica de impacto.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 source_docs:
   - CLAUDE.md

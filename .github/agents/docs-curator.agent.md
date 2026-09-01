@@ -3,7 +3,7 @@ name: docs-curator
 description: >-
   Curar e atualizar documentação técnica e operacional com rastreabilidade,
   padronização e consistência com catálogo e plano vigente.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
 # Docs Curator

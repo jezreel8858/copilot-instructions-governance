@@ -45,6 +45,9 @@ para o padrão de intake, se aplicável)
     ↓
 Gerar arquivo seguindo template canônico do tipo de artefato
     ↓
+Se artefato = agent | prompt → Selecionar e validar `model:` (§9 desta skill —
+  classificar perfil, escrever candidato, rodar get_errors, confirmar antes de prosseguir)
+    ↓
 Autocrítica grounded, 1 round (§3.1 — gate obrigatório antes de finalizar)
     ↓
 Executar Checklist de Qualidade Estrutural (§3 desta skill)
@@ -77,6 +80,7 @@ Reportar no Formato de Saída (§4 desta skill)
 - [ ] Se `agent`: `run_subagent` presente no frontmatter `tools:` (bloqueante — R-042); seção "Retorno ao Router" declarada; banner "Agente Ativo" presente no Formato de Saída.
 - [ ] Se `skill`: `tier`, `category`, `triggers` em PT-BR presentes; `source_docs` aponta para arquivos reais (não inventados).
 - [ ] Se `prompt`: nomenclatura `.prompt.md`, frontmatter mínimo (`description`, `model` quando aplicável), separação de responsabilidade clara com `.instructions.md` (não duplicar regra já coberta por adapter).
+- [ ] Se `agent`/`prompt`: `model:` é string única (nunca array), Title Case oficial (nunca kebab-case), e validado via `get_errors` sem `Unknown model` (§9).
 
 ### 3.1) Gate de Autocrítica Semântica (grounded, 1 round — obrigatório)
 
@@ -104,6 +108,7 @@ Validações:
 - [se agent] run_subagent presente (R-042): ✅/❌
 - [se agent] Seção "Retorno ao Router" presente: ✅/❌
 - [se skill] tier/category/triggers presentes: ✅/❌
+- [se agent/prompt] model: string única, Title Case oficial, validado via get_errors (§9): ✅/❌
 
 Arquivos atualizados:
 - <lista de catálogo/README/índice tocados>
@@ -123,6 +128,7 @@ Nenhuma criação/revisão de artefato de governança é considerada completa se
 - ❌ Skill criada sem `triggers` em PT-BR ou com `source_docs` apontando para arquivo inexistente.
 - ❌ Reinventar o fluxo de Decision Tree em vez de referenciar esta skill — risco de drift entre os 3 factory agents.
 - ❌ Registrar referência cruzada a outra skill/agent (ex.: "consumidor de X") sem confirmar dependência funcional real — pular o gate §3.1 e validar só a estrutura (achado real: `deep-search` registrado como consumidor de `reflection-self-critique-patterns` sem uso funcional).
+- ❌ Definir `model:` como array ou como slug kebab-case sem rodar `get_errors` (§9) — achado real: 15+ agents/prompts com `Unknown model` por usar `["a","b"]` ou `claude-haiku-4.5` em vez do display name oficial.
 
 ## 7) Consumidores Mapeados
 
@@ -138,4 +144,42 @@ Nenhuma criação/revisão de artefato de governança é considerada completa se
 - `.github/skills/agent-contracts/SKILL.md` §8-9 — baseline de formato de saída e tooling mínimo por perfil.
 - `.github/skills/reflection-self-critique-patterns/SKILL.md` — padrão de autocrítica grounded 1-round usado no gate §3.1.
 - `.github/skills/governance-audit-patterns/SKILL.md` — taxonomia de smells usada como referência de coerência semântica no gate §3.1 (auditoria pós-hoc equivalente feita por `agent-auditor`).
+- GitHub Docs — [Supported AI models in GitHub Copilot](https://docs.github.com/copilot/reference/ai-models/supported-models) — fonte oficial de nomenclatura de modelo, usada em §9.
+
+## 9) Seleção e Validação de Modelo (`model:` — obrigatório para `agent`/`prompt`)
+
+> Aplica-se a `agent-factory` e `prompt-factory` (skills não têm campo `model:` — ver tabela §2). Fecha 2 gaps reais encontrados em auditoria (2026-09-01): (a) 15+ artefatos usavam array `["a","b"]` — campo não suporta lista, sempre falha; (b) slugs kebab-case (`claude-haiku-4.5`) não são reconhecidos pelo validador do IDE — o nome correto é o **display name oficial** (Title Case).
+
+### 9.1) Classificação de Perfil (escolha do tier — antes de qualquer validação técnica)
+
+| Pergunta (aplicar em ordem — primeira que bater decide) | Tier | Custo (R-021) |
+|---|---|---|
+| Só lê, roteia, ou preenche template a partir de fatos já extraídos, sem julgamento aberto? (scanner, template-fill, roteamento, checklist, validação) | **Claude Haiku 4.5** | 0×/0.33× |
+| Implementa, refatora, planeja com risco, ou sintetiza análise técnica não-trivial? (specialists, planners, reviewers, extractors) | **Claude Sonnet 5** | 1× |
+| Decide arquitetura crítica, causa-raiz complexa cross-sistema, ou ação de alta irreversibilidade? (raro — só escalar se as 2 acima não bastarem) | **Claude Opus 5** | 3× |
+
+**Regra de ouro (redução de créditos):** nunca escalar tier acima do mínimo necessário — um agent operacional em Sonnet/Opus é desperdício de crédito sem ganho de qualidade (ver exemplos reais no catálogo: `adapter-generator`, `agent-router`, `binding-initializer` = Haiku; `analysis-architect`, `code-review`, `angular` = Sonnet).
+
+### 9.2) Validação de Disponibilidade Real (obrigatória — antes de finalizar o artefato)
+
+O valor de `model:` deve ser a **string exata do display name oficial** (Title Case) da [tabela oficial](https://docs.github.com/copilot/reference/ai-models/supported-models) — nunca kebab-case, nunca slug de API.
+
+**Protocolo (nesta ordem, sem pular etapa):**
+1. Escrever o candidato (Title Case oficial, ex.: `"Claude Haiku 4.5"`) no frontmatter do arquivo já criado/editado.
+2. Chamar `get_errors` no arquivo.
+3. Se aparecer `Unknown model: '<valor>'` → modelo não reconhecido **neste ambiente real** (VS Code ou JetBrains) — não prosseguir com esse valor; tentar o próximo candidato do mesmo tier (ex.: se `"Claude Sonnet 5"` falhar, considerar `"Claude Sonnet 4.6"` como fallback temporário) e repetir o passo 2.
+4. Se `get_errors` não reportar erro de modelo → validado, prosseguir para o restante do checklist (§3).
+5. Se 2 candidatos do mesmo tier falharem e não houver certeza de qual string funciona, perguntar ao usuário via `ask_questions`: *"Qual modelo aparece disponível no seletor do Copilot Chat (VS Code) ou do plugin Copilot/AI Assistant (JetBrains) para o tier <Haiku|Sonnet|Opus>?"* com opções pré-preenchidas da tabela oficial + campo aberto — nunca adivinhar variações às cegas indefinidamente.
+
+### 9.3) VS Code vs JetBrains — Sem Paridade Garantida
+
+A tabela oficial declara disponibilidade por superfície (colunas "Visual Studio Code" vs "JetBrains IDEs" vs "Copilot CLI" etc.) — nem todo modelo tem paridade entre as duas. `get_errors` reflete o **ambiente real da sessão atual** e é sempre a fonte de verdade — a tabela estática pode estar desatualizada ou o modelo pode estar indisponível pelo plano/tier de Copilot do usuário (Free vs Pro vs Business/Enterprise), mesmo que a tabela o liste.
+
+### 9.4) Nunca Fazer (Anti-padrões de §9)
+
+- ❌ Usar array `["a","b"]` no campo `model:` — não suportado; sempre string única.
+- ❌ Usar slug kebab-case (`claude-haiku-4.5`, `gpt-5.3-codex`) — usar o display name oficial (Title Case).
+- ❌ Finalizar o artefato sem rodar `get_errors` para confirmar que o modelo é reconhecido neste ambiente.
+- ❌ Escalar para tier mais caro (Sonnet/Opus) quando Haiku atende ao perfil real da tarefa (§9.1) — desperdício de créditos.
+- ❌ Perguntar ao usuário (§9.2 passo 5) antes de tentar a validação automática via `get_errors` — pergunta é último recurso, não primeiro passo.
 

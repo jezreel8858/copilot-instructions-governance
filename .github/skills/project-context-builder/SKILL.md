@@ -59,6 +59,15 @@ tools:
 
 # project-context-builder — Skill de Descoberta de Projeto
 
+## Precedentes de Mercado (Pesquisa Externa — R-019, 2026-09-01)
+
+> O padrão "scanner local determinístico → IA gera artefato customizado → preview → confirmação" já é validado por ferramentas reais de mercado (2025-2026):
+> - **GitHub Copilot CLI `/init`**: "Copilot will scan your project and create tailored instruction files" ([github/copilot-cli-for-beginners](https://github.com/github/copilot-cli-for-beginners)).
+> - **`npx ai-setup`**: escaneia o codebase e gera `.github/copilot-instructions.md`, `CLAUDE.md`, `.cursorrules` automaticamente ([Reddit r/GithubCopilot](https://www.reddit.com/r/GithubCopilot/comments/1s6ppan/)).
+> - **`npx agentseed init`**: lê o codebase e gera `AGENTS.md` via análise estática (sem custo), com fallback LLM opcional ([Reddit r/LocalLLaMA](https://www.reddit.com/r/LocalLLaMA/comments/1r0ixum/)).
+>
+> Conclusão: nenhuma mudança estrutural é necessária neste fluxo — a arquitetura já reflete o padrão consolidado. Ver também `project-scanner-governance/SKILL.md` § 7 para a pesquisa completa (inclui OWASP LLM02/LLM06 e nomenclatura `OverwriteStrategy` do Nx).
+
 ## Overview
 
 Automatiza o processo de **adicionar novo projeto ao binding** via Copilot Chat:

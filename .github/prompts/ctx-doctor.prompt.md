@@ -1,7 +1,7 @@
 ---
 name: ctx-doctor
 description: Diagnostica o Context Mode usando `ctx_doctor` para validar instalação, hooks e conectividade.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 ---
 
 # /ctx-doctor

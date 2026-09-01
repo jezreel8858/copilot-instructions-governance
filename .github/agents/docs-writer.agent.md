@@ -4,7 +4,7 @@ description: >-
   Gera e atualiza documentação técnica em Markdown para qualquer domínio ou
   assunto, aplicando estrutura consolidada de mercado (Diátaxis, ADR/MADR,
   README, runbook, postmortem) — produz exclusivamente arquivos `.md`.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'get_errors', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 # Docs Writer

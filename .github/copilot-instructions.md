@@ -1,8 +1,9 @@
 # Instruções de IA — Base de Governança Reutilizável
 
 > Fonte de verdade operacional: [`CLAUDE.md`](../CLAUDE.md).
-> Mapa de Projetos/Adapters: [`docs/ai-context/catalog.yaml`](../docs/ai-context/catalog.yaml).
-> IDs normativos: consulte `R-001..R-041` em `CLAUDE.md`.
+> Mapa de Adapters (compartilhado): [`docs/ai-context/catalog.yaml`](../docs/ai-context/catalog.yaml).
+> Mapa de Projetos (LOCAL/gitignored, R-043): `docs/ai-context/catalog.local.yaml`.
+> IDs normativos: consulte `R-001..R-043` em `CLAUDE.md`.
 
 ---
 
@@ -231,13 +232,15 @@ Após confirmar conformidade, avalie o tipo da tarefa e emita o sinal abaixo qua
 ✓ Existe: docs/ai-context/binding.md    ← NESTE repositório de governança
 ```
 
-> ⛔ **GUARDRAIL DE CONFINAMENTO (R-034)**:
-> - `catalog.yaml` e `binding.md` existem APENAS neste repositório.
-> - Adapters existem APENAS em `.github/instructions/<projeto>.instructions.md` NESTE repositório.
-> - Projetos externos (ex.: `custom-project-app`) são referenciados no catalog,
+> ⛔ **GUARDRAIL DE CONFINAMENTO (R-034 + R-043)**:
+> - `catalog.yaml` e `binding.md` existem APENAS neste repositório (compartilhados/commitados).
+> - Adapters GENÉRICOS existem APENAS em `.github/instructions/<stack>.instructions.md` (raiz, compartilhados).
+> - Adapters POR-PROJETO existem em `.github/instructions/local/<projeto>.instructions.md` — **gitignored, nunca commitados** (R-043).
+> - Projetos são registrados exclusivamente em `docs/ai-context/catalog.local.yaml` (gitignored) — **nunca** em `catalog.yaml`.
+> - Projetos externos (ex.: `custom-project-app`) são referenciados no overlay local,
 >   mas **NUNCA recebem arquivos de governança** criados por estes agents.
 > - O `adapter-generator` faz SCANNER dos projetos externos (read-only), mas cria
->   arquivos somente neste repositório.
+>   arquivos somente neste repositório, sempre em `local/` (gitignored).
 
 **Se FALTAREM arquivos:**
 
@@ -251,20 +254,22 @@ Após confirmar conformidade, avalie o tipo da tarefa e emita o sinal abaixo qua
 
    → Vou disparar o agent `binding-initializer` para criá-los NESTE repositório
    → Responda 1 pergunta (nome do ecossistema) e o esqueleto será criado aqui
-   → Projetos são adicionados depois via /add-project-context
+   → Projetos são adicionados depois via /add-project-context (grava em catalog.local.yaml, gitignored)
    ```
 
 2. **DISPARAR AGENT** `binding-initializer` com `ask_questions`:
    - P1: Nome do ecossistema/organização (kebab-case) — única pergunta obrigatória
 
 3. **GERAR AUTOMATICAMENTE — TODOS NESTE REPOSITÓRIO:**
-   - `docs/ai-context/catalog.yaml` — via `binding-initializer` ← NESTE repo (esqueleto, projetos: [])
+   - `docs/ai-context/catalog.yaml` — via `binding-initializer` ← NESTE repo (esqueleto, **sem** `projetos:` — R-043)
    - `docs/ai-context/binding.md` — via `binding-initializer` ← NESTE repo
-   - `.github/instructions/<projeto>.instructions.md` — via `adapter-generator` após `/add-project-context`
+   - `docs/ai-context/catalog.local.yaml.example` — via `binding-initializer` ← NESTE repo (template tracked, sem dados reais)
+   - `.github/instructions/local/<projeto>.instructions.md` — via `adapter-generator` após `/add-project-context` (gitignored)
    - Préview antes de criar
 
 **Sem exceções** — binding + adapters são pré-requisitos para descoberta de convenções (R-034).
 Nenhum desses arquivos deve ser criado nos projetos externos.
+Projetos e adapters por-projeto NUNCA são commitados no repositório compartilhado (R-043).
 
 ---
 
@@ -337,8 +342,8 @@ Escolha uma ação:
 - `spring-boot` -> especialista Spring Boot com perfil híbrido: análise/recomendação (arquitetura, Java/JDK, performance, observabilidade, segurança, migração) E implementação de feature/bugfix (virtual threads vs reativo, testing-first).
 - `spring-reactive` -> especialista Spring WebFlux/Reactor com perfil híbrido: análise/recomendação (capacidade, resiliência, backpressure, observabilidade) E implementação de feature/bugfix (sem bloqueio de event-loop, testing-first).
 - `agent-factory` -> criar/revisar agents customizados com padrão estrutural.
-- `binding-initializer` -> ⚡ inicializar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — R-034)
-- `adapter-generator` -> ⚡ gerar automaticamente adapters em `.github/instructions/` via `/add-project-context`
+- `binding-initializer` -> ⚡ inicializar `catalog.yaml` + `binding.md` + `catalog.local.yaml.example` para novo repositório (1 pergunta — R-034)
+- `adapter-generator` -> ⚡ gerar automaticamente adapters por-projeto em `.github/instructions/local/` (gitignored, R-043) via `/add-project-context`
 - `skill-factory` -> ⭐ criar/revisar skills com padrão estrutural de SKILL.md e `.index.json` atômico
 - `prompt-factory` -> 📝 criar/revisar `.prompt.md` seguindo padrão canônico Copilot 2026 (frontmatter, body, kebab-case, README)
 
@@ -418,25 +423,28 @@ Camada 1 (Global)      → CLAUDE.md + .github/copilot-instructions.md
                            ↓
 Camada 2 (Stack/Adapter) → .github/instructions/*.instructions.md (com applyTo glob)
                            ↓
-Camada 3 (Projeto)      → Customizações locais por repositório
+Camada 3 (Projeto)      → Local Overlay (catalog.local.yaml + .github/instructions/local/, gitignored, R-043)
 ```
 
 ### Manifest de Binding
 
-**Arquivo:** `docs/ai-context/catalog.yaml` (single source of truth)
+**Arquivo:** `docs/ai-context/catalog.yaml` (single source of truth — adapters/global, **nunca projetos**)
 
 - Define ordem de carregamento de adapters
 - Mapeia `applyTo` glob patterns → instruções específicas
-- Documenta escopo, audiência e projetos de cada adapter
+- Documenta escopo e audiência de cada adapter genérico
 - Garante não-duplicação (R-003)
+
+> Projetos: `docs/ai-context/catalog.local.yaml` (gitignored, R-043) — nunca em `catalog.yaml`.
 
 ### Adapters: Estrutura Genérica
 
-Cada adapter em `.github/instructions/` deve:
+Cada adapter na raiz de `.github/instructions/` deve:
 - Ser **independente** de outros adapters
 - Declarar seus `applyTo` glob patterns via YAML frontmatter
 - **Nunca referenciar projetos específicos ou tecnologias exclusivas** (R-038)
 - Estar registrado em `docs/ai-context/catalog.yaml` como single source of truth
+- **Nunca ser** um adapter por-projeto (esses vivem em `.github/instructions/local/`, gitignored — R-043)
 
 **Para exemplos concretos de adapters registrados**, consulte `docs/ai-context/catalog.yaml` (binding context).
 
@@ -444,7 +452,7 @@ Cada adapter em `.github/instructions/` deve:
 - **Cursor IDE**, **Claude Code**: suporta o mesmo mecanismo
 - **Custom tooling**: use `docs/ai-context/catalog.yaml` como manifesto de discovery
 
-### Adicionar Novo Adapter
+### Adicionar Novo Adapter (genérico/compartilhado)
 
 1. Criar arquivo `.github/instructions/<nome>.instructions.md`
 2. Adicionar frontmatter YAML com `applyTo`:
@@ -455,6 +463,10 @@ Cada adapter em `.github/instructions/` deve:
    ```
 3. Atualizar `docs/ai-context/catalog.yaml` com novo entry
 4. Sincronizar `.github/instructions/README.md`
+
+> Adapter **por-projeto** (gerado por `/add-project-context`) segue fluxo diferente — vai em
+> `.github/instructions/local/<projeto>.instructions.md` (gitignored) e é registrado em
+> `catalog.local.yaml`, nunca aqui (R-043).
 
 ---
 

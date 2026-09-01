@@ -5,12 +5,13 @@ description:
   Carrega CLAUDE.md + copilot-instructions.md, valida conformidade R-001..R-040 + Model Enforcement (R-036).
   Execute UMA ÚNICA VEZ no início da sessão ANTES de /add-project-context ou qualquer agent.
   NÃO REPITA na mesma sessão — faz 1x apenas.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['read_file', 'list_dir', 'run_subagent']
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - docs/ai-context/catalog.yaml
+  - docs/ai-context/catalog.local.yaml.example
 ---
 
 # `/init-context`
@@ -158,39 +159,48 @@ Status: ✅ R-001..R-040 ativas — Agents respeitarão
 
 ---
 
-### **PASSO 4: Validar Binding Context (R-034)**
+### **PASSO 4: Validar Binding Context (R-034) + Overlay Local (R-043)**
 
 Verificar se estrutura de binding existe **NESTE repositório de governança**:
 
 ```
 [Health Check] Binding Context (R-034) — verificando NESTE repositório
-├─ ./docs/ai-context/catalog.yaml → ?
-├─ ./docs/ai-context/binding.md → ?
+├─ ./docs/ai-context/catalog.yaml → ?          (compartilhado/commitado — sem projetos)
+├─ ./docs/ai-context/binding.md → ?            (compartilhado/commitado)
+├─ ./docs/ai-context/catalog.local.yaml → ?    (gitignored — overlay de projetos, R-043)
 └─ Status: ?
 ```
 
 > ⚠️  O binding context (catalog.yaml + binding.md) é **EXCLUSIVO DESTE repositório**.
 > Projetos externos (project-example-app, etc.) NÃO possuem
 > e NÃO devem possuir catalog.yaml ou binding.md.
-**Se AMBOS existem:**
+> **Projetos são dados LOCAIS (R-043)**: vivem em `catalog.local.yaml` (gitignored) —
+> nunca em `catalog.yaml`. Se `catalog.local.yaml` não existir, criar a partir de
+> `catalog.local.yaml.example` (template tracked, sem dados reais) antes de prosseguir.
 
-Ler `catalog.yaml` e exibir estado real dos projetos registrados:
+**Se `catalog.yaml` e `binding.md` existem:**
+
+Ler `catalog.yaml` (adapters/global) **e** `catalog.local.yaml` (se existir — projetos) e
+exibir estado real **mesclado em memória** (nunca escrever de volta em `catalog.yaml`):
 
 ```
 ✅ Binding context DETECTADO (neste repositório de governança)
 
-   Projetos registrados:
-   ├─ <nome-projeto-1>  → adapter: <nome-projeto-1>.instructions.md ✅
-   ├─ <nome-projeto-2>  → adapter: <nome-projeto-2>.instructions.md ✅
+   Projetos registrados (fonte: catalog.local.yaml, gitignored):
+   ├─ <nome-projeto-1>  → adapter: .github/instructions/local/<nome-projeto-1>.instructions.md ✅
+   ├─ <nome-projeto-2>  → adapter: .github/instructions/local/<nome-projeto-2>.instructions.md ✅
    └─ ... (total: <n> projetos)
 
-   Adapters em .github/instructions/:
+   Adapters compartilhados em .github/instructions/ (raiz, commitados):
+   └─ <lista-de-arquivos-.instructions.md>
+
+   Adapters locais em .github/instructions/local/ (gitignored, por projeto):
    └─ <lista-de-arquivos-.instructions.md>
 
    → Pronto para /add-project-context, /pesquisar, /plano, @agent-router
 ```
 
-**Se ALGUM FALTA:**
+**Se `catalog.yaml`/`binding.md` FALTAM:**
 
 ```
 ⚠️ Binding context INCOMPLETO (neste repositório)!
@@ -203,11 +213,19 @@ Faltando:
 → Nenhum arquivo será criado nos projetos externos.
 ```
 
+**Se apenas `catalog.local.yaml` FALTAR** (primeira vez nesta máquina/clone):
+
+```
+ℹ️ Overlay local não encontrado — criando a partir do template.
+→ cp docs/ai-context/catalog.local.yaml.example docs/ai-context/catalog.local.yaml
+→ Prosseguindo normalmente (0 projetos registrados nesta máquina ainda)
+```
+
 ---
 
 ### **PASSO 5: Verificar Herança de Instruções Genéricas**
 
-Para cada projeto registrado em `catalog.yaml`, verificar se o campo `extends:` está configurado, conectando o projeto aos adapters genéricos disponíveis.
+Para cada projeto registrado em `catalog.local.yaml` (gitignored, R-043), verificar se o campo `extends:` está configurado, conectando o projeto aos adapters genéricos disponíveis em `catalog.yaml` (compartilhado).
 
 ```
 [Health Check] Herança de Instruções Genéricas
@@ -239,18 +257,18 @@ Opções:
 - **(C)** Não herdar agora — projeto possui ou terá adapter próprio
 
 **Se usuário escolhe A ou B:**
-1. Exibir preview do YAML a ser adicionado ao projeto em `catalog.yaml`:
+1. Exibir preview do YAML a ser adicionado ao projeto em `catalog.local.yaml` (gitignored):
    ```yaml
    extends:
      - "<adapter-id>"
    ```
 2. Aguardar confirmação do usuário
-3. Atualizar `catalog.yaml` com o campo `extends:` no projeto correspondente
+3. Atualizar `catalog.local.yaml` com o campo `extends:` no projeto correspondente — **nunca `catalog.yaml`** (R-043)
 
 **Se usuário escolhe C:**
 ```
 ⚠️ Projeto sem herança de instruções genéricas registrada.
-   Certifique-se de que possui adapter próprio em .github/instructions/
+   Certifique-se de que possui adapter próprio em .github/instructions/local/
 ```
 
 ---
@@ -265,11 +283,11 @@ Verificar se a sessão atual do Context Mode está sendo rastreada para evitar "
 
 ### **PASSO 7: Verificar Cache de Grafo de Conhecimento e Sumarização (por Projeto)**
 
-Para cada projeto registrado em `catalog.yaml` (`projetos:`), verificar se já existe cache de **grafo de conhecimento** (`@code-knowledge-graph`) e de **sumarização** (`@code-summarizer`) no Context Mode — evita reconstrução/reprocessamento desnecessário e informa ao usuário o que já está disponível para consulta imediata.
+Para cada projeto registrado em `catalog.local.yaml` (gitignored, R-043 — nunca em `catalog.yaml`), verificar se já existe cache de **grafo de conhecimento** (`@code-knowledge-graph`) e de **sumarização** (`@code-summarizer`) no Context Mode — evita reconstrução/reprocessamento desnecessário e informa ao usuário o que já está disponível para consulta imediata.
 
 ```
 [Health Check] Cache de Grafo/Sumarização por Projeto
-├─ Projetos registrados em catalog.yaml: <n>
+├─ Projetos registrados em catalog.local.yaml: <n>
 ├─ Se <n> = 0 → pular este passo (nenhum projeto para checar)
 └─ Para cada <project-id>:
     ├─ ctx_search(queries: ["code-graph:<project-id>:*"])   → grafo cacheado?
@@ -301,7 +319,7 @@ Status: <n-com-grafo>/<n-total> com grafo | <n-com-sumario>/<n-total> com sumari
    → Nenhuma construção automática é feita por este prompt (R-009 — sem ação autônoma sem confirmação)
 ```
 
-**Se `projetos:` estiver vazio em `catalog.yaml`:**
+**Se `projetos:` estiver vazio em `catalog.local.yaml`:**
 
 ```
 ℹ️ Nenhum projeto registrado ainda — pulando verificação de cache de grafo/sumarização.
@@ -470,4 +488,7 @@ PASSO 7 adicionado: verificação de cache de grafo de conhecimento (`code-graph
 
 *v1.4 — 2026-09-01*
 Seção "💡 Recomendações ao Usuário" adicionada ao final do checklist de validação — sintetiza em bullets condicionais (Model/Binding/Extends/Cache/Sessão/Fluxo) apenas as pendências reais detectadas nos Passos 1-7, sempre informativa e nunca bloqueante/autônoma (R-009).
+
+*v1.5 — 2026-09-01*
+PASSO 4/5/7 atualizados para o Local Overlay Pattern (R-043): projetos deixam de viver em `catalog.yaml` (compartilhado/commitado) e passam a viver em `catalog.local.yaml` (gitignored). Toda leitura de projeto agora faz merge em memória dos dois arquivos; nenhuma escrita de projeto/adapter toca o arquivo compartilhado.
 

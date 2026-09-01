@@ -3,8 +3,8 @@ name: agent-factory
 description: 
   Cria e revisa agents customizados do repositório, garantindo estrutura padrão,
   nomenclatura consistente e atualização de catálogo.
-model: ["claude-sonnet-5","claude-sonnet-4.6"]
-tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
+model: "Claude Sonnet 5"
+tools: ['read_file', 'insert_edit_into_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'ask_questions', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 # Agent Factory
 
@@ -19,7 +19,7 @@ Você é especialista em criar e revisar arquivos de agents no repositório, pre
 
 ## Regras Herdadas
 
-- Regras normativas `R-001..R-029` em [`../../CLAUDE.md`](../../CLAUDE.md).
+- Regras normativas `R-001..R-043` em [`../../CLAUDE.md`](../../CLAUDE.md).
 - Regras de autonomia, compact error report e Context Mode em [`../copilot-instructions.md`](../copilot-instructions.md).
 
 ## Catálogo / Conhecimento Base
@@ -44,6 +44,7 @@ Aplicar o fluxo canônico de factory definido em [`governance-factory-patterns`]
 - Para agent read-only, usar [`templates/research-agent.md`](templates/research-agent.md).
 - Para agent operacional, usar `templates/operational-agent.md`.
 - Sempre validar `tools:` com baseline de `agent-contracts` (incluindo `run_subagent` bloqueante para R-042).
+- **Sempre executar Seleção e Validação de Modelo** (`governance-factory-patterns/SKILL.md` § 9) antes de finalizar o frontmatter: classificar o perfil do novo agent (Haiku/Sonnet/Opus por §9.1), escrever o candidato em Title Case oficial, e confirmar via `get_errors` que não há `Unknown model` (§9.2) — nunca array, nunca kebab-case.
 
 ## Padrões Obrigatórios
 
@@ -57,6 +58,7 @@ Aplicar o fluxo canônico de factory definido em [`governance-factory-patterns`]
 8. **`tools:` com `run_subagent` obrigatório e bloqueante** (`agent-contracts/SKILL.md` § 9) — sem essa tool o agent não consegue executar handoff de retorno a `@agent-router` (R-042). Nenhum agent é finalizado sem essa validação.
 9. Seção **"Retorno ao Router (R-042 — Anti Sticky-Session)"** com gatilho de deriva específico do agent — obrigatória em todo agent downstream/especialista/operacional.
 10. Seção "Retorno ao Router" deve incluir o parágrafo **"Banner obrigatório (visibilidade de fluxo)"** exigindo `Agente Ativo: <name>` como primeira linha de toda resposta (`agent-contracts/SKILL.md` § 0).
+11. **`model:` sempre string única, Title Case oficial** (ex.: `"Claude Haiku 4.5"`, `"Claude Sonnet 5"`) — nunca array, nunca kebab-case — validado via `get_errors` antes de finalizar (`governance-factory-patterns/SKILL.md` § 9).
 
 ## Formato de Saída
 
@@ -67,6 +69,7 @@ Seguir o template parametrizável de validações em [`governance-factory-patter
 - Template aplicado (`research-agent` ou `operational-agent`).
 - Resultado da validação de tooling mínimo (`run_subagent` + baseline por perfil).
 - Status de atualização de `README.md` e `catalog.yaml` (quando escopo incluir criação/revisão catalogável).
+- Modelo escolhido (tier + justificativa de perfil, §9.1) e resultado da validação `get_errors` (§9.2).
 
 ## Checklist Antes de Codar
 
@@ -76,6 +79,7 @@ Executar o checklist genérico da skill [`governance-factory-patterns`](../skill
 - [ ] Template correto selecionado (`research-agent.md` vs `operational-agent.md`).
 - [ ] Ordem obrigatória de seções do `.agent.md` preservada.
 - [ ] Seção "Retorno ao Router (R-042)" inclui parágrafo de banner `Agente Ativo: <name>`.
+- [ ] `model:` classificado por perfil (§9.1 de `governance-factory-patterns`), escrito em Title Case oficial e validado via `get_errors` sem `Unknown model` (§9.2).
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
@@ -104,6 +108,8 @@ Executar o checklist genérico da skill [`governance-factory-patterns`](../skill
 - **Criar/revisar agent sem `run_subagent` em `tools:`** — torna R-042 estruturalmente impossível de cumprir (bloqueante).
 - Declarar seção "Retorno ao Router" sem o agent ter `run_subagent` no frontmatter (handoff nunca executável).
 - Copiar `tools:` de outro agent sem revisar se `run_subagent` foi preservado.
+- **Definir `model:` como array ou slug kebab-case** — não suportado pelo validador; sempre string única em Title Case oficial, confirmada via `get_errors` (`governance-factory-patterns/SKILL.md` § 9).
+- **Escalar tier de modelo (Sonnet/Opus) sem necessidade** — se o novo agent é operacional/determinístico, usar Haiku; escalar é desperdício de crédito.
 
 ## Quando Delegar
 

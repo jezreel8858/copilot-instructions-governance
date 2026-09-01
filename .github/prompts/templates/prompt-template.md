@@ -1,7 +1,7 @@
 ---
 name: '<nome-kebab-case>'
 description: '<Ação imperativa em 1 linha — ex.: Gera X a partir de Y>'
-model: claude-haiku-4.5
+model: "Claude Haiku 4.5"
 tools: ['read_file']
 source_docs:
   - CLAUDE.md
