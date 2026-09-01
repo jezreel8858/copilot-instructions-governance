@@ -3,11 +3,13 @@ name: del-project-context
 type: governance-cleanup
 input_type: project-name
 output_type: audit-log
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 
 description:
-  Remove contexto estruturado de um projeto do binding de instruções e do cache Context Mode.
-  Operação destrutiva com validação prévia, confirmação e rollback via Git.
+  Remove contexto estruturado de um projeto do overlay local (catalog.local.yaml,
+  gitignored — R-043) e do cache Context Mode. Operação destrutiva com validação
+  prévia, confirmação e rollback via Git. NUNCA toca docs/ai-context/catalog.yaml
+  (compartilhado/commitado).
 
 triggers:
   - "/del-project-context"
@@ -22,21 +24,22 @@ dependencies:
 
 source_docs:
   - "CLAUDE.md"
-  - "docs/ai-context/catalog.yaml"
+  - "docs/ai-context/catalog.local.yaml"
   - ".github/instructions/README.md"
 
 workflow:
   1: "User fornece nome do projeto"
-  2: "Agent valida existência em catalog.yaml"
-  3: "Agent lista artefatos a remover (YAML entry + arquivo .instructions.md)"
+  2: "Agent valida existência em catalog.local.yaml (gitignored, R-043)"
+  3: "Agent lista artefatos a remover (YAML entry + arquivo .instructions.md em local/)"
   4: "Agent pede confirmação explícita"
-  5: "Se confirmado: Atualiza catalog.yaml + valida YAML + registra em audit.log"
+  5: "Se confirmado: Atualiza catalog.local.yaml + valida YAML + registra em audit.log"
 
 constraints:
   - "Operação destrutiva — exigir confirmação explícita"
   - "Validar YAML imediatamente após alteração"
   - "NÃO remove adapters globais nem código-fonte"
   - "NÃO usa rm ou operações shell destrutivas — Python via project-context-builder"
+  - "NUNCA edita docs/ai-context/catalog.yaml (compartilhado/commitado) — R-043"
   - "Registrar ação em audit.log"
 ---
 
@@ -44,10 +47,14 @@ constraints:
 
 ## Visão Geral
 
-Remove um projeto do binding hierárquico (`docs/ai-context/catalog.yaml`) e do armazenamento de instruções (`.github/instructions/`) — **todos os artefatos são NESTE repositório de governança**. Reversível via Git.
+Remove um projeto do overlay local (`docs/ai-context/catalog.local.yaml`, gitignored) e do
+armazenamento de instruções locais (`.github/instructions/local/`) — **todos os artefatos
+são NESTE repositório de governança, porém LOCAIS/gitignored (R-043)**. Reversível via Git
+(arquivo local) ou recriação via `/add-project-context`.
 
-> ⚠️  Esta operação modifica APENAS artefatos deste repositório de governança.
+> ⚠️  Esta operação modifica APENAS artefatos locais/gitignored deste repositório.
 >     O repositório externo do projeto removido NÃO é tocado.
+>     `docs/ai-context/catalog.yaml` (compartilhado/commitado) NUNCA é tocado.
 
 ## Uso
 
@@ -61,19 +68,20 @@ Remove um projeto do binding hierárquico (`docs/ai-context/catalog.yaml`) e do 
 /del-project-context project-app
 ```
 
-## O Que é Removido (NESTE repositório)
+## O Que é Removido (NESTE repositório, LOCAIS/gitignored)
 
 | Alvo | Ação | Observação |
 |------|------|-----------|
-| `./docs/ai-context/catalog.yaml` | Remove entrada YAML do projeto | Sintaticamente validado |
-| `./.github/instructions/<projeto>.instructions.md` | Deleta arquivo de instruções | Específico do projeto |
+| `./docs/ai-context/catalog.local.yaml` | Remove entrada YAML do projeto | Sintaticamente validado; gitignored |
+| `./.github/instructions/local/<projeto>.instructions.md` | Deleta arquivo de instruções | Específico do projeto; gitignored |
 | Context Mode Cache (FTS5) | Invalida índice + snapshot | TTL reset (24h) |
 
 ## O Que NÃO é Removido
 
 - ✗ Repositório Git / código-fonte do projeto externo
 - ✗ Qualquer arquivo dentro do projeto externo
-- ✗ Adapters genéricos já existentes em `.github/instructions/`
+- ✗ Adapters genéricos já existentes em `.github/instructions/` (raiz, compartilhados)
+- ✗ `docs/ai-context/catalog.yaml` (compartilhado/commitado) — nunca teve entrada de projeto (R-043)
 - ✗ Regras em `CLAUDE.md` (governança global)
 - ✗ Documentação em `docs/` (preservada)
 
@@ -82,29 +90,29 @@ Remove um projeto do binding hierárquico (`docs/ai-context/catalog.yaml`) e do 
 ```
 /del-project-context meu-projeto-backend
 
-[1] Validar existência em catalog.yaml                    ✓
+[1] Validar existência em catalog.local.yaml (gitignored)  ✓
 [2] Listar artefatos a remover                          ✓
 [3] Pedir confirmação explícita (sim/não)               → User
 [4] Se sim:
-    ├─ Atualizar catalog.yaml (remove entrada YAML)
+    ├─ Atualizar catalog.local.yaml (remove entrada YAML)
     ├─ Validar YAML com yamllint                        [fallback: abortar + Git checkout]
-    ├─ Deletar .github/instructions/<projeto>.instructions.md
+    ├─ Deletar .github/instructions/local/<projeto>.instructions.md
     └─ Registrar em audit.log
 [5] Relatório: artefatos removidos + próximos passos    ✓
 ```
 
 ## Validação de YAML (Obrigatória)
 
-Após qualquer alteração em `catalog.yaml`:
+Após qualquer alteração em `catalog.local.yaml`:
 
 **Python (recomendado)**
 ```bash
-python -c "import yaml; yaml.safe_load(open('docs/ai-context/catalog.yaml')); print('✅ Válido')" || echo "❌ Erro"
+python -c "import yaml; yaml.safe_load(open('docs/ai-context/catalog.local.yaml')); print('✅ Válido')" || echo "❌ Erro"
 ```
 
 **yamllint**
 ```bash
-yamllint docs/ai-context/catalog.yaml
+yamllint docs/ai-context/catalog.local.yaml
 ```
 
 Erros comuns:
@@ -129,25 +137,23 @@ Erros comuns:
 Se remover por engano:
 
 ```bash
-# Recuperar via Git
-git checkout docs/ai-context/catalog.yaml .github/instructions/<projeto>.instructions.md
-
-# Recarregar contexto
-/add-project-context <projeto>
+# Recuperar via Git (só funciona se catalog.local.yaml estiver sob controle de versão local
+# customizado pelo dev — por padrão é gitignored, então a via normal de recuperação é recriar):
+/add-project-context <caminho-absoluto-do-projeto>
 ```
 
 ## Fallbacks
 
 | Cenário | Ação |
 |---|---|
-| Project não encontrado em catalog.yaml | Abortar com mensagem clara |
-| YAML inválido após remoção | Reverter com Git checkout + report |
+| Project não encontrado em catalog.local.yaml | Abortar com mensagem clara |
+| YAML inválido após remoção | Reverter com Git checkout (se local.yaml estiver versionado) ou recriar manualmente + report |
 | Confirmação não fornecida | Aguardar entrada do user |
 
 ---
 
-**Status**: Prompt v1.1 (Padrão Skill)  
-**Integração**: Agent `project-context-builder`  
-**Dependência**: `yaml-governance` skill  
-**Referência**: `/add-project-context` (operação inversa)  
+**Status**: Prompt v1.2 (Local Overlay Pattern — R-043)
+**Integração**: Agent `project-context-builder`
+**Dependência**: `yaml-governance` skill
+**Referência**: `/add-project-context` (operação inversa)
 **Audit**: Registrado em `.github/hooks/context-mode.json`

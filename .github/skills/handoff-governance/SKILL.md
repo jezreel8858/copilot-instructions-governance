@@ -99,7 +99,7 @@ handoff_payload:
   emissor:                                # identidade do agent delegante (P10)
     nome: "<nome-do-agent-atual>"
     versao: "<versao-semantica>"          # ex.: "1.1.0"
-    modelo_llm: "<modelo-usado>"          # ex.: "claude-haiku-4.5"
+    modelo_llm: "<modelo-usado>"          # ex.: "Claude Haiku 4.5"
     timestamp: "<ISO-8601>"              # ex.: "2026-08-28T14:23:00Z"
   contexto:
     solicitacao_original: "<texto>"
@@ -150,7 +150,7 @@ handoff_payload:
        ├──→ @refactor-planner (planejar refatoração)
        │         └──→ @impact-architect (análise de impacto necessária antes)
        │
-       ├──→ @research-router (pesquisa técnica)
+       ├──→ @deep-search (pesquisa técnica interna/externa)
        │         └──→ @analysis-architect (análise cross-projeto)
        │
        └──→ @docs-curator (documentar resultado)
@@ -184,8 +184,16 @@ Agent receptor confirma:
 | Bug com impacto sistêmico desconhecido | `@bug-triage` → `@impact-architect` |
 | Refatoração sem análise de dependências | `@refactor-planner` → `@impact-architect` |
 | Implementação sem estratégia definida | `@test-implementation` → `@test-strategy` primeiro |
-| Dúvida técnica que precisa de pesquisa | Qualquer agent → `@research-router` |
+| Dúvida técnica que precisa de pesquisa | Qualquer agent → `@deep-search` |
 | Documentação a atualizar após mudança | Qualquer agent → `@docs-curator` |
+| **Mudança de fase na mesma conversa** (requisito→implementação, análise→código, revisão→correção) | Downstream atual **DEVE** retornar a `@agent-router` (R-042, re-triagem obrigatória) — **nunca prosseguir sozinho** |
+| Especialista híbrido (`@angular`/`@spring-boot`/`@spring-reactive`) recebe pedido de código **fora** do próprio domínio de stack | Specialist → `@agent-router` com handoff (dentro do próprio domínio, o specialist implementa diretamente — não é deriva) |
+
+### 5.2) Anti Sticky-Session (R-042)
+
+Todo agent downstream em `task_mode` reavalia a cada novo turno se a solicitação ainda cabe no seu **Não-Escopo** declarado. Ao detectar deriva (mudança de verbo de ação, stack fora de competência, ou pedido de execução em agent read-only), o agent **interrompe e devolve controle** ao `@agent-router` com `motivo: "deriva_de_intencao"` no payload — nunca conclui a tarefa fora do próprio escopo só porque já estava "no meio da conversa".
+
+**Visibilidade obrigatória (banner de identidade)**: para que a re-triagem seja auditável a cada turno (não só quando o `@agent-router` responde), TODO agent abre sua resposta com `Agente Ativo: <name>`; se a resposta é resultado de handoff/re-triagem recebido, uma segunda linha declara `Handoff: <origem> → <destino> (motivo: ...)`. Padrão de mercado: OpenAI Agents SDK (`HandoffOutputItem` — "Handed off from X to Y") e LangGraph (`active_agent` streamado ao usuário). Detalhes e checklist em `agent-contracts/SKILL.md` § 0.
 
 ---
 

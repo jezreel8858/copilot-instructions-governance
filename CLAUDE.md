@@ -16,7 +16,7 @@ Em caso de conflito, siga esta ordem:
 3. User
 4. Arquivos locais deste repositório (`CLAUDE.md`, `.github/*`)
 
-## 3) Regras Normativas (R-001..R-041)
+## 3) Regras Normativas (R-001..R-043)
 
 - **R-001 (Escopo)**: altere apenas o que foi solicitado.
 - **R-002 (Mudança mínima)**: prefira alterações pequenas, reversíveis e rastreáveis.
@@ -53,12 +53,14 @@ Em caso de conflito, siga esta ordem:
 - **R-033 (Não gerar documentação automaticamente)**: nunca gere documentos `.md` se não for solicitado ou sem a aprovação por `ask_questions`.
 - **R-034 (Health Check de Binding Context)**: ao iniciar trabalho em novo repositório com esta base, Copilot DEVE verificar se existem `docs/ai-context/catalog.yaml` e `docs/ai-context/binding.md`. Se faltarem: ⚠️ **ALERTAR E DISPARAR AGENT `binding-initializer`** com sequência de `ask_questions` para gerar arquivos customizados. Sem exceções — binding é pré-requisito para descoberta de adapters.
 - **R-035 (Terminal sem paginação interativa)**: nunca executar comandos que abram pager interativo (ex.: `less`, `more`, `git log` paginado) que exijam `q` para sair. Sempre usar modo não interativo (`--no-pager`, `GIT_PAGER=cat`, pipes com `cat`, limites explícitos) para evitar bloqueio da sessão.
-- **R-036 (Conformidade de Modelo — Model Enforcement)**: Ao iniciar qualquer agent/prompt/skill, o Copilot DEVE verificar **ANTES** de executar: `Est á o model da minha sessão = model definido no frontmatter do artefato?`. Se NÃO coincidir: **ALERTAR** via `ask_questions` com 3 opções: **(A)** Trocar para o modelo correto (ex: `Claude Sonnet 4.5`); **(B)** Continuar com modelo atual (aceitando potencial perda de qualidade); **(C)** Cancelar execução. Sem exceções — model mismatch impacta QoS. Formato de verificação: `[Model Check] Expected: <model-frontmatter> | Current: <model-sessão> | Status: ❌ MISMATCH`. Se usuário escolher **A**, Copilot PODE recomendar `/switch-model <modelo-correto>` se disponível, ou instruir: "Troque manually em settings → Model".
-- **R-037 (Ponto de Entrada Obrigatório — Agent Router First)**: **SEM EXCEÇÕES**, toda solicitação deve começar com `@agent-router`. Controller routing é o ponto de entrada único para: **(a)** classificação de intenção; **(b)** decisão de rota; **(c)** prevenção de implementação direta sem triagem. O roteador delega para downstream (bug-triage, test-strategy, refactor-planner, impact-architect, docs-curator, research-router, analysis-architect) conforme necessidade. Bypass de @agent-router é violação de governança. Proibido implementar sem passar por triagem.
+- **R-036 (Conformidade de Modelo — Model Enforcement)**: Ao iniciar qualquer agent/prompt/skill, o Copilot DEVE verificar **ANTES** de executar: `Est á o model da minha sessão = model definido no frontmatter do artefato?`. Se NÃO coincidir: **ALERTAR** via `ask_questions` com 3 opções: **(A)** Trocar para o modelo correto (ex: `Claude Sonnet 4.5`); **(B)** Continuar com modelo atual (aceitando potencial perda de qualidade); **(C)** Cancelar execução. Sem exceções — model mismatch impacta QoS. Formato de verificação: `[Model Check] Expected: <model-frontmatter> | Current: <model-sessão> | Status: ❌ MISMATCH`. Se usuário escolher **A**, Copilot PODE recomendar `/switch-model <modelo-correto>` se disponível, ou instruir: "Troque manually em settings → Model". ⚠️ **Limitação estrutural confirmada (2026)**: esta verificação de "Current: <model-sessão>" **não é tecnicamente enforçável** — nenhum agent, em nenhum tier, tem acesso confiável a qual modelo está de fato executando a sessão (LLMs não têm essa informação a menos que injetada explicitamente no system prompt pela plataforma, o que VS Code Copilot Chat não faz para custom agents; confirmado empiricamente — ver `agents/catalog.yaml` changelog rodada 23 e `agent-contracts/SKILL.md` § 10). R-036 permanece como **diretriz documental** (best-effort, comunica a intenção ao usuário) e não como trava ativa/bloqueante automática. **Cost-Tier Ceiling (plataforma, sem opt-out)**: ao delegar via `run_subagent` (R-042), a plataforma aplica um teto de custo independente — o subagent nunca resolve para modelo com multiplicador maior que o do turno/sessão pai; se exceder, ocorre *downgrade* silencioso (comportamento documentado oficialmente pela VS Code Docs). Mitigação **exclusivamente do usuário** (não verificável pelo agent): nunca iniciar o fluxo `@agent-router` com `Auto`; selecionar manualmente, antes do 1º turno, um modelo de tier ≥ ao maior tier usado por qualquer agent do catálogo (`Claude Sonnet 5`, 1×). O `agent-router` reforça isso mencionando o modelo do agent-alvo na própria invocação do `run_subagent` (melhor esforço, canal documentado, não garantido). Detalhamento técnico completo e fontes em `agent-contracts/SKILL.md` § 10.
+- **R-037 (Ponto de Entrada Obrigatório — Agent Router First)**: **SEM EXCEÇÕES**, toda solicitação deve começar com `@agent-router`. Controller routing é o ponto de entrada único para: **(a)** classificação de intenção; **(b)** decisão de rota; **(c)** prevenção de implementação direta sem triagem. O roteador delega para downstream (bug-triage, test-strategy, refactor-planner, docs-curator, deep-search, analysis-architect) conforme necessidade. Bypass de @agent-router é violação de governança. Proibido implementar sem passar por triagem.
 - **R-038 (Genericidade Obrigatória em Governança)**: Toda documentação de governança criada em `.github/` (agents, skills, prompts, copilot-instructions) **DEVE ser genérica**, desacoplada de: **(a)** projetos específicos; **(b)** tecnologias exclusivas; **(c)** convenções de domínio particulares. Convencionalidades, adapters e exemplos concretos **PERTENCEM EXCLUSIVAMENTE A** `.github/instructions/*.instructions.md` (adapters) ou `docs/ai-context/` (contexto de binding). Se uma regra de governança referencia projeto, domínio ou tech específica, é violação de R-038. Teste: substituir nome de projeto/tecnologia por `[PROJETO]` ou `[TECH]` — se deixar de fazer sentido, está muito específica para governança global.
 - **R-039 (Diagramas em Markdown com Mermaid)**: Todo diagrama incorporado em arquivo `.md` **DEVE usar Mermaid** (sintaxe nativa de blocos code com linguagem `mermaid`). Razões: **(a)** versionabilidade — diagramas vivem no Git, não em binários; **(b)** portabilidade — renderização nativa em GitHub, GitLab, Notion e ferramentas de IA; **(c)** manutenibilidade — patches e reviews sem ferramentas específicas. Proibido: imagens PNG/SVG geradas externamente, Visio, Lucidchart embarcados. Se precisar de estilo avançado, use plugins Mermaid ou refatore para simplificar.
 - **R-040 (Grafo de Roteamento como Fonte de Verdade)**: O roteamento de agents **DEVE ser declarado como dado estruturado** (ex.: `docs/ai-context/routing-graph.yaml` com nós, arestas, thresholds e política de cascata). A Decision Tree em prosa de qualquer agent-router é **documentação derivada** — não fonte única. Toda nova rota ou agente adicionado ao ecossistema exige: **(a)** entrada no grafo estruturado; **(b)** atualização da Decision Tree (derivada); **(c)** novo caso de teste em `docs/ai-context/evals/casos-roteamento.yaml` (equivalente ao R-015 para evals). Threshold de confiança para cada rota deve ser declarado explicitamente no grafo e reportado no output do router.
 - **R-041 (Exceção de Loop Controlado — Agent `prompt-structuring`)**: por exceção formal a R-011 (sem overengineering), R-012 (clarificação progressiva, máx. 3 perguntas/ciclo) e R-027 (proibição de loop em `ask_questions`), o agent `prompt-structuring` é o **ÚNICO** agent do catálogo autorizado a operar em loop de auto-refinamento de prompt. Regras do loop: **(a)** limite rígido `loop_count <= 5` — ao atingir 5 iterações sem completude, o loop é interrompido compulsoriamente e o fluxo prossegue com o melhor prompt disponível, sinalizando a limitação; **(b)** cada iteração avalia o prompt contra o checklist estrutural `<task>/<context>/<constraints>/<output_format>`; se incompleto, faz **no máximo 1 pergunta objetiva por iteração** via `ask_questions` (nunca aberta); **(c)** encerramento antecipado é obrigatório assim que o prompt atingir completude — não force as 5 iterações; **(d)** o agent SEMPRE retorna para `@agent-router` ao final (sucesso ou limite atingido) — nunca roteia diretamente para downstream. Nenhum outro agent do catálogo pode adotar este padrão de loop sem nova exceção formalizada nesta regra.
+- **R-042 (Re-triagem Obrigatória por Turno — Anti Sticky-Session)**: R-037 ("toda solicitação começa em `@agent-router`") aplica-se a **cada novo turno do usuário**, não apenas ao primeiro. Todo agent downstream ativo opera em `task_mode` e deve checar deriva de intenção a cada nova mensagem contra seu **Não-Escopo** declarado. **Critério objetivo de deriva** (qualquer um): **(a)** mudança de verbo de ação (elicitar→implementar, revisar→codar, analisar→corrigir, planejar→executar) **quando o agent ativo não cobre implementação** (ex.: `analysis-architect`, `bug-triage`, `requirements-analyst`, `test-strategy`, `deep-search`); **(b)** menção a stack/artefato fora da matriz de competência do agent ativo (ex.: pedir código Angular enquanto `@spring-boot` está ativo); **(c)** pedido explícito de execução/código quando o agent é estritamente read-only/analítico. **Nota (v2.0.0 dos specialists)**: `angular`, `spring-boot` e `spring-reactive` têm perfil híbrido (Advisory + Implementação) — pedir para "implementar" dentro do próprio domínio deles **não é deriva**; deriva só ocorre se o pedido sair do domínio de stack do specialist. **Ação obrigatória ao detectar deriva**: handoff imediato de retorno para `@agent-router` (payload do schema `handoff-governance` § 2.1, com `motivo: "deriva_de_intencao"`) — **nunca prosseguir silenciosamente fora do escopo**. Todo `.agent.md` deve declarar seção **"Retorno ao Router"** com o gatilho específico de deriva (atualização atômica conforme R-015). O `agent-router` declara `Agente Ativo: <nome>` em toda resposta para tornar a re-triagem auditável. Arestas de retorno universais (`de: <qualquer downstream> → para: agent-router`, condição `intent_drift_detected`) são declaradas em `docs/ai-context/routing-graph.yaml` (R-040). **Pré-requisito estrutural (tooling baseline)**: o handoff de retorno só é efetivo se **executado** via tool `run_subagent` (`agentName: "agent-router"`) — descrever o handoff apenas em texto/markdown não cumpre R-042. Por isso, `run_subagent` é **obrigatório e bloqueante** no frontmatter `tools:` de TODO agent do catálogo, incluindo os templates-base (`templates/research-agent.md`, `templates/operational-agent.md`); `agent-factory` valida essa regra em toda criação/revisão (baseline detalhado em `agent-contracts/SKILL.md` § 9). **Visibilidade de fluxo (banner obrigatório)**: para que R-042 seja auditável turno a turno (não apenas no turno em que `@agent-router` responde), **TODO agent — não apenas o `agent-router` — declara `Agente Ativo: <name>` como a primeira linha de toda resposta**, mesmo quando o agent apenas continua respondendo em `task_mode` sem handoff neste turno; quando a resposta é resultado de handoff/re-triagem recebido, uma segunda linha declara a transição (`Handoff: <origem> → <destino> (motivo: ...)`), equivalente ao `HandoffOutputItem` do OpenAI Agents SDK e ao campo `active_agent` streamado pelo LangGraph (padrão de mercado consolidado — detalhes em `agent-contracts/SKILL.md` § 0).
+- **R-043 (Local Overlay Pattern — Desacoplamento Total de Projetos e Adapters Locais)**: bindings de projeto (`projetos:`) e adapters gerados automaticamente por `adapter-generator` são dados **LOCAIS/PRIVADOS de cada desenvolvedor** e **NUNCA** podem ser escritos no repositório de governança compartilhado/commitado. **Localização obrigatória**: `docs/ai-context/catalog.local.yaml` (overlay de projetos) e `.github/instructions/local/` (adapters por-projeto) — ambos declarados em `.gitignore`, nunca tocados por `git add`/commit de rotina. `docs/ai-context/catalog.yaml` (compartilhado) mantém apenas `global:`, `adapters:` genéricos, `discovery:` e `metadata:` — **nunca** uma seção `projetos:` populada. **Template rastreado**: `docs/ai-context/catalog.local.yaml.example` (sem dados reais) é commitado como schema de referência; cada desenvolvedor copia para `catalog.local.yaml` (análogo a `.env`/`.env.example`). **Regra de leitura (merge em memória)**: todo agent/prompt que precisa da lista de projetos DEVE ler `catalog.yaml` + `catalog.local.yaml` (se existir) e mesclar em memória — nunca escrever entrada de projeto de volta no arquivo compartilhado. **Regra de escrita**: `/add-project-context` e `adapter-generator` escrevem exclusivamente em `catalog.local.yaml` e `.github/instructions/local/`; `/del-project-context` remove exclusivamente dali. **Defesa em profundidade**: hook `git` em `.githooks/pre-commit` bloqueia commit que introduza `projetos:` não-vazio em `catalog.yaml` ou qualquer arquivo staged sob `.github/instructions/local/` — protege contra `git add -f` acidental. Motivo: evitar que um `git commit`/`push` de rotina suba nomes/caminhos de projetos privados para o repositório de governança compartilhado.
 
 ## 3.1) Regra de Autoria de Agents
 
@@ -67,36 +69,52 @@ Em caso de conflito, siga esta ordem:
 
 ## 4) Fluxo Operacional Base
 
-**SEM EXCEÇÃO: Todo fluxo deve começar com `@agent-router`**
+**SEM EXCEÇÃO: Todo fluxo deve começar com `@agent-router`, e todo turno subsequente é re-triado (R-042)**
 
 ```
-Solicitação do Usuário
+Solicitação do Usuário (turno N)
            ↓
     @agent-router ←── OBRIGATÓRIO (Health Check R-034)
            ↓
+    Existe agent ativo de turno anterior? (R-042)
+           ├─ Não (1º turno) ──────────────────────┐
+           └─ Sim -> checar deriva de intenção      │
+                (verbo de ação | stack fora de       │
+                 competência | pedido de execução     │
+                 em agent read-only)                  │
+                ├─ Sem deriva -> devolve ao agent ativo (sem re-rotear)
+                └─ Deriva detectada (handoff          │
+                   motivo: "deriva_de_intencao") ──────┤
+                                                        ↓
     @prompt-structuring ←── OBRIGATÓRIO (R-041 — loop máx. 5 iterações)
     (refina prompt em <task>/<context>/<constraints>/<output_format>)
            ↓
     @agent-router ←── retorno obrigatório (loop nunca roteia direto)
-    (classificação de intenção com prompt refinado)
+    (classificação de intenção com prompt refinado; declara "Agente Ativo")
            ↓
-  [Delega para downstream correto]
-       ↙ ↓ ↘ ↙ ↓ ↘
+  [Delega para downstream/specialist correto]
+       ↙ ↓ ↘ ↙ ↓ ↘ ↙
   @bug-triage  @test-strategy  @refactor-planner
-  @impact-architect  @docs-curator
-  @research-router  @analysis-architect
+  @deep-search  @docs-curator
+  @analysis-architect  @agent-auditor
+  @angular  @spring-boot  @spring-reactive (perfil híbrido — advisory + implementação testing-first)
            ↓
-        [EXECUÇÃO]
+         [EXECUÇÃO]
            ↓
-      [RESULTADO]
+    Turno seguinte muda de fase/escopo? (R-042)
+           ├─ Sim -> agent ativo retorna a @agent-router (handoff de deriva)
+           └─ Não -> agent ativo continua em task_mode
+           ↓
+       [RESULTADO]
 ```
 
 **Fases de Execução:**
 
-1. **Triagem** (agent-router): classificar intenção e decidir rota
-2. **Análise** (agent downstream): executar análise específica
-3. **Validação** (self-check): revisar consistência
-4. **Resumo**: reportar resultado, evidências e próximos passos
+1. **Triagem** (agent-router): classificar intenção, decidir rota e declarar `Agente Ativo`
+2. **Análise** (agent downstream): executar análise específica em `task_mode`
+3. **Re-triagem por turno** (R-042): a cada nova mensagem, o agent ativo checa deriva de intenção contra seu Não-Escopo antes de responder; ao detectar deriva, devolve controle ao `@agent-router` via handoff (nunca prossegue fora do escopo)
+4. **Validação** (self-check): revisar consistência
+5. **Resumo**: reportar resultado, evidências e próximos passos
 
 ## 5) Estrutura de Governança
 
@@ -105,12 +123,15 @@ Solicitação do Usuário
 - `.github/skills/README.md` -> catálogo de skills e padrão.
 - `.github/instructions/README.md` -> catálogo de instructions e convenções de domínio.
 - `.github/hooks/context-mode.json` -> hooks de continuidade para context-mode.
+- `.githooks/pre-commit` -> hook Git de defesa em profundidade para R-043 (bloqueia commit que vaze `projetos:` em `catalog.yaml` ou arquivo em `.github/instructions/local/`); setup: `git config core.hooksPath .githooks`.
 - `.github/prompts/README.md` -> comandos operacionais do workflow.
   - **Novo (v1.1)**: 
     - `/add-project-context` — Auto-carregar contexto com Intent + RRF (**com implementation guide para Copilot**)
     - `/del-project-context` — Remover contexto de projeto com confirmação
   - **Novo (v1.2)**:
     - Health Check (R-034): Se faltarem `catalog.yaml` + `binding.md`, disparar `binding-initializer` automaticamente
+  - **Novo (v1.3 — R-043)**:
+    - Local Overlay Pattern: projetos/adapters locais vivem em `catalog.local.yaml` + `.github/instructions/local/` (gitignored) — nunca em `catalog.yaml`/`.github/instructions/` (compartilhados)
 - `.github/agents/catalog.yaml` -> catálogo estruturado de agents.
 - `.github/skills/.index.json` -> índice estruturado de skills.
 
@@ -130,7 +151,7 @@ Solicitação do Usuário
 - `impact-architect`
 - `docs-curator`
 - `docs-writer` — escrita/geração de documentação técnica nova em `.md`
-- `research-router`
+- `research-router` → substituído por `deep-search`
 - `analysis-architect` v2.0.0 — análise técnica unificada: impacto, riscos, dependências, contratos e integrações cross-sistema (absorveu `analysis-integration-architect`); metodologia B1/B2/B3 + BREAKING|COMPATIBLE|DEPRECIAÇÃO
 - `agent-factory`
 - `skill-factory` — criar/revisar skills com padrão SKILL.md e .index.json atômico

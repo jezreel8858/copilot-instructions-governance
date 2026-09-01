@@ -39,3 +39,17 @@ build/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# ============================================
+# Local Project Overlay (R-043) — NUNCA COMMITAR
+# Binding de projetos locais e adapters auto-gerados por /add-project-context.
+# Vivem fora do repositório de governança compartilhado — ver CLAUDE.md R-043.
+# ============================================
+docs/ai-context/catalog.local.yaml
+.github/instructions/local/
+

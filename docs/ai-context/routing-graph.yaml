@@ -3,7 +3,7 @@ description: >
   Grafo de roteamento declarado — fonte de verdade estrutural para o agent-router.
   Nós = agents disponíveis; arestas = condições de roteamento (keywords, sinais R-006, score threshold).
   A Decision Tree em agent-router.agent.md é documentação derivada deste arquivo.
-last_updated: "2026-08-29 (requirements-analyst: nó + aresta adicionados)"
+last_updated: "2026-09-01 (v5 — adicionados 9 nós/arestas após validação de gaps de perfil de agents: security-reviewer, performance-agent, compliance-guardrails, feature-planner, agentic-memory-manager, devops-engineer, debugger, code-style-enforcer, refactor-executor; v4 anterior preservado)"
 
 # ─────────────────────────────────────────────
 # NÓS — agents disponíveis no catálogo
@@ -44,10 +44,6 @@ nos:
     tipo: downstream
     descricao: "Planejamento de refatoração segura"
 
-  - id: impact-architect
-    tipo: downstream
-    descricao: "Análise de impacto técnico local"
-
   - id: docs-curator
     tipo: downstream
     descricao: "Curadoria e atualização de documentação de governança"
@@ -64,13 +60,21 @@ nos:
     tipo: downstream
     descricao: "Elicitação e estruturação de requisitos funcionais/não-funcionais a partir de pedido de negócio ambíguo (EARS/INVEST/Gherkin/FURPS+); detecta solution-jumping via Five Whys; prospectivo (pedido → requisito), nunca decide arquitetura, não confundir com business-rules-extractor (reverso: código → regra)"
 
-  - id: research-router
+  - id: code-summarizer
+    tipo: downstream
+    descricao: "Ponto de entrada único para sumarização de código-fonte agnóstica a linguagem (RF-008); modelo híbrido — heurística/AST determinística primeiro, LLM leve como fallback; nunca substituído por chamada direta a lib de parsing por outros agents (RNF-007)"
+
+  - id: code-knowledge-graph
+    tipo: downstream
+    descricao: "Ponto de entrada único para construção/consulta do grafo de conhecimento de código-fonte cross-projeto (RF-001/RF-002/RF-011): nós arquivo/classe/função, arestas import/chamada/herança/tabela-SQL, reaproveitando AST do code-summarizer; puramente determinístico, sem fallback LLM (RNF-008); nunca substituído por chamada direta a lib de parsing/grafo (RNF-004)"
+
+  - id: deep-search
     tipo: fallback
-    descricao: "Triagem de pesquisa externa — fallback primário"
+    descricao: "Pesquisa interna aprofundada e externa (atômica/composta) — fallback primário"
 
   - id: analysis-architect
     tipo: fallback
-    descricao: "Análise técnica cross-projeto e integrações cross-sistema (v2.0.0 — unificado com analysis-integration-architect)"
+    descricao: "Análise técnica cross-projeto e integrações cross-sistema; absorve impacto local via tier B1"
 
   - id: agent-factory
     tipo: downstream
@@ -91,6 +95,54 @@ nos:
   - id: context-builder
     tipo: downstream
     descricao: "Coleta e consolidação de contexto técnico"
+
+  - id: angular
+    tipo: specialist_hybrid
+    descricao: "Especialista Angular enterprise — perfil híbrido v2.0.0: Advisory (arquitetura, reatividade, performance, segurança, acessibilidade, upgrade) E Implementação (feature/bugfix com testing-first, diff mínimo); retorna ao agent-router só se sair do domínio Angular"
+
+  - id: spring-boot
+    tipo: specialist_hybrid
+    descricao: "Especialista backend Spring Boot enterprise — perfil híbrido v2.0.0: Advisory (arquitetura, Java/JDK, observabilidade, segurança, migração) E Implementação (feature/bugfix com testing-first, diff mínimo); retorna ao agent-router só se sair do domínio Spring Boot"
+
+  - id: spring-reactive
+    tipo: specialist_hybrid
+    descricao: "Especialista backend reativo Spring WebFlux/Reactor — perfil híbrido v2.0.0: Advisory (capacidade, resiliência, backpressure, observabilidade) E Implementação (feature/bugfix com testing-first, sem bloqueio de event-loop); retorna ao agent-router só se sair do domínio reativo"
+
+  - id: security-reviewer
+    tipo: downstream
+    descricao: "Revisão especializada de segurança de aplicação (OWASP Top 10:2025, ASVS 5.0, SCA/CVE, secrets) — read-only; distinto de agent-safety-guardrails (segurança do próprio agent de IA)"
+
+  - id: performance-agent
+    tipo: downstream
+    descricao: "Revisão especializada de performance (Core Web Vitals frontend, N+1/latência backend, otimização de query banco) — read-only"
+
+  - id: compliance-guardrails
+    tipo: downstream
+    descricao: "Avaliação de conformidade regulatória de aplicação (SOC 2, GDPR/LGPD, HIPAA, ISO 27001) — audit trails, least privilege; read-only; distinto de agent-safety-guardrails"
+
+  - id: feature-planner
+    tipo: downstream
+    descricao: "Decomposição de requisito de feature nova em subtasks executáveis com dependências e paralelização; distinto de refactor-planner (refatoração de código existente)"
+
+  - id: agentic-memory-manager
+    tipo: downstream
+    descricao: "Persistência/recuperação de memória long-term entre sessões (episódica/semântica/procedimental); memória procedimental exige aprovação humana explícita"
+
+  - id: devops-engineer
+    tipo: downstream
+    descricao: "Revisão de artefatos DevOps (Dockerfile/Kubernetes/CI-CD/IaC) por segurança/resiliência/boas práticas — read-only"
+
+  - id: debugger
+    tipo: downstream
+    descricao: "Investigação de causa raiz a partir de stack trace/log — call graph, hipótese testável; complementa bug-triage com investigação mais profunda"
+
+  - id: code-style-enforcer
+    tipo: downstream
+    descricao: "Verificação de aderência a convenções de estilo documentadas no adapter de stack; nunca bloqueador"
+
+  - id: refactor-executor
+    tipo: downstream
+    descricao: "Execução de plano de refatoração já aprovado por refactor-planner, fase a fase, com validação contra regras de negócio"
 
 # ─────────────────────────────────────────────
 # ARESTAS — condições de roteamento
@@ -157,7 +209,165 @@ arestas:
       sinal_r006: "É revisão preventiva de qualidade ANTES do merge (não bug já ocorrido)?"
       nao_confundir_com:
         - "bug em produção"        # → bug-triage (algo já quebrou)
-        - "impacto de mudar X"     # → impact-architect (análise isolada de impacto)
+        - "impacto de mudar X"     # → analysis-architect (tier B1 local)
+
+  # Revisão especializada de segurança (OWASP/CVE/secrets)
+  - de: agent-router
+    para: security-reviewer
+    prioridade: 1.55
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "revisão de segurança"
+        - "security review"
+        - "owasp"
+        - "cve"
+        - "vulnerabilidade"
+        - "sql injection"
+        - "secrets no código"
+        - "sast"
+        - "sca"
+      sinal_r006: "É revisão ESPECIALIZADA de segurança de aplicação (profundidade OWASP/CVE), não apenas a dimensão genérica de code-review?"
+      nao_confundir_com:
+        - "segurança do próprio agent de IA"  # → agent-safety-guardrails (skill, não agent)
+        - "revisão geral de código"            # → code-review (dimensão genérica)
+
+  # Revisão especializada de performance (CWV/N+1/query)
+  - de: agent-router
+    para: performance-agent
+    prioridade: 1.56
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "performance"
+        - "otimização"
+        - "latência"
+        - "n+1"
+        - "core web vitals"
+        - "lcp"
+        - "inp"
+        - "query lenta"
+        - "throughput"
+      sinal_r006: "É revisão ESPECIALIZADA de performance (CWV/N+1/profiling), não apenas a dimensão genérica de code-review?"
+      nao_confundir_com:
+        - "revisão geral de código"  # → code-review (dimensão genérica)
+
+  # Avaliação de compliance/conformidade regulatória
+  - de: agent-router
+    para: compliance-guardrails
+    prioridade: 1.57
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "compliance"
+        - "auditoria"
+        - "soc 2"
+        - "gdpr"
+        - "lgpd"
+        - "hipaa"
+        - "audit trail"
+        - "least privilege"
+      sinal_r006: "É avaliação de conformidade regulatória da APLICAÇÃO (SOC 2/GDPR/HIPAA), não segurança do próprio agent de IA?"
+      nao_confundir_com:
+        - "segurança do próprio agent de IA"  # → agent-safety-guardrails (skill, não agent)
+        - "vulnerabilidade técnica explorável"  # → security-reviewer
+
+  # Decomposição de feature nova em subtasks
+  - de: agent-router
+    para: feature-planner
+    prioridade: 1.6
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "decompor tarefa"
+        - "planejar feature"
+        - "task decomposition"
+        - "plano de execução"
+        - "quebrar em subtarefas"
+      sinal_r006: "É decomposição de FEATURE NOVA (não refatoração de código existente)?"
+      nao_confundir_com:
+        - "refatoração de código existente"  # → refactor-planner
+
+  # Memória long-term de agent
+  - de: agent-router
+    para: agentic-memory-manager
+    prioridade: 1.65
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "memória de agent"
+        - "agent memory"
+        - "memória entre sessões"
+        - "memória procedimental"
+      sinal_r006: "É persistência/recuperação de memória ENTRE SESSÕES (não consolidação pontual)?"
+      nao_confundir_com:
+        - "consolidação pontual de contexto"  # → context-builder
+
+  # Revisão de artefatos DevOps
+  - de: agent-router
+    para: devops-engineer
+    prioridade: 1.7
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "revisar dockerfile"
+        - "revisar kubernetes"
+        - "revisar pipeline"
+        - "revisar ci/cd"
+        - "infrastructure as code"
+        - "terraform"
+        - "helm chart"
+
+  # Investigação de causa raiz (debugging profundo)
+  - de: agent-router
+    para: debugger
+    prioridade: 1.05
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "investigar causa raiz"
+        - "call graph"
+        - "stack trace"
+        - "root cause"
+      sinal_r006: "Exige investigação PROFUNDA de call chain/causa raiz, além da triagem inicial de bug-triage?"
+      nao_confundir_com:
+        - "bug simples/classificação inicial"  # → bug-triage
+
+  # Verificação de estilo/convenção
+  - de: agent-router
+    para: code-style-enforcer
+    prioridade: 1.58
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "estilo de código"
+        - "convenção de nomenclatura"
+        - "lint"
+        - "eslint"
+        - "checkstyle"
+
+  # Execução de plano de refatoração já aprovado
+  - de: agent-router
+    para: refactor-executor
+    prioridade: 4.05
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "executar refactor"
+        - "aplicar refatoração"
+        - "executar plano de refactor"
+      sinal_r006: "Já existe plano APROVADO de refactor-planner para executar?"
+      nao_confundir_com:
+        - "criar plano de refactor do zero"  # → refactor-planner
 
   # Elicitação e estruturação de requisitos (pré-técnico, prospectivo)
   - de: agent-router
@@ -177,7 +387,68 @@ arestas:
       sinal_r006: "É elicitação de requisito NOVO a partir de pedido ambíguo (ainda sem análise técnica)?"
       nao_confundir_com:
         - "extrair regra de negócio de código existente"  # → business-rules-extractor (reverso)
-        - "impacto técnico de mudança já definida"          # → impact-architect (requisito já claro)
+        - "impacto técnico de mudança já definida"          # → analysis-architect (tier B1)
+
+  # Sumarização de código-fonte agnóstica a linguagem (RF-008)
+  - de: agent-router
+    para: code-summarizer
+    prioridade: 1.9
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "sumarizar código"
+        - "sumarização de código-fonte"
+        - "resumir arquivo"
+        - "reduzir contexto de código"
+        - "economizar tokens de código"
+        - "code summarization"
+      sinal_r006: "É pedido para reduzir volume de código-fonte levado ao contexto (sumário), não para revisar/corrigir/refatorar o código?"
+      nao_confundir_com:
+        - "revisar/corrigir código"        # → bug-triage/code-review/refactor-planner
+        - "extrair regra de negócio"       # → business-rules-extractor
+        - "implementar sumarização em lib" # → decisão técnica de agent-factory/analysis-architect, não roteamento
+
+  # Delegação interna: qualquer agent downstream pode invocar code-summarizer sob demanda (RF-002)
+  - de: "*downstream"
+    para: code-summarizer
+    prioridade: 0.5
+    threshold_score: 1.00
+    nivel_routing: rule-based
+    condicoes:
+      sinal: "Agent downstream identificou arquivo-fonte grande (>300 linhas OU >20KB) necessário ao contexto da tarefa (RF-002/RNF-002)"
+      gatilho: "Delegação interna via run_subagent antes de anexar conteúdo bruto ao contexto — nunca chamada direta a lib de parsing"
+
+  # Grafo de conhecimento de código-fonte cross-projeto (RF-001/RF-002/RF-011)
+  - de: agent-router
+    para: code-knowledge-graph
+    prioridade: 1.95
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "grafo de conhecimento"
+        - "code knowledge graph"
+        - "grafo de código"
+        - "quem chama esta função"
+        - "quais classes implementam"
+        - "relação estrutural de código"
+        - "árvore de dependências de código"
+      sinal_r006: "É pedido de construir/consultar relação estrutural entre símbolos de código (nós/arestas), não de sumarizar/revisar/corrigir o código?"
+      nao_confundir_com:
+        - "sumarizar código"                       # → code-summarizer
+        - "revisar/corrigir código"                # → bug-triage/code-review/refactor-planner
+        - "acoplamento arquitetural entre sistemas" # → analysis-architect (dependency-graph-mapping, fora de escopo deste agent)
+
+  # Delegação interna: qualquer agent downstream pode invocar code-knowledge-graph sob demanda (RF-002)
+  - de: "*downstream"
+    para: code-knowledge-graph
+    prioridade: 0.5
+    threshold_score: 1.00
+    nivel_routing: rule-based
+    condicoes:
+      sinal: "Agent downstream precisa de relação estrutural entre símbolos de código (ex.: quem chama esta função, quais classes implementam esta interface) não disponível no grafo cacheado (RF-002)"
+      gatilho: "Delegação interna via run_subagent — nunca chamada direta a lib de parsing/grafo"
 
   # Estratégia de testes
   - de: agent-router
@@ -259,9 +530,9 @@ arestas:
         - "eliminar duplicação"
         - "reestruturar"
 
-  # Análise de impacto
+  # Análise de impacto local (tier B1)
   - de: agent-router
-    para: impact-architect
+    para: analysis-architect
     prioridade: 4
     threshold_score: 0.90
     nivel_routing: rule-based
@@ -273,6 +544,7 @@ arestas:
         - "o que muda"
         - "quem é afetado"
         - "breaking change"
+      sinal_r006: "Impacto local -> usar analysis-architect em tier B1"
 
   # Documentação
   - de: agent-router
@@ -356,15 +628,85 @@ arestas:
         - "fluxo de dados cross-sistema"
         - "acoplamento entre serviços"
 
-  # Pesquisa externa — fallback primário
+  # Especialistas de recomendação de stack (perfil híbrido v2.0.0 — Advisory + Implementação)
   - de: agent-router
-    para: research-router
+    para: angular
+    prioridade: 1.6
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "angular"
+        - "componente angular"
+        - "standalone"
+        - "signals"
+        - "rxjs"
+        - "core web vitals angular"
+      sinal_r006: "É análise/recomendação OU implementação de feature/bugfix em Angular?"
+
+  - de: agent-router
+    para: spring-boot
+    prioridade: 1.6
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "spring boot"
+        - "java lts"
+        - "jdk"
+        - "actuator"
+        - "migracao spring"
+      sinal_r006: "É análise/recomendação OU implementação de feature/bugfix em Spring Boot?"
+
+  - de: agent-router
+    para: spring-reactive
+    prioridade: 1.6
+    threshold_score: 0.85
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "spring webflux"
+        - "project reactor"
+        - "backend reativo"
+        - "backpressure"
+        - "reactive streams"
+      sinal_r006: "É análise/recomendação OU implementação de feature/bugfix reativo (WebFlux/Reactor)?"
+
+  # Retorno universal (R-042) — qualquer downstream detecta deriva de intenção
+  # e devolve controle ao router. Prioridade 0 = avaliada ANTES de qualquer
+  # classificação de nova intenção, em todo turno subsequente ao primeiro.
+  - de: "*downstream"
+    para: agent-router
+    prioridade: 0
+    threshold_score: 0  # gatilho binário, não score de classificação
+    nivel_routing: rule-based
+    condicoes:
+      tipo: intent_drift_detected
+      regra: "R-042"
+      gatilho: >
+        Mudança de verbo de ação (elicitar->implementar, revisar->codar,
+        analisar->corrigir, planejar->executar) quando o agent ativo NÃO
+        cobre implementação (analysis-architect|bug-triage|
+        requirements-analyst|test-strategy|refactor-planner|deep-search)
+        OU pedido de execução/código em stack fora da matriz de competência
+        do agent ativo OU pedido de execução/código em agent estritamente
+        read-only. Nota: angular|spring-boot|spring-reactive são perfil
+        hibrido (specialist_hybrid) — pedido de implementacao DENTRO do
+        proprio dominio de stack NAO e deriva; so dispara se o pedido sair
+        do dominio do specialist (ex.: pedir Angular enquanto spring-boot
+        esta ativo).
+      aplica_a: "todos os nos tipo downstream e specialist_hybrid"
+      acao: "handoff imediato para agent-router com motivo: deriva_de_intencao"
+
+  # Pesquisa interna/externa — fallback primário
+  - de: agent-router
+    para: deep-search
     prioridade: 8
     threshold_score: 0.70
     nivel_routing: semantic
     condicoes:
-      sinal: "Dúvida técnica, pesquisa externa, benchmark de mercado"
-      gatilho: "Intenção clara mas requer informação externa ao repositório"
+      sinal: "Dúvida técnica, pesquisa interna aprofundada, pesquisa externa, benchmark de mercado"
+      gatilho: "Intenção clara que exige investigação além do contexto imediato"
 
   # Análise técnica genérica e cross-projeto — fallback secundário amplo
   - de: agent-router

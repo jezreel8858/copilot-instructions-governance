@@ -7,7 +7,7 @@ description: >-
   controlado (máximo 5 iterações — exceção R-041) até estruturar o prompt no
   formato canônico <task>/<context>/<constraints>/<output_format>, retornando
   em seguida ao agent-router para roteamento downstream.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['ask_questions', 'run_subagent']
 ---
 # Prompt Structuring
@@ -124,6 +124,12 @@ Próximo passo mínimo: classificar intenção com o prompt acima
 ## Quando Delegar
 
 - Sempre e exclusivamente para [`@agent-router`](agent-router.agent.md) — não existe outro destino de handoff.
+
+## Retorno ao Router (R-042 — nota de consistência)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: prompt-structuring` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> prompt-structuring (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Este agent já retorna 100% das vezes ao `@agent-router` por desenho (nunca roteia a downstream). R-042 não introduz gatilho adicional aqui — apenas reforça que o `agent-router`, ao receber o prompt estruturado, deve reavaliar a intenção do zero (não presumir a rota anterior).
 
 ## Combina Com (Commands)
 

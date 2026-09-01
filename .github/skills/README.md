@@ -53,18 +53,30 @@ Toda skill deve declarar no topo:
 | **`code-tracing`** | 🔧 **Tier 1** | Rastrear código do sintoma à causa raiz — grep vs semântico, stack trace parsing, call graph, rastreio de API/método, coleta mínima de evidências |
 | **`business-rules-governance`** | 📋 **Tier 1** | Taxonomia, templates e protocolos para extrair, documentar e validar regras de negócio em markdown — ground truth para validação de refatorações |
 | **`integration-contract-analysis`** | 🔗 **Tier 2** | Análise de contratos de integração (OpenAPI, AsyncAPI, gRPC, GraphQL): detecção de **breaking changes**, classificação BREAKING/COMPATIBLE/DEPRECIAÇÃO, consumidores afetados |
-| **`dependency-graph-mapping`** | 🔗 **Tier 2** | Mapeamento de grafo de dependências cross-sistema: fluxo origem→transformação→destino, acoplamento tight/loose/eventual, blast radius e dependências circulares |
 | **`agent-memory-policy`** | 🧠 **Tier 3** | Política de memória long-term para agents: tipos episódico, semântico e procedimental. Foco em memória procedimental (agents auto-adaptativos) com guardrails e aprovação humana obrigatória |
 | **`frontend-componentization-patterns`** | 🧩 **Tier 2** | Padrões genéricos de componentização frontend (responsabilidade única, composição, contrato de componente, fronteiras de estado) |
 | **`angular-frontend-patterns`** | 🅰️ **Tier 2** | Boas práticas/patterns de codificação Angular (standalone, template/binding, Signals+RxJS, segurança e consistência) |
 | **`angular-responsive-ui-patterns`** | 📱 **Tier 2** | Responsividade Angular (mobile-first, breakpoints, container queries, layout fluido, imagens responsivas e validação multi-viewport) |
 | **`design-system-component-contracts`** | 🧱 **Tier 2** | Governança de contratos de componente para design system: tokens, variantes/estados, Inputs/Outputs, semver, depreciação, breaking change e acessibilidade |
 | **`spring-boot-backend-patterns`** | ☕ **Tier 2** | Baseline enterprise para análise/recomendação Spring Boot (arquitetura, observabilidade, segurança, performance e migração) |
+| **`spring-boot-implementation-patterns`** | ☕⚙️ **Tier 2** | Padrões de mercado 2026 para **implementar** features/bugs em Spring Boot (virtual threads vs reativo, N+1/OSIV, DTOs de borda, testing-first) — contraparte de execução de `spring-boot-backend-patterns` |
 | **`spring-reactive-webflux-patterns`** | ⚛️ **Tier 2** | Baseline enterprise para análise/recomendação WebFlux/Reactor (adequação reativa, backpressure, resiliência e operação) |
+| **`spring-reactive-implementation-patterns`** | ⚛️⚙️ **Tier 2** | Padrões de mercado 2026 para **implementar** features/bugs em WebFlux/Reactor (composição não-bloqueante, tratamento de erro por operador, StepVerifier/WebTestClient) — contraparte de execução de `spring-reactive-webflux-patterns` |
+| **`angular-implementation-patterns`** | 🅰️⚙️ **Tier 2** | Padrões de mercado 2026 para **implementar** features/bugs em Angular (fronteira Signals/RxJS, testing-first, checklist de PR) — contraparte de execução de `angular-frontend-patterns` |
 | **`java-jdk-backend-governance`** | ☕ **Tier 1** | Governança de versões Java/JDK backend (LTS, compatibilidade, segurança, performance e trilha de migração) |
 | **`documentation-writing-patterns`** | 📝 **Tier 2** | Diretrizes agnósticas de domínio para escrever documentação técnica em `.md` (Diátaxis, ADR/MADR, README, formatação chunking-friendly para IA) — base do agent `docs-writer` |
 | **`code-review-patterns`** | 🔎 **Tier 2** | Diretrizes de mercado para revisão de código por IA — severidade (bloqueador/alta/sugestão), dimensões (correção/segurança/convenções/impacto/testes/performance), critérios de bloqueio de merge — base do agent `code-review` |
 | **`requirements-engineering-patterns`** | 🧾 **Tier 2** | Engenharia de Requisitos (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+) para elicitar e estruturar requisitos a partir de pedido ambíguo, com detecção de *solution-jumping* (Five Whys) — base do agent `requirements-analyst` |
+| **`structured-intake-patterns`** | 📥 **Tier 2** | Padrão canônico de coleta estruturada via `ask_questions` (P1..PN), critério de "mínimo necessário para prosseguir" e template de consolidação — base de `bug-triage`, `test-fix`, `business-rules-extractor`, `requirements-analyst` |
+| **`governance-factory-patterns`** | 🏭 **Tier 1** | Fluxo canônico Factory Pattern (criar/revisar/auditar), checklist de qualidade estrutural e formato de saída ✅/❌ parametrizável — base de `agent-factory`, `skill-factory`, `prompt-factory` |
+| **`specialist-hybrid-advisory-implementation-patterns`** | 🧑‍🔧 **Tier 1** | Template canônico do perfil híbrido (Advisory + Implementação) para specialists de stack — base de `angular`, `spring-boot`, `spring-reactive` |
+| **`governance-audit-patterns`** | 🕵️ **Tier 1** | Catálogo de agent/governance smells (anti-padrão estrutural, gap de perfil, gap de diretriz, diretriz redundante, gap de cobertura de categoria) com sintoma, detecção, severidade e remediação — base do agent `agent-auditor` |
+| **`reflection-self-critique-patterns`** | 🪞 **Tier 2** | Padrão generate→critique→revise (Reflection) de baixo custo — self-reflection 1 round grounded para agents Executores reexaminarem o próprio artefato antes de reportar sucesso — base de `docs-writer`, `test-implementation` |
+| **`security-review-patterns`** | 🔒 **Tier 2** | ⭐ ***(NEW)*** OWASP Top 10:2025, ASVS 5.0, OWASP LLM/Agentic AI, SCA (CVE/CVSS), detecção de secrets e rubrica de triagem — base do agent `security-reviewer` |
+| **`performance-engineering-patterns`** | ⚡ **Tier 2** | ⭐ ***(NEW)*** Core Web Vitals (LCP/INP/CLS), N+1 queries, profiling de latência e otimização de query — base do agent `performance-agent` |
+| **`compliance-governance-patterns`** | 🛡️ **Tier 2** | ⭐ ***(NEW)*** SOC 2/GDPR/LGPD/HIPAA/ISO 27001, audit trails, least privilege e retenção de dado pessoal — base do agent `compliance-guardrails` |
+| **`task-decomposition-patterns`** | 📋 **Tier 2** | ⭐ ***(NEW)*** Decomposição sequencial/hierárquica/paralela, granularidade 2-3 níveis, validação de dependências — base do agent `feature-planner` |
+| **`devops-agent-patterns`** | 🐳 **Tier 2** | ⭐ ***(NEW)*** Checklists de revisão Dockerfile/Kubernetes/CI-CD/IaC e estratégias de deployment — base do agent `devops-engineer` |
 
 ## 4) Instructions associadas
 

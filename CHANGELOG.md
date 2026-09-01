@@ -1,4 +1,4 @@
-# CHANGELOG — Eco-Sistema Copilot (Governança de IA)
+# CHANGELOG — Deep Agents Copilot (Estrutura de Governança Genérica e Reutilizável
 
 Todas as mudanças significativas nesta base de governança são documentadas aqui.
 
@@ -6,7 +6,80 @@ Formato: [Semantic Versioning](https://semver.org/) | [Conventional Commits](htt
 
 ---
 
-## [1.4.0] — 2026-08-29
+## [1.8.0] — 2026-08-30
+
+### Adicionado
+- **`agent-contracts/SKILL.md` § 0 — Banner Universal de Identidade (Visibilidade de Fluxo)**: nova regra de ouro — toda resposta de TODO agent (não apenas `agent-router`) abre com `Agente Ativo: <name>`; se resultado de handoff/re-triagem, uma segunda linha declara `Handoff: <origem> → <destino> (motivo: ...)`. Baseado em pesquisa de mercado 2026 (Tavily): LangGraph "Stream the Active Agent" (campo `active_agent` no state, streamado ao usuário) e OpenAI Agents SDK (`HandoffOutputItem` imprimindo "Handed off from X to Y").
+- **`agent-router.agent.md`**: novo campo `Transição` no Formato de Saída, explicitando "Nova triagem (1º turno)" | "`<origem>` → `<atual>` (motivo: deriva_de_intencao)" | "Sem mudança".
+
+### Corrigido
+- **Gap de visibilidade em R-042**: antes desta correção, apenas o `agent-router` declarava "Agente Ativo" — um agent downstream em `task_mode` por vários turnos consecutivos não reafirmava quem estava respondendo, deixando o usuário sem visibilidade do fluxo. Corrigido nos 23 agents downstream (parágrafo "Banner obrigatório" inserido na seção já existente "Retorno ao Router", via script Node.js determinístico) e nos 2 templates (`research-agent.md`, `operational-agent.md`) usados pelo `agent-factory` para gerar novos agents.
+
+### Alterado
+- **`agent-factory.agent.md`**: Padrões Obrigatórios (item 10), Checklist e Formato de Saída passam a validar a presença do banner em todo agent criado/revisado.
+- **`CLAUDE.md` (R-042)**, **`copilot-instructions.md`** (fluxo garantido) e **`agents/README.md`** § 8 — formalizam a exigência de visibilidade turno a turno.
+- **`handoff-governance/SKILL.md`** § 5.2 — referência cruzada ao banner de identidade.
+
+---
+
+## [1.7.0] — 2026-08-30
+
+### Corrigido
+- **Gap estrutural de tooling para R-042**: `run_subagent` era ausente no frontmatter `tools:` de 3 agents (`agent-factory`, `adapter-generator`, `binding-initializer`) — sem essa tool, o handoff de retorno a `@agent-router` descrito em prosa na seção "Retorno ao Router" nunca era executável de fato. Corrigido nos 3 agents.
+- **Causa raiz nos templates**: `templates/research-agent.md` (tools com nomenclatura não-canônica `[Read, Grep, Glob]`, sem `run_subagent`, sem seção "Retorno ao Router") e `templates/operational-agent.md` (sem `run_subagent`, seção "Retorno ao Router" totalmente ausente) — todo agent novo criado por `agent-factory` herdava o gap. Ambos corrigidos.
+
+### Adicionado
+- **`agent-contracts/SKILL.md` § 9 — Ferramentas Mínimas por Agent (Tooling Baseline)**: tabela de tools mínimas obrigatórias por perfil (Router, Analista, Especialista, Operacional); regra de ouro — `run_subagent` é obrigatório e bloqueante em TODO agent, sem exceção.
+- **`agent-factory.agent.md`**: valida a nova regra em Padrões Obrigatórios (itens 8-9), Checklist Antes de Codar e Formato de Saída — nenhum agent é finalizado sem `run_subagent` no frontmatter e sem a seção "Retorno ao Router".
+
+### Alterado
+- **`CLAUDE.md` (R-042)**, **`copilot-instructions.md`** e **`agents/README.md`** § 8 — adicionado o pré-requisito estrutural: o handoff de retorno só é efetivo via chamada real de `run_subagent`, não apenas descrito em texto.
+
+---
+
+## [1.6.0] — 2026-08-30
+
+### Alterado
+- **Especialistas `angular`, `spring-boot`, `spring-reactive` migrados de perfil "advisory puro" para perfil HÍBRIDO (v2.0.0)**: além de análise/recomendação, agora também implementam feature nova e correção de bug dentro do próprio domínio de stack, seguindo padrões de mercado consolidados via pesquisa Tavily 2026.
+- **Testing-first obrigatório** em modo Implementação: nenhum dos 3 agents pode reportar sucesso sem teste escrito/atualizado e suíte executada localmente.
+- **`agent-router` / `routing-graph.yaml` / `CLAUDE.md` (R-042)**: condição `intent_drift_detected` ajustada — implementação **dentro** do domínio de stack do specialist não é mais deriva de intenção; deriva só ocorre em pivô **cross-stack** (ex.: `@angular` recebe pedido de código Spring Boot) ou pedido fora do domínio técnico.
+
+### Adicionado
+- **3 novas skills de implementação** (Tier 2, pesquisa de mercado 2026 via Tavily):
+  - `angular-implementation-patterns` — fronteira Signals/RxJS, testing-first, checklist de PR.
+  - `spring-boot-implementation-patterns` — matriz de decisão virtual threads vs reativo, N+1/OSIV, DTOs de borda.
+  - `spring-reactive-implementation-patterns` — composição não-bloqueante, operadores de erro (`onErrorResume`/`onErrorMap`/`retryWhen`), `StepVerifier`/`WebTestClient`.
+- **`tools:`** dos 3 agents expandidas com `create_file`, `insert_edit_into_file`, `get_errors`, `run_in_terminal`.
+- **`docs/ai-context/evals/casos-roteamento.yaml`**: `canon-018` (implementação direta de bugfix), `regr-014` corrigido (implementação no próprio domínio não é deriva), `regr-016` novo (deriva real cross-stack) — suíte 40 → 42 casos.
+
+### Corrigido
+- **SYNC (R-015)**: `.github/skills/.index.json` — corrigido gap pré-existente onde as 3 skills de análise (`angular-frontend-patterns`, `spring-boot-backend-patterns`, `spring-reactive-webflux-patterns`) nunca haviam sido registradas; total_skills 39 → 45 (3 análise + 3 implementação novas).
+- **SYNC**: `catalog.yaml` (agents), `agents/README.md`, `copilot-instructions.md`, `handoff-governance/SKILL.md` § 5 — todas as referências a "sem implementação"/"advisory puro" para os 3 specialists atualizadas para refletir o perfil híbrido.
+
+---
+
+
+
+### Adicionado
+- **R-042 (Re-triagem Obrigatória por Turno — Anti Sticky-Session)**: R-037 passa a se aplicar explicitamente a **cada novo turno**, não só ao primeiro. Fecha o gap relatado onde um agent downstream (ex.: `requirements-analyst`) continuava respondendo sozinho mesmo quando o pedido do usuário mudava de fase (requisito→implementação, análise→código, revisão→correção).
+- **Seção "Retorno ao Router"** adicionada nos 23 agents downstream/specialist (atualização atômica, R-015): cada agent declara gatilho objetivo de deriva de intenção e retorna a `@agent-router` via handoff (`handoff-governance` § 2.1, `motivo: "deriva_de_intencao"`) em vez de prosseguir fora do próprio escopo.
+- **`agent-router.agent.md` v1.5.0**: novo PASSO 0.3 na Decision Tree (checagem de deriva quando há agent ativo de turno anterior); output com campo `Agente Ativo` para auditoria; roteamento direto para `angular`/`spring-boot`/`spring-reactive` (antes órfãos — só alcançáveis por `@menção` manual, nunca roteados pelo próprio router).
+- **`docs/ai-context/routing-graph.yaml`**: 3 novos nós `specialist_advisory` (`angular`, `spring-boot`, `spring-reactive`) + arestas de entrada a partir do router; nova aresta reversa universal `de: *downstream → para: agent-router` (condição `intent_drift_detected`, prioridade 0) aplicável a todo nó `downstream`/`specialist_advisory`.
+- **`handoff-governance/SKILL.md`**: § 5 nova linha de escalonamento para mudança de fase na mesma conversa; nova § 5.2 "Anti Sticky-Session (R-042)".
+- **`docs/ai-context/evals/casos-roteamento.yaml`**: `canon-015/016/017` (specialists agora roteáveis) + `regr-014/015` (regressão de sticky-session, 2 turnos) — suíte passa de 35 para 40 casos.
+
+### Corrigido
+- Gap de catálogo: `angular`, `spring-boot` e `spring-reactive` já existiam em `catalog.yaml`/`README.md` mas nunca haviam sido registrados como nós roteáveis em `routing-graph.yaml` nem na Decision Tree do `agent-router` — corrigido.
+- **SYNC (R-015)**: `agents/catalog.yaml` (`related_agents: agent-router` adicionado aos 3 specialists), `agents/README.md` (nota R-042 em Diretrizes Transversais), `CLAUDE.md`, `.github/copilot-instructions.md`.
+
+### Pesquisa de mercado (base da decisão)
+- OpenAI Agents SDK — padrão `handoff()` + `transfer_back_to_*` (retorno explícito de controle).
+- LangGraph `langgraph-supervisor` — `create_handoff_tool` + `add_handoff_back_messages`.
+- Padrão de state machine de 2 modos (`orchestrator_mode`/`task_mode`) com detecção conservadora de deriva de tópico (Orchestrator Pattern, 2026).
+
+---
+
+
 
 ### Adicionado
 - **Agent `requirements-analyst`**: perfil de elicitação prospectiva para transformar pedido de negócio ambíguo em requisitos funcionais/não-funcionais estruturados e testáveis, com rastreabilidade da fonte; aplica mediação contra *solution-jumping* (Five Whys) antes de qualquer decisão técnica
@@ -93,6 +166,5 @@ Formato: [Semantic Versioning](https://semver.org/) | [Conventional Commits](htt
 - Prompts de binding: `/init-context`, `/add-project-context`, `/del-project-context`
 - Templates base: `catalog-base.yaml`, `binding-base.md`
 - Adapters: `spring-boot-backend.instructions.md` (Java/Spring), `angular-v21-frontend.instructions.md` (Angular 21)
-- Ferramentas: `binding-scaffolder/` (Python)
 - Regras normativas R-001..R-039 em CLAUDE.md
 

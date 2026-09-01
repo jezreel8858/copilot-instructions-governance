@@ -1,7 +1,7 @@
 ---
 name: ctx-checkpoint
 description: Grava snapshot de sessão no Context Mode via `ctx_index` (persistência cross-session) para retomada com `/ctx-resume`.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 ---
 
 # /ctx-checkpoint

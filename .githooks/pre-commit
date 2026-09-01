@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# .githooks/pre-commit — Defesa em profundidade para R-043 (Local Overlay Pattern)
+#
+# Bloqueia commits que vazem dados LOCAIS/PRIVADOS de projetos para o
+# repositório de governança compartilhado. Complementa (não substitui) o
+# .gitignore — protege contra `git add -f` e edições manuais acidentais.
+#
+# SETUP (uma vez por clone):
+#   git config core.hooksPath .githooks
+#
+# Ver: CLAUDE.md § R-043
+
+set -euo pipefail
+
+blocked=0
+
+# 1) Nenhuma entrada de projeto pode ser adicionada a docs/ai-context/catalog.yaml
+#    (compartilhado). Marcador de fingerprint: "path_externo:" só existe em
+#    entradas de projeto — se aparecer no diff staged deste arquivo, é violação.
+if git diff --cached --name-only | grep -qx "docs/ai-context/catalog.yaml"; then
+  if git diff --cached -- docs/ai-context/catalog.yaml | grep -qE '^\+.*path_externo:'; then
+    echo "❌ [R-043] Bloqueado: docs/ai-context/catalog.yaml não pode conter entrada de projeto (path_externo:)."
+    echo "   → Projetos vivem em docs/ai-context/catalog.local.yaml (gitignored)."
+    blocked=1
+  fi
+fi
+
+# 2) Nenhum arquivo sob .github/instructions/local/ pode ser commitado
+#    (adapters gerados por-projeto — sempre locais/gitignored).
+if git diff --cached --name-only | grep -qE '^\.github/instructions/local/'; then
+  echo "❌ [R-043] Bloqueado: arquivo(s) staged sob .github/instructions/local/ (adapters locais, nunca commitados)."
+  echo "   → Remova do stage: git restore --staged .github/instructions/local/*"
+  blocked=1
+fi
+
+# 3) catalog.local.yaml (instância real, não o .example) nunca pode ser commitado.
+if git diff --cached --name-only | grep -qx "docs/ai-context/catalog.local.yaml"; then
+  echo "❌ [R-043] Bloqueado: docs/ai-context/catalog.local.yaml (overlay local real) nunca deve ser commitado."
+  echo "   → Remova do stage: git restore --staged docs/ai-context/catalog.local.yaml"
+  blocked=1
+fi
+
+if [ "$blocked" -ne 0 ]; then
+  echo ""
+  echo "Commit abortado — violação de R-043 (Local Overlay Pattern). Ver CLAUDE.md § R-043."
+  exit 1
+fi
+
+exit 0
+

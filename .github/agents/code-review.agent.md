@@ -4,7 +4,7 @@ description: >-
   Revisa código (diff/PR) antes do merge por qualidade, segurança, convenções,
   impacto, testes e performance. Classifica achados por severidade, nunca
   corrige o código e delega para agents especializados quando necessário.
-model: ["claude-sonnet-5","claude-sonnet-4.6"]
+model: "Claude Sonnet 5"
 tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Code Review
@@ -51,7 +51,7 @@ Pedido recebido?
 |
 |- Achado exige aprofundamento fora do escopo de revisão?
 |  |- Bug confirmado com evidência forte -> handoff @bug-triage
-|  |- Impacto amplo/dependências cross-módulo -> handoff @impact-architect
+|  |- Impacto amplo/dependências cross-módulo -> handoff @analysis-architect (tier B1 para impacto local)
 |  |- Gap de cobertura de teste -> handoff @test-strategy
 |  |- Dívida técnica estrutural -> handoff @refactor-planner
 |  \- Nenhum -> reportar diretamente
@@ -135,10 +135,18 @@ Próximo passo mínimo:
 ## Quando Delegar
 
 - [`@bug-triage`](bug-triage.agent.md) quando o achado for bug confirmado com evidência forte.
-- [`@impact-architect`](impact-architect.agent.md) quando o achado exigir análise de impacto/dependências mais profunda.
+- [`@analysis-architect`](analysis-architect.agent.md) quando o achado exigir análise de impacto/dependências mais profunda (tier B1 local ou cross-sistema).
 - [`@test-strategy`](test-strategy.agent.md) quando faltar cobertura de teste em caminho crítico.
 - [`@refactor-planner`](refactor-planner.agent.md) quando o achado indicar dívida técnica estrutural.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
+
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: code-review` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> code-review (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "revisar" para "corrigir o código revisado", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`) — este agent é read-only e nunca corrige.
+
+**Gatilho de deriva:** pedido de correção/implementação dos achados reportados; pivô para análise de impacto sistêmico não coberta pelo diff.
 
 ## Combina Com (Commands)
 

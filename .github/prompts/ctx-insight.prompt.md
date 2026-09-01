@@ -1,7 +1,7 @@
 ---
 name: ctx-insight
 description: Abre o dashboard de analytics do Context Mode com `ctx_insight` para observar uso de ferramentas e sessões.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 ---
 
 # /ctx-insight

@@ -125,7 +125,7 @@ skills:
   - id: "project-context-builder"
     name: "project-context-builder"
     source: ".github/skills/project-context-builder/SKILL.md"
-    description: "Scanner local + LLM para descoberta automatica de projetos"
+    description: "Scanner local para descoberta automatica de projetos"
     tier: "advanced"
     triggers:
       - "/add-project-context"
@@ -135,42 +135,35 @@ skills:
       - "generate_project_yaml"
       - "generate_instructions_md"
     upstream_agents:
-      - "binding-scaffolder"
+      - "adapter-generator"
     dependencies:
-      - "binding-scaffolder-agent"
+      - "adapter-generator"
     tools_required:
       - "file_operations"
       - "yaml_validation"
       - "subprocess"
     source_docs:
-      - "tools/project-context-builder/SPEC.md"
-      - "tools/project-context-builder/USAGE.md"
-      - "tools/project-context-builder/scanner.py"
-      - "tools/project-context-builder/copilot_handler.py"
+      - ".github/prompts/add-project-context.prompt.md"
+      - ".github/agents/adapter-generator.agent.md"
+      - "docs/ai-context/catalog.yaml"
 
 # ============================================
-# PROJETOS (Binding por Projeto)
+# PROJETOS (Binding por Projeto) — LOCAL OVERLAY PATTERN (R-043)
 # ============================================
-# INSTRUÇÃO: Customize esta seção com seus PRÓPRIOS projetos
-# Cada projeto deve referenciar um ou mais adapters da seção acima
+# ⛔ NÃO preencha `projetos:` neste arquivo (nem em catalog.yaml gerado dele).
+# Projetos são dados LOCAIS/PRIVADOS de cada desenvolvedor e NUNCA devem ser
+# commitados no repositório de governança compartilhado (R-043 — Desacoplamento Total).
 #
-# EXEMPLO DE PREENCHIMENTO:
-# projetos:
-#   - name: "meu-projeto-backend"
-#     extends: ["backend-template"]      # ou ID do adapter que combina com seu stack
-#     priority: 40
-#     description: "Sistema de backend em Java"
-#     type: "backend"
+# Setup (uma vez por clone/máquina):
+#   cp docs/ai-context/catalog.local.yaml.example docs/ai-context/catalog.local.yaml
 #
-#   - name: "meu-projeto-frontend"
-#     extends: ["frontend-template"]     # ou ID do adapter que combina com seu stack
-#     priority: 40
-#     description: "Interface em Angular"
-#     type: "frontend"
+# Depois, use /add-project-context e /del-project-context normalmente — eles
+# escrevem exclusivamente em catalog.local.yaml (gitignored), nunca aqui.
 #
-# REMOVA ESTE COMENTÁRIO APÓS PREENCHER COM SEUS PROJETOS
+# Todo agent/prompt que precisa da lista de projetos faz merge em memória:
+# catalog.yaml (adapters/global, compartilhado) + catalog.local.yaml (projetos, local).
 
-projetos: []  # Vazio: customize com seus projetos
+projetos: []  # Placeholder — a lista real vive em catalog.local.yaml (gitignored)
 
 # ============================================
 # DISCOVERY (Carregamento Progressivo)
@@ -219,10 +212,10 @@ metadata:
 #    - Customize os paths em `applyTo:` conforme seu stack real
 #    - Atualize `source:` para referenciar seus .md files específicos
 #
-# 3. PREENCHA A SEÇÃO DE PROJETOS
-#    - Remova `projetos: []`
-#    - Adicione seus próprios projetos
-#    - Cada projeto deve referenciar um adapter da seção acima
+# 3. NÃO PREENCHA A SEÇÃO DE PROJETOS AQUI (R-043 — Local Overlay Pattern)
+#    - Projetos vivem em docs/ai-context/catalog.local.yaml (gitignored)
+#    - Copie docs/ai-context/catalog.local.yaml.example → catalog.local.yaml
+#    - Use /add-project-context e /del-project-context normalmente
 #
 # 4. CUSTOMIZE AGENTS E SKILLS
 #    - Adicione/remova agents e skills conforme necessário
@@ -231,9 +224,11 @@ metadata:
 # 5. VALIDE O YAML
 #    python -c "import yaml; yaml.safe_load(open('docs/ai-context/catalog.yaml')); print('✅ YAML válido')"
 #
-# 6. COMMITE AMBOS OS ARQUIVOS
+# 6. COMMITE OS ARQUIVOS COMPARTILHADOS (NUNCA catalog.local.yaml)
 #    - catalog-base.yaml (template genérico — não mexe mais)
-#    - catalog.yaml (sua instância personalizada)
+#    - catalog.yaml (sua instância personalizada — SEM projetos, R-043)
+#    - catalog.local.yaml.example (template do overlay local — SEM dados reais)
+#    - catalog.local.yaml fica gitignored — NUNCA commitar (contém seus projetos)
 #
 # ============================================
 # VERSIONAMENTO
@@ -241,3 +236,4 @@ metadata:
 # catalog-base.yaml: v1.0 (genérico, reutilizável)
 # Data: 2026-06-11
 # Customizações de instância: track em catalog.yaml (seu repositório)
+# Projetos locais: track em catalog.local.yaml — NUNCA commitado (R-043, ver CLAUDE.md)

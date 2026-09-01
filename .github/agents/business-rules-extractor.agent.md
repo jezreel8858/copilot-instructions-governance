@@ -6,7 +6,7 @@ description: >
   não quebram comportamento existente. Opera em dois modos: Extract (gerar
   documentação) e Validate (verificar código refatorado contra regras
   documentadas).
-model: ["claude-sonnet-5","claude-sonnet-4.6"]
+model: "Claude Sonnet 5"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'create_file', 'insert_edit_into_file', 'get_errors', 'ask_questions', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 # Business Rules Extractor
@@ -44,7 +44,7 @@ Opera em dois modos:
 | Skill de diagramas | [`../skills/mermaid-diagrams/SKILL.md`](../skills/mermaid-diagrams/SKILL.md) | Diagramas de estado para fluxos complexos |
 | Docs de saída | `docs/business-rules/*.md` | Destino de toda documentação gerada |
 | Agent de curadoria | [`docs-curator.agent.md`](docs-curator.agent.md) | Para revisão e curadoria pós-geração |
-| Agent de impacto | [`impact-architect.agent.md`](impact-architect.agent.md) | Quando violação de regra tem impacto amplo |
+| Agent de impacto | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Quando violação de regra tem impacto amplo (tier B1 local ou cross-sistema) |
 | Agent de refatoração | [`refactor-planner.agent.md`](refactor-planner.agent.md) | Quando validação precede plano de refactor |
 
 ## Decision Tree
@@ -83,19 +83,20 @@ Modo solicitado?
 
 ## Protocolo de Coleta de Contexto (ask_questions)
 
-Quando o modo ou escopo não está claro, coletar com `ask_questions`:
+Aplicar o padrão canônico da skill [`structured-intake-patterns`](../skills/structured-intake-patterns/SKILL.md) para `P1..PN`, classificação de campos e consolidação do contexto antes de executar `extract`/`validate`.
 
-**P1 — Modo de operação:**
-- Opções: Extrair regras de negócio do código (modo extract) · Validar refatoração contra regras existentes (modo validate) · Ambos (extrair e já validar um diff)
+### Perguntas especializadas deste domínio
 
-**P2 — Escopo (modo extract):**
-- Opções: Um módulo/serviço específico (informar nome) · Um arquivo específico · Uma feature/funcionalidade (descrever) · O projeto inteiro (aviso: pode ser demorado)
+| ID | Classe | Pergunta de domínio |
+|---|---|---|
+| P1 | Obrigatório | Modo de operação? *(extract \| validate \| ambos)* |
+| P2 | Recomendado | Escopo para `extract`? *(módulo/serviço, arquivo, feature, projeto inteiro)* |
+| P3 | Recomendado | Escopo para `validate`? *(arquivo/módulo refatorado, diff/PR, validar tudo documentado)* |
+| P4 | Obrigatório | Documento de regras existente em `docs/business-rules/`? *(sim \| não \| não sei)* |
 
-**P3 — Escopo (modo validate):**
-- Opções: Tenho o arquivo/módulo refatorado para analisar · Tenho um diff/PR para analisar · Quero validar todos os módulos com documentação existente
-
-**P4 — Documento existente?**
-- Opções: Sim, já existe em docs/business-rules/ · Não, precisa ser criado primeiro · Não sei
+**Regra específica deste agent:**
+- `extract` pode prosseguir sem documento prévio.
+- `validate` só prossegue com documento base existente (ou após executar `extract`).
 
 ---
 
@@ -212,6 +213,8 @@ Seguir o template da skill `business-rules-governance` §5 (Formato de Relatóri
 | INTG (Integração) | ⚠️ Média | Quebra contrato com sistema externo |
 | AUD (Auditoria) | ⚠️ Média | Perda de rastreabilidade, mas não funcional |
 
+**Enriquecimento opcional de severidade (blast radius/risco estrutural):** quando um grafo de conhecimento (`@code-knowledge-graph`) **já existir/estiver cacheado** para o módulo violado, consultar blast radius (RF-015) e risco por dependentes reais + sensibilidade PII/financeiro (RF-018) para complementar — nunca substituir — a severidade por categoria acima. Ex.: "BR-014 (CALC) violada — Alta por categoria **e** 6 dependentes diretos no grafo, incluindo serviço financeiro". Nunca acionar construção de grafo sob demanda dentro deste fluxo (custo/escopo de `code-knowledge-graph` é projeto/cross-repo, não por-BR) — só reaproveitar o que já existir.
+
 ---
 
 ## Contrato Operacional
@@ -297,11 +300,20 @@ Próximo passo mínimo:
 
 | Situação | Agent |
 |---|---|
-| Violação com impacto em múltiplos módulos | `@impact-architect` |
+| Violação com impacto em múltiplos módulos | `@analysis-architect` (tier B1) |
 | Violação detectada exige plano de refatoração segura | `@refactor-planner` |
 | Documento de regras gerado precisa de curadoria/revisão | `@docs-curator` |
 | Violação implica bug em produção | `@bug-triage` |
 | Regras novas detectadas precisam de testes | `@test-strategy` |
+| Modo `validate` precisa enriquecer severidade com blast radius/risco estrutural, ou modo `extract` em escopo de projeto grande/cross-repo precisa mapear "Dependências" da regra a partir de grafo já construído (nunca construir grafo sob demanda) | `@code-knowledge-graph` |
+
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: business-rules-extractor` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> business-rules-extractor (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "extrair/validar regras" para "executar a refatoração real", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`) — este agent nunca implementa.
+
+**Gatilho de deriva:** pedido de implementação/correção de código de produção; pedido de execução do refactor planejado (→ `@refactor-planner`).
 
 ## Combina Com (Commands)
 
@@ -325,4 +337,6 @@ Próximo passo mínimo:
 - [`../copilot-instructions.md`](../copilot-instructions.md)
 - [`../skills/business-rules-governance/SKILL.md`](../skills/business-rules-governance/SKILL.md)
 - [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md)
+- [`../skills/structured-intake-patterns/SKILL.md`](../skills/structured-intake-patterns/SKILL.md)
 - Documento existente `docs/business-rules/business-rules-<modulo>.md` (se disponível)
+

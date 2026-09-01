@@ -1,9 +1,9 @@
 {
   "version": "1.0",
   "domain": "governanca-ai-generica",
-  "generated_at": "2026-08-29T09:00:00Z",
+  "generated_at": "2026-08-30T16:00:00Z",
   "summary": {
-    "total_skills": 36
+    "total_skills": 45
   },
   "skills": [
     {
@@ -14,7 +14,7 @@
       "related_agents": [
         "@prompt-structuring",
         "@agent-router",
-        "@research-router"
+        "@deep-search"
       ]
     },
     {
@@ -24,7 +24,7 @@
       "path": ".github/skills/context-mode/SKILL.md",
       "related_agents": [
         "@agent-router",
-        "@research-router",
+        "@deep-search",
         "@analysis-architect",
         "@bug-triage",
         "@impact-architect",
@@ -56,7 +56,7 @@
       ],
       "related_agents": [
         "@context-builder",
-        "@research-router",
+        "@deep-search",
         "@analysis-architect"
       ]
     },
@@ -70,7 +70,7 @@
       ],
       "related_agents": [
         "@context-builder",
-        "@research-router",
+        "@deep-search",
         "@analysis-architect"
       ]
     },
@@ -92,7 +92,7 @@
       "category": "research",
       "path": ".github/skills/tavily/SKILL.md",
       "related_agents": [
-        "@research-router",
+        "@deep-search",
         "@analysis-architect",
         "@angular",
         "@spring-boot",
@@ -105,7 +105,7 @@
       "category": "documentation",
       "path": ".github/skills/mermaid-diagrams/SKILL.md",
       "related_agents": [
-        "@research-router",
+        "@deep-search",
         "@analysis-architect"
       ]
     },
@@ -134,7 +134,7 @@
       ],
       "related_agents": [
         "@agent-router",
-        "@research-router",
+        "@deep-search",
         "@analysis-architect"
       ]
     },
@@ -152,7 +152,7 @@
         "@bug-triage",
         "@impact-architect",
         "@analysis-architect",
-        "@research-router"
+        "@deep-search"
       ]
     },
     {
@@ -216,7 +216,7 @@
       "related_agents": [
         "@agent-router",
         "@analysis-architect",
-        "@research-router",
+        "@deep-search",
         "@impact-architect"
       ]
     },
@@ -396,20 +396,6 @@
       ]
     },
     {
-      "name": "dependency-graph-mapping",
-      "tier": 2,
-      "category": "process",
-      "path": ".github/skills/dependency-graph-mapping/SKILL.md",
-      "description": "Mapeamento de grafo de dependências entre sistemas, módulos e serviços: rastreamento de fluxo origem→transformação→destino, análise de acoplamento (tight/loose) e blast radius.",
-      "tools": ["grep_search", "file_search", "read_file", "context-mode/ctx_batch_execute", "context-mode/ctx_execute"],
-      "related_agents": [
-        "@analysis-architect",
-        "@impact-architect",
-        "@refactor-planner",
-        "@business-rules-extractor"
-      ]
-    },
-    {
       "name": "agent-memory-policy",
       "tier": 3,
       "category": "governance",
@@ -545,12 +531,140 @@
         "@impact-architect",
         "@analysis-architect"
       ]
+    },
+    {
+      "name": "angular-frontend-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Boas práticas e patterns de análise/recomendação Angular para componentes modernos, templates, reatividade, segurança e consistência arquitetural.",
+      "path": ".github/skills/angular-frontend-patterns/SKILL.md",
+      "related_agents": ["@angular"]
+    },
+    {
+      "name": "angular-implementation-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Padrões de mercado (2026) para IMPLEMENTAR features/bugs em Angular — fronteira Signals/RxJS, testing-first, checklist de PR. Contraparte de execução de angular-frontend-patterns.",
+      "path": ".github/skills/angular-implementation-patterns/SKILL.md",
+      "related_agents": ["@angular"]
+    },
+    {
+      "name": "spring-boot-backend-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Diretrizes enterprise para análise/recomendação de arquitetura, operação e evolução de serviços Spring Boot.",
+      "path": ".github/skills/spring-boot-backend-patterns/SKILL.md",
+      "related_agents": ["@spring-boot"]
+    },
+    {
+      "name": "spring-boot-implementation-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Padrões de mercado (2026) para IMPLEMENTAR features/bugs em Spring Boot — virtual threads vs reativo, N+1/OSIV, DTOs de borda, testing-first. Contraparte de execução de spring-boot-backend-patterns.",
+      "path": ".github/skills/spring-boot-implementation-patterns/SKILL.md",
+      "related_agents": ["@spring-boot"]
+    },
+    {
+      "name": "spring-reactive-webflux-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Diretrizes enterprise para análise/recomendação de arquiteturas reativas com Spring WebFlux e Project Reactor.",
+      "path": ".github/skills/spring-reactive-webflux-patterns/SKILL.md",
+      "related_agents": ["@spring-reactive"]
+    },
+    {
+      "name": "spring-reactive-implementation-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Padrões de mercado (2026) para IMPLEMENTAR features/bugs em Spring WebFlux/Reactor — composição não-bloqueante, tratamento de erro por operador, StepVerifier/WebTestClient. Contraparte de execução de spring-reactive-webflux-patterns.",
+      "path": ".github/skills/spring-reactive-implementation-patterns/SKILL.md",
+      "related_agents": ["@spring-reactive"]
+    },
+    {
+      "name": "structured-intake-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Padrão canônico de coleta estruturada via ask_questions (P1..PN), critério de mínimo necessário para prosseguir e template de consolidação.",
+      "path": ".github/skills/structured-intake-patterns/SKILL.md",
+      "related_agents": ["@bug-triage", "@test-fix", "@business-rules-extractor", "@requirements-analyst"]
+    },
+    {
+      "name": "governance-factory-patterns",
+      "tier": 1,
+      "category": "governance",
+      "description": "Fluxo canônico Factory Pattern (criar/revisar/auditar), checklist de qualidade estrutural e formato de saída com validações ✅/❌ parametrizável por tipo de artefato (agent/skill/prompt).",
+      "path": ".github/skills/governance-factory-patterns/SKILL.md",
+      "related_agents": ["@agent-factory", "@skill-factory", "@prompt-factory"]
+    },
+    {
+      "name": "specialist-hybrid-advisory-implementation-patterns",
+      "tier": 1,
+      "category": "governance",
+      "description": "Template canônico do perfil híbrido (Advisory + Implementação) para specialists de stack técnico — desambiguação de modo, formatos de saída e checklist unificado.",
+      "path": ".github/skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md",
+      "related_agents": ["@angular", "@spring-boot", "@spring-reactive"]
+    },
+    {
+      "name": "governance-audit-patterns",
+      "tier": 1,
+      "category": "governance",
+      "description": "Catálogo consolidado de agent/governance smells (anti-padrão estrutural, gap de perfil, gap de diretriz, diretriz redundante, gap de cobertura de categoria) com sintoma, detecção, severidade e remediação — base do agent agent-auditor.",
+      "path": ".github/skills/governance-audit-patterns/SKILL.md",
+      "related_agents": ["@agent-auditor"]
+    },
+    {
+      "name": "reflection-self-critique-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Padrão generate→critique→revise (Reflection) de baixo custo para agents Executores reexaminarem o próprio artefato antes de reportar sucesso, 1 round, grounded — evita agent 'critic' dedicado (overengineering).",
+      "path": ".github/skills/reflection-self-critique-patterns/SKILL.md",
+      "related_agents": ["@docs-writer", "@test-implementation"]
+    },
+    {
+      "name": "security-review-patterns",
+      "tier": 2,
+      "category": "security",
+      "description": "OWASP Top 10:2025, ASVS 5.0, OWASP LLM Top 10 e Agentic AI Security (2026), SCA/CVE, detecção de secrets e rubrica de triagem para revisão especializada de segurança de aplicação — base do agent security-reviewer.",
+      "path": ".github/skills/security-review-patterns/SKILL.md",
+      "related_agents": ["@security-reviewer"]
+    },
+    {
+      "name": "performance-engineering-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Core Web Vitals (LCP/INP/CLS), padrões de degradação backend (N+1, cache, payload), otimização de query e ferramentas de medição — base do agent performance-agent.",
+      "path": ".github/skills/performance-engineering-patterns/SKILL.md",
+      "related_agents": ["@performance-agent"]
+    },
+    {
+      "name": "compliance-governance-patterns",
+      "tier": 2,
+      "category": "security",
+      "description": "SOC 2 (Type I/II), GDPR/LGPD, HIPAA, ISO 27001, audit trails, least privilege/RBAC e retenção de dado pessoal para avaliação de conformidade regulatória de aplicação — base do agent compliance-guardrails, distinto de agent-safety-guardrails (segurança do próprio agent de IA).",
+      "path": ".github/skills/compliance-governance-patterns/SKILL.md",
+      "related_agents": ["@compliance-guardrails"]
+    },
+    {
+      "name": "task-decomposition-patterns",
+      "tier": 2,
+      "category": "process",
+      "description": "Estratégias de decomposição sequencial/hierárquica/paralela, granularidade ideal (2-3 níveis) e validação de dependências para planejamento de feature nova — base do agent feature-planner, distinto de refactor-planner (refatoração de código existente).",
+      "path": ".github/skills/task-decomposition-patterns/SKILL.md",
+      "related_agents": ["@feature-planner"]
+    },
+    {
+      "name": "devops-agent-patterns",
+      "tier": 2,
+      "category": "quality",
+      "description": "Checklists de revisão para Dockerfile, Kubernetes, CI/CD pipelines e Infrastructure-as-Code, com estratégias de deployment — base do agent devops-engineer, complementa o adapter devops.instructions.md.",
+      "path": ".github/skills/devops-agent-patterns/SKILL.md",
+      "related_agents": ["@devops-engineer"]
     }
   ],
   "metadata": {
-    "total_agents": 24,
-    "total_skills": 39,
-    "last_updated": "2026-08-29T13:00:00Z",
-    "changelog": "2026-08-29 (4) — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
+    "total_agents": 35,
+    "total_skills": 52,
+    "last_updated": "2026-09-01T20:00:00Z",
+    "changelog": "2026-09-01 (14) — A pedido do usuário ('revise o levantamento feito pelo Haiku... crie todos os agents identificados'), criadas 5 novas skills após pesquisa web (Tavily: OWASP Top 10:2025/ASVS 5.0/Agentic AI Security 2026, Core Web Vitals/N+1 2026, SOC 2/GDPR/LGPD 2026, task decomposition 2026): security-review-patterns, performance-engineering-patterns, compliance-governance-patterns, task-decomposition-patterns, devops-agent-patterns — base de conhecimento para os 9 novos agents (security-reviewer, performance-agent, compliance-guardrails, feature-planner, agentic-memory-manager, devops-engineer, debugger, code-style-enforcer, refactor-executor). agent-memory-policy e code-tracing (já existentes) reaproveitados sem duplicação (R-003) para agentic-memory-manager e debugger respectivamente. total_skills 47->52 (corrigido de inconsistência histórica 45/49 para contagem real de pastas). total_agents 26->35. | 2026-09-01 (13) — Removida a skill dependency-graph-mapping (Tier 2) do índice: capacidades absorvidas pelo agent code-knowledge-graph, apos Gate de Paridade Funcional (RNF-012) validado 9/9 com evidencia de execucao real. total_skills 50->49. | 2026-08-31 (12) — Análise de gaps de mercado (docs/plan/categorizacao-agents-mercado.md §5) validada via pesquisa Tavily: Reflection puro e Fan-out/Parallelization NÃO justificam novo agent standalone (evita over-delegation/overengineering, R-011). Implementados como capacidades: (a) skill nova reflection-self-critique-patterns (Tier 2, process) consumida por docs-writer e test-implementation (self-reflection 1 round grounded antes de reportar sucesso); (b) capacidade 'Fan-out — Análise Paralela' adicionada diretamente a analysis-architect (Decision Tree + payload via handoff-governance), sem skill dedicada (1 único consumidor). total_skills 49->50. | 2026-08-31 (11) — Fase 3 do plano de otimização aplicada: removidos `research-router` e `impact-architect`; roteamento consolidado em `deep-search` (pesquisa interna/externa) e `analysis-architect` (impacto local tier B1 + cross-sistema). Atualizados `agent-router`, referências cruzadas no catálogo, README, routing-graph e casos de roteamento de forma atômica (R-015/R-040). — Criado agent requirements-analyst + skill requirements-engineering-patterns (ISO/IEC/IEEE 29148, EARS, INVEST, Gherkin/BDD, FURPS+, anti solution-jumping via Five Whys) consolidada de pesquisa de mercado. Perfil prospectivo (pedido ambíguo → requisito estruturado), distinto de business-rules-extractor (reverso: código → regra). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040). | 2026-08-29 (3) — Criado agent code-review + skill code-review-patterns (taxonomia bloqueador/alta/sugestão, dimensões correção/segurança/convenções/impacto/testes/performance, critérios de bloqueio de merge, anti-padrões de review fatigue) consolidada de conhecimento de mercado (Google Eng Practices, OWASP, CodeRabbit/Qodo/Sourcery/DeepSource). Prompt /review reduzido a alias fino do agent (R-003). Registrado em .index.json, README.md, agents/catalog.yaml, agents/README.md, routing-graph.yaml e casos-roteamento.yaml (R-015/R-040)."
   }
 }

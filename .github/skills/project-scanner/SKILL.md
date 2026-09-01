@@ -21,8 +21,8 @@ triggers:
 source_docs:
   - "../../../CLAUDE.md"
   - "../../../.github/copilot-instructions.md"
-  - "../../../tools/binding-scaffolder/SPEC.md"
-  - "../../../tools/binding-scaffolder/USAGE.md"
+  - "../../../.github/agents/adapter-generator.agent.md"
+  - "../../../.github/prompts/add-project-context.prompt.md"
   - "../../../docs/ai-context/catalog.yaml"
 tools:
   - "read_file"
@@ -275,6 +275,25 @@ api_documentation:
 
 ---
 
+### 2.9) Detecção de Segredos/Credenciais (Redação Obrigatória — R-010 / OWASP LLM02:2025)
+
+Prioridade: **P1 (Bloqueante — nunca percentual, qualquer reprodução literal é falha crítica)**
+
+> Fundamento: OWASP LLM02:2025 (Sensitive Information Disclosure) — trata segredos/config como "potencialmente expostos", nunca como seguros por padrão. O scanner **detecta a existência** do padrão, mas **nunca reproduz o valor literal** no `project_profile` ou no adapter gerado.
+
+| Sinal | Padrão comum | Ação |
+|---|---|---|
+| `.env` / `.env.local` / `.env.*` | Qualquer `CHAVE=valor` | Reportar apenas: "usa `.env` para configuração sensível" — nunca listar chave nem valor |
+| `application.yml` / `application.properties` (Spring) | `password:`, `secret:`, `api-key:`, connection strings JDBC com credencial embutida | Reportar apenas: "usa arquivo de config para credenciais de BD/API" |
+| `package.json` / lockfiles | Tokens de registry privado (`_authToken`, `//registry.npmjs.org/:_authToken=`) | Nunca reproduzir o token — reportar apenas "usa registry privado autenticado" |
+| Padrão de chave AWS (`AKIA[0-9A-Z]{16}`) | Chave de acesso AWS hardcoded | Reportar como achado de risco (não como convenção) — nunca reproduzir a chave |
+| Blocos `-----BEGIN ... PRIVATE KEY-----` | Chave privada embutida no repositório | Reportar como achado de risco crítico — nunca reproduzir o conteúdo |
+| `docker-compose.yml` com `environment:` | Variáveis com valores literais de credencial | Reportar apenas a existência do padrão, nunca o valor |
+
+**Regra de saída**: o `project_profile` e qualquer adapter gerado a partir dele descrevem **o mecanismo** ("projeto usa variáveis de ambiente para segredos"), nunca **o conteúdo** (valor da variável). Violação é bloqueante — 0% de tolerância, não é meta percentual.
+
+---
+
 ## 3) Resultado: Project Profile
 
 Consolidar scanner em um objeto estruturado (`project_profile`):
@@ -386,6 +405,8 @@ Quando `adapter-generator` é disparado:
 - Consolidar resultado em YAML estruturado.
 - Incluir `scan_timestamp` para auditoria.
 - Reportar confiança: "Scanner encontrou N|N+1 sinais → confiança X%".
+- Aplicar estratégia `keep-existing` por padrão (nomenclatura de mercado — [Nx generators](https://nx.dev/docs/kb/creating-files)): gerar só se o arquivo ainda não existir, nunca sobrescrever silenciosamente.
+- Reportar apenas a **existência/tipo** de mecanismo de segredo detectado (§2.9) — nunca o valor literal (OWASP LLM02:2025).
 
 ### ❌ DON'T
 
@@ -393,7 +414,8 @@ Quando `adapter-generator` é disparado:
 - Assumir stack por nome de pasta ou documento.
 - Falhar silenciosamente — sempre reportar o que foi encontrado.
 - Misturar resultados de múltiplos projetos em um único profile.
-- Sobrescrever adapters existentes sem indicar mudança em versão.
+- Sobrescrever adapters existentes sem confirmação explícita (estratégia `overwrite` — equivalente a flag `--force`, nunca padrão).
+- Reproduzir valor literal de segredo/credencial detectado (viola R-010/OWASP LLM02:2025 — ver §2.9).
 
 ---
 
@@ -448,7 +470,23 @@ project_profile:
 
 ---
 
-## 7) Referências
+## 7) Fontes de Mercado Consolidadas (Pesquisa Externa — R-019, 2026-09-01)
+
+> Pesquisa `@deep-search`/Tavily validando que este checklist de scan está alinhado com práticas de mercado 2025-2026.
+
+| Tema | Fonte |
+|---|---|
+| `.github/instructions/NAME.instructions.md` + `applyTo` glob é o mecanismo oficial do GitHub Copilot | [docs.github.com](https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions-for-github-copilot) |
+| `AGENTS.md` — padrão aberto cross-tool consolidado (Copilot, Cursor, Codex, Windsurf, Zed, Jules), mantido pela Agentic AI Foundation (Linux Foundation) | [agents.md](https://agents.md) |
+| Cursor `.cursor/rules/*.mdc` — 4 modos de ativação (`alwaysApply`, `description`-based, `globs`-based, manual) | [Cursor Docs — Rules](https://cursor.com/docs/rules) |
+| Ferramentas de mercado que já fazem "scan repo → gera instructions" automaticamente (`npx ai-setup`, `npx agentseed init`, Copilot CLI `/init`) | [Reddit r/GithubCopilot](https://www.reddit.com/r/GithubCopilot/comments/1s6ppan/), [github/copilot-cli-for-beginners](https://github.com/github/copilot-cli-for-beginners) |
+| `OverwriteStrategy` (`Overwrite`/`KeepExisting`/`ThrowIfExisting`) — nomenclatura de mercado para geração idempotente de arquivo | [Nx — Creating Files with a Generator](https://nx.dev/docs/kb/creating-files) |
+| OWASP LLM Top 10 2025 (LLM02 Sensitive Information Disclosure, LLM06 Excessive Agency) | [Aembit](https://aembit.io/blog/owasp-top-10-llm-risks-explained) |
+| OWASP Top 10 for Agentic Applications (ASI02 Tool Misuse, ASI03 Identity/Privilege Abuse) | [Promptfoo](https://www.promptfoo.dev/docs/red-team/owasp-agentic-ai) |
+
+---
+
+## 8) Referências
 
 - `.github/agents/adapter-generator.agent.md` — implementação
 - `binding-initializer.agent.md` — P6 coleta projeto_path

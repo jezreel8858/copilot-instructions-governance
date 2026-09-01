@@ -5,12 +5,13 @@ description:
   Carrega CLAUDE.md + copilot-instructions.md, valida conformidade R-001..R-040 + Model Enforcement (R-036).
   Execute UMA ÚNICA VEZ no início da sessão ANTES de /add-project-context ou qualquer agent.
   NÃO REPITA na mesma sessão — faz 1x apenas.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['read_file', 'list_dir', 'run_subagent']
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - docs/ai-context/catalog.yaml
+  - docs/ai-context/catalog.local.yaml.example
 ---
 
 # `/init-context`
@@ -158,39 +159,48 @@ Status: ✅ R-001..R-040 ativas — Agents respeitarão
 
 ---
 
-### **PASSO 4: Validar Binding Context (R-034)**
+### **PASSO 4: Validar Binding Context (R-034) + Overlay Local (R-043)**
 
 Verificar se estrutura de binding existe **NESTE repositório de governança**:
 
 ```
 [Health Check] Binding Context (R-034) — verificando NESTE repositório
-├─ ./docs/ai-context/catalog.yaml → ?
-├─ ./docs/ai-context/binding.md → ?
+├─ ./docs/ai-context/catalog.yaml → ?          (compartilhado/commitado — sem projetos)
+├─ ./docs/ai-context/binding.md → ?            (compartilhado/commitado)
+├─ ./docs/ai-context/catalog.local.yaml → ?    (gitignored — overlay de projetos, R-043)
 └─ Status: ?
 ```
 
 > ⚠️  O binding context (catalog.yaml + binding.md) é **EXCLUSIVO DESTE repositório**.
 > Projetos externos (project-example-app, etc.) NÃO possuem
 > e NÃO devem possuir catalog.yaml ou binding.md.
-**Se AMBOS existem:**
+> **Projetos são dados LOCAIS (R-043)**: vivem em `catalog.local.yaml` (gitignored) —
+> nunca em `catalog.yaml`. Se `catalog.local.yaml` não existir, criar a partir de
+> `catalog.local.yaml.example` (template tracked, sem dados reais) antes de prosseguir.
 
-Ler `catalog.yaml` e exibir estado real dos projetos registrados:
+**Se `catalog.yaml` e `binding.md` existem:**
+
+Ler `catalog.yaml` (adapters/global) **e** `catalog.local.yaml` (se existir — projetos) e
+exibir estado real **mesclado em memória** (nunca escrever de volta em `catalog.yaml`):
 
 ```
 ✅ Binding context DETECTADO (neste repositório de governança)
 
-   Projetos registrados:
-   ├─ <nome-projeto-1>  → adapter: <nome-projeto-1>.instructions.md ✅
-   ├─ <nome-projeto-2>  → adapter: <nome-projeto-2>.instructions.md ✅
+   Projetos registrados (fonte: catalog.local.yaml, gitignored):
+   ├─ <nome-projeto-1>  → adapter: .github/instructions/local/<nome-projeto-1>.instructions.md ✅
+   ├─ <nome-projeto-2>  → adapter: .github/instructions/local/<nome-projeto-2>.instructions.md ✅
    └─ ... (total: <n> projetos)
 
-   Adapters em .github/instructions/:
+   Adapters compartilhados em .github/instructions/ (raiz, commitados):
+   └─ <lista-de-arquivos-.instructions.md>
+
+   Adapters locais em .github/instructions/local/ (gitignored, por projeto):
    └─ <lista-de-arquivos-.instructions.md>
 
    → Pronto para /add-project-context, /pesquisar, /plano, @agent-router
 ```
 
-**Se ALGUM FALTA:**
+**Se `catalog.yaml`/`binding.md` FALTAM:**
 
 ```
 ⚠️ Binding context INCOMPLETO (neste repositório)!
@@ -203,11 +213,19 @@ Faltando:
 → Nenhum arquivo será criado nos projetos externos.
 ```
 
+**Se apenas `catalog.local.yaml` FALTAR** (primeira vez nesta máquina/clone):
+
+```
+ℹ️ Overlay local não encontrado — criando a partir do template.
+→ cp docs/ai-context/catalog.local.yaml.example docs/ai-context/catalog.local.yaml
+→ Prosseguindo normalmente (0 projetos registrados nesta máquina ainda)
+```
+
 ---
 
 ### **PASSO 5: Verificar Herança de Instruções Genéricas**
 
-Para cada projeto registrado em `catalog.yaml`, verificar se o campo `extends:` está configurado, conectando o projeto aos adapters genéricos disponíveis.
+Para cada projeto registrado em `catalog.local.yaml` (gitignored, R-043), verificar se o campo `extends:` está configurado, conectando o projeto aos adapters genéricos disponíveis em `catalog.yaml` (compartilhado).
 
 ```
 [Health Check] Herança de Instruções Genéricas
@@ -239,18 +257,18 @@ Opções:
 - **(C)** Não herdar agora — projeto possui ou terá adapter próprio
 
 **Se usuário escolhe A ou B:**
-1. Exibir preview do YAML a ser adicionado ao projeto em `catalog.yaml`:
+1. Exibir preview do YAML a ser adicionado ao projeto em `catalog.local.yaml` (gitignored):
    ```yaml
    extends:
      - "<adapter-id>"
    ```
 2. Aguardar confirmação do usuário
-3. Atualizar `catalog.yaml` com o campo `extends:` no projeto correspondente
+3. Atualizar `catalog.local.yaml` com o campo `extends:` no projeto correspondente — **nunca `catalog.yaml`** (R-043)
 
 **Se usuário escolhe C:**
 ```
 ⚠️ Projeto sem herança de instruções genéricas registrada.
-   Certifique-se de que possui adapter próprio em .github/instructions/
+   Certifique-se de que possui adapter próprio em .github/instructions/local/
 ```
 
 ---
@@ -260,6 +278,53 @@ Opções:
 Verificar se a sessão atual do Context Mode está sendo rastreada para evitar "Dashboard vazia" no JetBrains:
 1. Execute `ctx_stats()`.
 2. Se `Total calls` retornar 0 ou falhar, invoque `/ctx-start` para inicializar a telemetria e o banco de dados da sessão.
+
+---
+
+### **PASSO 7: Verificar Cache de Grafo de Conhecimento e Sumarização (por Projeto)**
+
+Para cada projeto registrado em `catalog.local.yaml` (gitignored, R-043 — nunca em `catalog.yaml`), verificar se já existe cache de **grafo de conhecimento** (`@code-knowledge-graph`) e de **sumarização** (`@code-summarizer`) no Context Mode — evita reconstrução/reprocessamento desnecessário e informa ao usuário o que já está disponível para consulta imediata.
+
+```
+[Health Check] Cache de Grafo/Sumarização por Projeto
+├─ Projetos registrados em catalog.local.yaml: <n>
+├─ Se <n> = 0 → pular este passo (nenhum projeto para checar)
+└─ Para cada <project-id>:
+    ├─ ctx_search(queries: ["code-graph:<project-id>:*"])   → grafo cacheado?
+    └─ ctx_search(queries: ["code-summary:<project-id>:*"]) → sumários cacheados?
+```
+
+> Executar em **lote** via `ctx_batch_execute` (queries de todos os projetos no mesmo array — nunca 1 chamada por projeto, R-008/economia de contexto/token budget).
+
+**Exibir tabela consolidada:**
+
+```
+📊 STATUS DE CACHE — Grafo de Conhecimento e Sumarização
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Projeto           | Grafo (code-graph:*) | Sumarização (code-summary:*)
+------------------|----------------------|------------------------------
+<project-id-1>    | ✅ cacheado          | ✅ cacheado
+<project-id-2>    | ❌ ausente           | ⚠️ parcial (<n> arquivos)
+<project-id-3>    | ❌ ausente           | ❌ ausente
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Status: <n-com-grafo>/<n-total> com grafo | <n-com-sumario>/<n-total> com sumarização
+```
+
+**Se algum projeto estiver sem cache (grafo e/ou sumarização):**
+
+```
+ℹ️ Cache ausente não bloqueia a sessão — apenas informativo.
+   → Para construir grafo: invocar @code-knowledge-graph (RF-002, sob demanda)
+   → Para sumarizar: invocar @code-summarizer (RF-002, sob demanda)
+   → Nenhuma construção automática é feita por este prompt (R-009 — sem ação autônoma sem confirmação)
+```
+
+**Se `projetos:` estiver vazio em `catalog.local.yaml`:**
+
+```
+ℹ️ Nenhum projeto registrado ainda — pulando verificação de cache de grafo/sumarização.
+   → Use /add-project-context <caminho> para registrar o primeiro projeto.
+```
 
 ---
 
@@ -295,6 +360,10 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
 ║      Estatísticas: <Total calls> chamadas               ║
 ║      Status: ✅ Ativo (rastreável no Dashboard)         ║
 ║                                                           ║
+║ [✅] Cache de Grafo/Sumarização por Projeto (PASSO 7)    ║
+║      Grafo (code-graph:*): <n-com-grafo>/<n-total>       ║
+║      Sumarização (code-summary:*): <n-com-sumario>/<n-total> ║
+║                                                           ║
 ║ [✅] PRONTO PARA PRÓXIMO PASSO                           ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
@@ -304,12 +373,43 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
     → /del-project-context <nome-projeto>     para desplugar um projeto
     → @agent-router                           para classificar intenção
     → /health                                 para checar saúde da governança
-    → /research, /plan, /implement, /validate para fluxo de desenvolvimento
+    → /deep-search, /plan, /implement, /validate para fluxo de desenvolvimento
     → Nenhum arquivo será criado fora DESTE repositório de governança ✅
 
 ℹ️  Validação de contexto: ✅ SUCESSO
    Estado armazenado para sessão | Disponível para agents downstream
 ```
+
+---
+
+### 💡 Recomendações ao Usuário
+
+Ao final do checklist, Copilot **SEMPRE** sintetiza em bullets objetivos as recomendações derivadas do que foi observado nos Passos 1-7 — nunca genéricas, sempre condicionadas ao estado real detectado nesta execução:
+
+```
+💡 RECOMENDAÇÕES PARA ESTA SESSÃO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Model]     <se mismatch: "Troque para <model-esperado> antes de agents de implementação (R-036)">
+[Binding]   <se incompleto: "Execute binding-initializer — catalog.yaml/binding.md ausentes (R-034)">
+[Extends]   <se houver projeto sem extends: "Configure herança em <n> projeto(s) pendente(s) — PASSO 5">
+[Cache]     <se houver projeto sem grafo/sumário: "Considere @code-knowledge-graph/@code-summarizer para <projeto(s)> antes de análises profundas">
+[Sessão]    <se Context Mode inativo: "Rode /ctx-start — Total calls = 0, dashboard não vai rastrear">
+[Fluxo]     "Toda solicitação a partir daqui deve começar por @agent-router (R-037)"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Regras de geração:**
+- Cada linha só aparece se a condição correspondente foi de fato detectada nos Passos 1-7 desta execução — nunca listar recomendação para item já ✅/conforme.
+- Se **nenhuma** condição de alerta foi detectada (tudo ✅), exibir apenas:
+  ```
+  💡 RECOMENDAÇÕES PARA ESTA SESSÃO
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ Nenhuma pendência detectada — ambiente 100% conforme.
+  → Prossiga diretamente para @agent-router.
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ```
+- Recomendações são **sempre informativas** — nunca bloqueiam a sessão nem disparam ação autônoma (R-009); apenas apontam o próximo comando/agent que o usuário pode invocar.
+- Ordem fixa: Model → Binding → Extends → Cache → Sessão → Fluxo (reflete a ordem dos Passos 2/4/5/7/6/router).
 
 ---
 
@@ -373,6 +473,7 @@ CONTEXTO INICIALIZADO COM SUCESSO
 [PASSO 4] Binding context — VALIDO (<n> projetos registrados)
 [PASSO 5] Herança de instruções — OK (<n-com-extends> c/ extends | <n-sem-extends> sem extends)
 [PASSO 6] Context Mode Session — ATIVA (<n> chamadas)
+[PASSO 7] Cache grafo/sumarização — <n-com-grafo>/<n-total> com grafo | <n-com-sumario>/<n-total> com sumarização
 
 Proximo: /add-project-context <path> | /pesquisar | @agent-router
 ```
@@ -381,3 +482,13 @@ Proximo: /add-project-context <path> | /pesquisar | @agent-router
 
 *v1.2 Init Context Prompt — 2026-06-12*
 PASSO 5 adicionado: verificação de herança de instruções genéricas via campo `extends:` em `catalog.yaml`.
+
+*v1.3 — 2026-09-01*
+PASSO 7 adicionado: verificação de cache de grafo de conhecimento (`code-graph:<project-id>:*`, `@code-knowledge-graph`) e de sumarização (`code-summary:<project-id>:*`, `@code-summarizer`) por projeto registrado em `catalog.yaml`, via `ctx_batch_execute`/`ctx_search` em lote — puramente informativo, nunca aciona construção/sumarização automática (R-009).
+
+*v1.4 — 2026-09-01*
+Seção "💡 Recomendações ao Usuário" adicionada ao final do checklist de validação — sintetiza em bullets condicionais (Model/Binding/Extends/Cache/Sessão/Fluxo) apenas as pendências reais detectadas nos Passos 1-7, sempre informativa e nunca bloqueante/autônoma (R-009).
+
+*v1.5 — 2026-09-01*
+PASSO 4/5/7 atualizados para o Local Overlay Pattern (R-043): projetos deixam de viver em `catalog.yaml` (compartilhado/commitado) e passam a viver em `catalog.local.yaml` (gitignored). Toda leitura de projeto agora faz merge em memória dos dois arquivos; nenhuma escrita de projeto/adapter toca o arquivo compartilhado.
+

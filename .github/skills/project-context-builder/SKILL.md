@@ -18,9 +18,8 @@ triggers:
   - "escanear projeto"
 
 source_docs:
-  - "../../../tools/project-context-builder/SPEC.md"
-  - "../../../tools/project-context-builder/scanner.py"
-  - "../../../tools/project-context-builder/config.json"
+  - "../../../.github/prompts/add-project-context.prompt.md"
+  - "../../../.github/agents/adapter-generator.agent.md"
   - "../../../docs/ai-context/catalog.yaml"
 
 capabilities:
@@ -30,7 +29,7 @@ capabilities:
     
   - name: "generate_project_yaml"
     input: "scan output + nome + tipo + descrição"
-    output: "novo_projeto.yaml pronto para binding-scaffolder"
+    output: "novo_projeto.yaml pronto para atualização atômica do catalog"
     
   - name: "generate_instructions_md"
     input: "scan output + patterns coletados"
@@ -41,13 +40,13 @@ workflow:
   2: "Scanner detecta stack, coleta exemplos (offline)"
   3: "Bot pergunta estrutura (nome, tipo, extends, descrição)"
   4: "Copilot Chat usa seu modelo para gerar artefatos (sem APIs)"
-  5: "Executa binding-scaffolder ou manualmente"
+  5: "Executa atualização guiada via tools nativas (sem script externo)"
 
 constraints:
   - "Scanner executado localmente (offline, sem custo)"
   - "Geração de artefatos feita por Copilot Chat (seu modelo, sem APIs externas)"
   - "Sempre pedir confirmação antes de criar arquivos"
-  - "Fallback para CLI interativa se scanner falhar"
+  - "Fallback para atualização manual com preview em caso de falha de tooling"
 
 category: process
 tools:
@@ -59,6 +58,15 @@ tools:
 ---
 
 # project-context-builder — Skill de Descoberta de Projeto
+
+## Precedentes de Mercado (Pesquisa Externa — R-019, 2026-09-01)
+
+> O padrão "scanner local determinístico → IA gera artefato customizado → preview → confirmação" já é validado por ferramentas reais de mercado (2025-2026):
+> - **GitHub Copilot CLI `/init`**: "Copilot will scan your project and create tailored instruction files" ([github/copilot-cli-for-beginners](https://github.com/github/copilot-cli-for-beginners)).
+> - **`npx ai-setup`**: escaneia o codebase e gera `.github/copilot-instructions.md`, `CLAUDE.md`, `.cursorrules` automaticamente ([Reddit r/GithubCopilot](https://www.reddit.com/r/GithubCopilot/comments/1s6ppan/)).
+> - **`npx agentseed init`**: lê o codebase e gera `AGENTS.md` via análise estática (sem custo), com fallback LLM opcional ([Reddit r/LocalLLaMA](https://www.reddit.com/r/LocalLLaMA/comments/1r0ixum/)).
+>
+> Conclusão: nenhuma mudança estrutural é necessária neste fluxo — a arquitetura já reflete o padrão consolidado. Ver também `project-scanner-governance/SKILL.md` § 7 para a pesquisa completa (inclui OWASP LLM02/LLM06 e nomenclatura `OverwriteStrategy` do Nx).
 
 ## Overview
 
@@ -83,7 +91,7 @@ FASE 4: Preview + Confirmação
   • User revisa no chat
   • Confirma para executar
   ↓
-FASE 5: Executa binding-scaffolder
+FASE 5: Executa atualização atômica
   • Cria arquivos atomicamente
 ```
 
@@ -91,36 +99,20 @@ FASE 5: Executa binding-scaffolder
 
 ### Stage 1: Input & Validation
 
-```python
-user_input = input("Caminho do projeto (relativo ou absoluto): ")
-validated_path = validate_path(user_input)
+```text
+input_path = "caminho do projeto (relativo ou absoluto)"
+validated_path = validate_path(input_path)
 if not is_valid_project_path(validated_path):
-    return "❌ Caminho inválido ou projeto não detectado"
+  return "❌ Caminho inválido ou projeto não detectado"
 ```
 
 ### Stage 2: Local Scanning (Offline)
 
-```python
+```text
 scanner = ProjectScanner(validated_path)
-
 detected = scanner.detect_stack()
-# → "java-spring" | "typescript-angular" | "python-django" | etc
-
 patterns = scanner.extract_patterns()
-# → {
-#     "package_base": "br.com.projectname",
-#     "naming_convention": "PascalCase_Services",
-#     "structure": "entity-service-controller",
-#     "typical_imports": [...],
-#     "testing_style": "junit5-mockito"
-#   }
-
 examples = scanner.collect_examples(count=5)
-# → [
-#     "file": "...ServiceImpl.java",
-#     "class": "ObteCadastroServiceImpl",
-#     "pattern": "padrão interface+impl"
-#   ]
 ```
 
 ### Stage 3: Structured Questions (no Copilot Chat)
@@ -168,13 +160,13 @@ Resultado: TUDO NO CHAT, visível para revisar
 
 3 Confirmar para executar
    ↓
-4. Handler executa:
-   python binding_scaffolder.py generate novo_projeto.yaml
+4. Handler executa atualização atômica do binding
+   (catalog + binding + README de instruções)
    
 4. Resultado:
    ✅ Arquivos criados atomicamente
    ✅ YAML validado
-   ✅ Rollback automático se erro
+   ✅ Rollback lógico com patch mínimo se erro
 ```
 
 ## Casos de Uso

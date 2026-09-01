@@ -1,0 +1,428 @@
+rules:
+  # ============================================================
+  # GRAFO DE IMPORT
+  # ============================================================
+  - id: ts-import
+    languages: [typescript]
+    severity: INFO
+    message: "import-ts: $MOD"
+    patterns:
+      - pattern-either:
+          - pattern: import { ... } from "$MOD"
+          - pattern: import $NAME from "$MOD"
+
+  - id: java-import
+    languages: [java]
+    severity: INFO
+    message: "import-java: $PKG"
+    patterns:
+      - pattern: import $PKG;
+
+  # ============================================================
+  # ANGULAR — framework nodes
+  # ============================================================
+  - id: angular-component-decorator
+    languages: [typescript]
+    severity: INFO
+    message: "framework-angular-component: $CLASS"
+    patterns:
+      - pattern: |
+          @Component({...})
+          class $CLASS { ... }
+
+  - id: angular-injectable-decorator
+    languages: [typescript]
+    severity: INFO
+    message: "framework-angular-injectable: $CLASS"
+    patterns:
+      - pattern: |
+          @Injectable({...})
+          class $CLASS { ... }
+
+  # ============================================================
+  # ANGULAR — integração cross-repo (RF-002/RF-003, REQ SS6.2)
+  # ============================================================
+  - id: angular-cross-repo-config-import
+    languages: [typescript]
+    severity: WARNING
+    message: "cross-repo-marker: $MOD"
+    patterns:
+      - pattern: import { $CFG } from "$MOD"
+      - metavariable-regex:
+          metavariable: $CFG
+          regex: .*Configuration$
+
+  - id: angular-api-url-path
+    languages: [typescript]
+    severity: INFO
+    message: "api-url-path: $PATH"
+    patterns:
+      - pattern: |
+          get apiUrl(): string {
+            return `${super.apiUrl}$PATH`;
+          }
+
+  # ============================================================
+  # ANGULAR — integração HTTP/evento (RF-013/RF-014)
+  # ============================================================
+  - id: angular-http-client
+    languages: [typescript]
+    severity: INFO
+    message: "integration-http"
+    patterns:
+      - pattern-either:
+          - pattern: this.http.get(...)
+          - pattern: this.http.post(...)
+          - pattern: this.http.put(...)
+          - pattern: this.http.delete(...)
+          - pattern: fetch(...)
+
+  - id: angular-event-consumer
+    languages: [typescript]
+    severity: INFO
+    message: "integration-event-consumer"
+    patterns:
+      - pattern-either:
+          - pattern: onSnapshot(...)
+          - pattern: collectionData(...)
+          - pattern: docData(...)
+          - pattern: valueChanges(...)
+
+  - id: angular-event-producer
+    languages: [typescript]
+    severity: INFO
+    message: "integration-event-producer"
+    patterns:
+      - pattern-either:
+          - pattern: addDoc(...)
+          - pattern: setDoc(...)
+          - pattern: updateDoc(...)
+          - pattern: deleteDoc(...)
+
+  # ============================================================
+  # ANGULAR — sensibilidade de dado (RF-018 item 8)
+  # ============================================================
+  - id: ts-field-financeiro
+    languages: [typescript]
+    severity: INFO
+    message: "data-sensitivity-financeiro"
+    # pattern-regex (nao pattern AST) - Semgrep TS AST-matching nao reconhece
+    # property signature de "interface" (so "class"), confirmado empiricamente
+    # nesta rodada (Parse_error). pattern-regex e mecanismo NATIVO do Semgrep
+    # (nao script externo) e funciona para ambos - R-fix aplicado aqui.
+    pattern-regex: '(?i)\b(valor|preco|salario)\s*:\s*number\b'
+
+  - id: ts-field-pii
+    languages: [typescript]
+    severity: INFO
+    message: "data-sensitivity-pii"
+    pattern-regex: '(?i)\b(cpf|rg|email|telefone)\s*:\s*string\b'
+
+  # ============================================================
+  # SPRING BOOT — framework nodes + endpoints (RF-002/RF-003)
+  # ============================================================
+  - id: spring-rest-controller-with-mapping
+    languages: [java]
+    severity: INFO
+    message: "framework-spring-controller: $PATH"
+    patterns:
+      - pattern: |
+          @RestController
+          @RequestMapping($PATH)
+          class $CLASS { ... }
+
+  - id: spring-get-mapping
+    languages: [java]
+    severity: INFO
+    message: "endpoint-get: $PATH"
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @GetMapping($PATH)
+              $RET $METHOD(...) { ... }
+          - pattern: |
+              @GetMapping(path = $PATH, ...)
+              $RET $METHOD(...) { ... }
+
+  - id: spring-post-mapping
+    languages: [java]
+    severity: INFO
+    message: "endpoint-post: $PATH"
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @PostMapping($PATH)
+              $RET $METHOD(...) { ... }
+          - pattern: |
+              @PostMapping(path = $PATH, ...)
+              $RET $METHOD(...) { ... }
+
+  - id: spring-service-decorator
+    languages: [java]
+    severity: INFO
+    message: "framework-spring-service: $CLASS"
+    patterns:
+      - pattern: |
+          @Service
+          class $CLASS { ... }
+
+  - id: spring-autowired-field
+    languages: [java]
+    severity: INFO
+    message: "framework-spring-di"
+    patterns:
+      - pattern: |
+          @Autowired
+          $TYPE $FIELD;
+
+  # ============================================================
+  # ANGULAR — complementares (research 2026-09-01, github.com/semgrep/semgrep-rules
+  # nao tem patterns estruturais prontos para estes decorators/APIs — propostos
+  # e validados com evidencia real em angular-example)
+  # ============================================================
+  - id: angular-ngmodule-decorator
+    languages: [typescript]
+    severity: INFO
+    message: "framework-angular-ngmodule: $CLASS"
+    patterns:
+      - pattern: |
+          @NgModule({...})
+          class $CLASS { ... }
+
+  - id: angular-directive-decorator
+    languages: [typescript]
+    severity: INFO
+    message: "framework-angular-directive: $CLASS"
+    patterns:
+      - pattern: |
+          @Directive({...})
+          class $CLASS { ... }
+
+  - id: angular-pipe-decorator
+    languages: [typescript]
+    severity: INFO
+    message: "framework-angular-pipe: $CLASS"
+    patterns:
+      - pattern: |
+          @Pipe({...})
+          class $CLASS { ... }
+
+  - id: angular-inject-fn
+    languages: [typescript]
+    severity: INFO
+    message: "framework-angular-inject-fn"
+    patterns:
+      - pattern: inject($TOKEN)
+
+  - id: angular-signal-api
+    languages: [typescript]
+    severity: INFO
+    message: "framework-angular-signal"
+    patterns:
+      - pattern-either:
+          - pattern: signal(...)
+          - pattern: computed(...)
+          - pattern: effect(...)
+
+  # ============================================================
+  # SPRING BOOT — complementares (mesma origem/metodologia acima)
+  # ============================================================
+  - id: spring-controller-decorator
+    languages: [java]
+    severity: INFO
+    message: "framework-spring-controller-plain: $CLASS"
+    # Nota: nenhum projeto real testado usa @Controller puro (todos usam
+    # @RestController) — regra mantida por completude, sem evidencia real ainda.
+    patterns:
+      - pattern: |
+          @Controller
+          class $CLASS { ... }
+
+  - id: spring-repository-decorator
+    languages: [java]
+    severity: INFO
+    message: "framework-spring-repository: $CLASS"
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @Repository
+              class $CLASS { ... }
+          - pattern: |
+              @Repository
+              interface $CLASS { ... }
+          # idioma real Spring Data (springboot-api-web, 42 matches reais):
+          # interface sem @Repository explicito, so extends JpaRepository/CrudRepository —
+          # mesma classe de bug do RF-018 (Semgrep AST nao reconhece "class $C" para interface)
+          - pattern: 'interface $CLASS extends JpaRepository<$E, $ID> { ... }'
+          - pattern: 'interface $CLASS extends CrudRepository<$E, $ID> { ... }'
+
+  - id: spring-entity-decorator
+    languages: [java]
+    severity: INFO
+    message: "framework-spring-entity: $CLASS"
+    patterns:
+      - pattern: |
+          @Entity
+          class $CLASS { ... }
+
+  - id: spring-configuration-decorator
+    languages: [java]
+    severity: INFO
+    message: "framework-spring-configuration: $CLASS"
+    patterns:
+      - pattern: |
+          @Configuration
+          class $CLASS { ... }
+
+  - id: spring-bean-method
+    languages: [java]
+    severity: INFO
+    message: "framework-spring-bean: $METHOD"
+    patterns:
+      - pattern: |
+          @Bean
+          $TYPE $METHOD(...) { ... }
+
+  - id: spring-transactional-method
+    languages: [java]
+    severity: INFO
+    message: "framework-spring-transactional"
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @Transactional
+              $RET $M(...) { ... }
+          - pattern: |
+              @Transactional(...)
+              $RET $M(...) { ... }
+
+  # ============================================================
+  # SPRING REACTIVE / WEBFLUX (validado real em webflux-patterns +
+  # spring-mvc-vs-webflux — 73 Mono, 12 Flux, 28 WebClient reais)
+  # ============================================================
+  - id: reactive-controller-mono
+    languages: [java]
+    severity: INFO
+    message: "framework-reactive-mono: $METHOD"
+    patterns:
+      - pattern: 'Mono<$T> $METHOD(...) { ... }'
+
+  - id: reactive-controller-flux
+    languages: [java]
+    severity: INFO
+    message: "framework-reactive-flux: $METHOD"
+    patterns:
+      - pattern: 'Flux<$T> $METHOD(...) { ... }'
+
+  - id: reactive-router-function
+    languages: [java]
+    severity: INFO
+    message: "framework-reactive-router-function"
+    # Nota: nenhum projeto real testado usa estilo funcional (RouterFunction/
+    # HandlerFunction) — ambos usam @RestController anotado. Regra mantida por
+    # completude (padrao documentado de mercado), sem evidencia real ainda.
+    patterns:
+      - pattern-either:
+          - pattern: 'RouterFunction<$R> $F(...) { ... }'
+          - pattern: 'HandlerFunction<$R> $H(...) { ... }'
+
+  - id: reactive-webclient
+    languages: [java]
+    severity: INFO
+    message: "integration-reactive-webclient"
+    patterns:
+      - pattern: WebClient.$X(...)
+
+  - id: reactive-r2dbc-repository
+    languages: [java]
+    severity: INFO
+    message: "framework-reactive-r2dbc: $I"
+    # Nota: nenhum projeto real testado usa R2DBC (usam agregacao via WebClient,
+    # sem banco reativo) — regra mantida por completude, sem evidencia real ainda.
+    patterns:
+      - pattern: 'interface $I extends R2dbcRepository<$E, $ID> { ... }'
+
+  # ============================================================
+  # EJB / Jakarta EE (SEM projeto real no workspace para validacao —
+  # testado apenas contra arquivo sintetico de teste, documentado como tal)
+  # ============================================================
+  - id: ejb-stateless-decorator
+    languages: [java]
+    severity: INFO
+    message: "framework-ejb-stateless: $CLASS"
+    patterns:
+      - pattern: |
+          @Stateless
+          class $CLASS { ... }
+
+  - id: ejb-stateful-decorator
+    languages: [java]
+    severity: INFO
+    message: "framework-ejb-stateful: $CLASS"
+    patterns:
+      - pattern: |
+          @Stateful
+          class $CLASS { ... }
+
+  - id: ejb-singleton-decorator
+    languages: [java]
+    severity: INFO
+    message: "framework-ejb-singleton: $CLASS"
+    patterns:
+      - pattern: |
+          @Singleton
+          class $CLASS { ... }
+
+  - id: ejb-messagedriven-decorator
+    languages: [java]
+    severity: INFO
+    message: "framework-ejb-messagedriven: $CLASS"
+    patterns:
+      - pattern: |
+          @MessageDriven(...)
+          class $CLASS { ... }
+
+  - id: ejb-injection-field
+    languages: [java]
+    severity: INFO
+    message: "framework-ejb-injection"
+    patterns:
+      - pattern: |
+          @EJB
+          $TYPE $FIELD;
+
+  - id: ejb-local-remote-interface
+    languages: [java]
+    severity: INFO
+    message: "framework-ejb-interface"
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @Local
+              interface $I { ... }
+          - pattern: |
+              @Remote
+              interface $I { ... }
+
+  - id: ejb-schedule-timeout
+    languages: [java]
+    severity: INFO
+    message: "framework-ejb-timer"
+    patterns:
+      - pattern-either:
+          - pattern: |
+              @Schedule(...)
+              $RET $M(...) { ... }
+          - pattern: |
+              @Timeout
+              $RET $M(...) { ... }
+
+  - id: ejb-transaction-attribute
+    languages: [java]
+    severity: INFO
+    message: "framework-ejb-transaction"
+    patterns:
+      - pattern: |
+          @TransactionAttribute(...)
+          $RET $M(...) { ... }
+

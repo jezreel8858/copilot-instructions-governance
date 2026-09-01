@@ -5,21 +5,25 @@
 # Este arquivo é o manifest de binding instanciado para o ecossistema .
 # Gerado a partir de catalog-base.yaml via binding-initializer.
 #
+# ⚠️  ARQUIVO COMPARTILHADO/COMMITADO — NUNCA registre projetos aqui (R-043).
+#     Projetos locais vivem em `catalog.local.yaml` (gitignored, ver abaixo).
+#
 # HIERARQUIA:
 # 1. Global rules (CLAUDE.md, .github/copilot-instructions.md) — sempre carregados
 # 2. Adapters por stack (applyTo glob em .github/instructions/*.md) — condicional
-# 3. Projeto específico — contexto em runtime via /add-project-context
+# 3. Projeto específico — Local Overlay (catalog.local.yaml, runtime, R-043)
 #
 # MANUTENÇÃO:
-# - Adicionar projetos: /add-project-context <caminho>
-# - Remover projetos: /del-project-context <nome>
-# - NÃO editar manualmente a seção projetos: — use os prompts acima
+# - Adicionar projetos: /add-project-context <caminho>  → grava em catalog.local.yaml (NUNCA aqui)
+# - Remover projetos: /del-project-context <nome>        → remove de catalog.local.yaml (NUNCA aqui)
+# - NÃO editar manualmente a seção `projetos:` — ela não existe mais neste arquivo compartilhado
 # - Campo `extends:` em projetos declara herança das instruções genéricas disponíveis em adapters:
 
 version: "1.2"
 ecosystem: "app-ecossistema"
-lastUpdated: "2026-08-29"
+lastUpdated: "2026-09-01"
 maintainer: "eco-sistema-app"
+
 
 # ============================================
 # BINDINGS GLOBAIS
@@ -114,29 +118,28 @@ adapters:
 
 
 # ============================================
-# PROJETOS (adicionados via /add-project-context)
+# PROJETOS — LOCAL OVERLAY PATTERN (R-043)
 # ============================================
-# Para adicionar: /add-project-context <caminho-do-projeto>
-# Para remover:  /del-project-context <nome-do-projeto>
-# Campo `extends:` declara quais adapters genéricos o projeto herda.
-#   Exemplo:
-#     - id: "meu-projeto"
-#       name: "Meu Projeto"
-#       stack: "backend-microservice"
-#       extends:
-#         - "base-backend"   # herda spring-boot-backend.instructions.md
-#       path: "../meu-projeto"
+# ⛔ Esta seção NÃO existe mais neste arquivo (R-043 — Desacoplamento Total).
 #
-# NÃO editar manualmente a seção projetos: — use os prompts acima
-projetos:
-  - id: "worship-scale-app"
-    name: "Worship Scale App"
-    type: "frontend"
-    stack: "angular-20-capacitor"
-    path: "D:\\workspace\\worship-scale-app"
-    description: "Frontend para gestão de escala de louvor em Angular 20 com integração Capacitor/Firebase."
-    extends:
-      - "base-frontend"
+# Projetos registrados via /add-project-context vivem exclusivamente em:
+#   → docs/ai-context/catalog.local.yaml   (gitignored — NUNCA commitado)
+#
+# Template/schema de referência (tracked, sem dados reais):
+#   → docs/ai-context/catalog.local.yaml.example
+#
+# MERGE EM TEMPO DE LEITURA (nunca em escrita):
+#   Todo agent/prompt que precisa da lista de projetos DEVE ler AMBOS os arquivos
+#   e mesclar em memória: projetos = catalog.local.yaml.projetos (se existir) senão [].
+#   NUNCA escrever entrada de projeto de volta neste arquivo (catalog.yaml).
+#
+# Por quê: evita que um `git commit`/`git push` de rotina suba acidentalmente
+# caminhos/nomes de projetos locais (privados) para o repositório de governança
+# compartilhado. Ver CLAUDE.md § R-043 e .githooks/pre-commit (defesa em profundidade).
+#
+# Para adicionar: /add-project-context <caminho>  (grava em catalog.local.yaml)
+# Para remover:  /del-project-context <nome>       (remove de catalog.local.yaml)
+
 
 # ============================================
 # DISCOVERY
@@ -197,5 +200,21 @@ governance_artefacts:
       - "agent-router"
     maintenance_rule: "Equivalente a R-015 — atualização atômica com mudanças no router"
 
-
-
+  - id: "evals-code-summarizer"
+    name: "Suíte de Casos de Avaliação do Agent code-summarizer (RF-008)"
+    source: "docs/ai-context/evals/casos-code-summarizer.yaml"
+    description: >
+      Suíte de evals de risco Alto/P1 do code-summarizer (RF-004, RF-005, RF-008,
+      RNF-001, RNF-002, RNF-005, RNF-007), gerada a partir de
+      docs/test-strategy/TEST-STRATEGY-code-summarizer.md. Inclui 4 golden files
+      sintéticos por stack (Java/Spring Boot, Angular/TS, Python, SQL) em
+      docs/ai-context/evals/fixtures/code-summarizer/. Threshold de fallback (TODO-b)
+      fechado em 2026-08-31 por @analysis-architect (libs por stack: web-tree-sitter
+      Java/TS, ast nativo Python, node-sql-parser SQL) — casos RNF-001 não são mais
+      provisórios.
+    version: "1.0"
+    created: "2026-08-31"
+    consumed_by:
+      - "agent-evals-lab"
+      - "test-implementation"
+    maintenance_rule: "Atualizar obrigatoriamente em toda PR que altere code-summarizer.agent.md ou os golden files associados"

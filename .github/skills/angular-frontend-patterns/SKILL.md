@@ -20,6 +20,8 @@ tools: []
 
 # Angular Frontend Patterns
 
+> Esta skill cobre o modo **Advisory** (análise/recomendação, sem código). Para o modo **Implementação** (codificar feature/bugfix), ver [`angular-implementation-patterns`](../angular-implementation-patterns/SKILL.md).
+
 ## Quando Usar
 
 - Quando for necessário revisar qualidade e consistência de código Angular.

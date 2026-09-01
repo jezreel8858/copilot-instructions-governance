@@ -1,7 +1,7 @@
 ---
 name: ctx-start
 description: Inicializa e valida a sessão do Context Mode para garantir rastreabilidade e ingestão no dashboard.
-model: "claude-haiku-4.5"
+model: "Claude Haiku 4.5"
 tools: ['ctx_stats', 'ctx_doctor', 'ctx_execute']
 ---
 

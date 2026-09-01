@@ -3,7 +3,7 @@ name: test-strategy
 description: >-
   Definir estratégia de testes por risco, escopo e cobertura, sem implementar
   testes automaticamente.
-model: "gpt-5.3-codex"
+model: "Claude Sonnet 5"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'get_errors', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute_file']
 ---
 # Test Strategy
@@ -42,7 +42,7 @@ Pedido recebido?
 |  |- Sim -> pedir clarificação objetiva
 |  \- Não
 \- Exige análise de impacto de integração?
-   |- Sim -> delegar para @impact-architect ou @analysis-architect
+   |- Sim -> delegar para @analysis-architect (tier B1 para impacto local)
    \- Não -> finalizar estratégia e prioridade
 ```
 
@@ -105,9 +105,16 @@ Próximo passo mínimo:
 
 ## Quando Delegar
 
-- [`@impact-architect`](impact-architect.agent.md) para dependências de integração local.
-- [`@analysis-architect`](analysis-architect.agent.md) para impacto cross-sistema.
+- [`@analysis-architect`](analysis-architect.agent.md) para dependências de integração local (tier B1) e cross-sistema.
 - [`@docs-curator`](docs-curator.agent.md) para consolidar documentação final.
+
+## Retorno ao Router (R-042 — Anti Sticky-Session)
+
+**Banner obrigatorio (visibilidade de fluxo)**: toda resposta deste agent abre com a linha `Agente Ativo: test-strategy` antes de qualquer outro conteudo -- mesmo sem handoff neste turno. Se esta resposta e resultado de handoff/re-triagem recebido, adicionar `Handoff: <agent-origem> -> test-strategy (motivo: <motivo>)` na linha seguinte. Padrao de mercado: OpenAI Agents SDK (`HandoffOutputItem` -- "Handed off from X to Y") e LangGraph (campo `active_agent` streamado ao usuario) -- ver `agent-contracts/SKILL.md` secao 0.
+
+Se a solicitação pivotar de "definir estratégia" para "implementar os testes", retornar para `@agent-router` com handoff (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`) — este agent nunca implementa.
+
+**Gatilho de deriva:** pedido de escrita/execução de testes; pedido de correção de bug (→ `@bug-triage`).
 
 ## Combina Com (Commands)
 

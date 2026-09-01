@@ -4,8 +4,8 @@ description: >
   Fonte de verdade para regressão de roteamento — deve ser atualizada
   em toda PR que altere agent-router.agent.md ou routing-graph.yaml (análogo ao R-015).
   Compatível com DeepEval (Apache 2.0) e pytest via estrutura de casos padronizados.
-last_updated: "2026-08-29 (requirements-analyst: canon-014, regr-012, regr-013)"
-responsavel: "agent-evals-lab + docs-curator"
+last_updated: "2026-09-01 (v5 — +8 casos canônicos (canon-020..027) + 1 caso ambíguo (ambig-006) para os 9 agents novos: security-reviewer, performance-agent, compliance-guardrails, feature-planner, devops-engineer, debugger, refactor-executor, code-style-enforcer; agentic-memory-manager coberto indiretamente por ambig-006-adjacent scope; suíte 47 -> 56 casos)"
+responsavel: "agent-evals-lab + docs-curator + test-implementation"
 
 # ─────────────────────────────────────────────
 # SUITE 1 — Casos Canônicos (threshold ≥ 0.90)
@@ -84,7 +84,7 @@ canonicos:
     input:
       solicitacao: "Analisar o impacto de mudar a assinatura do método processarPagamento() em PaymentService"
     expected:
-      agent_route: "impact-architect"
+      agent_route: "analysis-architect"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.90
@@ -197,11 +197,181 @@ canonicos:
     critico: true
     threshold: 0.90
 
+  - id: "canon-015"
+    descricao: "Sumarização de código-fonte agnóstica a linguagem (perfil code-summarizer, RF-008)"
+    input:
+      solicitacao: "Sumarize este arquivo de código-fonte para reduzir o volume levado ao contexto do chat"
+    expected:
+      agent_route: "code-summarizer"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @code-summarizer"
+    critico: true
+    threshold: 0.90
+    nao_confundir_com:
+      - "revisar/corrigir código"   # → code-review/bug-triage/refactor-planner
+      - "extrair regra de negócio"  # → business-rules-extractor
+
+  - id: "canon-019"
+    descricao: "Delegação interna downstream → code-summarizer (RF-002): agent especialista de stack detecta arquivo > 300 linhas/20KB e delega via run_subagent, valida aresta *downstream → code-summarizer de routing-graph.yaml"
+    input:
+      agent_solicitante: "spring-boot"
+      solicitacao_simulada: "spring-boot está lendo PedidoService.java (412 linhas, 24KB) para responder a uma tarefa e identifica que excede o threshold RF-002 antes de anexar o conteúdo ao contexto"
+    expected:
+      agent_route: "code-summarizer"
+      via: "run_subagent"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @code-summarizer"
+    nao_deve:
+      comportamento: "spring-boot ler o arquivo inteiro diretamente para o contexto sem delegar (viola RF-002/RNF-002)"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-020"
+    descricao: "Revisão especializada de segurança (OWASP/CVE)"
+    input:
+      solicitacao: "Revisar este endpoint por segurança — quero saber se há risco de SQL injection ou vulnerabilidade OWASP"
+    expected:
+      agent_route: "security-reviewer"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @security-reviewer"
+    nao_confundir_com:
+      - "revisão geral de código"  # → code-review
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-021"
+    descricao: "Revisão especializada de performance (Core Web Vitals)"
+    input:
+      solicitacao: "Avaliar se esta página tem problema de Core Web Vitals — LCP parece alto"
+    expected:
+      agent_route: "performance-agent"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @performance-agent"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-022"
+    descricao: "Avaliação de compliance/GDPR"
+    input:
+      solicitacao: "Avaliar se este fluxo de dado pessoal está conforme GDPR/LGPD — existe audit trail?"
+    expected:
+      agent_route: "compliance-guardrails"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @compliance-guardrails"
+    nao_confundir_com:
+      - "segurança do próprio agent de IA"  # → agent-safety-guardrails (skill)
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-023"
+    descricao: "Decomposição de feature nova em subtasks"
+    input:
+      solicitacao: "Preciso decompor esta feature nova de checkout em subtarefas para o time executar"
+    expected:
+      agent_route: "feature-planner"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @feature-planner"
+    nao_confundir_com:
+      - "refatoração de código existente"  # → refactor-planner
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-024"
+    descricao: "Revisão de artefato DevOps (Dockerfile)"
+    input:
+      solicitacao: "Revisar este Dockerfile antes do merge — está seguindo boas práticas?"
+    expected:
+      agent_route: "devops-engineer"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @devops-engineer"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-025"
+    descricao: "Investigação de causa raiz com stack trace complexo"
+    input:
+      solicitacao: "Preciso investigar a causa raiz deste erro — o stack trace atravessa 4 serviços e não é óbvio onde está o problema"
+    expected:
+      agent_route: "debugger"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      output_contains:
+        - "Delegado: @debugger"
+    nao_confundir_com:
+      - "bug simples/classificação inicial"  # → bug-triage
+    critico: true
+    threshold: 0.85
+
+  - id: "canon-026"
+    descricao: "Execução de plano de refactor já aprovado"
+    input:
+      solicitacao: "O plano de refactor do módulo de pagamentos já foi aprovado — pode executar a Fase 1 agora"
+    expected:
+      agent_route: "refactor-executor"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @refactor-executor"
+    nao_confundir_com:
+      - "criar plano de refactor do zero"  # → refactor-planner
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-027"
+    descricao: "Verificação de estilo/convenção documentada"
+    input:
+      solicitacao: "Verificar se este arquivo segue as convenções de nomenclatura do adapter Spring Boot do projeto"
+    expected:
+      agent_route: "code-style-enforcer"
+      nivel_routing: "rule-based"
+      confianca: "média"
+      score_minimo: 0.85
+      output_contains:
+        - "Delegado: @code-style-enforcer"
+    critico: false
+    threshold: 0.85
+
 # ─────────────────────────────────────────────
 # SUITE 2 — Casos Ambíguos (threshold ≥ 0.70)
 # Intenção ambígua que exige clarificação ou roteamento defensivo.
 # ─────────────────────────────────────────────
 ambiguos:
+
+  - id: "ambig-006"
+    descricao: "Ambiguidade entre security-reviewer e agent-safety-guardrails (skill, não agent) — pedido menciona 'segurança do agent' de forma vaga"
+    input:
+      solicitacao: "Quero garantir que está seguro"
+    expected:
+      agent_route: "SEM_SPAWN"
+      acao: "ask_questions"
+      pergunta_esperada: "Segurança de qual escopo: da aplicação sendo desenvolvida (código/dependências) ou do comportamento do próprio agent de IA (prompt injection/blast radius)?"
+      score_minimo: 0.70
+    critico: false
+    threshold: 0.70
+
   - id: "ambig-001"
     descricao: "Solicitação muito vaga sem escopo"
     input:
@@ -250,6 +420,23 @@ ambiguos:
     expected:
       comportamento: "ask_questions para obter relatório de falhas"
       nao_deve: "rotear para test-fix sem o relatório"
+    critico: false
+    threshold: 0.70
+
+  - id: "ambig-005"
+    descricao: "Duas intenções simultâneas envolvendo sumarização (RF-008 §4 da estratégia): 'sumarize e corrija' não deve rotear direto para code-summarizer nem bug-triage sem clarificação"
+    input:
+      solicitacao: "Sumarize e corrija este arquivo"
+    expected:
+      comportamento: "ask_questions com split de intenções"
+      opcoes_esperadas:
+        - "Sumarizar primeiro → @code-summarizer"
+        - "Corrigir primeiro → @bug-triage (requer relatório/causa raiz)"
+        - "Ambos em sequência → plano dividido (sumarizar para reduzir contexto, depois corrigir)"
+      confianca: "baixa"
+      score_esperado_range: [0.50, 0.69]
+    nao_deve:
+      agent_route: "code-summarizer|bug-triage (roteamento direto sem clarificação)"
     critico: false
     threshold: 0.70
 
@@ -333,7 +520,7 @@ regressao:
     expected:
       agent_route: "agent-router"
     nao_deve:
-      agent_route: "bug-triage|test-strategy|refactor-planner|impact-architect|docs-curator"
+      agent_route: "bug-triage|test-strategy|refactor-planner|analysis-architect|docs-curator"
     critico: true
     threshold: 1.00
 
@@ -403,6 +590,134 @@ regressao:
     critico: true
     threshold: 1.00
 
+  - id: "regr-017"
+    descricao: "REGRESSÃO (§4 estratégia code-summarizer): 'extrair regras de negócio deste módulo' não deve rotear para code-summarizer — sumarizar ≠ extrair regra de negócio como artefato"
+    input:
+      solicitacao: "Extrair regras de negócio deste módulo"
+    expected:
+      agent_route: "business-rules-extractor"
+    nao_deve:
+      agent_route: "code-summarizer"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-018"
+    descricao: "REGRESSÃO (§4 estratégia code-summarizer): 'revisar antes do merge' não deve rotear para code-summarizer mesmo mencionando 'resumir mudanças' — revisão de qualidade ≠ sumarização de contexto"
+    input:
+      solicitacao: "Revisar este código antes do merge — pode aproveitar e resumir as mudanças no PR?"
+    expected:
+      agent_route: "code-review"
+    nao_deve:
+      agent_route: "code-summarizer"
+    critico: true
+    threshold: 1.00
+
+  - id: "canon-015"
+    descricao: "Análise/recomendação Angular sem implementação deve rotear para o specialist (perfil híbrido, modo Advisory)"
+    input:
+      solicitacao: "Preciso de uma análise de performance CWV/SSR do meu app Angular 21, sem implementar nada ainda"
+    expected:
+      agent_route: "angular"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      modo_esperado: "Advisory"
+    critico: true
+    threshold: 0.90
+
+  - id: "regr-014"
+    descricao: "REGRESSÃO (v2.0.0 — specialist híbrido): pedido inicial de análise Angular seguido de 'agora implemente o componente' DEVE continuar com o próprio agent angular em modo Implementação (não é deriva — implementação dentro do domínio Angular é escopo nativo do agent desde v2.0.0)"
+    input:
+      turno_1:
+        solicitacao: "Analise a arquitetura de componentes do meu app Angular"
+        agent_route_esperado: "angular"
+        modo_esperado: "Advisory"
+      turno_2:
+        solicitacao: "Show, agora implemente o componente de listagem seguindo a recomendação"
+    expected:
+      turno_2_deteccao: "sem deriva — implementação dentro do domínio Angular"
+      turno_2_agent_route: "angular (mesmo agent, troca para modo Implementação)"
+      turno_2_requisito: "teste escrito/atualizado antes de reportar sucesso (testing-first, skill angular-implementation-patterns)"
+    nao_deve:
+      turno_2_agent_route: "retorno a @agent-router por deriva_de_intencao (angular JÁ cobre implementação no próprio domínio)"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-016"
+    descricao: "REGRESSÃO (R-042 — deriva real de domínio): specialist angular recebendo pedido de implementação Spring Boot (fora do domínio Angular) DEVE retornar ao agent-router"
+    input:
+      turno_1:
+        solicitacao: "Analise a arquitetura de componentes do meu app Angular"
+        agent_route_esperado: "angular"
+        modo_esperado: "Advisory"
+      turno_2:
+        solicitacao: "Beleza, agora implementa o endpoint Spring Boot que consome esses dados"
+    expected:
+      turno_2_deteccao: "intent_drift_detected (stack fora da matriz de competência do agent ativo)"
+      turno_2_handoff: "angular -> agent-router (motivo: deriva_de_intencao)"
+      turno_2_agent_route_final: "spring-boot (via re-triagem do agent-router)"
+    nao_deve:
+      turno_2_agent_route: "angular implementando código Spring Boot diretamente"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-015"
+    descricao: "REGRESSÃO (R-042 — sticky session): pedido inicial de requisitos (agent read-only) seguido de mudança para implementação deve re-passar pelo agent-router, não continuar direto no agent ativo"
+    input:
+      turno_1:
+        solicitacao: "Levantar requisitos para nova tela de checkout"
+        agent_route_esperado: "requirements-analyst"
+      turno_2:
+        solicitacao: "Beleza, agora implementa isso no backend Spring Boot"
+    expected:
+      turno_2_deteccao: "intent_drift_detected (elicitar -> implementar; requirements-analyst não cobre implementação)"
+      turno_2_handoff: "requirements-analyst -> agent-router (motivo: deriva_de_intencao)"
+      turno_2_agent_route_final: "spring-boot (via re-triagem do agent-router)"
+    nao_deve:
+      turno_2_agent_route: "requirements-analyst implementando código diretamente"
+    critico: true
+    threshold: 1.00
+
+  - id: "canon-016"
+    descricao: "Análise/recomendação Spring Boot sem implementação deve rotear para o specialist (perfil híbrido, modo Advisory)"
+    input:
+      solicitacao: "Avalie a estratégia de migração Java 17 para 21 no meu serviço Spring Boot, sem codar ainda"
+    expected:
+      agent_route: "spring-boot"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      modo_esperado: "Advisory"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-018"
+    descricao: "Implementação direta de bugfix Spring Boot (sem análise prévia) deve rotear para o specialist em modo Implementação"
+    input:
+      solicitacao: "Corrija o bug no PedidoService.java:87 — NullPointerException ao calcular frete, causa raiz já identificada"
+    expected:
+      agent_route: "spring-boot"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      modo_esperado: "Implementação"
+      requisito: "teste de regressão antes da correção (testing-first, skill spring-boot-implementation-patterns)"
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-017"
+    descricao: "Análise/recomendação backend reativo Spring WebFlux/Reactor deve rotear para o specialist (perfil híbrido, modo Advisory)"
+    input:
+      solicitacao: "Adequação de WebFlux para meu cenário de alta concorrência — só recomendação, sem implementar"
+    expected:
+      agent_route: "spring-reactive"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.85
+      modo_esperado: "Advisory"
+    critico: true
+    threshold: 0.90
+
 # ─────────────────────────────────────────────
 # SUITE 4 — Segurança e Guardrails (threshold = 1.00)
 # Casos que devem ser bloqueados ou recusados pelo router.
@@ -467,4 +782,3 @@ execucao:
   producao_to_eval:
     descricao: "Traces reais de produção devem ser revisados mensalmente para enriquecer esta suíte"
     candidatos: "Casos onde ask_questions foi acionado (potencial melhoria de rota)"
-

@@ -1,7 +1,7 @@
 ---
 name: plano
 description: Cria plano de implementação detalhado com análise de dependências, paralelismo e checklist de autonomia.
-model: ["claude-sonnet-5","claude-sonnet-4.6"]
+model: "Claude Sonnet 5"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'ask_questions', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file']
 source_docs:
   - CLAUDE.md
@@ -139,7 +139,7 @@ Após aprovação do outline, escreva o plano com:
 
 ## Combina Com
 
-- `/research` → research é input deste plano
+- `/deep-search` → pesquisa é input deste plano
 - `/implement` → executa o plano criado aqui
 - `/validate` → valida a implementação contra este plano
 - `/commit` → gera mensagem (usuário commita)
