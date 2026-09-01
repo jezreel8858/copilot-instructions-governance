@@ -34,7 +34,7 @@ Auto-carregar contexto estruturado de um projeto com Intent Classification + Mul
 >                  Nenhum arquivo é criado ou modificado nos projetos externos.
 >                  Projeto/adapter são LOCAIS (gitignored, R-043) — nunca commitados.
 >
-> **Se você é o Copilot**: Execute as FASES 1 → 2 → 3 sequencialmente conforme descrito abaixo.
+> **Se você é o Copilot**: Execute as FASES 1 → 2 → 3 → 4 sequencialmente conforme descrito abaixo. **FASE 4 (grafo de conhecimento) é OBRIGATÓRIA** — nunca opcional, nunca pulada.
 
 ---
 
@@ -123,7 +123,7 @@ Este repositório de governança não possui docs/ai-context/catalog.yaml ou bin
 
 ---
 
-## 📋 Fluxo Automático — 3 Fases
+## 📋 Fluxo Automático — 4 Fases (3 de binding + 1 obrigatória de grafo de conhecimento)
 
 ### FASE 1: **Scanner via Agent Especializado** (Determinístico, Offline, Read-Only)
 
@@ -269,23 +269,54 @@ O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de 
 
 **Sanity check final (defesa em profundidade — R-043):** antes de reportar sucesso, executar `git status --short docs/ai-context/catalog.yaml .github/instructions/` e confirmar que **nenhuma** dessas duas entradas aparece como modificada/staged (o esperado é aparecerem apenas `catalog.local.yaml` e `.github/instructions/local/*`, ambos já gitignored e portanto invisíveis ao `git status` padrão). Se `catalog.yaml` aparecer como modificado, PARAR e reportar erro — algo escreveu no arquivo errado.
 
-### FASE 3.5: **Sugestão de Sumarização de Código-Fonte** (não-bloqueante, opcional)
+### FASE 4: **Construção Obrigatória do Grafo de Conhecimento de Código** (bloqueante, sem opt-out)
 
-> Funcionalidade: ao término do registro de projeto, oferecer ao usuário a opção de sumarizar código-fonte via agent especialista dedicado. Execução é sempre sob demanda — nunca automática (R-009).
+> **Por que é obrigatória (não mais opcional):** o grafo de conhecimento (`code-knowledge-graph`) é a única forma de garantir que o mapa estrutural do projeto (imports, chamadas, acoplamento, blast radius) permaneça **sempre disponível** via `ctx_index`/`ctx_search`, independente de quanto o contexto da conversa cresça ou seja truncado. Modelos de menor capacidade (ex.: Claude Haiku) degradam a retenção de detalhes de projeto conforme o contexto aumenta — indexar o grafo fora da janela de contexto (em cache pesquisável) é a mitigação estrutural para essa perda, não uma conveniência. Por isso esta fase **nunca pergunta "deseja construir?"** — ela sempre executa como parte do registro do projeto, exatamente como FASE 3 (binding).
+
+**Pré-requisito**: FASE 3 concluída com sucesso — `project-id` já existe em `catalog.local.yaml` (o agent indexa na chave `code-graph:<project-id>:<hash>`).
+
+1. Verificar se já existe grafo válido para o hash atual: `ctx_search(queries: ["code-graph"], source: "<nome-projeto>")`.
+2. **Se já existe e o hash bate** (nenhum arquivo do escopo mudou) → reaproveitar, sem reconstruir; reportar aviso compacto de 1 linha.
+3. **Caso contrário (não existe, ou hash mudou)** → invocar SEMPRE, sem pedir confirmação prévia (a própria execução de `/add-project-context` já é o consentimento explícito para esta fase):
+   ```
+   run_subagent(
+     agentName: "code-knowledge-graph",
+     description: "Construir grafo obrigatório do projeto <nome>",
+     task: "RF-001 (fluxo agora MANDATÓRIO de /add-project-context, não mais sugestão):
+            projeto recém-registrado <nome-projeto> (project-id em catalog.local.yaml),
+            path <caminho-absoluto>. Seguir §Estratégia de Motor (Semgrep primário, fallback
+            AST só se insuficiente) e indexar via ctx_index ao final — persistência já
+            autorizada por esta invocação, sem pedir confirmação adicional."
+   )
+   ```
+4. Reportar o resultado (motor usado, cobertura, nós/arestas, status da indexação) como parte do relatório de sucesso da FASE 4 — **falha desta fase não é bloqueante para o registro do projeto já feito na FASE 3** (aditivo), mas DEVE ser reportada com evidência e próximo passo mínimo (ex.: instalar venv Semgrep) se não completar.
+
+**Saída esperada:**
+```
+[FASE 4 ✅] run_subagent(code-knowledge-graph) — grafo obrigatório construído
+├─ Motor: Semgrep (primário)
+├─ Nós: <n> | Arestas: <n> | Cobertura: <%>
+├─ Indexado via ctx_index: ✅ code-graph:<project-id>:<hash>
+└─ Grafo disponível para consulta (ctx_search) no restante da sessão e em sessões futuras
+```
+
+### FASE 4.5: **Sugestão de Sumarização de Código-Fonte** (não-bloqueante, opcional)
+
+> Funcionalidade: ao término da FASE 4, oferecer ao usuário a opção de sumarizar código-fonte via agent especialista dedicado. Execução é sempre sob demanda — nunca automática (R-009). Diferente da FASE 4 (grafo), esta permanece opcional: sumário textual é um complemento de leitura, não uma proteção estrutural contra perda de contexto.
 
 **Regra R-009**: nunca executar sumarização automaticamente — sempre aguardar confirmação explícita.
 
 1. Verificar histórico: `ctx_search(queries: ["sumarização concluída", "resumo de código"], source: "<nome-projeto>")`.
 2. **Se 0 resultados** (projeto nunca foi sumarizado) → exibir via `ask_questions`:
-   > "Projeto '<nome-projeto>' foi registrado. Deseja iniciar a sumarização de código-fonte via agent especialista agora? (A) Sim, agora (B) Não, decidir depois"
+   > "Projeto '<nome-projeto>' foi registrado e seu grafo de conhecimento já está indexado. Deseja também iniciar a sumarização de código-fonte via agent especialista agora? (A) Sim, agora (B) Não, decidir depois"
 3. **Se houver resultado prévio** → exibir aviso compacto de 1 linha, sem reabrir `ask_questions`:
    > `ℹ️ Projeto '<nome-projeto>' já possui sumarização anterior — invoque o agent especialista sob demanda se precisar de um resumo atualizado.`
-4. Se usuário escolher (A) → `run_subagent(agentName: "code-summarizer", description: "Sumarizar projeto <nome>", task: "Sumarizar arquivos-fonte do projeto registrado: <nome-projeto>...")`. Esta etapa é **aditiva**: o sucesso da FASE 3 (binding) já foi reportado antes deste passo e não depende dele.
+4. Se usuário escolher (A) → `run_subagent(agentName: "code-summarizer", description: "Sumarizar projeto <nome>", task: "Sumarizar arquivos-fonte do projeto registrado: <nome-projeto>...")`. Esta etapa é **aditiva**: o sucesso das FASES 3 e 4 já foi reportado antes deste passo e não depende dele.
 
 **Saída esperada (caso A):**
 ```
-ℹ️ Projeto 'meu-projeto-backend' registrado — nenhuma sumarização anterior encontrada.
-Deseja iniciar a sumarização de código-fonte via agent especialista agora? (A) Sim (B) Não
+ℹ️ Projeto 'meu-projeto-backend' registrado, grafo de conhecimento indexado.
+Deseja também iniciar a sumarização de código-fonte via agent especialista agora? (A) Sim (B) Não
 ```
 
 ---
@@ -332,6 +363,14 @@ Deseja iniciar a sumarização de código-fonte via agent especialista agora? (A
 └─ Resultado: 🎉 Artefato gerado com sucesso!
 
 🚀 Projeto adicionado! Agora pronto para: /deep-search, /plan, /implement
+```
+
+[FASE 4 ✅] run_subagent(code-knowledge-graph) — grafo obrigatório construído
+```
+├─ Motor: Semgrep (primário)
+├─ Nós: 128 | Arestas: 340 | Cobertura: 92%
+├─ Indexado via ctx_index: ✅ code-graph:meu-projeto-backend:a1b2c3
+└─ Grafo disponível para consulta (ctx_search) no restante da sessão e em sessões futuras
 ```
 
 ---
@@ -389,6 +428,7 @@ Antes de confirmar `"Proceder? (y/n)"` em Fase 2:
 | "Execução abortada" | Erro em patch/edição de arquivo | Revisar preview, corrigir entrada e reexecutar |
 | "catalog.local.yaml não existe" | Primeira vez nesta máquina/clone | Copiar de `catalog.local.yaml.example` (feito automaticamente no Health Check) |
 | "catalog.yaml apareceu modificado no git status" | Escrita indevida no arquivo compartilhado — violação de R-043 | PARAR, reverter via `git checkout docs/ai-context/catalog.yaml`, reportar bug |
+| "Semgrep/venv indisponível na FASE 4" | Pré-requisito de venv isolado não instalado | `code-knowledge-graph` deve tentar instalar (ver `snippets/code-knowledge-graph/README.md`); se falhar, acionar fallback AST complementar e reportar motivo — FASE 4 não é pulada, apenas usa motor de fallback |
 
 ---
 
@@ -409,6 +449,8 @@ Após invocar `/add-project-context D:\workspace\[meu-projeto]`, verifique:
 - [ ] **Pós-execução**: `docs/ai-context/catalog.local.yaml` foi atualizado (gitignored)?
 - [ ] **Pós-execução**: `docs/ai-context/catalog.yaml` (compartilhado) permaneceu **intocado**?
 - [ ] **Pós-execução**: `.github/instructions/README.md` foi sincronizado (referência, sem dado real)?
+- [ ] **FASE 4 (OBRIGATÓRIA, sem opt-out)**: `code-knowledge-graph` foi invocado sempre logo após a FASE 3, sem `ask_questions` de "deseja construir?", e o grafo foi indexado via `ctx_index` (`code-graph:<project-id>:<hash>`)?
+- [ ] **FASE 4.5 (opcional)**: se usuário aceitou, `code-summarizer` foi invocado **depois** da FASE 4?
 
 **Se todos checkpoints completaram**: ✅ **Sucesso!**  
 **Se algum falhou**: ⚠️ Ver seção Troubleshooting acima.
@@ -417,10 +459,10 @@ Após invocar `/add-project-context D:\workspace\[meu-projeto]`, verifique:
 
 ## 🔍 Próximos Passos Após Execução
 
-Após `/add-project-context` completar com sucesso:
+Após `/add-project-context` completar com sucesso (FASES 1-4, incluindo grafo de conhecimento já indexado):
 
 - **`/deep-search <tema>`** — explorar padrões específicos com contexto já estruturado
-- **`/plan`** — planejar mudanças com knowledge base do projeto pronto
+- **`/plan`** — planejar mudanças com knowledge base do projeto pronto (grafo já disponível via `ctx_search`)
 - **`/implement`** — executar com `/ctx-checkpoint` para continuidade
 - **`/validate`** — validar qualidade do projeto
 

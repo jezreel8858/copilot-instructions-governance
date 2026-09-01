@@ -4,12 +4,7 @@ version: "1.8.0"
 description: >-
   Entry point obrigatório agent-first para classificar solicitações e delegar ao
   agent downstream correto, com fallback para pesquisa e análise de integração.
-  Re-triagem obrigatória por turno (R-042 — anti sticky-session). Roda em
-  Claude Sonnet 5 — melhora a fidelidade de instruction-following para os
-  múltiplos passos obrigatórios concorrentes (R-034/R-041/R-042). Model Gate
-  ativo (v1.6.0/v1.7.0) foi testado e confirmado tecnicamente inviável —
-  removido em favor de solicitação de modelo best-effort na invocação do
-  run_subagent (ver seção "Model Awareness"); detalhes em catalog.yaml changelog.
+  Aplica re-triagem obrigatória por turno (R-042 — anti sticky-session).
 model: "Claude Sonnet 5"
 tools: ['list_dir', 'read_file', 'file_search', 'grep_search', 'ask_questions', 'run_subagent', 'context-mode/ctx_search']
 ---

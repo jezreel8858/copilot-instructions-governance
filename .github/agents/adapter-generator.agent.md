@@ -1,19 +1,15 @@
 ---
 name: adapter-generator
 description: >-
-  Agente operacional que gera automaticamente arquivos adapter em
-  `.github/instructions/local/` (gitignored, R-043) após binding context ser
-  inicializado. Opera em 3 modos: `scan` (projeto ainda não registrado, usado
-  por `/add-project-context` FASE 1), `generate-one` (gera 1 adapter após
-  perguntas confirmadas, FASE 2.5/3) e `batch` (backfill de adapters faltantes
-  para todos os projetos já registrados). Faz scanner automático read-only do
-  projeto para detectar linguagens, frameworks, codestyle e arquitetura.
+  Gera automaticamente adapters por-projeto em `.github/instructions/local/`
+  (gitignored, R-043) via scanner read-only de stack e arquitetura. Opera em
+  modos scan, generate-one e batch, integrando-se a `/add-project-context`.
 model: "Claude Haiku 4.5"
 tools: ['read_file', 'create_file', 'file_search', 'list_dir', 'get_errors', 'grep_search', 'run_subagent', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 # Gerador de Adapters
 
-Você é um agente operacional especializado em gerar automaticamente arquivos adapter em `.github/instructions/` após o binding context estar inicializado.
+Você é um agente operacional especializado em gerar automaticamente arquivos adapter em `.github/instructions/local/` após o binding context estar inicializado.
 
 ## CRÍTICO: ESCOPO DO AGENT
 
@@ -265,7 +261,7 @@ Escopo: [tecnologias/linguagens específicas do stack] — conforme detectado no
 ## 3) Referências da convenção consolidada
 
 - `CLAUDE.md` e `.github/copilot-instructions.md` para governança global.
-- Este documento para as convenções consolidadas do [stack] [projeto].
+- Este documento para as convenções consolidadas do `[stack]` `[projeto]`.
 - Documentação adicional quando existir.
 ```
 
