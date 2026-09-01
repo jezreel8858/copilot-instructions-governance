@@ -16,7 +16,7 @@ Atuar como referência enterprise Spring Boot em 2 modos: **(1) Advisory** — a
 
 - ❌ NÃO implementar sem teste que cubra o comportamento (testing-first é obrigatório, não opcional).
 - ❌ NÃO gerar diff maior que o necessário — refactor oportunista fora do pedido é proibido.
-- ❌ NÃO ignorar convenções do adapter do projeto (`.github/instructions/<projeto>-backend.instructions.md` ou `spring-boot-backend.instructions.md`/`backend.instructions.md` genérico) em favor de preferência pessoal.
+- ❌ NÃO ignorar convenções do adapter do projeto (`.github/instructions/<projeto>-backend.instructions.md` ou `spring-boot-backend.instructions.md`) em favor de preferência pessoal.
 - ❌ NÃO inferir versão de Java/JDK, Spring Boot ou estratégia de deploy sem evidência.
 - ❌ NÃO substituir análise de integração cross-sistema, roteamento ou curadoria documental formal.
 - ❌ NÃO fazer commit/push autônomo nem instalar dependências sem confirmação (R-009/R-031).
@@ -45,7 +45,7 @@ Atuar como referência enterprise Spring Boot em 2 modos: **(1) Advisory** — a
 | Skill (nova) | [`.github/skills/spring-boot-backend-patterns/SKILL.md`](../skills/spring-boot-backend-patterns/SKILL.md) | Baseline de padrões Spring Boot enterprise — modo Advisory |
 | Skill de implementação | [`.github/skills/spring-boot-implementation-patterns/SKILL.md`](../skills/spring-boot-implementation-patterns/SKILL.md) | ⭐ Workflow de codificação (feature/bugfix), virtual threads vs reativo, testing-first — modo Implementação |
 | Skill (nova) | [`.github/skills/java-jdk-backend-governance/SKILL.md`](../skills/java-jdk-backend-governance/SKILL.md) | Governança de versões Java/JDK |
-| Adapter do projeto | `.github/instructions/<projeto>-backend.instructions.md` ou [`spring-boot-backend.instructions.md`](../instructions/spring-boot-backend.instructions.md) | Convenções de codificação obrigatórias no modo Implementação |
+| Adapter do projeto | `.github/instructions/<projeto>-backend.instructions.md` ou `spring-boot-backend.instructions.md` | Convenções de codificação obrigatórias no modo Implementação |
 | Skill de testes | `test-implementation-spring-boot` | Padrões detalhados JUnit 5 + Mockito |
 
 ### Skills recomendadas para carregar (spring-boot)

@@ -3,7 +3,8 @@
 #
 # PROPÓSITO:
 # Este arquivo é o manifest de binding instanciado para o ecossistema .
-# Gerado a partir de catalog-base.yaml via binding-initializer.
+# Gerado inicialmente pelo binding-initializer a partir de esqueleto inline
+# (ver .github/agents/binding-initializer.agent.md, seção "Esqueletos Inline").
 #
 # ⚠️  ARQUIVO COMPARTILHADO/COMMITADO — NUNCA registre projetos aqui (R-043).
 #     Projetos locais vivem em `catalog.local.yaml` (gitignored, ver abaixo).
@@ -159,7 +160,6 @@ discovery:
 # METADADOS
 # ============================================
 metadata:
-  base_template: "docs/ai-context/catalog-base.yaml"
   governance_repo: "eco-sistema-app"
   initialized_by: "binding-initializer"
   tools_compatible:

@@ -1,6 +1,6 @@
 # AI Context — Governança e Binding de Adapters
 
-> Documentação consolidada sobre descoberta progressiva, binding hierárquico e mecanismos de carregamento de instruções para IA no ecossistema .
+> Documentação consolidada sobre descoberta progressiva, binding hierárquico e mecanismos de carregamento de instruções para IA neste ecossistema.
 
 ---
 
@@ -8,11 +8,16 @@
 
 | Arquivo | Propósito |
 |---------|-----------|
-| **`binding-base.md`** | TEMPLATE genérico (reutilizável) — guia de binding para novo repositório. **100% sem projetos/adapters específicos** |
-| **`binding.md`** | Guia detalhado específico do  com exemplos de projetos, adapters e nomes reais |
-| **`catalog-base.yaml`** | TEMPLATE genérico (reutilizável) — manifest declarativo sem projetos. Use como base |
-| **`catalog.yaml`** | Manifest específico do  com 12 projetos mapeados |
+| **`binding.md`** | Guia detalhado do binding hierárquico com adapters e mecanismo de descoberta |
+| **`catalog.yaml`** | Manifest de binding — adapters de stack, governance_artefacts e discovery (compartilhado/commitado, **sem projetos** — R-043) |
+| **`catalog.local.yaml`** | Overlay local de projetos (gitignored) — nunca commitado |
+| **`catalog.local.yaml.example`** | Template do overlay local (tracked, sem dados reais) |
 | **Este README** | Índice e entry point de contexto de IA |
+
+> `catalog-base.yaml` e `binding-base.md` (templates genéricos de bootstrap) foram removidos —
+> divergiam estruturalmente do `catalog.yaml`/`binding.md` reais (faltavam `governance_artefacts`
+> e adapters adicionados organicamente) e o fluxo de "regeneração" que os consumia era destrutivo
+> na prática. `binding-initializer.agent.md` agora gera o esqueleto inline, sem template externo.
 
 ---
 
@@ -22,144 +27,42 @@
 
 1. **Etapa 1:** Ler [`CLAUDE.md`](../../CLAUDE.md) — regras globais (5 min)
 2. **Etapa 2:** Ler [`.github/copilot-instructions.md`](../../.github/copilot-instructions.md) — operacional (3 min)
-3. **Etapa 3:** Se trabalhando com backend → ler `.github/instructions/spring-boot-backend.instructions.md`
+3. **Etapa 3:** Se trabalhando com backend Java → ler `.github/instructions/spring-boot-backend.instructions.md`
 4. **Etapa 4:** Se trabalhando com frontend → ler `.github/instructions/angular-v21-frontend.instructions.md`
 
 **Bônus:** Abra seu IDE — copilot carrega adapters **automaticamente** via `applyTo` glob!
 
 ### Para Arquitetos / Mantenedores
 
-1. Entender binding (genérico): [`binding-base.md`](binding-base.md) — template de conceitos (5 min)
-2. Entender binding no : [`binding.md`](binding.md) — guia com exemplos reais (10 min)
-3. Revisar estrutura: [`catalog.yaml`](catalog.yaml) e [`catalog-base.yaml`](catalog-base.yaml)
-4. Adicionar novo adapter (se necessário): seção 8 de ambos binding files
-5. Sincronizar: `.github/instructions/README.md` + `catalog.yaml`
-
----
-
-## 🎯 `catalog-base.yaml` vs `catalog.yaml`
-
-| Aspecto | `catalog-base.yaml` | `catalog.yaml`                     |
-|---------|---------------------|------------------------------------|
-| **Propósito** | Template reutilizável para qualquer repositório | Instância específica do        |
-| **Projetos** | `projetos: []` (vazio) | ✅ Preenchido (11 projetos)         |
-| **Adapters** | Templates genéricos (customizar) |  (base-backend, base-frontend) |
-| **Ecossistema** | `[seu-ecossistema]` (placeholder) | `custom-ecosystem`                 |
-| **Uso** | Copiar e adaptar para novo repositório | Usar diretamente no IDE            |
-| **Frequência de mudança** | Raramente | Frequente (ao adicionar projetos)  |
-
-### Quando Usar Qual?
-
-**Use `catalog.yaml`:**
-- Você está trabalhando no ecossistema 
-- IDE carrega automaticamente
-- Copilot já sabe seus projetos → Copilot usa automaticamente
-
-**Use `catalog-base.yaml`:**
-- Criando novo repositório com esta base de governança  
-- Precisa de template genérico
-- Vá para: [Instruções de Uso](#como-usar-catalog-baseyaml-como-template)
-
-### Como Usar `catalog-base.yaml` como Template
-
-```bash
-# 1. Copie o template
-cp docs/ai-context/catalog-base.yaml seu-catalogo.yaml
-
-# 2. Customize adapters
-# - Atualize IDs (remova "-template")
-# - Atualize `applyTo` glob patterns conforme seu stack
-# - Customize `source:` paths
-
-# 3. Preencha a seção de projetos
-# REMOVA: projetos: []
-# ADICIONE seus projetos:
-# projetos:
-#   - name: "seu-projeto-backend"
-#     extends: ["seu-adapter-id"]
-#     type: "backend"
-
-# 4. Customize globais e metadados
-# - Atualize `ecosystem` (linha 24)
-# - Atualize `maintainer` (linha 26)
-
-# 5. Valide
-python -c "import yaml; yaml.safe_load(open('seu-catalogo.yaml', encoding='utf-8')); print('✅ Válido')"
-
-# 6. Commite no seu novo repositório
-git add seu-catalogo.yaml
-git commit -m "feat: add catalog com seus projetos"
-```
-
----
-
-## 🎯 `binding-base.md` vs `binding.md`
-
-| Aspecto | `binding-base.md` | `binding.md`                              |
-|---------|---------------------|-------------------------------------------|
-| **Propósito** | 🎁 Template genérico para ANY repositório | 🚀 Guia específico do CUSTOM              |
-| **Exemplos de Projetos** | `seu-projeto` (placeholder) | `custom-app` (0 reais)                    |
-| **Nomes de Adapters** | `seu-backend-adapter` (placeholder) | `base-backend`, `base-frontend` (reais)   |
-| **Manifest Referenciado** | `seu-catalogo.yaml` | `catalog.yaml`                            |
-| **Status** | 🔒 Template — não muda | 🔄 Documentação viva do               |
-
-### Quando Usar Qual?
-
-**Use `binding.md`:**
-- Você está no ecossistema 
-- Quer entender binding com exemplos REAIS do seu contexto
-- Procura referência com projetos/adapters específicos
-
-**Use `binding-base.md`:**
-- Criando novo repositório com esta base de governança
-- Precisa converter guia  para seu contexto
-- Vai reutilizar este documento para outra org
-
-### Como Usar `binding-base.md` como Template
-
-```bash
-# 1. Copie o template para seu repositório
-cp docs/ai-context/binding-base.md your-repo/binding-guide.md
-
-# 2. Customize globalmente (Busca + Replace)
-#    - "seu-projeto" → seu projeto real
-#    - "seu-backend-adapter" → seu adapter real
-#    - "src/main/java" → seu path real
-#    - "[CUSTOMIZE]" → valores específicos
-
-# 3. Customize frontmatter examples
-#    - Atualize `applyTo` patterns
-#    - Atualize `maintainer` 
-#    - Atualize `tags`
-
-# 4. Customize seções de exemplo
-#    - Section 5 "Discover": remova referencias 
-#    - Section 11 "Exemplo Prático": customzie com seu stack
-
-# 5. Pronto: você tem um guia de binding para sua org!
-```
+1. Entender o binding: [`binding.md`](binding.md) — hierarquia, adapters e discovery (10 min)
+2. Revisar estrutura: [`catalog.yaml`](catalog.yaml)
+3. Adicionar novo adapter (se necessário): seção "Adicionando Novo Adapter" abaixo
+4. Sincronizar: `.github/instructions/README.md` + `catalog.yaml`
 
 ---
 
 ## 🔗 Mapa de Navegação
 
 ```
-eco-sistema-app/
-├── CLAUDE.md ......................... Regras globais de IA (R-001..R-031)
+<repo>/
+├── CLAUDE.md ......................... Regras globais de IA (R-001..R-043)
 ├── .github/
 │   ├── copilot-instructions.md ....... Operacional + Roteamento
 │   └── instructions/
 │       ├── README.md ................. Índice de adapters
 │       ├── spring-boot-backend.instructions.md  ← Carrega em **/*.java
-│       └── angular-v21-frontend.instructions.md ← Carrega em **/*.ts
+│       ├── angular-v21-frontend.instructions.md ← Carrega em **/*.ts
+│       ├── python-backend.instructions.md       ← Carrega em **/*.py
+│       ├── database.instructions.md             ← Carrega em **/*.sql
+│       └── devops.instructions.md               ← Carrega em Dockerfile/K8s/CI
 │
 └── docs/
     └── ai-context/
         ├── README.md ................. Este arquivo
-        ├── binding-base.md ........... 🎁 Template genérico de binding (reutilizável)
-        ├── binding.md ................ 🚀 Guia de binding específico 
-        ├── catalog-base.yaml ......... 🎁 Template genérico de manifest (reutilizável)
-        └── catalog.yaml .............. 🚀 Manifest específico  (12 projetos)
+        ├── binding.md ................ Guia de binding hierárquico
+        ├── catalog.yaml .............. Manifest de binding (compartilhado, sem projetos)
+        ├── catalog.local.yaml ........ Overlay local de projetos (gitignored)
+        └── catalog.local.yaml.example  Template do overlay local (tracked)
 ```
 
 ---
@@ -179,8 +82,8 @@ eco-sistema-app/
 └──────────────┬──────────────────┘
                ↓
 ┌─────────────────────────────────┐
-│ Camada 3: PROJETO (Priority 25) │
-│ [Futuro] Customizações locais   │
+│ Camada 3: PROJETO (Priority 40) │
+│ Local Overlay — catalog.local.yaml (R-043) │
 └─────────────────────────────────┘
 ```
 
@@ -192,14 +95,16 @@ eco-sistema-app/
 
 | Adapter | Stack | Aplica A |
 |---------|-------|----------|
-| `spring-boot-backend.instructions.md` | Java/Spring | `**/*.java` |
+| `spring-boot-backend.instructions.md` | Java/Spring Boot | `**/*.java`, `pom.xml` |
 | `angular-v21-frontend.instructions.md` | Angular 21 | `**/*.ts`, `**/*.js` |
+| `python-backend.instructions.md` | Python Backend | `**/*.py`, `pyproject.toml` |
+| `database.instructions.md` | Banco de Dados / Migrações | `migrations/**`, `**/*.sql` |
+| `devops.instructions.md` | DevOps / CI-CD / Containers | `**/Dockerfile*`, `kubernetes/**` |
 
-## 📋 Projetos Mapeados (0 projetos)
+## 📋 Projetos Mapeados
 
-### Backend (0 projetos)
-
-### Frontend (0 projetos)
+> Projetos vivem exclusivamente em `catalog.local.yaml` (gitignored, R-043) — nunca neste README nem em `catalog.yaml`.
+> Para ver a lista real desta máquina, consulte `docs/ai-context/catalog.local.yaml` (se existir localmente).
 
 ---
 
@@ -211,13 +116,13 @@ eco-sistema-app/
 - [x] Frontmatter YAML com `applyTo` glob
 - [x] Manifest declarativo (`catalog.yaml`)
 - [x] Auto-discovery via IDE (GitHub Copilot, Cursor)
+- [x] Local Overlay Pattern (R-043) — projetos nunca commitados
 - [x] Documentação completa (`binding.md`)
 - [x] Sem duplicação de regras (R-003)
 
 ### 🔮 Futuro
 
-- [ ] Adapters por domínio (Mobile, DevOps, Security)
-- [ ] Customizações por projeto específico
+- [ ] Adapters por domínio adicional (Mobile, Security)
 - [ ] Integração com git hooks para validação de frontmatter
 - [ ] Dashboard de discovery e health check
 
@@ -225,38 +130,28 @@ eco-sistema-app/
 
 ## 📚 Documentação
 
-### Para Entender o Mecanismo (Genérico)
-
-👉 **[`binding-base.md`](binding-base.md)** — Template genérico com:
+👉 **[`binding.md`](binding.md)** — Guia de binding com:
 - O que é binding e por que importa
-- Hierarquia de 3 camadas (conceitual)
-- Padrões de frontmatter (exemplo genérico)
-- Troubleshooting e resolução de conflitos
-- Step-by-step para adicionar adapter (template)
+- Hierarquia de 3 camadas
+- Adapters disponíveis e como funcionam
+- Gerenciamento de projetos (`/add-project-context`, `/del-project-context`)
 
-### Para Configurar Seu Binding
-
-👉 **[`catalog-base.yaml`](catalog-base.yaml)** — Template YAML com:
-- Estrutura genérica (reutilizável)
-- Comentários inline para customização
-- Instruções passo-a-passo de uso
-
-👉 **[`catalog.yaml`](catalog.yaml)** — Manifest do  com:
-- 12 projetos mapeados
-- Adapters e agents específicos
-- Pronto para carregamento no IDE
+👉 **[`catalog.yaml`](catalog.yaml)** — Manifest com:
+- Bindings globais e adapters de stack
+- `governance_artefacts` (routing-graph, evals)
+- Discovery e fallback
 
 👉 **Para Regras Globais**
 
-👉 **[`CLAUDE.md`](../../CLAUDE.md)** — Regras normativas (R-001..R-039)
+👉 **[`CLAUDE.md`](../../CLAUDE.md)** — Regras normativas (R-001..R-043)
 
 👉 **[`.github/copilot-instructions.md`](../../.github/copilot-instructions.md)** — Operacional
 
-👉 **[`.github/skills/project-scanner/SKILL.md`](../../.github/skills/project-scanner/SKILL.md)** — **[NOVO]** Diretrizes para scanner automático de projeto
+👉 **[`.github/skills/project-scanner/SKILL.md`](../../.github/skills/project-scanner/SKILL.md)** — Diretrizes para scanner automático de projeto
 
 ---
 
-## 🚀 Começar Rápido — Novo Adapter
+## 🚀 Adicionando Novo Adapter
 
 ```bash
 # 1. Criar arquivo
@@ -277,7 +172,7 @@ EOF
 # Editar .github/instructions/README.md — adicionar tabela
 
 # 4. Atualizar manifest
-# Editar docs/ai-context/catalog.yaml — adicionar entry
+# Editar docs/ai-context/catalog.yaml — adicionar entry em `adapters:`
 
 # 5. Commit
 git add .github/instructions/novo-dominio.instructions.md
@@ -286,7 +181,7 @@ git add docs/ai-context/catalog.yaml
 git commit -m "feat: adicionar adapter novo-dominio"
 ```
 
-👉 Detalhes completos: seção 8 de [`binding.md`](binding.md)
+👉 Detalhes completos: seção "Adicionando Novo Adapter" de [`binding.md`](binding.md)
 
 ---
 
@@ -294,8 +189,7 @@ git commit -m "feat: adicionar adapter novo-dominio"
 
 - **GitHub Docs:** [Copilot Custom Instructions](https://docs.github.com/en/copilot/customizing-copilot/adding-custom-instructions)
 - **Cursor Docs:** [Rules for AI](https://docs.cursor.com/context/rules-for-ai)
-- **CLAUDE.md:** Governança global (R-001..R-031)
-- **Pesquisa Consolidada:** Padrões de GitHub, Google, OpenAI e Anthropic validados
+- **CLAUDE.md:** Governança global (R-001..R-043)
 
 ---
 
@@ -303,11 +197,10 @@ git commit -m "feat: adicionar adapter novo-dominio"
 
 | Dúvida | Resposta |
 |--------|----------|
-| Como adicionar novo adapter? | [`binding.md` seção 8](binding.md#8-adicionando-novo-adapter) |
-| IDE não carrega adapter | [`binding.md` seção 9](binding.md#9-troubleshooting) |
-| Qual a diferença entre camadas? | [`binding.md` seção 2](binding.md#2-hierarquia--3-camadas) |
-| Como converter adapter em global? | [`binding.md` seção correspondente](binding.md#quando-converter-adapter--global) |
-| Qual a estrutura recomendada? | Este arquivo + `binding.md` + `catalog.yaml` |
+| Como adicionar novo adapter? | Seção "Adicionando Novo Adapter" acima |
+| IDE não carrega adapter | Verificar `applyTo` glob e frontmatter YAML |
+| Qual a diferença entre camadas? | Seção "Hierarquia de 3 Camadas" acima |
+| Como registrar um projeto? | `/add-project-context <caminho>` (grava em `catalog.local.yaml`) |
 
 ---
 
@@ -316,16 +209,13 @@ git commit -m "feat: adicionar adapter novo-dominio"
 | Item | Status | Nota |
 |------|--------|------|
 | Binding de 3 camadas | ✅ Ativo | Consolidado no mercado (GitHub pattern) |
-| Adapters atuais | ✅ 2 adapters | Backend + Frontend () |
-| Template de binding | ✅ Implementado | `binding-base.md` (genérico) |
-| Manifest YAML | ✅ Implementado | `catalog.yaml` () + `catalog-base.yaml` (template) |
+| Adapters atuais | ✅ 5 adapters | Backend Java, Frontend Angular, Backend Python, Database, DevOps |
+| Local Overlay Pattern (R-043) | ✅ Ativo | Projetos em `catalog.local.yaml` (gitignored) |
 | Discovery automática | ✅ IDE | GitHub Copilot, Cursor, Claude Code |
-| Documentação | ✅ Completa | `binding.md` + `binding-base.md` + este README |
+| Documentação | ✅ Completa | `binding.md` + este README |
 
 ---
 
-**Última atualização:** 2026-06-10  
-**Versão do mecanismo:** 1.0  
-**Padrão consolidado:** GitHub Copilot (R-019)  
-**Responsável:** eco-sistema-custom-app maintainers
-
+**Última atualização:** 2026-09-01
+**Versão do mecanismo:** 1.1 (pós-remoção de templates `catalog-base.yaml`/`binding-base.md`)
+**Padrão consolidado:** GitHub Copilot (R-019)
