@@ -263,6 +263,53 @@ Verificar se a sessão atual do Context Mode está sendo rastreada para evitar "
 
 ---
 
+### **PASSO 7: Verificar Cache de Grafo de Conhecimento e Sumarização (por Projeto)**
+
+Para cada projeto registrado em `catalog.yaml` (`projetos:`), verificar se já existe cache de **grafo de conhecimento** (`@code-knowledge-graph`) e de **sumarização** (`@code-summarizer`) no Context Mode — evita reconstrução/reprocessamento desnecessário e informa ao usuário o que já está disponível para consulta imediata.
+
+```
+[Health Check] Cache de Grafo/Sumarização por Projeto
+├─ Projetos registrados em catalog.yaml: <n>
+├─ Se <n> = 0 → pular este passo (nenhum projeto para checar)
+└─ Para cada <project-id>:
+    ├─ ctx_search(queries: ["code-graph:<project-id>:*"])   → grafo cacheado?
+    └─ ctx_search(queries: ["code-summary:<project-id>:*"]) → sumários cacheados?
+```
+
+> Executar em **lote** via `ctx_batch_execute` (queries de todos os projetos no mesmo array — nunca 1 chamada por projeto, R-008/economia de contexto/token budget).
+
+**Exibir tabela consolidada:**
+
+```
+📊 STATUS DE CACHE — Grafo de Conhecimento e Sumarização
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Projeto           | Grafo (code-graph:*) | Sumarização (code-summary:*)
+------------------|----------------------|------------------------------
+<project-id-1>    | ✅ cacheado          | ✅ cacheado
+<project-id-2>    | ❌ ausente           | ⚠️ parcial (<n> arquivos)
+<project-id-3>    | ❌ ausente           | ❌ ausente
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Status: <n-com-grafo>/<n-total> com grafo | <n-com-sumario>/<n-total> com sumarização
+```
+
+**Se algum projeto estiver sem cache (grafo e/ou sumarização):**
+
+```
+ℹ️ Cache ausente não bloqueia a sessão — apenas informativo.
+   → Para construir grafo: invocar @code-knowledge-graph (RF-002, sob demanda)
+   → Para sumarizar: invocar @code-summarizer (RF-002, sob demanda)
+   → Nenhuma construção automática é feita por este prompt (R-009 — sem ação autônoma sem confirmação)
+```
+
+**Se `projetos:` estiver vazio em `catalog.yaml`:**
+
+```
+ℹ️ Nenhum projeto registrado ainda — pulando verificação de cache de grafo/sumarização.
+   → Use /add-project-context <caminho> para registrar o primeiro projeto.
+```
+
+---
+
 ## ✅ Validação Final — Checklist de Inicialização
 
 Ao concluir `/init-context`, Copilot **EXIBE**:
@@ -295,6 +342,10 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
 ║      Estatísticas: <Total calls> chamadas               ║
 ║      Status: ✅ Ativo (rastreável no Dashboard)         ║
 ║                                                           ║
+║ [✅] Cache de Grafo/Sumarização por Projeto (PASSO 7)    ║
+║      Grafo (code-graph:*): <n-com-grafo>/<n-total>       ║
+║      Sumarização (code-summary:*): <n-com-sumario>/<n-total> ║
+║                                                           ║
 ║ [✅] PRONTO PARA PRÓXIMO PASSO                           ║
 ║                                                           ║
 ╚═══════════════════════════════════════════════════════════╝
@@ -310,6 +361,37 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
 ℹ️  Validação de contexto: ✅ SUCESSO
    Estado armazenado para sessão | Disponível para agents downstream
 ```
+
+---
+
+### 💡 Recomendações ao Usuário
+
+Ao final do checklist, Copilot **SEMPRE** sintetiza em bullets objetivos as recomendações derivadas do que foi observado nos Passos 1-7 — nunca genéricas, sempre condicionadas ao estado real detectado nesta execução:
+
+```
+💡 RECOMENDAÇÕES PARA ESTA SESSÃO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[Model]     <se mismatch: "Troque para <model-esperado> antes de agents de implementação (R-036)">
+[Binding]   <se incompleto: "Execute binding-initializer — catalog.yaml/binding.md ausentes (R-034)">
+[Extends]   <se houver projeto sem extends: "Configure herança em <n> projeto(s) pendente(s) — PASSO 5">
+[Cache]     <se houver projeto sem grafo/sumário: "Considere @code-knowledge-graph/@code-summarizer para <projeto(s)> antes de análises profundas">
+[Sessão]    <se Context Mode inativo: "Rode /ctx-start — Total calls = 0, dashboard não vai rastrear">
+[Fluxo]     "Toda solicitação a partir daqui deve começar por @agent-router (R-037)"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Regras de geração:**
+- Cada linha só aparece se a condição correspondente foi de fato detectada nos Passos 1-7 desta execução — nunca listar recomendação para item já ✅/conforme.
+- Se **nenhuma** condição de alerta foi detectada (tudo ✅), exibir apenas:
+  ```
+  💡 RECOMENDAÇÕES PARA ESTA SESSÃO
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ✅ Nenhuma pendência detectada — ambiente 100% conforme.
+  → Prossiga diretamente para @agent-router.
+  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ```
+- Recomendações são **sempre informativas** — nunca bloqueiam a sessão nem disparam ação autônoma (R-009); apenas apontam o próximo comando/agent que o usuário pode invocar.
+- Ordem fixa: Model → Binding → Extends → Cache → Sessão → Fluxo (reflete a ordem dos Passos 2/4/5/7/6/router).
 
 ---
 
@@ -373,6 +455,7 @@ CONTEXTO INICIALIZADO COM SUCESSO
 [PASSO 4] Binding context — VALIDO (<n> projetos registrados)
 [PASSO 5] Herança de instruções — OK (<n-com-extends> c/ extends | <n-sem-extends> sem extends)
 [PASSO 6] Context Mode Session — ATIVA (<n> chamadas)
+[PASSO 7] Cache grafo/sumarização — <n-com-grafo>/<n-total> com grafo | <n-com-sumario>/<n-total> com sumarização
 
 Proximo: /add-project-context <path> | /pesquisar | @agent-router
 ```
@@ -381,3 +464,10 @@ Proximo: /add-project-context <path> | /pesquisar | @agent-router
 
 *v1.2 Init Context Prompt — 2026-06-12*
 PASSO 5 adicionado: verificação de herança de instruções genéricas via campo `extends:` em `catalog.yaml`.
+
+*v1.3 — 2026-09-01*
+PASSO 7 adicionado: verificação de cache de grafo de conhecimento (`code-graph:<project-id>:*`, `@code-knowledge-graph`) e de sumarização (`code-summary:<project-id>:*`, `@code-summarizer`) por projeto registrado em `catalog.yaml`, via `ctx_batch_execute`/`ctx_search` em lote — puramente informativo, nunca aciona construção/sumarização automática (R-009).
+
+*v1.4 — 2026-09-01*
+Seção "💡 Recomendações ao Usuário" adicionada ao final do checklist de validação — sintetiza em bullets condicionais (Model/Binding/Extends/Cache/Sessão/Fluxo) apenas as pendências reais detectadas nos Passos 1-7, sempre informativa e nunca bloqueante/autônoma (R-009).
+
