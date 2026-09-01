@@ -10,6 +10,7 @@ source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
   - docs/ai-context/catalog.yaml
+  - docs/ai-context/catalog.local.yaml.example
   - .github/skills/terminal-governance/SKILL.md
 ---
 
@@ -31,16 +32,16 @@ Se o usuário enviar flags (ex.: `--quick`), informe que o comando atual executa
 
 ---
 
-## 📋 Verificações em 6 Categorias
+## 📋 Verificações em 7 Categorias
 
 ### CAT-1: Binding Context
 
 ```
 [Binding Context]
-├─ docs/ai-context/catalog.yaml    → ✅/❌ (existe + YAML válido?)
-├─ docs/ai-context/binding.md      → ✅/❌ (existe?)
-├─ docs/ai-context/catalog-base.yaml → ✅/❌ (template base existe?)
-└─ Projetos registrados            → <N> projetos
+├─ docs/ai-context/catalog.yaml     → ✅/❌ (existe + YAML válido?)
+├─ docs/ai-context/binding.md       → ✅/❌ (existe?)
+├─ docs/ai-context/catalog.local.yaml.example → ✅/❌ (template do overlay local existe?)
+└─ Projetos registrados (fonte: catalog.local.yaml, gitignored) → <N> projetos
 ```
 
 **Se faltarem**: alertar + sugerir `binding-initializer`.
@@ -96,6 +97,38 @@ Se o usuário enviar flags (ex.: `--quick`), informe que o comando atual executa
 └─ Anti-dump (sem saída bruta extensa inline) → ✅/⚠️/❌
 ```
 
+### CAT-7: Environment Fingerprint
+
+> Complementa o PASSO 2 do `/init-context` (`.github/prompts/init-context.prompt.md`) — `/health` apenas
+> **audita** se o fingerprint existe e está fresco; nunca redetecta nem escreve em `catalog.local.yaml`
+> (isso é responsabilidade exclusiva do `/init-context`).
+
+```
+[Environment Fingerprint]
+├─ docs/ai-context/catalog.local.yaml existe? → ✅/❌
+├─ Chave `environment:` presente e não-vazia?  → ✅/❌
+├─ `environment.detected_at` presente?         → ✅/❌
+├─ Idade de `detected_at` (agora - detected_at) → <N> dias
+├─ Expirado? (idade > 7 dias, mesmo TTL do PASSO 2 do init-context) → ✅ fresco/⚠️ expirado
+├─ `python.available` / `nodejs.available` / `java.available` → ✅/❌ cada
+└─ Status → ✅/⚠️/❌
+```
+
+**Se `catalog.local.yaml` não existir ou `environment:` estiver ausente/vazio:**
+```
+⚠️ Environment Fingerprint nunca foi coletado nesta máquina.
+   → Execute /init-context (PASSO 2 detecta e registra automaticamente).
+```
+
+**Se `detected_at` existir mas estiver expirado (> 7 dias):**
+```
+⚠️ Environment Fingerprint expirado (última detecção: <N> dias atrás).
+   → Execute /init-context para redetectar (PASSO 2 reexecuta automaticamente
+     quando o cache expira — não requer nenhuma flag especial).
+```
+
+**Se fresco (≤ 7 dias) e completo:** apenas reportar ✅, sem ação sugerida.
+
 ---
 
 ## 📊 Saída Final
@@ -111,6 +144,7 @@ Se o usuário enviar flags (ex.: `--quick`), informe que o comando atual executa
 ║ [CAT-4] Prompts            → ✅/⚠️/❌                    ║
 ║ [CAT-5] R-038 Conformidade → ✅/⚠️/❌                    ║
 ║ [CAT-6] ctx-first          → ✅/⚠️/❌                    ║
+║ [CAT-7] Environment        → ✅/⚠️/❌  (fingerprint <N>d)║
 ║                                                           ║
 ║ Status Geral: ✅ SAUDÁVEL | ⚠️ AVISOS | ❌ AÇÃO NECESSÁRIA║
 ╚═══════════════════════════════════════════════════════════╝
@@ -133,6 +167,7 @@ Se o usuário enviar flags (ex.: `--quick`), informe que o comando atual executa
 | Skills sync | ✅ | ❌ |
 | R-038 conformidade | ✅ | ❌ |
 | Conformidade ctx-first | ✅ | ❌ |
+| Environment fingerprint (idade/completude) | ✅ (auditoria, read-only) | ❌ |
 | MCP conectividade | ❌ | ✅ |
 | Context Mode stats | ❌ | ✅ |
 
@@ -141,4 +176,12 @@ Se o usuário enviar flags (ex.: `--quick`), informe que o comando atual executa
 ---
 
 *v1.0 — health prompt — 2026-06-12*
+
+*v1.1 — 2026-09-01*
+CAT-7 (Environment Fingerprint) adicionada: audita se `catalog.local.yaml` possui a chave
+`environment:` populada e se `detected_at` está dentro do TTL de 7 dias usado pelo PASSO 2 de
+`/init-context`. Puramente read-only — nunca redetecta nem escreve no overlay local (isso é
+escopo exclusivo do `/init-context`); apenas orienta a reexecutar `/init-context` quando ausente
+ou expirado. `source_docs` ganhou `docs/ai-context/catalog.local.yaml.example` (schema de
+referência do fingerprint).
 
