@@ -14,7 +14,7 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-  - .github/agents/spring-reactive.agent.md
+  - .github/agents/spring-reactive-engineer.agent.md
 tools: []
 ---
 

@@ -16,7 +16,7 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-  - .github/agents/spring-reactive.agent.md
+  - .github/agents/spring-reactive-engineer.agent.md
   - .github/skills/spring-reactive-webflux-patterns/SKILL.md
 tools: []
 ---
@@ -40,7 +40,7 @@ tools: []
 
 ## Workflow — Feature Nova
 
-1. Confirmar que o caso de uso justifica reativo (perfil de carga, SLA — handoff de `@spring-reactive` advisory ou análise prévia).
+1. Confirmar que o caso de uso justifica reativo (perfil de carga, SLA — handoff de `@spring-reactive-engineer` advisory ou análise prévia).
 2. Escrever teste com `StepVerifier` (unidade) e/ou `WebTestClient` (endpoint) antes da implementação.
 3. Implementar cadeia `Mono`/`Flux` legível: 1 operador por linha lógica, nomes de variável descritivos.
 4. Adicionar tratamento de erro explícito (nunca cadeia sem `onError*`).

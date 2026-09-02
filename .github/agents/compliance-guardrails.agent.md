@@ -125,7 +125,7 @@ Próximo passo mínimo:
 ## Quando Delegar
 
 - [`@security-reviewer`](security-reviewer.agent.md) quando gap de compliance envolver vulnerabilidade técnica explorável.
-- [`@docs-writer`](docs-writer.agent.md) quando faltar política/documentação formal (não apenas controle técnico).
+- [`@docs-engineer`](docs-engineer.agent.md) quando faltar política/documentação formal (não apenas controle técnico).
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

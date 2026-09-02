@@ -216,5 +216,5 @@ governance_artefacts:
     created: "2026-08-31"
     consumed_by:
       - "agent-evals-lab"
-      - "test-implementation"
+      - "test-engineer"
     maintenance_rule: "Atualizar obrigatoriamente em toda PR que altere code-summarizer.agent.md ou os golden files associados"

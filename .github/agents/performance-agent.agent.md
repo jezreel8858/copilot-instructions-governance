@@ -120,7 +120,7 @@ Próximo passo mínimo:
 
 ## Quando Delegar
 
-- [`@spring-boot`](spring-boot.agent.md) / [`@spring-reactive`](spring-reactive.agent.md) / [`@angular`](angular.agent.md) quando o achado exigir implementação da correção (perfil híbrido do specialist).
+- [`@spring-boot-engineer`](spring-boot-engineer.agent.md) / [`@spring-reactive-engineer`](spring-reactive-engineer.agent.md) / [`@angular-engineer`](angular-engineer.agent.md) quando o achado exigir implementação da correção (perfil híbrido do specialist).
 - [`@analysis-architect`](analysis-architect.agent.md) quando o achado indicar problema de arquitetura mais amplo.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 

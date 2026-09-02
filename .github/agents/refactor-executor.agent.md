@@ -115,7 +115,7 @@ Próximo passo mínimo:
 
 - [`@refactor-planner`](refactor-planner.agent.md) quando não houver plano aprovado ainda.
 - [`@business-rules-extractor`](business-rules-extractor.agent.md) quando regras de negócio não estiverem documentadas e forem necessárias antes de prosseguir.
-- [`@test-implementation`](test-implementation.agent.md) quando a fase exigir criação de novos testes de regressão.
+- [`@test-engineer`](test-engineer.agent.md) quando a fase exigir criação de novos testes de regressão.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

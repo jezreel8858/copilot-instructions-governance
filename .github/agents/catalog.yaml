@@ -22,7 +22,7 @@ agents:
       - "test-strategy"
       - "refactor-planner"
       - "deep-search"
-      - "docs-curator"
+      - "docs-engineer"
       - "analysis-architect"
     related_skills:
       - "context-mode"
@@ -96,7 +96,7 @@ agents:
     related_agents:
       - "agent-router"
       - "analysis-architect"
-      - "test-implementation"
+      - "test-engineer"
     related_skills:
       - "context-mode"
       - "terminal-governance"
@@ -130,9 +130,9 @@ agents:
       - ".github/agents/catalog.yaml"
     related_agents:
       - "agent-router"
-      - "test-implementation"
+      - "test-engineer"
       - "analysis-architect"
-      - "docs-curator"
+      - "docs-engineer"
     related_skills:
       - "context-mode"
       - "agent-contracts"
@@ -146,102 +146,6 @@ agents:
       - ".github/copilot-instructions.md"
       - ".github/agents/test-strategy.agent.md"
     estimated_time_minutes: 25
-
-  test-implementation:
-    id: "test-implementation"
-    model: "Claude Sonnet 5"
-    priority: 3.5
-    domain: "Implementacao de testes automatizados"
-    description: "Executar suites de teste unitarios, integracao e E2E com cobertura objetiva e rastreabilidade"
-    keywords:
-      - "implementar teste"
-      - "test implementation"
-      - "cobertura"
-      - "unit test"
-      - "integration test"
-      - "E2E"
-      - "jasmine"
-      - "junit"
-      - "playwright"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-    related_agents:
-      - "agent-router"
-      - "test-strategy"
-      - "analysis-architect"
-      - "docs-curator"
-    related_skills:
-      - "context-mode"
-      - "terminal-governance"
-      - "agent-contracts"
-      - "agent-evals-lab"
-      - "agent-safety-guardrails"
-      - "test-implementation-angular"
-      - "test-implementation-backend"
-      - "test-coverage-governance"
-      - "reflection-self-critique-patterns"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/test-implementation.agent.md"
-      - ".github/skills/terminal-governance/SKILL.md"
-      - ".github/skills/test-implementation-angular/SKILL.md"
-      - ".github/skills/test-implementation-backend/SKILL.md"
-      - ".github/skills/test-coverage-governance/SKILL.md"
-    estimated_time_minutes: 60
-
-  test-fix:
-    id: "test-fix"
-    model: "Claude Sonnet 5"
-    priority: 3.8
-    domain: "Correcao de testes quebrados"
-    description: "Corrigir testes quebrados via relatorio ou ask_questions — opera somente nos testes identificados, executa em lote com filtro, nunca roda a suite completa de forma autonoma"
-    keywords:
-      - "teste quebrado"
-      - "broken test"
-      - "fix test"
-      - "corrigir teste"
-      - "falha de teste"
-      - "test failure"
-      - "test repair"
-      - "flaky test"
-      - "relatorio de testes"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-    related_agents:
-      - "agent-router"
-      - "bug-triage"
-      - "test-implementation"
-      - "test-strategy"
-      - "analysis-architect"
-    related_skills:
-      - "context-mode"
-      - "terminal-governance"
-      - "code-tracing"
-      - "test-implementation-angular-vitest"
-      - "test-implementation-angular-jasmine"
-      - "test-implementation-spring-boot"
-      - "test-implementation-python"
-      - "test-implementation-frontend"
-      - "test-implementation-backend"
-      - "test-coverage-governance"
-      - "agent-contracts"
-      - "confidence-fallback-policy"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/test-fix.agent.md"
-      - ".github/skills/terminal-governance/SKILL.md"
-      - ".github/skills/test-implementation-angular-vitest/SKILL.md"
-      - ".github/skills/test-implementation-angular-jasmine/SKILL.md"
-      - ".github/skills/test-coverage-governance/SKILL.md"
-    estimated_time_minutes: 45
 
   refactor-planner:
     id: "refactor-planner"
@@ -262,7 +166,7 @@ agents:
     related_agents:
       - "agent-router"
       - "analysis-architect"
-      - "test-implementation"
+      - "test-engineer"
     related_skills:
       - "context-mode"
       - "agent-contracts"
@@ -303,7 +207,7 @@ agents:
     related_agents:
       - "agent-router"
       - "analysis-architect"
-      - "agent-factory"
+      - "governance-factory"
     related_skills:
       - "context-mode"
       - "terminal-governance"
@@ -399,10 +303,8 @@ agents:
       - "docs/plan/plano-otimizacao-catalogo-agents.md"
     related_agents:
       - "agent-router"
-      - "agent-factory"
-      - "skill-factory"
-      - "prompt-factory"
-      - "docs-curator"
+      - "governance-factory"
+      - "docs-engineer"
       - "analysis-architect"
     related_skills:
       - "governance-audit-patterns"
@@ -422,47 +324,6 @@ agents:
       - "docs/plan/plano-otimizacao-catalogo-agents.md"
       - "docs/ai-context/routing-graph.yaml"
       - "docs/ai-context/evals/casos-roteamento.yaml"
-    estimated_time_minutes: 30
-
-  agent-factory:
-    id: "agent-factory"
-    model: "Claude Sonnet 5"
-    priority: 9
-    domain: "Governanca e autoria de agents"
-    description: >-
-      Criar e revisar agents customizados com padrao estrutural unico, incluindo
-      selecao e validacao de modelo (model:) por perfil de tarefa (Haiku/Sonnet/Opus)
-      com confirmacao via get_errors contra o catalogo oficial do GitHub Copilot (R-015/R-021).
-    keywords:
-      - "criar agent"
-      - "revisar agent"
-      - "padronizar agent"
-      - "agent custom"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/agents/templates/research-agent.md"
-      - ".github/agents/templates/operational-agent.md"
-      - ".github/skills/governance-factory-patterns/SKILL.md"
-    related_agents:
-      - "deep-search"
-      - "analysis-architect"
-      - "agent-router"
-      - "docs-curator"
-    related_skills:
-      - "context-mode"
-      - "agent-contracts"
-      - "handoff-governance"
-      - "agent-evals-lab"
-      - "agent-safety-guardrails"
-      - "governance-factory-patterns"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/agents/templates/research-agent.md"
-      - ".github/agents/templates/operational-agent.md"
     estimated_time_minutes: 30
 
   context-builder:
@@ -485,8 +346,8 @@ agents:
     related_agents:
       - "deep-search"
       - "analysis-architect"
-      - "agent-factory"
-      - "docs-curator"
+      - "governance-factory"
+      - "docs-engineer"
     related_skills:
       - "context-mode"
       - "context-compact"
@@ -523,7 +384,7 @@ agents:
     related_agents:
       - "adapter-generator"
       - "agent-router"
-      - "docs-curator"
+      - "docs-engineer"
     related_skills:
       - "context-mode"
       - "agent-contracts"
@@ -559,7 +420,7 @@ agents:
       - "docs/ai-context/binding.md"
     related_agents:
       - "agent-router"
-      - "docs-curator"
+      - "docs-engineer"
     related_skills:
       - "context-mode"
       - "agent-contracts"
@@ -571,86 +432,6 @@ agents:
       - ".github/skills/project-scanner/SKILL.md"
       - "docs/ai-context/catalog.yaml"
       - "docs/ai-context/binding.md"
-    estimated_time_minutes: 20
-
-  skill-factory:
-    id: "skill-factory"
-    model: "Claude Haiku 4.5"
-    priority: 9.5
-    domain: "Autoria e padronizacao de skills"
-    description: "Criar e revisar skills customizadas com padrao estrutural de SKILL.md, tier, triggers e atualizacao atomica do .index.json"
-    keywords:
-      - "criar skill"
-      - "revisar skill"
-      - "nova skill"
-      - "padronizar skill"
-      - "skill custom"
-      - "skill template"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/skills/README.md"
-      - ".github/skills/.index.json"
-    related_agents:
-      - "agent-factory"
-      - "docs-curator"
-      - "agent-router"
-      - "prompt-factory"
-    related_skills:
-      - "agent-contracts"
-      - "agent-evals-lab"
-      - "context-mode"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/skill-factory.agent.md"
-      - ".github/skills/README.md"
-      - ".github/skills/.index.json"
-    estimated_time_minutes: 25
-
-  prompt-factory:
-    id: "prompt-factory"
-    model: "Claude Haiku 4.5"
-    priority: 9.8
-    domain: "Autoria e padronizacao de prompts"
-    description: >-
-      Criar e revisar arquivos .prompt.md seguindo o padrao canonico do GitHub Copilot 2026:
-      frontmatter correto (description, model, tools, source_docs), estrutura de body,
-      separacao de responsabilidade com .instructions.md, nomenclatura kebab-case,
-      selecao e validacao de modelo por perfil via get_errors (R-021), e
-      atualizacao atomica do README de prompts (R-015).
-    keywords:
-      - "criar prompt"
-      - "revisar prompt"
-      - "novo prompt"
-      - "padronizar prompt"
-      - ".prompt.md"
-      - "slash command"
-      - "auditar prompts"
-      - "prompt template"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/prompts/README.md"
-      - ".github/skills/governance-factory-patterns/SKILL.md"
-    related_agents:
-      - "agent-factory"
-      - "skill-factory"
-      - "docs-curator"
-      - "agent-router"
-    related_skills:
-      - "agent-contracts"
-      - "context-mode"
-      - "governance-factory-patterns"
-      - "yaml-governance"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/prompt-factory.agent.md"
-      - ".github/prompts/README.md"
-      - ".github/prompts/templates/prompt-template.md"
     estimated_time_minutes: 20
 
   business-rules-extractor:
@@ -678,7 +459,7 @@ agents:
       - "agent-router"
       - "refactor-planner"
       - "analysis-architect"
-      - "docs-curator"
+      - "docs-engineer"
       - "bug-triage"
       - "test-strategy"
     related_skills:
@@ -694,11 +475,11 @@ agents:
       - ".github/skills/code-tracing/SKILL.md"
     estimated_time_minutes: 60
 
-  angular:
-    id: "angular"
+  angular-engineer:
+    id: "angular-engineer"
     model: "Claude Sonnet 5"
     priority: 8.6
-    version: "2.0.0"
+    version: "2.1.0"
     domain: "Analise, recomendacao e implementacao Angular (perfil hibrido)"
     description: "Especialista Angular enterprise com perfil hibrido: análise/recomendacao técnica (arquitetura moderna, RxJS+Signals, performance CWV/SSR/hydration, segurança OWASP, acessibilidade WCAG, estratégia de testes e upgrade/migração) E implementação de feature nova/bugfix seguindo padrões de mercado (testing-first, diff mínimo)."
     keywords:
@@ -725,7 +506,12 @@ agents:
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
     related_agents:
-      - "agent-router"
+      - "bug-triage"
+      - "analysis-architect"
+      - "test-strategy"
+      - "test-engineer"
+      - "docs-engineer"
+      - "deep-search"
     related_skills:
       - "context-mode"
       - "terminal-governance"
@@ -734,29 +520,33 @@ agents:
       - "confidence-fallback-policy"
       - "agent-evals-lab"
       - "code-tracing"
+      - "specialist-hybrid-advisory-implementation-patterns"
       - "frontend-componentization-patterns"
       - "angular-frontend-patterns"
       - "angular-implementation-patterns"
+      - "angular-responsive-ui-patterns"
       - "design-system-component-contracts"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
-      - ".github/agents/angular.agent.md"
+      - ".github/agents/angular-engineer.agent.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
       - ".github/skills/terminal-governance/SKILL.md"
+      - ".github/skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md"
       - ".github/skills/frontend-componentization-patterns/SKILL.md"
       - ".github/skills/angular-frontend-patterns/SKILL.md"
       - ".github/skills/angular-implementation-patterns/SKILL.md"
+      - ".github/skills/angular-responsive-ui-patterns/SKILL.md"
       - ".github/skills/design-system-component-contracts/SKILL.md"
       - ".github/instructions/angular-v21-frontend.instructions.md"
     estimated_time_minutes: 30
 
-  spring-boot:
-    id: "spring-boot"
+  spring-boot-engineer:
+    id: "spring-boot-engineer"
     model: "Claude Sonnet 5"
     priority: 8.7
-    version: "2.0.0"
+    version: "2.1.0"
     domain: "Analise, recomendacao e implementacao backend Spring Boot (perfil hibrido)"
     description: "Especialista backend Spring Boot enterprise com perfil hibrido: análise/recomendação técnica (arquitetura, versões Java/JDK, performance, observabilidade, segurança e migração) E implementação de feature nova/bugfix seguindo padrões de mercado (virtual threads vs reativo, testing-first, diff mínimo)."
     keywords:
@@ -776,7 +566,13 @@ agents:
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
     related_agents:
-      - "agent-router"
+      - "bug-triage"
+      - "analysis-architect"
+      - "test-strategy"
+      - "test-engineer"
+      - "docs-engineer"
+      - "deep-search"
+      - "spring-reactive-engineer"
     related_skills:
       - "context-mode"
       - "terminal-governance"
@@ -785,27 +581,29 @@ agents:
       - "confidence-fallback-policy"
       - "agent-evals-lab"
       - "code-tracing"
+      - "specialist-hybrid-advisory-implementation-patterns"
       - "spring-boot-backend-patterns"
       - "spring-boot-implementation-patterns"
       - "java-jdk-backend-governance"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
-      - ".github/agents/spring-boot.agent.md"
+      - ".github/agents/spring-boot-engineer.agent.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
       - ".github/skills/terminal-governance/SKILL.md"
+      - ".github/skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md"
       - ".github/skills/spring-boot-backend-patterns/SKILL.md"
       - ".github/skills/spring-boot-implementation-patterns/SKILL.md"
       - ".github/skills/java-jdk-backend-governance/SKILL.md"
       - ".github/instructions/spring-boot-backend.instructions.md"
     estimated_time_minutes: 35
 
-  spring-reactive:
-    id: "spring-reactive"
+  spring-reactive-engineer:
+    id: "spring-reactive-engineer"
     model: "Claude Sonnet 5"
     priority: 8.8
-    version: "2.0.0"
+    version: "2.1.0"
     domain: "Analise, recomendacao e implementacao backend reativo Spring (perfil hibrido)"
     description: "Especialista backend reativo Spring WebFlux/Reactor com perfil hibrido: análise/recomendação técnica (capacidade, resiliência, backpressure, observabilidade, segurança e compatibilidade Java/JDK) E implementação de feature nova/bugfix seguindo padrões de mercado (composição não-bloqueante, testing-first, diff mínimo)."
     keywords:
@@ -825,7 +623,13 @@ agents:
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
     related_agents:
-      - "agent-router"
+      - "bug-triage"
+      - "analysis-architect"
+      - "test-strategy"
+      - "test-engineer"
+      - "docs-engineer"
+      - "deep-search"
+      - "spring-boot-engineer"
     related_skills:
       - "context-mode"
       - "terminal-governance"
@@ -834,98 +638,23 @@ agents:
       - "confidence-fallback-policy"
       - "agent-evals-lab"
       - "code-tracing"
+      - "specialist-hybrid-advisory-implementation-patterns"
       - "spring-reactive-webflux-patterns"
       - "spring-reactive-implementation-patterns"
       - "java-jdk-backend-governance"
     source_docs:
       - "CLAUDE.md"
       - ".github/copilot-instructions.md"
-      - ".github/agents/spring-reactive.agent.md"
+      - ".github/agents/spring-reactive-engineer.agent.md"
       - ".github/agents/README.md"
       - ".github/agents/catalog.yaml"
       - ".github/skills/terminal-governance/SKILL.md"
+      - ".github/skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md"
       - ".github/skills/spring-reactive-webflux-patterns/SKILL.md"
       - ".github/skills/spring-reactive-implementation-patterns/SKILL.md"
       - ".github/skills/java-jdk-backend-governance/SKILL.md"
+      - ".github/instructions/spring-boot-backend.instructions.md"
     estimated_time_minutes: 35
-
-  docs-writer:
-    id: "docs-writer"
-    model: "Claude Haiku 4.5"
-    priority: 9
-    domain: "Documentacao tecnica agnostica de dominio (perfil documentador)"
-    description: "Gera e atualiza documentacao tecnica em Markdown para qualquer dominio/assunto, aplicando estrutura consolidada de mercado (Diataxis, ADR/MADR, README, runbook, postmortem) — produz exclusivamente arquivos .md."
-    keywords:
-      - "escrever documentacao"
-      - "criar documentacao tecnica"
-      - "gerar readme"
-      - "criar adr"
-      - "documentar decisao tecnica"
-      - "gerar arquivo md"
-      - "documentador"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-    related_agents:
-      - "docs-curator"
-      - "business-rules-extractor"
-      - "agent-router"
-      - "feature-planner"
-    related_skills:
-      - "documentation-writing-patterns"
-      - "mermaid-diagrams"
-      - "business-rules-governance"
-      - "agent-contracts"
-      - "context-mode"
-      - "reflection-self-critique-patterns"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/docs-writer.agent.md"
-      - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-      - ".github/skills/documentation-writing-patterns/SKILL.md"
-    estimated_time_minutes: 15
-
-  docs-curator:
-    id: "docs-curator"
-    model: "Claude Haiku 4.5"
-    priority: 6
-    domain: "Curadoria de documentacao tecnica e operacional existente"
-    description: >-
-      Curar e atualizar documentacao tecnica e operacional com rastreabilidade,
-      padronizacao e consistencia com catalogo e plano vigente. Distinto de
-      docs-writer (escreve documentacao NOVA); este agent cura/padroniza
-      documentacao JA EXISTENTE.
-    keywords:
-      - "curar documentacao"
-      - "padronizar documentacao"
-      - "atualizar catalogo"
-      - "consistencia de documentacao"
-      - "docs curator"
-    prerequisite_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-    related_agents:
-      - "agent-router"
-      - "docs-writer"
-      - "agent-factory"
-      - "skill-factory"
-    related_skills:
-      - "documentation-writing-patterns"
-      - "agent-contracts"
-      - "context-mode"
-    source_docs:
-      - "CLAUDE.md"
-      - ".github/copilot-instructions.md"
-      - ".github/agents/docs-curator.agent.md"
-      - ".github/agents/README.md"
-      - ".github/agents/catalog.yaml"
-    estimated_time_minutes: 20
 
   code-review:
     id: "code-review"
@@ -1038,10 +767,10 @@ agents:
     related_agents:
       - "agent-router"
       - "analysis-architect"
-      - "spring-boot"
-      - "angular"
+      - "spring-boot-engineer"
+      - "angular-engineer"
       - "requirements-analyst"
-      - "agent-factory"
+      - "governance-factory"
     related_skills:
       - "context-mode"
       - "agent-contracts"
@@ -1199,9 +928,9 @@ agents:
     related_agents:
       - "agent-router"
       - "code-review"
-      - "spring-boot"
-      - "angular"
-      - "spring-reactive"
+      - "spring-boot-engineer"
+      - "angular-engineer"
+      - "spring-reactive-engineer"
     related_skills:
       - "performance-engineering-patterns"
       - "code-review-patterns"
@@ -1247,7 +976,7 @@ agents:
     related_agents:
       - "agent-router"
       - "security-reviewer"
-      - "docs-writer"
+      - "docs-engineer"
     related_skills:
       - "compliance-governance-patterns"
       - "security-review-patterns"
@@ -1273,7 +1002,7 @@ agents:
       dependencias mapeadas e paralelizacao. Nunca implementa. Distinto de
       refactor-planner (foco em risco/rollback de codigo existente). Ao
       finalizar, oferece via ask_questions (R-033) a persistencia do plano
-      como .md, delegando a escrita a @docs-writer.
+      como .md, delegando a escrita a @docs-engineer.
     keywords:
       - "decompor tarefa"
       - "planejar feature"
@@ -1291,7 +1020,7 @@ agents:
       - "requirements-analyst"
       - "refactor-planner"
       - "analysis-architect"
-      - "docs-writer"
+      - "docs-engineer"
     related_skills:
       - "task-decomposition-patterns"
       - "agent-contracts"
@@ -1410,9 +1139,9 @@ agents:
     related_agents:
       - "agent-router"
       - "bug-triage"
-      - "spring-boot"
-      - "angular"
-      - "spring-reactive"
+      - "spring-boot-engineer"
+      - "angular-engineer"
+      - "spring-reactive-engineer"
     related_skills:
       - "code-tracing"
       - "terminal-governance"
@@ -1491,7 +1220,7 @@ agents:
       - "agent-router"
       - "refactor-planner"
       - "business-rules-extractor"
-      - "test-implementation"
+      - "test-engineer"
     related_skills:
       - "business-rules-governance"
       - "agent-contracts"
@@ -1505,10 +1234,245 @@ agents:
       - ".github/skills/terminal-governance/SKILL.md"
     estimated_time_minutes: 45
 
+  test-engineer:
+    id: "test-engineer"
+    model: "Claude Sonnet 5"
+    priority: 3.5
+    version: "1.0.0"
+    domain: "Engenharia de testes (implementacao + correcao + cobertura)"
+    description: >-
+      Fusao de test-implementation + test-fix: implementa suites novas, corrige
+      testes quebrados e expande cobertura via modes create|fix|coverage.
+      Nunca executa a suite completa autonomamente no modo fix.
+    keywords:
+      - "implementar teste"
+      - "corrigir teste"
+      - "test implementation"
+      - "fix test"
+      - "cobertura"
+      - "unit test"
+      - "E2E"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "agent-router"
+      - "test-strategy"
+      - "bug-triage"
+      - "analysis-architect"
+      - "docs-engineer"
+    related_skills:
+      - "context-mode"
+      - "terminal-governance"
+      - "structured-intake-patterns"
+      - "agent-contracts"
+      - "test-implementation-backend"
+      - "test-implementation-frontend"
+      - "test-implementation-angular-vitest"
+      - "test-implementation-angular-jasmine"
+      - "test-implementation-spring-boot"
+      - "test-implementation-python"
+      - "test-coverage-governance"
+      - "reflection-self-critique-patterns"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/test-engineer.agent.md"
+      - ".github/skills/terminal-governance/SKILL.md"
+      - ".github/skills/test-coverage-governance/SKILL.md"
+    estimated_time_minutes: 45
+
+  docs-engineer:
+    id: "docs-engineer"
+    model: "Claude Haiku 4.5"
+    priority: 6.5
+    version: "1.0.0"
+    domain: "Ciclo de vida de documentacao tecnica (autoria + curadoria)"
+    description: >-
+      Fusao de docs-writer + docs-curator: gera/atualiza documentacao tecnica
+      nova (mode author) e cura/padroniza documentacao/catalogo ja existente
+      (mode curate). Producao exclusiva de arquivos .md.
+    keywords:
+      - "documentacao"
+      - "curadoria"
+      - "diataxis"
+      - "adr"
+      - "readme"
+      - "runbook"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/agents/catalog.yaml"
+    related_agents:
+      - "agent-router"
+      - "business-rules-extractor"
+      - "governance-factory"
+    related_skills:
+      - "documentation-writing-patterns"
+      - "mermaid-diagrams"
+      - "agent-contracts"
+      - "reflection-self-critique-patterns"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/docs-engineer.agent.md"
+      - ".github/skills/documentation-writing-patterns/SKILL.md"
+    estimated_time_minutes: 25
+
+  governance-factory:
+    id: "governance-factory"
+    model: "Claude Sonnet 5"
+    priority: 9
+    version: "1.0.0"
+    domain: "Governanca e autoria de artefatos (agent/skill/prompt)"
+    description: >-
+      Fusao de agent-factory + skill-factory + prompt-factory: cria/revisa
+      agent (.agent.md), skill (SKILL.md) ou prompt (.prompt.md) via parametro
+      type, com atualizacao atomica do catalogo correspondente (R-015).
+    keywords:
+      - "criar agent"
+      - "criar skill"
+      - "criar prompt"
+      - "governanca"
+      - "padronizar"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/skills/governance-factory-patterns/SKILL.md"
+    related_agents:
+      - "deep-search"
+      - "analysis-architect"
+      - "agent-router"
+      - "docs-engineer"
+    related_skills:
+      - "context-mode"
+      - "agent-contracts"
+      - "handoff-governance"
+      - "agent-evals-lab"
+      - "agent-safety-guardrails"
+      - "governance-factory-patterns"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/governance-factory.agent.md"
+      - ".github/skills/governance-factory-patterns/SKILL.md"
+    estimated_time_minutes: 30
+
+  runtime-verifier:
+    id: "runtime-verifier"
+    model: "Claude Haiku 4.5"
+    priority: 3.2
+    version: "1.0.0"
+    domain: "Verificacao de saude do ambiente de execucao (build/sandbox)"
+    description: >-
+      Verifica higienizacao do ambiente antes de disparar testes/codificadores
+      — build limpo, dependencias integras, servicos dependentes disponiveis.
+      Read-only, nunca corrige o ambiente diretamente.
+    keywords:
+      - "ambiente"
+      - "build limpo"
+      - "sandbox"
+      - "dependencias"
+      - "health check"
+      - "porta ocupada"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+    related_agents:
+      - "agent-router"
+      - "test-engineer"
+      - "devops-engineer"
+    related_skills:
+      - "terminal-governance"
+      - "agent-contracts"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/runtime-verifier.agent.md"
+      - ".github/skills/terminal-governance/SKILL.md"
+      - ".github/instructions/devops.instructions.md"
+    estimated_time_minutes: 10
+
+  pr-gatekeeper:
+    id: "pr-gatekeeper"
+    model: "Claude Haiku 4.5"
+    priority: 4.5
+    version: "1.0.0"
+    domain: "Preparacao de entrega (PR/commit/changelog)"
+    description: >-
+      Prepara submissao de PR pos-aprovacao do quality gate — sintetiza diff,
+      valida commit semantico, gera descricao de PR com matriz de risco e
+      atualiza CHANGELOG.md. Nunca executa git add/commit/push (R-031).
+    keywords:
+      - "pull request"
+      - "commit semantico"
+      - "changelog"
+      - "matriz de risco"
+      - "git hygiene"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/skills/git-governance/SKILL.md"
+    related_agents:
+      - "agent-router"
+      - "code-review"
+    related_skills:
+      - "git-governance"
+      - "agent-contracts"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/pr-gatekeeper.agent.md"
+      - ".github/skills/git-governance/SKILL.md"
+    estimated_time_minutes: 15
+
+  database-specialist:
+    id: "database-specialist"
+    model: "Claude Sonnet 5"
+    priority: 5.5
+    version: "1.0.0"
+    domain: "Migracoes de schema, otimizacao de query e integridade referencial"
+    description: >-
+      Especialista hibrido em banco de dados — migracoes versionadas
+      (Flyway/Liquibase/Alembic), plano de execucao (EXPLAIN ANALYZE),
+      idempotencia de DDL e rollback documentado.
+    keywords:
+      - "migracao"
+      - "schema"
+      - "query"
+      - "flyway"
+      - "liquibase"
+      - "indice"
+      - "rollback"
+    prerequisite_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/README.md"
+      - ".github/instructions/database.instructions.md"
+    related_agents:
+      - "agent-router"
+      - "spring-boot-engineer"
+      - "analysis-architect"
+    related_skills:
+      - "agent-contracts"
+      - "confidence-fallback-policy"
+    source_docs:
+      - "CLAUDE.md"
+      - ".github/copilot-instructions.md"
+      - ".github/agents/database-specialist.agent.md"
+      - ".github/instructions/database.instructions.md"
+    estimated_time_minutes: 35
+
 metadata:
-  total_agents: 35
-  last_updated: "2026-09-02T04:30:00Z"
-  changelog: "2026-09-02 (31) — A pedido do usuario ('faz uma auditoria em todos agents para os seguintes pontos: 1- valide o perfil vs tools vs skills... e se encontrar algum gap ou anti-padrao vc deve ajustar 2- o unico agent que pode ter a skill tavily e o deep-search, os demais agents devem se precisar pesquisar na web ou internamente no projeto deve delegar para o agent-router e seguir o fluxo operacional padrao do projeto'), executada auditoria semantica completa: (1) Removida a skill tavily de related_skills no catalog.yaml dos 6 agents onde constava indevidamente (agent-router, analysis-architect, agent-factory, angular, spring-boot, spring-reactive) e de Docs Sempre Anexadas em analysis-architect.agent.md — deep-search permanece como o UNICO agent autorizado com a skill e tools tavily/*; demais agents delegam pesquisa ao agent-router/deep-search. (2) Corrigidas ferramentas baseline faltantes em 2 agents: 'file_search' adicionado em agentic-memory-manager.agent.md e 'list_dir' adicionado em binding-initializer.agent.md. (3) Corrigidas divergencias de terminal-governance: removida de Docs Sempre Anexadas de agent-auditor.agent.md e test-strategy.agent.md e de Skills Associadas em business-rules-extractor.agent.md (agents sem run_in_terminal), e adicionada em Docs Sempre Anexadas de deep-search.agent.md (que usa run_in_terminal). Validado com get_errors em todos os 8 arquivos modificados — sem erros. total_agents permanece 35. | 2026-09-02 (30) — A pedido do usuario ('analise todos os agents do projeto para avaliar com base no perfil e tools quais deles precisam ter terminal-governance e context-mode, se for preciso ajuste os tools tambem' e 'pode ajustar todos eles'), executada auditoria semantica em todos os 35 agents e aplicados os ajustes: (1) Adicionado 'list_dir' nas tools dos 8 agents que faltavam (refactor-executor, code-style-enforcer, security-reviewer, performance-agent, compliance-guardrails, devops-engineer, debugger, code-review) para conformidade com o tooling baseline universal (agent-contracts § 9). (2) Adicionada a skill terminal-governance nas Docs Sempre Anexadas e no catalog.yaml (related_skills/source_docs) de todos os agents que utilizam run_in_terminal (angular, spring-boot, spring-reactive, deep-search, code-knowledge-graph, refactor-executor, code-style-enforcer, security-reviewer, performance-agent, debugger; removida de business-rules-extractor onde era redundante sem terminal). (3) Adicionada a skill context-mode nas Docs Sempre Anexadas e no catalog.yaml de todos os agents que utilizam context-mode/* (code-review, code-knowledge-graph, security-reviewer, performance-agent, compliance-guardrails, devops-engineer, debugger, feature-planner). Validado com get_errors em todos os 12 arquivos modificados — sem erros. total_agents permanece 35. | 2026-09-02 (29) — A pedido do usuario ('faz sentido ajustar o script para ignorar os arquivos de testes seja qual for o framework? sujou muito o grafo'), validado empiricamente o problema (projeto Angular real: 31% dos nos e 35% das arestas eram arquivos .spec.ts, distorcendo blast-radius/fan-in de componentes) e implementado RF-026 em build-graph.js: nova funcao isTestFile() agnostica de framework/linguagem (Jest/Jasmine/Vitest/Mocha via *.spec.ts(x)/*.test.ts(x)/*.spec.js(x)/*.test.js(x); JUnit/TestNG/Failsafe via FooTest.java/FooTests.java/TestFoo.java/FooIT.java; diretorios __tests__/__mocks__/__snapshots__/e2e/e2e-playwright/cypress); aplicada no filtro de arquivos de buildGraph() com contagem em testFiles.ignorados. Default: EXCLUI testes (capacidade preservada via nova flag --include-tests, nunca removida). Validado: nos 1.143->789 (-31%), arestas 4.320->2.794 (-35%), orfaos 2->8 (aumento esperado e CORRETO: arquivos so referenciados por spec-file, nunca por producao, agora aparecem corretamente como orfao de producao). Confirmado que Java src/test/java ja era estruturalmente excluido (RF-023 so caminha src/main/java) — o vetor real de clutter e exclusivamente TypeScript (specs co-localizados em src/app). Atualizado: build-graph.js (parseArgs com --include-tests, isTestFile(), filtro no loop de arquivos, campo testFiles no retorno/summary, module.exports ampliado), code-knowledge-graph.agent.md (nova secao RF-026, paragrafo de decisao do motor atualizado, version 3.2.1->3.3.0), snippets/code-knowledge-graph/README.md (nova linha de capacidade, 2 novas limitacoes conhecidas #12/#13, secao de validacao dedicada, exemplo de CLI com --include-tests), catalog.yaml (este, version+domain+changelog). Validado com hook .githooks/pre-commit (R-043/R-044) antes de finalizar — sem vazamento de projeto real. Nenhum codigo de projeto analisado foi alterado (analise 100% read-only). total_agents permanece 35.
+  total_agents: 34
+  last_updated: "2026-09-02T06:30:00Z"
+  changelog: "2026-09-02 (37) — A pedido do usuario (via @agent-router, 'preciso de sugestoes para renomear os agents de codificacao (angular, springboot e spring-reactive) do projeto para minha escolha ask_questions pode renomear os agents'), coletadas 3 respostas via ask_questions (convencao de nome: -engineer vs -specialist vs -developer vs manter) — usuario escolheu -engineer para os 3. RENOMEADO atomicamente em todo o repositorio de governanca: angular -> angular-engineer (v2.0.0 -> v2.1.0), spring-boot -> spring-boot-engineer (v2.0.0 -> v2.1.0), spring-reactive -> spring-reactive-engineer (v2.0.0 -> v2.1.0). Arquivos .agent.md renomeados fisicamente (mv) e frontmatter name:/version: atualizados; banners 'Agente Ativo'/'Handoff' internos corrigidos; secoes 'Quando Delegar' e gatilhos de deriva cross-referenciando os 3 agents entre si corrigidos. catalog.yaml (este): 3 blocos renomeados (chave, id, version, source_docs path), related_agents expandido para incluir cross-referencia mutua spring-boot-engineer<->spring-reactive-engineer (jah existia antes da rodada anterior de gaps), e 4 outros blocos (code-summarizer, performance-agent, debugger, database-specialist) com related_agents apontando para os 3 agents corrigidos para os novos nomes. agent-router.agent.md: tabela de conhecimento, decision tree e lista de specialists atualizadas — aproveitado para corrigir tambem descricao stale 'Advisory — nunca implementa' (os 3 sao perfil hibrido desde v2.0.0, inconsistencia pre-existente nao relacionada ao rename mas corrigida por estar na mesma linha). Demais arquivos vivos sincronizados: .github/copilot-instructions.md (diagrama de fluxo + lista 'Agents atuais'), .github/agents/README.md (tabela de catalogo + tabela de quick-routing), .github/skills/.index.json (13 skills com related_agents contendo @angular/@spring-boot/@spring-reactive renomeados via script Python), 10 SKILL.md com source_docs apontando para os .agent.md renomeados (angular-frontend-patterns, angular-implementation-patterns, angular-responsive-ui-patterns, design-system-component-contracts, specialist-hybrid-advisory-implementation-patterns, java-jdk-backend-governance, spring-boot-backend-patterns, spring-boot-implementation-patterns [+ 2 mencoes prosa de @spring-reactive na matriz de decisao de concorrencia], spring-reactive-implementation-patterns [+ 1 mencao prosa], spring-reactive-webflux-patterns), handoff-governance/SKILL.md (tabela de nao-deriva do perfil hibrido), agent-contracts/SKILL.md (exemplo de banner + tabela de templates por perfil, aproveitado para corrigir 'sem implementar' stale), .github/skills/README.md (descricao da skill specialist-hybrid), .github/prompts/init-context.prompt.md (4 mencoes em deteccao de ambiente Java/JDK), docs/ai-context/routing-graph.yaml (3 nos + 3 arestas + nota de prosa sobre perfil hibrido no retorno universal R-042), docs/ai-context/evals/casos-roteamento.yaml (8 casos: canon-018/019 [bare + input.solicitacao_simulada], canon-01x Angular Advisory, regr-014/016 [2 turnos cada, incluindo handoff e nao_deve], canon Spring Boot Advisory/Implementacao, canon Spring Reactive Advisory), docs/ai-context/evals/casos-code-summarizer.yaml (1 caso gov-cs-001, agent_solicitante + prosa). CLAUDE.md: nota do R-042 (v2.0.0 -> v2.1.0 dos specialists) + diagrama de fluxo secao 4. Higiene adicional nao relacionada ao rename mas encontrada durante a edicao de CLAUDE.md: removida 1 linha orfa com caminho absoluto de sistema de arquivos real ('teste D:/workspace/porto/projeto-real', aparentemente artefato de teste acidental) no final do arquivo — violava R-043 (nunca caminho local real em arquivo de governanca compartilhado); usuario notificado no texto da resposta ao vivo, nao apenas neste changelog. Preservados intencionalmente (keywords de busca do router, nao IDs de agent): 'angular' em catalog.yaml:486 (keyword do proprio angular-engineer), 'angular' em routing-graph.yaml:622 (keyword da aresta), 'spring-boot' em project-scanner/SKILL.md:438 (exemplo de grep para deteccao de dependencia em pom.xml, sem relacao com agent id). Validado: get_errors em 20 arquivos editados — 0 erros; parser YAML/JSON nos 5 arquivos estruturais criticos (agents/catalog.yaml 34 agents, routing-graph.yaml 33 nos, casos-roteamento.yaml, casos-code-summarizer.yaml, skills/.index.json 52 skills) — todos validos; grep recursivo final confirma 0 referencias funcionais remanescentes aos 3 nomes antigos (bare @angular/@spring-boot/@spring-reactive, angular.agent.md/spring-boot.agent.md/spring-reactive.agent.md, related_agents/id/para quotados ou bare) em .github/, docs/ai-context/ e CLAUDE.md — as unicas 3 ocorrencias residuais sao keywords legitimas de matching do router, nao referencias de agent id. total_agents permanece 34 (rename puro, sem fusao/criacao). | 2026-09-02 (36) — A pedido do usuario ('trate o achado incidental do @impact-architect'), tratadas todas as ~15 referencias remanescentes ao agent obsoleto @impact-architect (removido/fundido em @analysis-architect desde 2026-08-31, entry 11) que ainda apareciam em arquivos VIVOS de governanca (nao historicos), achado incidental da auditoria de pre-fetch/skills de angular/spring-boot/spring-reactive (entry 35). Corrigidos: .github/copilot-instructions.md (diagrama de fluxo de roteamento linha ~70 — @impact-architect substituido por @analysis-architect, ja presente na lista; lista 'Agents atuais' linha ~356 — bullet 'impact-architect -> analise de impacto tecnico' removido, pois o agent nao existe mais e a capacidade ja esta descrita no bullet de analysis-architect); .github/prompts/review.prompt.md (tabela de roteamento automatico, handoff de impacto em dependencias); .github/skills/.index.json (13 entradas de related_agents com @impact-architect — removido e substituido por @analysis-architect quando ausente da mesma lista, via script Python com deduplicacao); .github/skills/agent-contracts/SKILL.md (tabela de template narrativo por perfil, mencao duplicada removida pois analysis-architect ja constava na mesma celula); .github/skills/agent-evals-lab/SKILL.md (exemplo de caso canonico em bloco de codigo, agent_esperado atualizado); .github/skills/business-rules-governance/SKILL.md e .github/skills/code-tracing/SKILL.md (bloco 'Aplica-se a', renomeado); .github/skills/handoff-governance/SKILL.md (diagrama de fluxos de delegacao ASCII + tabela de criterios de escalonamento, 4 ocorrencias, renomeadas — este e o arquivo mais critico pois e consultado ativamente para decidir handoffs); .github/skills/requirements-engineering-patterns/SKILL.md e .github/skills/spring-boot-implementation-patterns/SKILL.md (mencao dupla 'impact-architect/analysis-architect', deduplicada para so analysis-architect). Preservados intencionalmente (nao reescritos, pratica ja estabelecida do projeto): changelogs datados deste proprio catalog.yaml e de .index.json (entries 11/34/35, registros de ponto-no-tempo), e o exemplo ilustrativo historico em .github/skills/governance-audit-patterns/SKILL.md linha 92 ('mesmo metodo ja aplicado nas Partes A/B deste projeto (impact-architect vs analysis-architect...)' — cita o caso passado como exemplo pedagogico do metodo de deteccao de smell, nao afirma que o agent existe hoje). Validado com get_errors nos 9 arquivos .md/.json editados — 0 erros; script Python confirma 0 ocorrencias de '@impact-architect' remanescentes em related_agents de .index.json (52 skills). Grep recursivo final em .github/ e docs/ai-context/ confirma apenas 3 ocorrencias residuais, todas historicas/ilustrativas legitimas (2 changelogs datados + 1 exemplo pedagogico). | 2026-09-02 (35) — A pedido do usuario ('revise o pre-fetch e skills dos agents de codificacao angular, springboot e spring-reactive, procure gaps ou anti-padrao e ajuste'), identificados e corrigidos gaps de sincronizacao R-015 entre os 3 .agent.md e este catalog.yaml: (1) a skill specialist-hybrid-advisory-implementation-patterns e obrigatoria em 'Docs Sempre Anexadas' dos 3 agents (governa Modes/Formato/Checklist) mas estava AUSENTE de related_skills/source_docs no catalog.yaml dos 3 — adicionada; tambem ausente das tabelas 'Catalogo/Conhecimento Base' e 'Skills recomendadas' dentro dos proprios .agent.md — adicionada linha em cada. (2) angular: skill angular-responsive-ui-patterns citada em 'Docs Sempre Anexadas' do .agent.md mas ausente do catalog.yaml — adicionada; tambem ausente da tabela 'Skills recomendadas para carregar' (junto com design-system-component-contracts, que ja estava no catalog.yaml mas nao na tabela) — ambas adicionadas. (3) related_agents dos 3 agents estava reduzido a apenas ['agent-router'], inconsistente com o padrao de outros agents especialistas (ex.: code-review lista os destinos reais de delegacao) — corrigido para refletir a tabela real 'Quando Delegar' de cada agent (bug-triage, analysis-architect, test-strategy, test-engineer, docs-engineer, deep-search); spring-boot e spring-reactive tambem passam a se referenciar mutuamente (par de agents com pivot documentado no gatilho de deriva de cada um), com nova linha na tabela 'Quando Delegar' de ambos. (4) spring-reactive.agent.md nao tinha fallback generico de adapter quando o projeto nao possui adapter especifico (unico dos 3 sem esse fallback documentado, apesar de nao existir hoje um '.github/instructions/spring-reactive-backend.instructions.md' generico) — alinhado ao padrao dos irmaos angular/spring-boot, com fallback explicito para spring-boot-backend.instructions.md (baseline Java/Spring compartilhada) em 3 pontos do arquivo (CRITICO, tabela de catalogo, Docs Sempre Anexadas). (5) Corrigido bug pre-existente e nao relacionado encontrado durante a auditoria em .github/skills/.index.json: 3 entradas de skill duplicadas com blocos conflitantes (angular-frontend-patterns, spring-boot-backend-patterns, spring-reactive-webflux-patterns) — uma copia de cada continha related_agents referenciando o agent obsoleto @impact-architect (fundido em @analysis-architect desde 2026-08-31, entry 11); mescladas em 1 entrada por skill com descricao alinhada ao frontmatter real do SKILL.md e related_agents deduplicado sem @impact-architect. metadata.total_skills (52) e metadata.total_agents (34) corrigidos no mesmo arquivo (estavam desatualizados: summary.total_skills=45, metadata.total_agents=35, ambos stale de rodadas anteriores). Validado com get_errors nos 5 arquivos editados (catalog.yaml, angular.agent.md, spring-boot.agent.md, spring-reactive.agent.md, .index.json) — 0 erros; parser YAML confirma catalog.yaml continua valido com 34 agents. | 2026-09-02 (33) — A pedido do usuario ('nao deixe nada pendente pode ajustar os routing-graph.yaml e casos-roteamento.yaml e finalize a demanda'), fechada a pendencia registrada na entrada (32) e feita varredura completa de fechamento em todo o repositorio de governanca. PARTE 1 (routing-graph.yaml + casos-roteamento.yaml): Atualizado docs/ai-context/routing-graph.yaml (v5 -> v6): 7 nos antigos removidos (test-implementation, test-fix, docs-writer, docs-curator, agent-factory, skill-factory) e 3 nos novos adicionados (runtime-verifier, pr-gatekeeper, database-specialist); arestas correspondentes reescritas com sinal_r006 distinguindo mode (test-engineer: create|fix|coverage; docs-engineer: author|curate) e type (governance-factory: agent|skill|prompt); 3 novas arestas para os gaps. Atualizado docs/ai-context/evals/casos-roteamento.yaml (v5 -> v6): canon-003/004/007/008/012 e regr-002/003/004/005/007 atualizados; regr-008/regr-009 RESCRITOS de teste 'agent A vs agent B' para 'mode X vs mode Y' do MESMO agent (docs-engineer author|curate), pois o par de agents que a regressao original protegia foi fundido em um so. Suite mantida em 56 casos. PARTE 2 (varredura de fechamento adicional, motivada por 'nao deixe nada pendente'): apos grep recursivo em todo .github/, identificadas e corrigidas referencias remanescentes aos 7 nomes antigos em arquivos VIVOS (nao historicos): .github/copilot-instructions.md (lista 'Agents atuais' e diagrama de fluxo desatualizados, corrigido para os 6 agents fundidos/novos), .github/skills/.index.json (indice funcional de skills, related_agents renomeados+deduplicados via script Python — json.load/dump preservando ordem), .github/skills/governance-factory-patterns/SKILL.md (source_docs com 3 entradas duplicadas para o mesmo arquivo apos rename ingenuo por sed, corrigido manualmente para 1 entrada + prosa reescrita sem repeticao nonsense 'governance-factory, governance-factory e governance-factory'), .github/skills/governance-audit-patterns/SKILL.md, .github/skills/agent-contracts/SKILL.md, .github/skills/reflection-self-critique-patterns/SKILL.md (3 casos de duplicacao residual pos-sed corrigidos manualmente), .github/skills/{business-rules-governance,confidence-fallback-policy,context-builder,handoff-governance,specialist-hybrid-advisory-implementation-patterns,structured-intake-patterns,agent-evals-lab,agent-observability-otel,code-tracing,terminal-governance}/SKILL.md e .github/prompts/{init-context,README,agent-router}.prompt.md|.md (todos com @mentions/paths renomeados via sed em lote). docs/ai-context/catalog.yaml (binding, arquivo distinto do catalog.yaml de agents) corrigido em 2 pontos: consumed_by de code-summarizer (test-implementation -> test-engineer). .github/agents/catalog.yaml (este) corrigido: 1 mencao residual a @docs-writer na description de feature-planner. Validacao final: parser YAML/JSON executado nos 5 arquivos estruturais criticos (agents/catalog.yaml, routing-graph.yaml, casos-roteamento.yaml, docs/ai-context/catalog.yaml, skills/.index.json) — todos validos; get_errors sem erros em todos os arquivos editados nesta parte. Grep recursivo final confirma 0 referencias funcionais remanescentes aos 7 nomes antigos em .github/ e docs/ai-context/ — as unicas ocorrencias restantes sao mencoes historicas legitimas (changelog desta propria entrada, atribuicao de autoria em snippets/code-summarizer/{cli-runner.js,README.md}, docs/ai-context/evals/casos-code-summarizer.yaml campo responsavel, e documentos datados em docs/plan/*.md e docs/requirements/*.md que registram decisoes passadas e nao devem ser reescritos retroativamente). Nenhuma pendencia remanescente desta demanda. total_agents permanece 34. | 2026-09-02 (32) — A pedido do usuario ('nao deixe nada pendente pode ajustar os routing-graph.yaml e casos-roteamento.yaml e finalize a demanda'), fechada a pendencia registrada na entrada (32). Atualizado docs/ai-context/routing-graph.yaml (v5 -> v6): 7 nos antigos removidos (test-implementation, test-fix, docs-writer, docs-curator, agent-factory, skill-factory) e 3 nos novos adicionados (runtime-verifier, pr-gatekeeper, database-specialist) — total de nos declarados no grafo alinhado ao catalog.yaml pos-fusao; arestas correspondentes reescritas com sinal_r006 distinguindo mode (test-engineer: create|fix|coverage; docs-engineer: author|curate) e type (governance-factory: agent|skill|prompt); 3 novas arestas para os gaps (runtime-verifier, pr-gatekeeper, database-specialist); 1 comentario residual (nao_confundir_com de code-summarizer citando agent-factory) corrigido para governance-factory. Validado via parser YAML: 0 nos antigos remanescentes como chave, 0 arestas orfas (de/para inexistentes). Atualizado docs/ai-context/evals/casos-roteamento.yaml (v5 -> v6): canon-003/004/007/008/012 e regr-002/003/004/005/007 atualizados para os agents fundidos, com output_contains passando a validar o campo Modo/Tipo de artefato explicito na saida (nao apenas o nome do agent). regr-008/regr-009 foram RESCRITOS de teste 'agent A vs agent B' para teste 'mode X vs mode Y' do MESMO agent (docs-engineer author|curate) — o par de agents que a regressao original protegia foi fundido em um so, entao a regressao relevante mudou de natureza (nao e mais sobre roteamento de agent, e sobre selecao de modo dentro do agent). Suite mantida em 56 casos (24 canonicos, 6 ambiguos, 22 regressao), validada via parser YAML e get_errors — 0 erros em ambos os arquivos. Nenhuma pendencia remanescente. docs/plan/analise-arquitetura-multi-agent-alinhamento.md atualizado (secao 8.5 de 'pendente' para 'resolvido'). total_agents permanece 34 (nenhum agent novo/removido nesta rodada, apenas sincronizacao de grafo/evals). | 2026-09-02 (32) — A pedido do usuario ('preciso que revise essa analise se estiver correta pode implementar todas as mudancas', a partir de docs/plan/analise-arquitetura-multi-agent-alinhamento.md), executada revisao critica seguida de implementacao. CORRECOES aplicadas a analise original antes de implementar: (1) REJEITADA a fusao 'code-review absorve code-style-enforcer' — apos ler os 2 agents reais, code-style-enforcer segue o MESMO padrao arquitetural de especialista complementar read-only que security-reviewer/performance-agent/compliance-guardrails (todos 'complementam code-review com profundidade especialista'); fundir apenas o style quebraria consistencia — code-style-enforcer MANTIDO como agent separado. (2) REJEITADO o gap '@hitl-mediator' — funcionalidade ja coberta por ask_questions + confidence-fallback-policy presentes em todo agent do catalogo; nao criado. IMPLEMENTADO: 3 fusoes validas (test-implementation+test-fix -> test-engineer com modes create|fix|coverage; docs-writer+docs-curator -> docs-engineer com modes author|curate; agent-factory+skill-factory+prompt-factory -> governance-factory com parametro type) + 3 agents novos cobrindo gaps reais (runtime-verifier P1 — verificacao de ambiente/build/sandbox antes de testes; pr-gatekeeper P2 — preparacao de PR/commit semantico/changelog pos-aprovacao, nunca commit/push autonomo; database-specialist P2 — migracoes/queries/idempotencia de DDL). 7 arquivos .agent.md antigos removidos (test-implementation, test-fix, docs-writer, docs-curator, agent-factory, skill-factory, prompt-factory), 6 novos criados. catalog.yaml: 7 blocos antigos removidos, 6 novos adicionados, todas as referencias em related_agents renomeadas e deduplicadas via script Python. total_agents 35 -> 34 (35 - 7 fundidos + 6 novos). Validado com get_errors em todos os 6 arquivos novos — sem erros (1 falso-positivo de linter markdown em database-specialist.agent.md corrigido). Pendente para rodada futura (fora do escopo desta entrega, nao bloqueante): atualizacao de docs/ai-context/routing-graph.yaml e docs/ai-context/evals/casos-roteamento.yaml com os novos nos/casos — README.md deste catalogo atualizado nesta mesma rodada. | 2026-09-02 (31) — A pedido do usuario ('faz uma auditoria em todos agents para os seguintes pontos: 1- valide o perfil vs tools vs skills... e se encontrar algum gap ou anti-padrao vc deve ajustar 2- o unico agent que pode ter a skill tavily e o deep-search, os demais agents devem se precisar pesquisar na web ou internamente no projeto deve delegar para o agent-router e seguir o fluxo operacional padrao do projeto'), executada auditoria semantica completa: (1) Removida a skill tavily de related_skills no catalog.yaml dos 6 agents onde constava indevidamente (agent-router, analysis-architect, agent-factory, angular, spring-boot, spring-reactive) e de Docs Sempre Anexadas em analysis-architect.agent.md — deep-search permanece como o UNICO agent autorizado com a skill e tools tavily/*; demais agents delegam pesquisa ao agent-router/deep-search. (2) Corrigidas ferramentas baseline faltantes em 2 agents: 'file_search' adicionado em agentic-memory-manager.agent.md e 'list_dir' adicionado em binding-initializer.agent.md. (3) Corrigidas divergencias de terminal-governance: removida de Docs Sempre Anexadas de agent-auditor.agent.md e test-strategy.agent.md e de Skills Associadas em business-rules-extractor.agent.md (agents sem run_in_terminal), e adicionada em Docs Sempre Anexadas de deep-search.agent.md (que usa run_in_terminal). Validado com get_errors em todos os 8 arquivos modificados — sem erros. total_agents permanece 35. | 2026-09-02 (30) — A pedido do usuario ('analise todos os agents do projeto para avaliar com base no perfil e tools quais deles precisam ter terminal-governance e context-mode, se for preciso ajuste os tools tambem' e 'pode ajustar todos eles'), executada auditoria semantica em todos os 35 agents e aplicados os ajustes: (1) Adicionado 'list_dir' nas tools dos 8 agents que faltavam (refactor-executor, code-style-enforcer, security-reviewer, performance-agent, compliance-guardrails, devops-engineer, debugger, code-review) para conformidade com o tooling baseline universal (agent-contracts § 9). (2) Adicionada a skill terminal-governance nas Docs Sempre Anexadas e no catalog.yaml (related_skills/source_docs) de todos os agents que utilizam run_in_terminal (angular, spring-boot, spring-reactive, deep-search, code-knowledge-graph, refactor-executor, code-style-enforcer, security-reviewer, performance-agent, debugger; removida de business-rules-extractor onde era redundante sem terminal). (3) Adicionada a skill context-mode nas Docs Sempre Anexadas e no catalog.yaml de todos os agents que utilizam context-mode/* (code-review, code-knowledge-graph, security-reviewer, performance-agent, compliance-guardrails, devops-engineer, debugger, feature-planner). Validado com get_errors em todos os 12 arquivos modificados — sem erros. total_agents permanece 35. | 2026-09-02 (29) — A pedido do usuario ('faz sentido ajustar o script para ignorar os arquivos de testes seja qual for o framework? sujou muito o grafo'), validado empiricamente o problema (projeto Angular real: 31% dos nos e 35% das arestas eram arquivos .spec.ts, distorcendo blast-radius/fan-in de componentes) e implementado RF-026 em build-graph.js: nova funcao isTestFile() agnostica de framework/linguagem (Jest/Jasmine/Vitest/Mocha via *.spec.ts(x)/*.test.ts(x)/*.spec.js(x)/*.test.js(x); JUnit/TestNG/Failsafe via FooTest.java/FooTests.java/TestFoo.java/FooIT.java; diretorios __tests__/__mocks__/__snapshots__/e2e/e2e-playwright/cypress); aplicada no filtro de arquivos de buildGraph() com contagem em testFiles.ignorados. Default: EXCLUI testes (capacidade preservada via nova flag --include-tests, nunca removida). Validado: nos 1.143->789 (-31%), arestas 4.320->2.794 (-35%), orfaos 2->8 (aumento esperado e CORRETO: arquivos so referenciados por spec-file, nunca por producao, agora aparecem corretamente como orfao de producao). Confirmado que Java src/test/java ja era estruturalmente excluido (RF-023 so caminha src/main/java) — o vetor real de clutter e exclusivamente TypeScript (specs co-localizados em src/app). Atualizado: build-graph.js (parseArgs com --include-tests, isTestFile(), filtro no loop de arquivos, campo testFiles no retorno/summary, module.exports ampliado), code-knowledge-graph.agent.md (nova secao RF-026, paragrafo de decisao do motor atualizado, version 3.2.1->3.3.0), snippets/code-knowledge-graph/README.md (nova linha de capacidade, 2 novas limitacoes conhecidas #12/#13, secao de validacao dedicada, exemplo de CLI com --include-tests), catalog.yaml (este, version+domain+changelog). Validado com hook .githooks/pre-commit (R-043/R-044) antes de finalizar — sem vazamento de projeto real. Nenhum codigo de projeto analisado foi alterado (analise 100% read-only). total_agents permanece 35.
 
 2026-09-02 (28) — A pedido do usuario ('formaliza no projeto para que isso nao ocorra nunca mais'), formalizada regra normativa global **R-044 (Anonimizacao Obrigatoria de Evidencia de Analise Real)** em CLAUDE.md, extensao direta de R-038 para o caso especifico de evidencia (nomes de repo/classe/metodo/namespace/caminho) derivada de agents que analisam projetos reais do usuario (code-knowledge-graph, business-rules-extractor, context-builder, project-scanner) — motivada pelo incidente da rodada anterior (27), onde nomes reais vazaram em 5 arquivos antes de correcao manual. Regra normativa (R-044) inclui checklist proprio em CLAUDE.md (paralelo ao checklist de R-038), permite metricas numericas agregadas reais (nao identificam projeto) mas exige genericizacao de nomes/caminhos antes de persistir. Atualizado: CLAUDE.md (nova regra R-044 + checklist dedicado, header R-001..R-044), .github/copilot-instructions.md (referencia R-001..R-044, bullet operacional R-044), code-knowledge-graph.agent.md (novo item de nao-escopo citando R-044 e o incidente de origem, version 3.2.0->3.2.1), .github/skills/governance-audit-patterns/SKILL.md (nova categoria de smell 2.6 'Vazamento de Evidencia Real (R-044)', catalogo de 5->6 categorias), .githooks/pre-commit (novo check #4 de defesa em profundidade: bloqueia caminho de sistema de arquivos absoluto adicionado em qualquer arquivo staged sob .github/** exceto local/; CLAUDE.md/copilot-instructions.md excluidos do check pois legitimamente contem exemplos ilustrativos de caminho na propria definicao da regra). Hook testado empiricamente: bloqueia leak simulado (EXIT=1) e nao gera falso-positivo contra as edicoes reais desta rodada (EXIT=0); 1 bug de escaping de regex (4 barras invertidas ao inves de 2) encontrado e corrigido durante o teste funcional antes da validacao final. version deste agent 3.2.0->3.2.1 (fix de governanca/documentacao, sem mudanca funcional no motor). total_agents permanece 35.
 

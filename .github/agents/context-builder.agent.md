@@ -35,7 +35,7 @@ Você é especialista em engenharia de contexto e preparação de prompts. Seu t
 | Template operacional | [`templates/operational-agent.md`](templates/operational-agent.md) | Estrutura oficial de agents operacionais |
 | Agent de pesquisa | [`deep-search.agent.md`](deep-search.agent.md) | Pesquisa interna e externa sob demanda |
 | Agent analítico | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Análise técnica e de impacto |
-| Agent de autoria | [`agent-factory.agent.md`](agent-factory.agent.md) | Criação e revisão de agents customizados |
+| Agent de autoria | [`governance-factory.agent.md`](governance-factory.agent.md) | Criação e revisão de agents customizados |
 | Skill de compactação | [`../skills/context-compact/SKILL.md`](../skills/context-compact/SKILL.md) | Compactar contexto pós-leitura em resumo executável |
 
 ## Decision Tree
@@ -52,7 +52,7 @@ Pedido recebido?
 |  |- Sim -> delegar para @analysis-architect
 |  \- Não
 |- É ajuste de agent customizado?
-|  |- Sim -> delegar para @agent-factory
+|  |- Sim -> delegar para @governance-factory
 |  \- Não -> avaliar o roteamento mais adequado
 ```
 
@@ -145,7 +145,7 @@ Documento gerado:
 
 - [`@deep-search`](deep-search.agent.md) quando a demanda for pesquisa técnica interna ou externa.
 - [`@analysis-architect`](analysis-architect.agent.md) quando a demanda exigir análise técnica, impacto ou dependência.
-- [`@agent-factory`](agent-factory.agent.md) quando a demanda for criar ou revisar agents customizados.
+- [`@governance-factory`](governance-factory.agent.md) quando a demanda for criar ou revisar agents customizados.
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 

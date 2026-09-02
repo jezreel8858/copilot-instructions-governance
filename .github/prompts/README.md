@@ -115,7 +115,7 @@ Use esta lista para revisar qualquer prompt `.prompt.md` antes de publicar:
 
 ## ✅ Checklist de Conformidade de Frontmatter (padrão Copilot 2026)
 
-Use `@prompt-factory` para auditar e corrigir automaticamente:
+Use `@governance-factory` para auditar e corrigir automaticamente:
 
 | Campo | Status | Significado |
 |---|---|---|
@@ -127,5 +127,5 @@ Use `@prompt-factory` para auditar e corrigir automaticamente:
 
 **Template de referência**: `.github/prompts/templates/prompt-template.md`
 
-**Para criar ou auditar prompts**: use `@prompt-factory`
+**Para criar ou auditar prompts**: use `@governance-factory`
 

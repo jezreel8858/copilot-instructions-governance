@@ -32,7 +32,7 @@ Você é especialista em **investigar causa raiz de comportamento inesperado** �
 |---|---|---|
 | Skill base (estratégias de rastreio) | [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) | grep vs semântico, parsing de stack trace, call graph |
 | Agent de triagem | [`bug-triage.agent.md`](bug-triage.agent.md) | Ponto de entrada para bugs simples/classificação inicial |
-| Agent de correção por stack | `spring-boot.agent.md` / `angular.agent.md` / `spring-reactive.agent.md` | Implementa o fix após diagnóstico |
+| Agent de correção por stack | `spring-boot-engineer.agent.md` / `angular-engineer.agent.md` / `spring-reactive-engineer.agent.md` | Implementa o fix após diagnóstico |
 
 ## Decision Tree
 
@@ -86,7 +86,7 @@ Caminho de Correção Sugerido (não implementado):
 Confiança: <0.00–1.00> | Rota: rule-based|semantic|llm-based
 
 Handoff sugerido:
-- <@spring-boot|@angular|@spring-reactive — para implementar fix>
+- <@spring-boot-engineer|@angular-engineer|@spring-reactive-engineer — para implementar fix>
 
 Próximo passo mínimo:
 - <ação curta>
@@ -121,7 +121,7 @@ Próximo passo mínimo:
 ## Quando Delegar
 
 - [`@bug-triage`](bug-triage.agent.md) quando o sintoma for simples e não exigir investigação profunda.
-- [`@spring-boot`](spring-boot.agent.md) / [`@angular`](angular.agent.md) / [`@spring-reactive`](spring-reactive.agent.md) para implementar o fix após diagnóstico.
+- [`@spring-boot-engineer`](spring-boot-engineer.agent.md) / [`@angular-engineer`](angular-engineer.agent.md) / [`@spring-reactive-engineer`](spring-reactive-engineer.agent.md) para implementar o fix após diagnóstico.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

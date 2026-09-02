@@ -20,7 +20,7 @@ Você é especialista em auditoria semântica de governança do catálogo de IA 
 - ❌ NÃO inventar categoria de smell fora das 5 definidas em `governance-audit-patterns`.
 - ❌ NÃO executar implementação da aplicação.
 - ✅ APENAS auditar, evidenciar, classificar severidade e recomendar handoff para execução.
-- ✅ SEMPRE apontar agent executor (`@agent-factory`, `@skill-factory`, `@prompt-factory`, `@docs-curator`).
+- ✅ SEMPRE apontar agent executor (`@governance-factory`, `@governance-factory`, `@governance-factory`, `@docs-engineer`).
 
 ## Regras Herdadas
 
@@ -86,7 +86,7 @@ Riscos:
 - ## Relatório de Auditoria de Governança
 - | Smell | Local(is) afetado(s) | Severidade | Remediação sugerida | Agent a acionar |
 - |---|---|---|---|---|
-- | <2.1..2.5> | <arquivo(s)> | Bloqueador/Alto/Sugestão | <ação objetiva> | <@agent-factory/@skill-factory/@prompt-factory/@docs-curator> |
+- | <2.1..2.5> | <arquivo(s)> | Bloqueador/Alto/Sugestão | <ação objetiva> | <@governance-factory/@governance-factory/@governance-factory/@docs-engineer> |
 - ## Resumo por Severidade
 - Bloqueador: N
 - Alto: N
@@ -135,10 +135,10 @@ Próximo Passo:
 
 ## Quando Delegar
 
-- [`@agent-factory`](agent-factory.agent.md) para criar/revisar `*.agent.md` e catálogo de agents.
-- [`@skill-factory`](skill-factory.agent.md) para criar/revisar `SKILL.md` e índice de skills.
-- [`@prompt-factory`](prompt-factory.agent.md) para criar/revisar `.prompt.md` e catálogo de prompts.
-- [`@docs-curator`](docs-curator.agent.md) para consolidar/remover redundância documental de governança.
+- [`@governance-factory`](governance-factory.agent.md) para criar/revisar `*.agent.md` e catálogo de agents.
+- [`@governance-factory`](governance-factory.agent.md) para criar/revisar `SKILL.md` e índice de skills.
+- [`@governance-factory`](governance-factory.agent.md) para criar/revisar `.prompt.md` e catálogo de prompts.
+- [`@docs-engineer`](docs-engineer.agent.md) para consolidar/remover redundância documental de governança.
 - [`@agent-router`](agent-router.agent.md) quando houver deriva para implementação de aplicação.
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

@@ -3,7 +3,7 @@ description: >
   Grafo de roteamento declarado — fonte de verdade estrutural para o agent-router.
   Nós = agents disponíveis; arestas = condições de roteamento (keywords, sinais R-006, score threshold).
   A Decision Tree em agent-router.agent.md é documentação derivada deste arquivo.
-last_updated: "2026-09-01 (v5 — adicionados 9 nós/arestas após validação de gaps de perfil de agents: security-reviewer, performance-agent, compliance-guardrails, feature-planner, agentic-memory-manager, devops-engineer, debugger, code-style-enforcer, refactor-executor; v4 anterior preservado)"
+last_updated: "2026-09-02 (v6 — sincronizado com catalog.yaml pos-fusao/gaps: test-implementation+test-fix->test-engineer, docs-writer+docs-curator->docs-engineer, agent-factory+skill-factory->governance-factory; 3 nos/arestas novos: runtime-verifier, pr-gatekeeper, database-specialist; total 34 agents. v5 anterior preservado no historico do arquivo)"
 
 # ─────────────────────────────────────────────
 # NÓS — agents disponíveis no catálogo
@@ -28,13 +28,14 @@ nos:
     tipo: downstream
     descricao: "Planejamento e estratégia de testes"
 
-  - id: test-implementation
-    tipo: downstream
-    descricao: "Implementação de suítes de teste"
 
-  - id: test-fix
+  - id: test-engineer
     tipo: downstream
-    descricao: "Correção de testes quebrados com relatório de falhas"
+    descricao: >
+      Fusão de test-implementation + test-fix: implementa suítes novas
+      (mode create), corrige testes quebrados (mode fix) e expande
+      cobertura por gap (mode coverage). Nunca roda a suíte completa
+      autonomamente no mode fix.
 
   - id: business-rules-extractor
     tipo: downstream
@@ -44,13 +45,13 @@ nos:
     tipo: downstream
     descricao: "Planejamento de refatoração segura"
 
-  - id: docs-curator
+  - id: docs-engineer
     tipo: downstream
-    descricao: "Curadoria e atualização de documentação de governança"
-
-  - id: docs-writer
-    tipo: downstream
-    descricao: "Geração/escrita de documentação técnica nova em Markdown, agnóstica de domínio (perfil documentador) — produz exclusivamente arquivos .md"
+    descricao: >
+      Fusão de docs-writer + docs-curator: autoria de documentação técnica
+      nova (mode author) e curadoria/padronização de documentação e
+      catálogo de governança já existentes (mode curate). Produz
+      exclusivamente arquivos .md.
 
   - id: code-review
     tipo: downstream
@@ -76,13 +77,12 @@ nos:
     tipo: fallback
     descricao: "Análise técnica cross-projeto e integrações cross-sistema; absorve impacto local via tier B1"
 
-  - id: agent-factory
+  - id: governance-factory
     tipo: downstream
-    descricao: "Criação e revisão de agents customizados"
-
-  - id: skill-factory
-    tipo: downstream
-    descricao: "Criação e revisão de skills"
+    descricao: >
+      Fusão de agent-factory + skill-factory + prompt-factory: cria/revisa
+      agent (.agent.md), skill (SKILL.md) ou prompt (.prompt.md) via
+      parâmetro type, com atualização atômica do catálogo correspondente.
 
   - id: binding-initializer
     tipo: health_check
@@ -96,17 +96,17 @@ nos:
     tipo: downstream
     descricao: "Coleta e consolidação de contexto técnico"
 
-  - id: angular
+  - id: angular-engineer
     tipo: specialist_hybrid
-    descricao: "Especialista Angular enterprise — perfil híbrido v2.0.0: Advisory (arquitetura, reatividade, performance, segurança, acessibilidade, upgrade) E Implementação (feature/bugfix com testing-first, diff mínimo); retorna ao agent-router só se sair do domínio Angular"
+    descricao: "Especialista Angular enterprise — perfil híbrido v2.1.0: Advisory (arquitetura, reatividade, performance, segurança, acessibilidade, upgrade) E Implementação (feature/bugfix com testing-first, diff mínimo); retorna ao agent-router só se sair do domínio Angular"
 
-  - id: spring-boot
+  - id: spring-boot-engineer
     tipo: specialist_hybrid
-    descricao: "Especialista backend Spring Boot enterprise — perfil híbrido v2.0.0: Advisory (arquitetura, Java/JDK, observabilidade, segurança, migração) E Implementação (feature/bugfix com testing-first, diff mínimo); retorna ao agent-router só se sair do domínio Spring Boot"
+    descricao: "Especialista backend Spring Boot enterprise — perfil híbrido v2.1.0: Advisory (arquitetura, Java/JDK, observabilidade, segurança, migração) E Implementação (feature/bugfix com testing-first, diff mínimo); retorna ao agent-router só se sair do domínio Spring Boot"
 
-  - id: spring-reactive
+  - id: spring-reactive-engineer
     tipo: specialist_hybrid
-    descricao: "Especialista backend reativo Spring WebFlux/Reactor — perfil híbrido v2.0.0: Advisory (capacidade, resiliência, backpressure, observabilidade) E Implementação (feature/bugfix com testing-first, sem bloqueio de event-loop); retorna ao agent-router só se sair do domínio reativo"
+    descricao: "Especialista backend reativo Spring WebFlux/Reactor — perfil híbrido v2.1.0: Advisory (capacidade, resiliência, backpressure, observabilidade) E Implementação (feature/bugfix com testing-first, sem bloqueio de event-loop); retorna ao agent-router só se sair do domínio reativo"
 
   - id: security-reviewer
     tipo: downstream
@@ -143,6 +143,18 @@ nos:
   - id: refactor-executor
     tipo: downstream
     descricao: "Execução de plano de refatoração já aprovado por refactor-planner, fase a fase, com validação contra regras de negócio"
+
+  - id: runtime-verifier
+    tipo: downstream
+    descricao: "Verificação de saúde do ambiente (build limpo, dependências, serviços dependentes) antes de disparar testes/codificadores; read-only, nunca corrige"
+
+  - id: pr-gatekeeper
+    tipo: downstream
+    descricao: "Preparação de PR pós-aprovação do quality gate — diff, commit semântico, matriz de risco, CHANGELOG.md; nunca executa git add/commit/push"
+
+  - id: database-specialist
+    tipo: downstream
+    descricao: "Migrações de schema (Flyway/Liquibase/Alembic), otimização de query e integridade referencial; rollback sempre documentado"
 
 # ─────────────────────────────────────────────
 # ARESTAS — condições de roteamento
@@ -407,7 +419,7 @@ arestas:
       nao_confundir_com:
         - "revisar/corrigir código"        # → bug-triage/code-review/refactor-planner
         - "extrair regra de negócio"       # → business-rules-extractor
-        - "implementar sumarização em lib" # → decisão técnica de agent-factory/analysis-architect, não roteamento
+        - "implementar sumarização em lib" # → decisão técnica de governance-factory/analysis-architect, não roteamento
 
   # Delegação interna: qualquer agent downstream pode invocar code-summarizer sob demanda (RF-002)
   - de: "*downstream"
@@ -465,12 +477,12 @@ arestas:
         - "matriz de testes"
       sinal_r006: "É estratégia/plano de testes?"
       nao_confundir_com:
-        - "implementar testes"  # → test-implementation
-        - "corrigir testes"     # → test-fix
+        - "implementar testes"  # → test-engineer (mode create)
+        - "corrigir testes"     # → test-engineer (mode fix)
 
-  # Implementação de testes
+  # Implementação/correção/expansão de cobertura de testes (fusão test-implementation + test-fix)
   - de: agent-router
-    para: test-implementation
+    para: test-engineer
     prioridade: 2
     threshold_score: 0.90
     nivel_routing: rule-based
@@ -484,22 +496,13 @@ arestas:
         - "jasmine"
         - "vitest"
         - "pytest"
-
-  # Correção de testes quebrados
-  - de: agent-router
-    para: test-fix
-    prioridade: 2
-    threshold_score: 0.90
-    nivel_routing: rule-based
-    condicoes:
-      keywords:
         - "testes quebrados"
         - "testes falhando"
         - "broken test"
         - "corrigir teste"
         - "test failure"
         - "flaky test"
-      requisito: "relatório de falhas presente (ou ask_questions para obtê-lo)"
+      sinal_r006: "mode=create (implementar/criar novo teste) | mode=fix (relatório de falhas presente, ou ask_questions para obtê-lo) | mode=coverage (gap de cobertura já identificado)"
 
   # Extração de regras de negócio
   - de: agent-router
@@ -546,9 +549,9 @@ arestas:
         - "breaking change"
       sinal_r006: "Impacto local -> usar analysis-architect em tier B1"
 
-  # Documentação
+  # Documentação (autoria de conteúdo novo + curadoria de conteúdo existente — fusão docs-writer + docs-curator)
   - de: agent-router
-    para: docs-curator
+    para: docs-engineer
     prioridade: 5
     threshold_score: 0.90
     nivel_routing: rule-based
@@ -559,18 +562,6 @@ arestas:
         - "README"
         - "catálogo"
         - "rastreabilidade de doc"
-      nao_confundir_com:
-        - "escrever documentação nova"  # → docs-writer
-        - "criar documentação técnica"  # → docs-writer
-
-  # Documentação — escrita/geração de conteúdo novo
-  - de: agent-router
-    para: docs-writer
-    prioridade: 5
-    threshold_score: 0.90
-    nivel_routing: rule-based
-    condicoes:
-      keywords:
         - "escrever documentação"
         - "criar documentação técnica"
         - "gerar readme"
@@ -580,14 +571,11 @@ arestas:
         - "documentador"
         - "runbook"
         - "postmortem"
-      sinal_r006: "É criação de documentação NOVA (não curadoria de doc já existente)?"
-      nao_confundir_com:
-        - "atualizar documentação existente"  # → docs-curator
-        - "curar catálogo"                    # → docs-curator
+      sinal_r006: "mode=author (conteúdo novo) | mode=curate (consolidação/padronização de conteúdo já existente)"
 
-  # Agent factory
+  # Governance factory (fusão agent-factory + skill-factory + prompt-factory)
   - de: agent-router
-    para: agent-factory
+    para: governance-factory
     prioridade: 6
     threshold_score: 0.90
     nivel_routing: rule-based
@@ -597,18 +585,13 @@ arestas:
         - "novo agent"
         - "revisar agent"
         - "padronizar agent"
-
-  # Skill factory
-  - de: agent-router
-    para: skill-factory
-    prioridade: 6
-    threshold_score: 0.90
-    nivel_routing: rule-based
-    condicoes:
-      keywords:
         - "criar skill"
         - "nova skill"
         - "revisar skill"
+        - "criar prompt"
+        - "novo prompt"
+        - "revisar prompt"
+      sinal_r006: "type=agent | type=skill | type=prompt — perguntar via ask_questions se ambíguo"
 
   # Análise de integração cross-sistema + análise técnica geral (unificado em analysis-architect v2.0.0)
   - de: agent-router
@@ -630,7 +613,7 @@ arestas:
 
   # Especialistas de recomendação de stack (perfil híbrido v2.0.0 — Advisory + Implementação)
   - de: agent-router
-    para: angular
+    para: angular-engineer
     prioridade: 1.6
     threshold_score: 0.85
     nivel_routing: rule-based
@@ -645,7 +628,7 @@ arestas:
       sinal_r006: "É análise/recomendação OU implementação de feature/bugfix em Angular?"
 
   - de: agent-router
-    para: spring-boot
+    para: spring-boot-engineer
     prioridade: 1.6
     threshold_score: 0.85
     nivel_routing: rule-based
@@ -659,7 +642,7 @@ arestas:
       sinal_r006: "É análise/recomendação OU implementação de feature/bugfix em Spring Boot?"
 
   - de: agent-router
-    para: spring-reactive
+    para: spring-reactive-engineer
     prioridade: 1.6
     threshold_score: 0.85
     nivel_routing: rule-based
@@ -690,10 +673,10 @@ arestas:
         requirements-analyst|test-strategy|refactor-planner|deep-search)
         OU pedido de execução/código em stack fora da matriz de competência
         do agent ativo OU pedido de execução/código em agent estritamente
-        read-only. Nota: angular|spring-boot|spring-reactive são perfil
-        hibrido (specialist_hybrid) — pedido de implementacao DENTRO do
+        read-only. Nota: angular-engineer|spring-boot-engineer|spring-reactive-engineer
+        sao perfil hibrido (specialist_hybrid) — pedido de implementacao DENTRO do
         proprio dominio de stack NAO e deriva; so dispara se o pedido sair
-        do dominio do specialist (ex.: pedir Angular enquanto spring-boot
+        do dominio do specialist (ex.: pedir Angular enquanto spring-boot-engineer
         esta ativo).
       aplica_a: "todos os nos tipo downstream e specialist_hybrid"
       acao: "handoff imediato para agent-router com motivo: deriva_de_intencao"
@@ -717,6 +700,59 @@ arestas:
     condicoes:
       sinal: "Análise técnica genérica, impacto, requisitos, fluxos ou qualquer análise cross-sistema"
       gatilho: "Escopo que envolve análise de impacto, contratos, dependências ou integrações"
+
+  # Verificação de saúde do ambiente antes de testes/codificadores
+  - de: agent-router
+    para: runtime-verifier
+    prioridade: 1.02
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "verificar ambiente"
+        - "build limpo"
+        - "sandbox saudável"
+        - "dependências íntegras"
+        - "porta ocupada"
+        - "ambiente de execução"
+      sinal_r006: "É verificação diagnóstica de ambiente/build/sandbox ANTES de rodar teste/codificador (não execução de teste em si)?"
+      nao_confundir_com:
+        - "executar/corrigir testes"  # → test-engineer
+
+  # Preparação de PR pós-aprovação (nunca commit/push autônomo)
+  - de: agent-router
+    para: pr-gatekeeper
+    prioridade: 4.6
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "preparar pr"
+        - "pull request"
+        - "mensagem de commit"
+        - "commit semântico"
+        - "changelog"
+        - "matriz de risco de pr"
+      sinal_r006: "Código já foi aprovado por code-review — pedido é sobre sintetizar diff/commit/PR/changelog (não revisar o código)?"
+      nao_confundir_com:
+        - "revisar código antes do merge"  # → code-review
+
+  # Migrações de schema, query e integridade referencial
+  - de: agent-router
+    para: database-specialist
+    prioridade: 5.6
+    threshold_score: 0.90
+    nivel_routing: rule-based
+    condicoes:
+      keywords:
+        - "migração de schema"
+        - "flyway"
+        - "liquibase"
+        - "alembic"
+        - "explain analyze"
+        - "índice de banco"
+        - "rollback de migração"
+        - "integridade referencial"
 
 # ─────────────────────────────────────────────
 # POLÍTICA DE CASCATA

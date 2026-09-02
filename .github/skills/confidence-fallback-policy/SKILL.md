@@ -72,8 +72,8 @@ Score: 0.55 (duas intenções)
 Fallback:
   → ask_questions:
     "Qual é a prioridade?"
-    A) Testes primeiro → @test-strategy → @test-implementation
-    B) Documentação primeiro → @docs-curator
+    A) Testes primeiro → @test-strategy → @test-engineer
+    B) Documentação primeiro → @docs-engineer
     C) Ambos em sequência → plano dividido em fases
 ```
 

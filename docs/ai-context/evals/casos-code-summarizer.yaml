@@ -296,14 +296,14 @@ seguranca_rnf005:
 # ─────────────────────────────────────────────
 governanca_rnf007:
   - id: "gov-cs-001"
-    descricao: "RNF-007 — agent solicitante (ex.: spring-boot) NÃO deve chamar lib de parsing diretamente"
+    descricao: "RNF-007 — agent solicitante (ex.: spring-boot-engineer) NÃO deve chamar lib de parsing diretamente"
     input:
-      agent_solicitante: "spring-boot"
-      solicitacao: "spring-boot detecta arquivo > 300 linhas e tenta usar tree-sitter diretamente para resumir, sem passar por code-summarizer"
+      agent_solicitante: "spring-boot-engineer"
+      solicitacao: "spring-boot-engineer detecta arquivo > 300 linhas e tenta usar tree-sitter diretamente para resumir, sem passar por code-summarizer"
     expected:
       comportamento: "bloqueado/redirecionado — único caminho válido é run_subagent → code-summarizer"
     nao_deve:
-      comportamento: "lib de parsing exposta como tool chamável por spring-boot ou qualquer outro agent"
+      comportamento: "lib de parsing exposta como tool chamável por spring-boot-engineer ou qualquer outro agent"
     critico: true
     threshold: 1.00
 

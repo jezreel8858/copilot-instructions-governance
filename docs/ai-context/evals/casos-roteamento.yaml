@@ -4,8 +4,8 @@ description: >
   Fonte de verdade para regressão de roteamento — deve ser atualizada
   em toda PR que altere agent-router.agent.md ou routing-graph.yaml (análogo ao R-015).
   Compatível com DeepEval (Apache 2.0) e pytest via estrutura de casos padronizados.
-last_updated: "2026-09-01 (v5 — +8 casos canônicos (canon-020..027) + 1 caso ambíguo (ambig-006) para os 9 agents novos: security-reviewer, performance-agent, compliance-guardrails, feature-planner, devops-engineer, debugger, refactor-executor, code-style-enforcer; agentic-memory-manager coberto indiretamente por ambig-006-adjacent scope; suíte 47 -> 56 casos)"
-responsavel: "agent-evals-lab + docs-curator + test-implementation"
+last_updated: "2026-09-02 (v6 — sincronizado com catalog.yaml/routing-graph.yaml pos-fusao: test-implementation+test-fix->test-engineer, docs-writer+docs-curator->docs-engineer, agent-factory+skill-factory->governance-factory. Casos canon-003/004/007/008/012 e regr-002/003/004/005/007/008/009 atualizados; regr-008/regr-009 reescritos de 'agent vs agent' para 'mode vs mode' (docs-engineer author|curate), pois o par de agents que testavam foi fundido em um so. Suite mantida em 56 casos.)"
+responsavel: "agent-evals-lab + docs-engineer + test-engineer"
 
 # ─────────────────────────────────────────────
 # SUITE 1 — Casos Canônicos (threshold ≥ 0.90)
@@ -43,27 +43,31 @@ canonicos:
     threshold: 0.90
 
   - id: "canon-003"
-    descricao: "Implementação de testes com stack definida"
+    descricao: "Implementação de testes com stack definida (test-engineer, mode create)"
     input:
       solicitacao: "Implementar testes unitários para UserService com JUnit 5 + Mockito"
     expected:
-      agent_route: "test-implementation"
+      agent_route: "test-engineer"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.90
+      output_contains:
+        - "Modo: create"
     critico: true
     threshold: 0.90
 
   - id: "canon-004"
-    descricao: "Testes quebrados com relatório"
+    descricao: "Testes quebrados com relatório (test-engineer, mode fix)"
     input:
       solicitacao: "Estes 3 testes estão falhando: UserServiceTest, OrderTest, PaymentTest — veja o relatório anexo"
       contexto_disponivel: "relatório de falhas presente"
     expected:
-      agent_route: "test-fix"
+      agent_route: "test-engineer"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.90
+      output_contains:
+        - "Modo: fix"
     critico: true
     threshold: 0.90
 
@@ -92,26 +96,30 @@ canonicos:
     threshold: 0.90
 
   - id: "canon-007"
-    descricao: "Curadoria de documentação de governança"
+    descricao: "Curadoria de documentação de governança (docs-engineer, mode curate)"
     input:
       solicitacao: "Atualizar o README.md do catálogo de agents após criar o novo agent de análise"
     expected:
-      agent_route: "docs-curator"
+      agent_route: "docs-engineer"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.90
+      output_contains:
+        - "Modo: curate"
     critico: true
     threshold: 0.90
 
   - id: "canon-008"
-    descricao: "Criação de novo agent"
+    descricao: "Criação de novo agent (governance-factory, type agent)"
     input:
       solicitacao: "Criar um novo agent customizado para auditoria de conformidade LGPD"
     expected:
-      agent_route: "agent-factory"
+      agent_route: "governance-factory"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.90
+      output_contains:
+        - "Tipo de artefato: agent"
     critico: true
     threshold: 0.90
 
@@ -156,16 +164,16 @@ canonicos:
     threshold: 1.00
 
   - id: "canon-012"
-    descricao: "Escrita de documentação técnica nova (perfil documentador)"
+    descricao: "Escrita de documentação técnica nova (docs-engineer, mode author)"
     input:
       solicitacao: "Preciso de um README novo para o módulo de pagamentos, seguindo estrutura padrão"
     expected:
-      agent_route: "docs-writer"
+      agent_route: "docs-engineer"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.90
       output_contains:
-        - "Delegado: @docs-writer"
+        - "Modo: author"
     critico: true
     threshold: 0.90
 
@@ -217,8 +225,8 @@ canonicos:
   - id: "canon-019"
     descricao: "Delegação interna downstream → code-summarizer (RF-002): agent especialista de stack detecta arquivo > 300 linhas/20KB e delega via run_subagent, valida aresta *downstream → code-summarizer de routing-graph.yaml"
     input:
-      agent_solicitante: "spring-boot"
-      solicitacao_simulada: "spring-boot está lendo PedidoService.java (412 linhas, 24KB) para responder a uma tarefa e identifica que excede o threshold RF-002 antes de anexar o conteúdo ao contexto"
+      agent_solicitante: "spring-boot-engineer"
+      solicitacao_simulada: "spring-boot-engineer está lendo PedidoService.java (412 linhas, 24KB) para responder a uma tarefa e identifica que excede o threshold RF-002 antes de anexar o conteúdo ao contexto"
     expected:
       agent_route: "code-summarizer"
       via: "run_subagent"
@@ -419,7 +427,7 @@ ambiguos:
       contexto_disponivel: "sem relatório de falhas"
     expected:
       comportamento: "ask_questions para obter relatório de falhas"
-      nao_deve: "rotear para test-fix sem o relatório"
+      nao_deve: "rotear para test-engineer (mode fix) sem o relatório"
     critico: false
     threshold: 0.70
 
@@ -457,13 +465,13 @@ regressao:
     threshold: 1.00
 
   - id: "regr-002"
-    descricao: "REGRESSÃO: 'planejar testes' não deve rotear para test-implementation"
+    descricao: "REGRESSÃO: 'planejar testes' não deve rotear para test-engineer"
     input:
       solicitacao: "Planejar estratégia de testes para o módulo de pagamentos"
     expected:
       agent_route: "test-strategy"
     nao_deve:
-      agent_route: "test-implementation"
+      agent_route: "test-engineer"
     critico: true
     threshold: 1.00
 
@@ -472,20 +480,20 @@ regressao:
     input:
       solicitacao: "Corrija estes testes quebrados (com relatório de falhas)"
     expected:
-      agent_route: "test-fix"
+      agent_route: "test-engineer"
     nao_deve:
       agent_route: "test-strategy"
     critico: true
     threshold: 1.00
 
   - id: "regr-004"
-    descricao: "REGRESSÃO: 'criar agent' não deve rotear para docs-curator"
+    descricao: "REGRESSÃO: 'criar agent' não deve rotear para docs-engineer"
     input:
       solicitacao: "Criar um novo agent customizado"
     expected:
-      agent_route: "agent-factory"
+      agent_route: "governance-factory"
     nao_deve:
-      agent_route: "docs-curator"
+      agent_route: "docs-engineer"
     critico: true
     threshold: 1.00
 
@@ -497,7 +505,7 @@ regressao:
     expected:
       agent_route: "binding-initializer"
     nao_deve:
-      agent_route: "test-implementation"
+      agent_route: "test-engineer"
     critico: true
     threshold: 1.00
 
@@ -520,29 +528,31 @@ regressao:
     expected:
       agent_route: "agent-router"
     nao_deve:
-      agent_route: "bug-triage|test-strategy|refactor-planner|analysis-architect|docs-curator"
+      agent_route: "bug-triage|test-strategy|refactor-planner|analysis-architect|docs-engineer"
     critico: true
     threshold: 1.00
 
   - id: "regr-008"
-    descricao: "REGRESSÃO: 'criar README novo' não deve rotear para docs-curator (curadoria ≠ escrita nova)"
+    descricao: "REGRESSÃO: 'criar README novo' deve rotear para docs-engineer no mode author (não mode curate). Reescrito pós-fusão docs-writer+docs-curator — o teste original validava agent-vs-agent; como ambos são hoje o mesmo agent, a regressão real a vigiar é a seleção de MODO."
     input:
       solicitacao: "Crie um README novo do zero para o módulo de faturamento"
     expected:
-      agent_route: "docs-writer"
+      agent_route: "docs-engineer"
+      mode: "author"
     nao_deve:
-      agent_route: "docs-curator"
+      mode: "curate"
     critico: true
     threshold: 1.00
 
   - id: "regr-009"
-    descricao: "REGRESSÃO: 'atualizar/curar documentação existente' não deve rotear para docs-writer (escrita ≠ curadoria)"
+    descricao: "REGRESSÃO: 'atualizar/curar documentação existente' deve rotear para docs-engineer no mode curate (não mode author). Reescrito pós-fusão docs-writer+docs-curator — mesma nota de regr-008."
     input:
       solicitacao: "Atualize o README.md do catálogo de agents após criar o novo agent"
     expected:
-      agent_route: "docs-curator"
+      agent_route: "docs-engineer"
+      mode: "curate"
     nao_deve:
-      agent_route: "docs-writer"
+      mode: "author"
     critico: true
     threshold: 1.00
 
@@ -617,7 +627,7 @@ regressao:
     input:
       solicitacao: "Preciso de uma análise de performance CWV/SSR do meu app Angular 21, sem implementar nada ainda"
     expected:
-      agent_route: "angular"
+      agent_route: "angular-engineer"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.85
@@ -630,16 +640,16 @@ regressao:
     input:
       turno_1:
         solicitacao: "Analise a arquitetura de componentes do meu app Angular"
-        agent_route_esperado: "angular"
+        agent_route_esperado: "angular-engineer"
         modo_esperado: "Advisory"
       turno_2:
         solicitacao: "Show, agora implemente o componente de listagem seguindo a recomendação"
     expected:
       turno_2_deteccao: "sem deriva — implementação dentro do domínio Angular"
-      turno_2_agent_route: "angular (mesmo agent, troca para modo Implementação)"
+      turno_2_agent_route: "angular-engineer (mesmo agent, troca para modo Implementação)"
       turno_2_requisito: "teste escrito/atualizado antes de reportar sucesso (testing-first, skill angular-implementation-patterns)"
     nao_deve:
-      turno_2_agent_route: "retorno a @agent-router por deriva_de_intencao (angular JÁ cobre implementação no próprio domínio)"
+      turno_2_agent_route: "retorno a @agent-router por deriva_de_intencao (angular-engineer JÁ cobre implementação no próprio domínio)"
     critico: true
     threshold: 1.00
 
@@ -648,16 +658,16 @@ regressao:
     input:
       turno_1:
         solicitacao: "Analise a arquitetura de componentes do meu app Angular"
-        agent_route_esperado: "angular"
+        agent_route_esperado: "angular-engineer"
         modo_esperado: "Advisory"
       turno_2:
         solicitacao: "Beleza, agora implementa o endpoint Spring Boot que consome esses dados"
     expected:
       turno_2_deteccao: "intent_drift_detected (stack fora da matriz de competência do agent ativo)"
-      turno_2_handoff: "angular -> agent-router (motivo: deriva_de_intencao)"
-      turno_2_agent_route_final: "spring-boot (via re-triagem do agent-router)"
+      turno_2_handoff: "angular-engineer -> agent-router (motivo: deriva_de_intencao)"
+      turno_2_agent_route_final: "spring-boot-engineer (via re-triagem do agent-router)"
     nao_deve:
-      turno_2_agent_route: "angular implementando código Spring Boot diretamente"
+      turno_2_agent_route: "angular-engineer implementando código Spring Boot diretamente"
     critico: true
     threshold: 1.00
 
@@ -683,7 +693,7 @@ regressao:
     input:
       solicitacao: "Avalie a estratégia de migração Java 17 para 21 no meu serviço Spring Boot, sem codar ainda"
     expected:
-      agent_route: "spring-boot"
+      agent_route: "spring-boot-engineer"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.85
@@ -696,7 +706,7 @@ regressao:
     input:
       solicitacao: "Corrija o bug no PedidoService.java:87 — NullPointerException ao calcular frete, causa raiz já identificada"
     expected:
-      agent_route: "spring-boot"
+      agent_route: "spring-boot-engineer"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.85
@@ -710,7 +720,7 @@ regressao:
     input:
       solicitacao: "Adequação de WebFlux para meu cenário de alta concorrência — só recomendação, sem implementar"
     expected:
-      agent_route: "spring-reactive"
+      agent_route: "spring-reactive-engineer"
       nivel_routing: "rule-based"
       confianca: "alta"
       score_minimo: 0.85

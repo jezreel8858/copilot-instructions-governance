@@ -192,7 +192,7 @@ O output de terminal **entra no contexto** e consome tokens. Estimar antes de ex
 
 ## 8) Execução de Testes via Terminal
 
-Para contexts onde testes precisam ser executados no terminal (sem sandbox), seguir as regras de lote da skill `test-fix`:
+Para contexts onde testes precisam ser executados no terminal (sem sandbox), seguir as regras de lote da skill `test-engineer`:
 
 ```bash
 # Angular Vitest — lote por módulo, output filtrado

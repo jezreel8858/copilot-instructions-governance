@@ -63,7 +63,7 @@ O relatório e o veredito final (`APROVADO | APROVADO COM RESSALVAS | BLOQUEADO`
 | Achado | Ação |
 |--------|------|
 | Bug crítico encontrado | Reportar no relatório + handoff `@bug-triage` |
-| Impacto em dependências | Reportar + handoff `@impact-architect` |
+| Impacto em dependências | Reportar + handoff `@analysis-architect` |
 | Falta de testes | Reportar + handoff `@test-strategy` |
 | Dívida técnica estrutural | Reportar + handoff `@refactor-planner` |
 | Apenas convenção/estilo | Incluir no relatório, sem escalação |

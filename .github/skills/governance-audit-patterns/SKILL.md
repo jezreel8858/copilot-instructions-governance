@@ -52,17 +52,17 @@ Consolida, a partir de pesquisa de mercado (2026), um catálogo objetivo de "che
 | Como detectar | `grep_search` por trechos característicos (títulos de seção, frases-chave) em `.github/agents/*.agent.md`; comparar contagem de ocorrências × ausência de skill equivalente em `.index.json` |
 | Origem (TrustAgent) | Intrínseco — falta de reuso de "memory"/conhecimento compartilhado entre agents |
 | Severidade | Alta (custo de manutenção cresce linearmente com nº de agents afetados) |
-| Remediação | Extrair para nova skill via `@skill-factory`; atualizar os agents consumidores para referenciar a skill (não duplicar) |
+| Remediação | Extrair para nova skill via `@governance-factory`; atualizar os agents consumidores para referenciar a skill (não duplicar) |
 
 ### 2.2 — Gap de Perfil (Agent Incompleto)
 
 | Campo | Conteúdo |
 |---|---|
 | Sintoma | Agent sem `run_subagent` no frontmatter `tools:` (R-042); sem seção "Retorno ao Router"; sem banner "Agente Ativo" no Formato de Saída; sem "Docs Sempre Anexadas"; sem `version` quando outros agents do mesmo tier já declaram |
-| Como detectar | Checklist de `agent-contracts/SKILL.md` §9 aplicado **retroativamente** a todo `.agent.md` existente (hoje só validado por `agent-factory` em criação nova) |
+| Como detectar | Checklist de `agent-contracts/SKILL.md` §9 aplicado **retroativamente** a todo `.agent.md` existente (hoje só validado por `governance-factory` em criação nova) |
 | Origem (TrustAgent) | Intrínseco — componente "tool"/"brain" do agent incompleto |
 | Severidade | Bloqueador (se falta `run_subagent` — R-042 estruturalmente inviável) / Alta (demais gaps) |
-| Remediação | `@agent-factory` revisa e completa o agent afetado |
+| Remediação | `@governance-factory` revisa e completa o agent afetado |
 
 ### 2.3 — Gap de Diretriz (Regra Não Referenciada ou Sem Enforcement)
 
@@ -72,7 +72,7 @@ Consolida, a partir de pesquisa de mercado (2026), um catálogo objetivo de "che
 | Como detectar | `grep_search` de cada `R-0XX` em `.github/agents/` + `.github/skills/`; contagem zero ou "referência solta sem checklist correspondente" |
 | Origem (TrustAgent) | Extrínseco — desalinhamento entre política declarada (environment/governance) e comportamento do agent |
 | Severidade | Alta (regra sem enforcement é regra decorativa) |
-| Remediação | `@docs-curator` avalia se a regra deve ganhar checklist explícito em skill/agent relevante, ou ser removida de `CLAUDE.md` por obsolescência |
+| Remediação | `@docs-engineer` avalia se a regra deve ganhar checklist explícito em skill/agent relevante, ou ser removida de `CLAUDE.md` por obsolescência |
 
 ### 2.4 — Diretriz Redundante (Duplicação entre Camadas de Governança)
 
@@ -82,7 +82,7 @@ Consolida, a partir de pesquisa de mercado (2026), um catálogo objetivo de "che
 | Como detectar | Comparação textual entre os 3 arquivos-fonte de governança global + skills candidatas; sobreposição >50% de uma seção inteira é sinal forte |
 | Origem (TrustAgent) | Extrínseco — múltiplas fontes de verdade para a mesma política |
 | Severidade | Média (risco de drift quando só 1 das cópias é atualizada) |
-| Remediação | `@docs-curator` consolida em 1 única fonte de verdade e substitui as demais por referência |
+| Remediação | `@docs-engineer` consolida em 1 única fonte de verdade e substitui as demais por referência |
 
 ### 2.5 — Gap de Cobertura de Categoria (Taxonomia)
 
@@ -92,7 +92,7 @@ Consolida, a partir de pesquisa de mercado (2026), um catálogo objetivo de "che
 | Como detectar | Cruzar `docs/plan/categorizacao-agents-mercado.md` §2 (grupos mapeados) contra `.github/agents/catalog.yaml` (agents reais); mesmo método já aplicado nas Partes A/B deste projeto (`impact-architect` vs `analysis-architect`, `research-router` vs `deep-search`) |
 | Origem (TrustAgent) | Extrínseco — desenho do sistema multi-agent (arquitetura de orquestração) |
 | Severidade | Alta se sobreposição ativa (2 agents competindo pelo mesmo papel); Sugestão se é apenas um gap de categoria intencionalmente não coberta (ver `categorizacao-agents-mercado.md` §5) |
-| Remediação | Propor fusão/substituição (via `@agent-factory` + atualização de `agent-router`) ou registrar como gap intencional em `categorizacao-agents-mercado.md` §5 |
+| Remediação | Propor fusão/substituição (via `@governance-factory` + atualização de `agent-router`) ou registrar como gap intencional em `categorizacao-agents-mercado.md` §5 |
 
 ### 2.6 — Vazamento de Evidência Real (R-044)
 
@@ -102,7 +102,7 @@ Consolida, a partir de pesquisa de mercado (2026), um catálogo objetivo de "che
 | Como detectar | `grep_search` por padrões de caminho absoluto (`[A-Za-z]:\\`, `/home/`, `/Users/`) e por nomes próprios de empresa/produto conhecidos nos arquivos de governança recém-alterados; comparar com o checklist de `CLAUDE.md` § R-044 |
 | Origem (TrustAgent) | Intrínseco — agent confunde "evidência útil na resposta ao chat" (efêmera) com "evidência persistível em arquivo compartilhado" |
 | Severidade | Bloqueador (mesma severidade de R-038 — vazamento de dado de projeto real para repositório compartilhado) |
-| Remediação | Genericizar in-place (repositório → `[PROJETO-X]`, classe/método → `ServicoExemploX`/`operacaoExemploX`, pacote → `com.exemplo.*`, caminho → `<workspace>\[PROJETO-X]`) — métricas numéricas agregadas podem permanecer reais; se o agent de origem não tem guardrail explícito de R-044, acionar `@agent-factory` para adicioná-lo |
+| Remediação | Genericizar in-place (repositório → `[PROJETO-X]`, classe/método → `ServicoExemploX`/`operacaoExemploX`, pacote → `com.exemplo.*`, caminho → `<workspace>\[PROJETO-X]`) — métricas numéricas agregadas podem permanecer reais; se o agent de origem não tem guardrail explícito de R-044, acionar `@governance-factory` para adicioná-lo |
 
 
 ## 3) Severidade — Reaproveitamento da Taxonomia Existente
@@ -126,7 +126,7 @@ Para riscos de segurança (excessive agency, tool sprawl, goal hijacking), refer
 
 | Smell | Local(is) afetado(s) | Severidade | Remediação sugerida | Agent a acionar |
 |---|---|---|---|---|
-| <2.1..2.6> | <arquivo(s)> | Bloqueador/Alto/Sugestão | <ação objetiva> | <@agent-factory/@skill-factory/@docs-curator> |
+| <2.1..2.6> | <arquivo(s)> | Bloqueador/Alto/Sugestão | <ação objetiva> | <@governance-factory/@docs-engineer> |
 
 ## Resumo por Severidade
 - Bloqueador: N

@@ -359,7 +359,7 @@ Próximo passo mínimo:
 | [`@analysis-architect`](analysis-architect.agent.md) | consumidor precisa de blast radius/acoplamento/risco (RF-015..RF-018) para decisão técnica a partir do grafo já construído (RF-009), ou precisa validar o Gate de Paridade Funcional (RNF-012) antes de autorizar RF-012 | project-id(s), nós/arestas relevantes, cobertura reportada, status do gate §8.1 |
 | [`@refactor-planner`](refactor-planner.agent.md) | consumidor precisa de impacto de refatoração a partir do grafo já construído, incluindo blast radius e detecção de ciclo (RF-009/RF-015/RF-016) | project-id(s), nós/arestas relevantes |
 | [`@bug-triage`](bug-triage.agent.md) | consumidor precisa rastrear cadeia de chamadas a partir do grafo já construído (RF-009) | project-id(s), nó de origem, tipo de aresta buscado |
-| [`@agent-factory`](agent-factory.agent.md) | qualquer ajuste estrutural deste próprio agent (rename, nova ferramenta, etc.) | proposta de mudança + justificativa |
+| [`@governance-factory`](governance-factory.agent.md) | qualquer ajuste estrutural deste próprio agent (rename, nova ferramenta, etc.) | proposta de mudança + justificativa |
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 

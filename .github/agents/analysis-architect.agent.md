@@ -76,7 +76,7 @@ Pedido recebido?
 │   └─ Sim → delegar para fluxo de desenvolvimento (fora deste agent)
 │
 ├─ É dúvida sobre governança de agents?
-│   └─ Sim → delegar para @agent-factory
+│   └─ Sim → delegar para @governance-factory
 │
 └─ Escopo ambíguo → ask_questions (sistemas, tipo de mudança, nível de análise)
 ```
@@ -219,9 +219,9 @@ Próximo passo mínimo:
 
 - [`@business-rules-extractor`](business-rules-extractor.agent.md) → extrair regras de negócio do código.
 - [`@refactor-planner`](refactor-planner.agent.md) → quando a análise resultar em plano de refatoração.
-- [`@agent-factory`](agent-factory.agent.md) → quando a demanda for sobre estrutura de agents.
+- [`@governance-factory`](governance-factory.agent.md) → quando a demanda for sobre estrutura de agents.
 - [`@deep-search`](deep-search.agent.md) → delegar quando precisar de pesquisa externa (documentação oficial, changelog, versão, best practice de mercado) que não está disponível localmente/indexado.
-- [`@docs-curator`](docs-curator.agent.md) → documentar decisões de integração ou análise.
+- [`@docs-engineer`](docs-engineer.agent.md) → documentar decisões de integração ou análise.
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 

@@ -19,24 +19,23 @@
 | Agent | `prompt-structuring` | ⚠️ ***(NEW)*** Passo mandatório pós-`agent-router` (R-041) — refina o prompt em loop controlado (máx. 5 iterações) antes de retornar para classificação de intenção |
 | Agent | `bug-triage` | Triagem de bugs/regressões com reprodução e severidade |
 | Agent | `test-strategy` | Estratégia de testes, cobertura por risco e critérios de aceitação |
-| Agent | `test-implementation` | ⭐ ***(NEW)*** Implementar suítes de testes unitários, integração e E2E com cobertura objetiva |
-| Agent | `test-fix` | 🔧 ***(NEW)*** Corrigir testes quebrados a partir de relatório de falhas — opera somente nos testes identificados |
+| Agent | `test-engineer` | 🧪 ***(FUSÃO)*** Implementar suítes de teste (unit/integration/E2E), corrigir testes quebrados e expandir cobertura — modos `create`/`fix`/`coverage`; nunca roda a suíte completa autonomamente no modo `fix` |
 | Agent | `refactor-planner` | Planejamento de refatoração incremental com risco e rollback |
-| Agent | `docs-curator` | Curadoria e padronização de documentação/catálogo |
 | Agent | `deep-search` | 🔎 ***(NEW)*** Retriever/Researcher para pesquisa interna (repo + context-mode + terminal read-only) e externa (Tavily), com decomposição paralela de pesquisa composta |
 | Agent | `analysis-architect` | Análise técnica unificada: impacto local (tier B1), risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL) com metodologia B1/B2/B3 |
 | Agent | `agent-auditor` | 🧪 ***(NEW)*** Auditoria semântica de governança do próprio catálogo (agents/skills/prompts): detecta smells e gaps, classifica severidade e recomenda handoff para executores, sempre read-only |
-| Agent | `agent-factory` | Criação/revisão estrutural de agents e governança |
+| Agent | `governance-factory` | 🏭 ***(FUSÃO)*** Criação/revisão de agent, skill ou prompt via parâmetro `type` — substitui agent-factory + skill-factory + prompt-factory, que compartilhavam o mesmo fluxo canônico |
 | Agent | `context-builder` | Coletar, condensar e persistir contexto técnico em `docs/context/` |
 | Agent | `binding-initializer` | ⚡ ***(NEW)*** Criar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — Health Check R-034) |
 | Agent | `adapter-generator` | ⚡ ***(NEW)*** Gerar automaticamente adapters em `.github/instructions/` via `/add-project-context` |
-| Agent | `skill-factory` | ⭐ ***(NEW)*** Criar/revisar skills customizadas com padrão SKILL.md e `.index.json` atômico |
-| Agent | `prompt-factory` | 📝 ***(NEW)*** Criar/revisar `.prompt.md` seguindo padrão canônico Copilot 2026: frontmatter correto, body estruturado e README atualizado |
 | Agent | `business-rules-extractor` | 📋 ***(NEW)*** Extrair regras de negócio de código e documentar em `.md`; validar refatorações contra regras documentadas |
-| Agent | `angular` | 🅰️ Especialista Angular **enterprise, perfil híbrido v2.0.0** — análise/recomendação (arquitetura moderna, RxJS+Signals, performance CWV/SSR, segurança, acessibilidade, testes, upgrades) **E** implementação de feature/bugfix (testing-first, diff mínimo), carregando skills de componentização, patterns Angular e contratos de API para design system |
-| Agent | `spring-boot` | ☕ Especialista backend Spring Boot **enterprise, perfil híbrido v2.0.0** — análise/recomendação (arquitetura, versões Java/JDK, performance, observabilidade, segurança, migração) **E** implementação de feature/bugfix (virtual threads vs reativo, testing-first) |
-| Agent | `spring-reactive` | ⚛️ Especialista backend reativo Spring WebFlux/Reactor **enterprise, perfil híbrido v2.0.0** — análise/recomendação (capacidade, resiliência, backpressure, observabilidade, segurança, compatibilidade Java/JDK) **E** implementação de feature/bugfix (sem bloqueio de event-loop, testing-first) |
-| Agent | `docs-writer` | 📝 ***(NEW)*** Perfil documentador agnóstico de domínio — gera/atualiza documentação técnica em Markdown (Diátaxis, ADR/MADR, README, runbook, postmortem), produz exclusivamente arquivos `.md` |
+| Agent | `runtime-verifier` | 🩺 ***(NEW)*** Verifica saúde do ambiente (build limpo, dependências, serviços dependentes) antes de disparar testes/codificadores; read-only, nunca corrige |
+| Agent | `pr-gatekeeper` | 📦 ***(NEW)*** Prepara PR pós-aprovação do quality gate — diff, commit semântico, matriz de risco, `CHANGELOG.md`; nunca executa `git commit`/`push` |
+| Agent | `database-specialist` | 🗄️ ***(NEW)*** Migrações de schema (Flyway/Liquibase/Alembic), otimização de query e integridade referencial; rollback sempre documentado |
+| Agent | `angular-engineer` | 🅰️ Especialista Angular **enterprise, perfil híbrido v2.1.0** — análise/recomendação (arquitetura moderna, RxJS+Signals, performance CWV/SSR, segurança, acessibilidade, testes, upgrades) **E** implementação de feature/bugfix (testing-first, diff mínimo), carregando skills de componentização, patterns Angular e contratos de API para design system |
+| Agent | `spring-boot-engineer` | ☕ Especialista backend Spring Boot **enterprise, perfil híbrido v2.1.0** — análise/recomendação (arquitetura, versões Java/JDK, performance, observabilidade, segurança, migração) **E** implementação de feature/bugfix (virtual threads vs reativo, testing-first) |
+| Agent | `spring-reactive-engineer` | ⚛️ Especialista backend reativo Spring WebFlux/Reactor **enterprise, perfil híbrido v2.1.0** — análise/recomendação (capacidade, resiliência, backpressure, observabilidade, segurança, compatibilidade Java/JDK) **E** implementação de feature/bugfix (sem bloqueio de event-loop, testing-first) |
+| Agent | `docs-engineer` | 📝 ***(FUSÃO)*** Autoria e curadoria de documentação técnica em `.md` — modos `author`/`curate`; substitui docs-writer + docs-curator, que já delegavam entre si a mesma decisão |
 | Agent | `code-review` | 🔎 Revisa código (diff/PR) antes do merge por correção, segurança, convenções, impacto, testes e performance; classifica achados por severidade; read-only; delega para `bug-triage`/`analysis-architect`/`test-strategy`/`refactor-planner` |
 | Agent | `requirements-analyst` | 🧾 ***(NEW)*** Elicita e estrutura requisitos funcionais/não-funcionais a partir de pedido de negócio ambíguo (EARS, INVEST, Gherkin, FURPS+); detecta *solution-jumping* via Five Whys; prospectivo (não confundir com `business-rules-extractor`, que é reverso) |
 | Agent | `code-summarizer` | 🗜️ ***(NEW)*** Ponto de entrada único para sumarização de código-fonte agnóstica a linguagem (RF-008); modelo híbrido — heurística/AST determinística primeiro, LLM leve como fallback; nunca substituído por chamada direta a lib de parsing |
@@ -60,25 +59,24 @@
 | ⚠️ Toda solicitação (pós Health Check R-034) | `prompt-structuring` (mandatório, retorna ao `agent-router`) |
 | Bug, erro, regressão | `bug-triage` |
 | Estratégia de testes | `test-strategy` |
-| Implementação de testes (unit/integration/E2E) | `test-implementation` |
-| Correção de testes quebrados (com relatório de falhas) | `test-fix` |
+| Implementação de testes (unit/integration/E2E) | `test-engineer` (`mode: create`) |
+| Correção de testes quebrados (com relatório de falhas) | `test-engineer` (`mode: fix`) |
+| Expansão de cobertura por gap identificado | `test-engineer` (`mode: coverage`) |
 | Planejamento de refactor | `refactor-planner` |
 | Impacto técnico local | `analysis-architect` (tier B1) |
-| Curadoria de documentação | `docs-curator` |
+| Curadoria/autoria de documentação | `docs-engineer` (`mode: curate`/`author`) |
 | Pesquisa interna aprofundada (repo/context-mode/terminal) ou pesquisa externa composta | `deep-search` |
 | Análise técnica, impacto, contratos, integrações cross-sistema | `analysis-architect` |
 | 🧪 Auditoria semântica de governança do catálogo (smells/gaps em agents, skills e prompts) | `agent-auditor` |
-| Criação/revisão de agents | `agent-factory` |
+| Criação/revisão de agent, skill ou prompt | `governance-factory` (`type: agent\|skill\|prompt`) |
 | Consolidação de contexto para execução posterior | `context-builder` |
 | ⚡ Binding context faltando (Health Check) | `binding-initializer` |
 | ⚡ Gerar adapters após /add-project-context | `adapter-generator` |
-| ⭐ Criar/revisar skill customizada | `skill-factory` |
-| 📝 Criar/revisar prompt `.prompt.md` | `prompt-factory` |
 | 📋 Extrair/documentar/validar regras de negócio | `business-rules-extractor` |
-| 🅰️ Análise, recomendação e implementação Angular (feature/bugfix) | `angular` |
-| ☕ Análise, recomendação e implementação backend Spring Boot (feature/bugfix) | `spring-boot` |
-| ⚛️ Análise, recomendação e implementação backend reativo WebFlux/Reactor (feature/bugfix) | `spring-reactive` |
-| 📝 Escrever/gerar documentação técnica em `.md` (qualquer domínio) | `docs-writer` |
+| 🅰️ Análise, recomendação e implementação Angular (feature/bugfix) | `angular-engineer` |
+| ☕ Análise, recomendação e implementação backend Spring Boot (feature/bugfix) | `spring-boot-engineer` |
+| ⚛️ Análise, recomendação e implementação backend reativo WebFlux/Reactor (feature/bugfix) | `spring-reactive-engineer` |
+| 📝 Escrever/gerar/curar documentação técnica em `.md` (qualquer domínio) | `docs-engineer` |
 | 🔎 Revisar código (diff/PR) antes do merge, por severidade | `code-review` |
 | 🧾 Elicitar/estruturar requisitos a partir de pedido ambíguo (pré-técnico) | `requirements-analyst` |
 | 🗜️ Sumarizar código-fonte para reduzir bytes/tokens no contexto (pós-`/init-context` ou sob demanda) | `code-summarizer` |
@@ -92,6 +90,9 @@
 | 🐛 Investigação de causa raiz a partir de stack trace/log | `debugger` |
 | 🎨 Verificação de aderência a convenções de estilo documentadas | `code-style-enforcer` |
 | 🔧 Execução de plano de refatoração já aprovado por `refactor-planner` | `refactor-executor` |
+| 🩺 Verificação de saúde do ambiente (build/deps/serviços) antes de testes/codificadores | `runtime-verifier` |
+| 📦 Preparação de PR pós-aprovação (diff, commit semântico, matriz de risco, changelog) | `pr-gatekeeper` |
+| 🗄️ Migrações de schema, otimização de query e integridade referencial | `database-specialist` |
 
 ## 4) Pre-fetch Recomendado
 
