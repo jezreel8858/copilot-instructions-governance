@@ -102,6 +102,18 @@ function buildGraph(rootsConfig) {
     for (const f of list) files.push({ abs: f, project: r.project, lang: r.lang });
   }
 
+  // Path alias por projeto TypeScript (tsconfig.json `paths`) — resolvido uma
+  // vez por root, reaproveitado para todos os arquivos daquele projeto.
+  const aliasMapsByRoot = {};
+  for (const r of rootsConfig) {
+    if (r.lang !== 'typescript') continue;
+    aliasMapsByRoot[r.root] = findTsconfigAliasMap(r.root);
+  }
+  function aliasMapFor(absPath) {
+    for (const r of rootsConfig) if (absPath.startsWith(r.root)) return aliasMapsByRoot[r.root] || [];
+    return [];
+  }
+
   const nodes = {}, edges = {}, adjacency = {};
   function ensureFileNode(absPath, lang) {
     const pid = projectIdFor(absPath);
@@ -126,13 +138,59 @@ function buildGraph(rootsConfig) {
     adjacency[sourceId] = adjacency[sourceId] || new Set();
     adjacency[sourceId].add(id);
   }
-  function resolveTsImport(fromFile, spec) {
-    if (!spec.startsWith('.')) return null;
-    const base = path.resolve(path.dirname(fromFile), spec);
+  function tryResolveTs(base) {
     const c1 = base + '.ts', c2 = path.join(base, 'index.ts');
     if (fs.existsSync(c1)) return c1;
     if (fs.existsSync(c2)) return c2;
     return null;
+  }
+  function resolveTsImport(fromFile, spec, aliasMap) {
+    if (spec.startsWith('.')) {
+      return tryResolveTs(path.resolve(path.dirname(fromFile), spec));
+    }
+    // Path alias (tsconfig.json `compilerOptions.paths`, ex.: "@core/*" ->
+    // "src/app/core/*") — comum em Angular (@app/@core/@shared/@store/@pages).
+    // Sem isso, todo import por alias era descartado como "lib externa",
+    // gerando falso-negativo de cobertura e falso-positivo de no orfao.
+    if (aliasMap && aliasMap.length) {
+      const match = aliasMap.find((m) => spec === m.aliasPrefix.replace(/\/$/, '') || spec.startsWith(m.aliasPrefix));
+      if (match) {
+        const rest = spec.slice(match.aliasPrefix.length);
+        return tryResolveTs(path.join(match.absDir, rest));
+      }
+    }
+    return null;
+  }
+  function stripJsonComments(str) {
+    return str.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1');
+  }
+  function findTsconfigAliasMap(startDir) {
+    let dir = startDir;
+    for (let i = 0; i < 6; i++) {
+      const candidate = path.join(dir, 'tsconfig.json');
+      if (fs.existsSync(candidate)) {
+        try {
+          const json = JSON.parse(stripJsonComments(fs.readFileSync(candidate, 'utf8')));
+          const co = json.compilerOptions || {};
+          if (co.paths) {
+            const baseDir = path.resolve(dir, co.baseUrl || '.');
+            const map = [];
+            for (const [alias, targets] of Object.entries(co.paths)) {
+              if (!targets || !targets[0]) continue;
+              map.push({
+                aliasPrefix: alias.replace(/\*$/, ''),
+                absDir: path.resolve(baseDir, targets[0].replace(/\*$/, '')),
+              });
+            }
+            return map;
+          }
+        } catch (e) { /* tsconfig invalido/nao-JSON-puro — ignora, sem alias */ }
+      }
+      const parent = path.dirname(dir);
+      if (parent === dir) break;
+      dir = parent;
+    }
+    return [];
   }
   function resolveJavaImport(spec) {
     const rel = spec.replace(/\./g, path.sep) + '.java';
@@ -199,16 +257,33 @@ function buildGraph(rootsConfig) {
     filesRead++;
 
     if (f.lang === 'typescript') {
+      const aliasMap = aliasMapFor(f.abs);
       const importRe = /import\s+(?:\{[^}]*\}|\*\s+as\s+\w+|\w+)\s+from\s+['"]([^'"]+)['"]/g;
       let m;
       while ((m = importRe.exec(content))) {
         bump('ts-import');
-        const target = resolveTsImport(f.abs, m[1]);
+        const target = resolveTsImport(f.abs, m[1], aliasMap);
         if (target) {
           const srcId = ensureFileNode(f.abs, 'typescript');
           const tgtId = ensureFileNode(target, 'typescript');
           const sameProj = projectIdFor(f.abs) === projectIdFor(target);
           addEdge(`import::${srcId}=>${tgtId}`, 'import', srcId, tgtId, 'exact', sameProj ? 'tight' : 'loose');
+        }
+      }
+      // Re-export de barrel file ("export * from './x'", "export { A } from './x'")
+      // — padrao extremamente comum em Angular (ex.: store/effects/index.ts).
+      // Sem isso, arquivos so registrados via barrel (nunca importados
+      // diretamente) ficavam permanentemente orfaos no grafo (falso-positivo).
+      const reexportRe = /export\s+(?:\{[^}]*\}|\*(?:\s+as\s+\w+)?)\s+from\s+['"]([^'"]+)['"]/g;
+      let rm;
+      while ((rm = reexportRe.exec(content))) {
+        bump('ts-reexport');
+        const target = resolveTsImport(f.abs, rm[1], aliasMap);
+        if (target) {
+          const srcId = ensureFileNode(f.abs, 'typescript');
+          const tgtId = ensureFileNode(target, 'typescript');
+          const sameProj = projectIdFor(f.abs) === projectIdFor(target);
+          addEdge(`reexport::${srcId}=>${tgtId}`, 'import', srcId, tgtId, 'exact', sameProj ? 'tight' : 'loose', { reexport: true });
         }
       }
       const decorators = [
