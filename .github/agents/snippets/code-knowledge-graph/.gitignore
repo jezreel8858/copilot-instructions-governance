@@ -1,9 +1,5 @@
-.venv-semgrep/
 graph.json
-graph.mmd
-graph.html
+graph-viewer.html
 tmp-*.json
 tmp-*.log
-__pycache__/
-*.pyc
 

@@ -284,17 +284,20 @@ O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de 
      description: "Construir grafo obrigatório do projeto <nome>",
      task: "RF-001 (fluxo agora MANDATÓRIO de /add-project-context, não mais sugestão):
             projeto recém-registrado <nome-projeto> (project-id em catalog.local.yaml),
-            path <caminho-absoluto>. Seguir §Estratégia de Motor (Semgrep primário, fallback
-            AST só se insuficiente) e indexar via ctx_index ao final — persistência já
-            autorizada por esta invocação, sem pedir confirmação adicional."
+            path <caminho-absoluto>. Invocar o motor único (node build-graph.js <roots...>,
+            via run_in_terminal — gera apenas graph.json) e indexar via ctx_index ao final —
+            persistência já autorizada por esta invocação, sem pedir confirmação adicional.
+            Se o solicitante precisar de visualização interativa, gerar também via
+            node render-viewer.js --in <graph.json> (Cytoscape.js, sem limite de nós —
+            Mermaid não é mais usado como saída automática, limite prático de ~500 nós)."
    )
    ```
-4. Reportar o resultado (motor usado, cobertura, nós/arestas, status da indexação) como parte do relatório de sucesso da FASE 4 — **falha desta fase não é bloqueante para o registro do projeto já feito na FASE 3** (aditivo), mas DEVE ser reportada com evidência e próximo passo mínimo (ex.: instalar venv Semgrep) se não completar.
+4. Reportar o resultado (nós/arestas, cobertura, status da indexação) como parte do relatório de sucesso da FASE 4 — **falha desta fase não é bloqueante para o registro do projeto já feito na FASE 3** (aditivo), mas DEVE ser reportada com evidência e próximo passo mínimo se não completar.
 
 **Saída esperada:**
 ```
 [FASE 4 ✅] run_subagent(code-knowledge-graph) — grafo obrigatório construído
-├─ Motor: Semgrep (primário)
+├─ Motor: pattern-matching (Node.js, build-graph.js) — gera graph.json
 ├─ Nós: <n> | Arestas: <n> | Cobertura: <%>
 ├─ Indexado via ctx_index: ✅ code-graph:<project-id>:<hash>
 └─ Grafo disponível para consulta (ctx_search) no restante da sessão e em sessões futuras
@@ -367,7 +370,7 @@ Deseja também iniciar a sumarização de código-fonte via agent especialista a
 
 [FASE 4 ✅] run_subagent(code-knowledge-graph) — grafo obrigatório construído
 ```
-├─ Motor: Semgrep (primário)
+├─ Motor: pattern-matching (Node.js, build-graph.js) — gera graph.json
 ├─ Nós: 128 | Arestas: 340 | Cobertura: 92%
 ├─ Indexado via ctx_index: ✅ code-graph:meu-projeto-backend:a1b2c3
 └─ Grafo disponível para consulta (ctx_search) no restante da sessão e em sessões futuras
@@ -428,7 +431,7 @@ Antes de confirmar `"Proceder? (y/n)"` em Fase 2:
 | "Execução abortada" | Erro em patch/edição de arquivo | Revisar preview, corrigir entrada e reexecutar |
 | "catalog.local.yaml não existe" | Primeira vez nesta máquina/clone | Copiar de `catalog.local.yaml.example` (feito automaticamente no Health Check) |
 | "catalog.yaml apareceu modificado no git status" | Escrita indevida no arquivo compartilhado — violação de R-043 | PARAR, reverter via `git checkout docs/ai-context/catalog.yaml`, reportar bug |
-| "Semgrep/venv indisponível na FASE 4" | Pré-requisito de venv isolado não instalado | `code-knowledge-graph` deve tentar instalar (ver `snippets/code-knowledge-graph/README.md`); se falhar, acionar fallback AST complementar e reportar motivo — FASE 4 não é pulada, apenas usa motor de fallback |
+| "build-graph.js falhou na FASE 4" | Node.js indisponível ou erro de sintaxe no script | Verificar `node --version` (Environment Fingerprint de `/init-context`); reportar erro real — motor único não tem fallback, FASE 4 é reportada como não-bloqueante mas com evidência do erro |
 
 ---
 

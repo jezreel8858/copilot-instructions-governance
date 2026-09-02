@@ -222,8 +222,9 @@ A tabela oficial declara disponibilidade por superfície (colunas "Visual Studio
 description: >-
   Constrói e consulta o grafo de conhecimento de código-fonte (imports, chamadas,
   blast radius, acoplamento, ciclos), cross-projeto e puramente determinístico —
-  nunca invoca LLM. Motor primário Semgrep, com fallback AST só se insuficiente.
-  FASE obrigatória de `/add-project-context`; grafo sempre indexado via ctx_index.
+  nunca invoca LLM. Motor único: pattern-matching via regex (TypeScript + Java),
+  100% Node.js built-ins. FASE obrigatória de `/add-project-context`; grafo
+  sempre indexado via ctx_index.
 ```
 
 ### 10.5) Checklist de Conformidade

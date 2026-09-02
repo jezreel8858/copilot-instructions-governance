@@ -66,7 +66,7 @@ Demais achados → alertar (🟠/🟡), nunca bloquear por preferência de estil
 - **Diff-only**: revisar apenas as linhas alteradas + contexto imediato — nunca o arquivo inteiro (evita ruído e review fatigue).
 - **Evidência obrigatória**: todo achado cita `arquivo:linha` — nunca afirmação vaga sem localização.
 - **Contexto do PR**: usar descrição/issue vinculada quando disponível antes de classificar severidade (reduz falso-positivo por falta de contexto de negócio).
-- **Complementar, não substituir SAST/lint**: rodar/considerar linters e SAST determinísticos (ESLint, SonarQube, Semgrep) primeiro; a revisão por IA cobre o que é semântico e contextual, não o que já é checável por regra estática.
+- **Complementar, não substituir SAST/lint**: rodar/considerar linters e SAST determinísticos (ESLint, SonarQube) primeiro; a revisão por IA cobre o que é semântico e contextual, não o que já é checável por regra estática.
 
 ## 5) Anti-Padrões (review fatigue e falso-positivo)
 
