@@ -1,6 +1,6 @@
 ---
 name: code-knowledge-graph
-version: "3.0.0"
+version: "3.3.0"
 description: >-
   Constrói e consulta o grafo de conhecimento de código-fonte (imports, chamadas,
   blast radius, acoplamento, ciclos), cross-projeto e puramente determinístico —
@@ -17,7 +17,7 @@ tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'run_subagent', '
 
 Ser o **único ponto de entrada** para construção e consulta do grafo de conhecimento de código-fonte no repositório (RF-001/RF-002/RF-011 do REQ). Recebe um ou mais projetos via `run_subagent`, invoca o **motor único de extração** (pattern-matching via regex, TypeScript + Java, `build-graph.js`), e constrói nós (arquivo/classe/controller/service) e arestas (import/http/cross-repo) **exclusivamente por via determinística** (regex + regras de relacionamento estrutural em `Object`/`Set`) — **nunca invoca LLM** para completar ou inferir relações (RNF-008). Cobre, desde o MVP, escopo cross-projeto via `docs/ai-context/catalog.yaml` (RF-003). Cobre também o **nível arquitetural** entre sistemas/serviços: coleta de artefatos de integração, nós `system`/`service`, arestas `http`/`queue`/`event`, blast radius (profundidade 1 e 2), detecção de dependência circular, classificação de acoplamento (`coupling`) e de risco, e geração de diagrama Mermaid — sempre puramente determinístico (RNF-011/RNF-008). **RF-012/RNF-009 foram executados** (§13/§14 do REQ): a skill legada `dependency-graph-mapping` foi removida do repositório após o Gate de Paridade Funcional (RNF-012) validar 8/9 com evidência de execução real (item 3 — filas/eventos — pendente) — as tabelas de acoplamento (RF-017), risco (RF-018) e as convenções de cor Mermaid (RF-019) deste agent são fonte normativa própria, não replicadas de skill externa.
 
-**Decisão de consolidação de motor (2026-09-01, v3.0.0):** o motor definitivo é o de pattern-matching (regex, 100% Node.js built-ins — `fs`/`path`/`crypto`, sem dependência externa, sem subprocess, sem venv), validado em execução real cross-repo contra 3 projetos (soma-pecas-app + soma-vistoria-app + somaorcamento): 2.668 arquivos processados, 2.417 nós, 5.221 arestas, 3 ciclos reais detectados, 31 arestas cross-repo (24 exact, 7 heuristic), em poucos segundos de execução. Há **um único motor**, referenciado em [`snippets/code-knowledge-graph/build-graph.js`](snippets/code-knowledge-graph/build-graph.js).
+**Decisão de consolidação de motor (2026-09-01, v3.0.0):** o motor definitivo é o de pattern-matching (regex, 100% Node.js built-ins — `fs`/`path`/`crypto`, sem dependência externa, sem subprocess, sem venv), validado em execução real cross-repo contra 13 repositórios (incluindo o monorepo Maven `java-legado`, 6 módulos, descoberto automaticamente via RF-023): 8.222 arquivos processados, 8.050 nós, 27.996 arestas, 28 ciclos reais detectados, 66 arestas cross-repo (55 exact, 11 heuristic), em ~2min de execução. Resolve import TypeScript por **path relativo OU path alias** (`tsconfig.json` `compilerOptions.paths`) e reconhece **re-export de barrel file** — sem isso, arquivos só registrados via barrel (NgRx effects/actions/reducers/selectors) ficavam falsamente órfãos. Resolve import Java **escopado por repositório** (RF-023, bug real corrigido: busca global cross-contaminava repos com classes utilitárias duplicadas) e reconhece **referência same-package sem import** (RF-024, comum em enums/DTOs Java) — juntas, essas correções reduziram órfãos de 156→52 (-67%) e corrigiram 6.770 arestas loose falso-positivo para tight real. Detecta ainda **cross-repo SOAP/JAX-WS** (RF-025, v3.2.0): casa client stub JAX-WS RI (`@WebService` interface, `@RequestWrapper.localName`) com implementação server-side (`@WebService` classe, `@WebMethod`) por `targetNamespace::operação`, fechando o gap onde uma chamada real a EJB via SOAP (ex.: `[PROJETO-A]`→`[PROJETO-B]`) ficava invisível ao motor (só havia detecção cross-repo REST até então). **Exclui arquivos de teste por padrão** (RF-026, v3.3.0, agnóstico de framework — Jest/Jasmine/Vitest/JUnit/TestNG): evidência real mostrou 31% dos nós/35% das arestas de um projeto Angular eram `.spec.ts`, distorcendo blast-radius; reversível via `--include-tests`. Há **um único motor**, referenciado em [`snippets/code-knowledge-graph/build-graph.js`](snippets/code-knowledge-graph/build-graph.js).
 
 **Decisão de visualização (2026-09-01, v3.0.0):** Mermaid tem limite prático de ~500 nós/linhas para renderizar diagrama legível — o grafo real produzido tem milhares de nós (2.417+), tornando Mermaid inadequado como visualização padrão. `build-graph.js` gera **apenas `graph.json`** (dados estruturados). A visualização interativa (busca, filtro por tipo/projeto, destaque de vizinhança, painel de detalhes por nó, sem limite de nós) é responsabilidade de um segundo script, [`snippets/code-knowledge-graph/render-viewer.js`](snippets/code-knowledge-graph/render-viewer.js), que usa **Cytoscape.js** (via CDN, client-side, sem dependência instalável) e gera `graph-viewer.html`. Mermaid permanece disponível apenas para exportações pontuais de subgrafos pequenos (<500 nós) via `mermaid-diagrams/SKILL.md`, nunca como saída automática do motor principal.
 
@@ -93,7 +93,7 @@ Estes 6 valores **substituem** qualquer autoavaliação subjetiva nas seções D
 ```
 Node {
   id: string                              // "<projectId>::<type>::<caminho-ou-fqName>"
-  type: "file" | "controller" | "service"
+  type: "file" | "controller" | "service" | "queue"
                                             // "file": MVP nível código (RF-004)
                                             // "controller"/"service": nível arquitetural — RF-014 constrói de fato (não é apenas reserva de schema)
   projectId: string
@@ -109,7 +109,7 @@ Node {
 ```
 Edge {
   id: string
-  type: "import" | "http"
+  type: "import" | "http" | "queue"
                                             // "import": MVP nível código (RF-005) — TypeScript e Java
                                             // "http": nível arquitetural — RF-014 constrói de fato a partir da coleta RF-013, e também usado para cross-repo matching (§6.2)
   sourceId: string
@@ -151,9 +151,9 @@ Edge {
 
 > Todas as capacidades abaixo são **puramente determinísticas** (RNF-011, reforça RNF-008 sem exceção nenhuma) — nenhuma delas invoca LLM.
 
-**RF-013 — Coleta de artefatos de integração:** via regex sobre o conteúdo já lido pelo motor único — HTTP clients (`this.http.get/post/put/delete`, `fetch`), getter `apiUrl` para cross-repo.
+**RF-013 — Coleta de artefatos de integração:** via regex sobre o conteúdo já lido pelo motor único — HTTP clients (`this.http.get/post/put/delete`, `fetch`), getter `apiUrl` para cross-repo, e mensageria RabbitMQ (`new Queue(...)`, `new DirectExchange/TopicExchange/FanoutExchange(...)`, `@RabbitListener(queues = ...)`, `rabbitTemplate.convertAndSend(...)`) com resolução de constantes Java (`static final String` referenciadas via `Classe.CONST` ou bare-name).
 
-**RF-014 — Construção de nós/arestas de nível arquitetural:** a partir da coleta do RF-013, constrói nós `type: "service"` (endpoint HTTP externo) e arestas `type: "http"`, com `confidence` no mesmo padrão do §6.2.
+**RF-014 — Construção de nós/arestas de nível arquitetural:** a partir da coleta do RF-013, constrói nós `type: "service"` (endpoint HTTP externo) e `type: "queue"` (fila RabbitMQ) e arestas `type: "http"`/`type: "queue"`, com `confidence` no mesmo padrão do §6.2 (`exact` quando o nome da fila resolve via literal/constante, `heuristic` quando usa o token bruto não resolvido).
 
 **RF-015 — Blast radius (profundidade 1 e 2):** BFS reverso sobre a estrutura `Object`/`Set` já existente (sem lib externa) — profundidade 1 = dependentes diretos do nó-alvo; profundidade 2 = dependentes dos dependentes.
 
@@ -166,6 +166,7 @@ Edge {
 | `import` intra-repo | `tight` |
 | `import` cross-repo / `http` / contrato formal | `loose` |
 | Qualquer aresta detectada em ciclo (RF-016) | `circular` — **força** este valor, independente do `type`/regra acima |
+| `queue` (fila/evento, RF-013/RF-014) | `eventual` — mensageria assíncrona (produtor/consumidor desacoplados no tempo) |
 
 **RF-018 — Classificação de risco (fonte normativa própria deste agent):**
 
@@ -178,16 +179,43 @@ Edge {
 
 **RF-019 — Visualização interativa (Cytoscape.js, substitui Mermaid como saída padrão):** quando o resultado do grafo construído tiver 3+ nós, gerar visualização via `node render-viewer.js --in <graph.json>` (script separado de `build-graph.js`) — produz `graph-viewer.html` com Cytoscape.js (busca, filtro por tipo/projeto, destaque de vizinhança BFS 1-nível, painel de detalhes por nó, realce de arestas `circular`), sem limite prático de nós/arestas. Convenções de cor por `coupling`: `tight` = vermelho, `loose` = laranja/tracejado, `circular` = roxo/realçado. Mermaid (`mermaid-diagrams/SKILL.md`) permanece disponível apenas para exportação pontual de subgrafo pequeno (<500 nós) a pedido explícito — nunca como saída automática do motor principal (limite prático de renderização do Mermaid tornaria a saída ilegível/quebrada para o grafo completo).
 
+**RF-020 — Detecção de nós órfãos:** após construir o grafo completo (incluindo nível arquitetural), identifica nós sem NENHUMA aresta (nem entrada nem saída) — sinal de arquivo morto, classe descoberta apenas via component-scan (ex.: `@Configuration` nunca importada explicitamente), ou fila/serviço declarado mas nunca referenciado. Reporta agregado (`total`, `byType`, `byProject`) + amostra acionável (até 30 nós) — nunca trata órfão como erro do motor por padrão (pode ser comportamento legítimo do framework), mas sempre sinaliza para triagem humana.
+
+**RF-023 — Descoberta automática de módulos/source roots:** cada argumento de CLI pode ser um repositório INTEIRO (single ou multi-módulo Maven, ex.: monorepo `java-legado` com 6 módulos EJB/JPA/Web/WS) ou um source root já explícito (`src/main/java`, `src/app`). `discoverSourceRoots()` varre recursivamente e atribui `project` único por módulo (`repo` ou `repo/módulo`) — corrige bug real da v3.0 onde `path.basename(root)` colapsava todo projeto Java em `projectId: "java"` e todo Angular em `"app"`, misturando módulos não-relacionados no mesmo id e inflando falso-positivo de aresta `loose`/`tight` incorreta. `resolveJavaImport` passou a ser escopado por `repoRoot` (nunca busca em outro repositório) — cross-módulo dentro do MESMO repo Maven conta como `tight`.
+
+**RF-024 — Referência same-package Java (sem `import`):** classes no mesmo pacote não exigem `import` (regra da linguagem) — o motor baseado só em `import` era estruturalmente cego a esse caso (enums/DTOs usados apenas por vizinhos de pacote apareciam como órfãos falso-positivo). Detectado via nome de classe (`\bClassName\b`, mínimo 4 caracteres) contra o conteúdo já em memória dos arquivos do mesmo diretório, sem I/O extra. Aresta `confidence: "heuristic"`, `coupling: "tight"`, `metadata.samePackage: true` — **excluída da detecção de ciclos** (DFS usa grafo separado `cycleAdjacency` sem essas arestas, pois referências same-package são tipicamente bidirecionais e infladas ciclos de 28 para 1058 em teste real antes da exclusão).
+
+### RF-025 — Cross-repo SOAP/JAX-WS (client stub ↔ implementação `@WebService`)
+
+Gap descoberto pelo usuário: o motor não ligava `[PROJETO-A]`.`ServicoExemploWeb.operacaoExemploA` (chamada real ao EJB do monorepo `[PROJETO-B]`) porque a única detecção cross-repo existente (RF-013) cobre exclusivamente REST (Angular `apiUrl` ↔ Spring `@RequestMapping`) — contratos SOAP/EJB (JAX-WS RI) eram estruturalmente invisíveis ao motor.
+
+- **Client stub**: interface anotada `@WebService(..., targetNamespace = "...")`, gerada pelo JAX-WS RI, com `@RequestWrapper(localName = "<operação>", ...)` por método — o `localName` é o nome exato da operação SOAP, mais confiável que parsear a assinatura do método.
+- **Implementação server-side**: classe (não interface) anotada `@WebService(targetNamespace = "...")`; operação obtida varrendo cada ocorrência de `@WebMethod` e capturando `public <Tipo> <nomeMetodo>(` na janela seguinte (anotações intermediárias `@WebResult`/`@WebParam` removidas antes do match).
+- **Casamento cross-repo**: chave `targetNamespace::operação`; aresta `type: "soap"` criada **apenas quando client e server estão em `repoRoot` diferentes**, `confidence: "exact"` (namespace explícito) ou `"heuristic"` (sem namespace), `coupling: "loose"`.
+- **Cadeia completa validada** (`[PROJETO-A]` + `[PROJETO-B]`, 2 repositórios apenas): `ServicoClienteExemploImpl` --(`import`, tight)--> stub `ServicoExemploWeb` ([PROJETO-A]) --(`soap`, exact, cross-repo)--> impl `ServicoExemploWeb` ([PROJETO-B]/[MODULO-WS]) — as 2 operações do contrato (`operacaoExemploA`, `operacaoExemploB`) casaram corretamente pelo namespace `http://contrato.exemplo.com/ws/`.
+- **Escopo conhecido**: 31 client stubs / 15 impls detectados no par de repos validado; 162 operações de client permaneceram sem servidor correspondente — inspeção confirmou que são contratos SOAP legítimos cujo lado servidor fica **fora do escopo dos 2 repositórios validados** (ex.: `[ServicoSoapExterno1]`, `[ServicoSoapExterno2]`, `[ServicoSoapExterno3]` — integrações com sistemas third-party não incluídos na validação), não falso-negativo do motor.
+
+### RF-026 — Exclusão de arquivos de TESTE por padrão (agnóstico de framework)
+
+Gap reportado pelo usuário: arquivos de teste "sujavam" o grafo e têm baixa relevância para consumo por agents de arquitetura/impacto. Evidência real medida (projeto Angular real): **31% dos nós e 35% das arestas** eram de arquivos `.spec.ts`/`.test.ts` — inflando artificialmente `fan-in`/blast-radius de componentes (um componente com 50 specs parecia "alto risco" sem ter 50 dependentes de **produção** reais).
+
+- **Detecção agnóstica de framework/linguagem** (regex, sem AST — RNF-008/RNF-011): `isTestFile(absPath)` cobre (a) nome de arquivo `*.spec.ts(x)`/`*.test.ts(x)`/`*.spec.js(x)`/`*.test.js(x)` (Jest/Jasmine/Vitest/Mocha); (b) convenção JUnit/TestNG Java (`FooTest.java`, `FooTests.java`, `TestFoo.java`, `FooIT.java` — Failsafe integration test); (c) diretórios conhecidos (`__tests__`, `__mocks__`, `__snapshots__`, `e2e`, `e2e-playwright`, `cypress`).
+- **Java `src/test/java` já era estruturalmente excluído** por `discoverSourceRoots` (RF-023, só caminha `src/main/java`) — o vetor real de clutter observado é **TypeScript**, onde `*.spec.ts` fica co-localizado com o componente em `src/app` (não há separação de source root).
+- **Default: exclui.** Flag `--include-tests` reverte para o comportamento anterior (inclui tudo) — capacidade preservada, nunca removida, apenas invertido o padrão com base em evidência de uso real.
+- **Efeito colateral esperado e correto**: arquivos de produção referenciados **apenas** por um spec-file (nunca por outro arquivo de produção) passam a aparecer como órfão de produção — isso é uma informação **mais correta** para análise de impacto/dead-code, não uma regressão (validado: `material-icons-test-registry.ts` em `core/testing/`, usado só por specs, corretamente reclassificado).
+- **Validação real** (mesmo projeto, antes/depois): nós 1.143→789 (-31%), arestas 4.320→2.794 (-35%), órfãos 2→8 (aumento esperado — 6 arquivos eram "falsamente conectados" só via spec).
+
 ## Cobertura de Framework (RF-022)
 
 > Todas as regras abaixo são propostas próprias (`build-graph.js`), validadas com evidência real onde indicado.
 
 | Framework | Sinais detectados | Evidência real |
 |---|---|---|
-| Angular | `@Component`/`@Injectable`/`@NgModule`/`@Directive`/`@Pipe`, HTTP client, getter `apiUrl` | ✅ `somaorcamento` (264 `@Component`, 152 `@Injectable`, 15 `@NgModule`, 38 `@Directive`, 20 `@Pipe`, 38 `apiUrl`) |
-| Spring Boot | `@RestController`+`@RequestMapping`, `@Service`, `@Repository` (+ idioma `interface extends JpaRepository`/`CrudRepository`), `@Entity`, `@Configuration` | ✅ `soma-pecas-app`/`soma-vistoria-app` (50 controllers, 306 `@Service`, 140 `@Repository`, 83 `@Entity`, 19 `@Configuration`) |
+| Angular | `@Component`/`@Injectable`/`@NgModule`/`@Directive`/`@Pipe`, HTTP client, getter `apiUrl` | ✅ `angular-project` (264 `@Component`, 152 `@Injectable`, 15 `@NgModule`, 38 `@Directive`, 20 `@Pipe`, 38 `apiUrl`) |
+| Spring Boot | `@RestController`+`@RequestMapping`, `@Service`, `@Repository` (+ idioma `interface extends JpaRepository`/`CrudRepository`), `@Entity`, `@Configuration` | ✅ `springboot-project` (50 controllers, 306 `@Service`, 140 `@Repository`, 83 `@Entity`, 19 `@Configuration`) |
 | Spring Reactive/WebFlux | `Mono<T>`/`Flux<T>` em assinatura de método | ✅ evidência real, baixo volume (2 `Mono`, 2 `Flux` nos 2 backends testados) |
 | EJB/Jakarta EE | `@Stateless`/`@Stateful`/`@Singleton`/`@MessageDriven`, `@EJB` (injeção) | ⚠️ **Sem projeto real no workspace** — regras mantidas por completude, sem evidência real (mesma ressalva da versão anterior) |
+| RabbitMQ (Spring AMQP) | `new Queue`/`new DirectExchange`/`TopicExchange`/`FanoutExchange`, `@RabbitListener(queues = ...)`, `rabbitTemplate.convertAndSend(...)` — com resolução de constante Java (`Classe.CONST` ou bare-name) | ✅ `springboot-project` (1 fila, 1 exchange, 1 listener, 1 producer — `RabbitConfig`/`OrcamentoAutomaticoMensageriaServiceImpl`) |
 
 ## Decision Tree
 
@@ -240,14 +268,19 @@ Extensão arquitetural (RF-013..RF-019):
 Gate de Paridade Funcional (RNF-012 — checklist §8.1 do REQ):
 - [x] 1. Dependências de importação direta mapeadas
 - [x] 2. HTTP clients identificados (URLs hardcoded, configs de proxy, service discovery)
-- [ ] 3. Tópicos de fila/evento rastreados producer→consumer (não coberto pelo motor atual — RabbitMQ/Kafka pendente)
+- [x] 3. Tópicos de fila/evento rastreados producer→consumer (RabbitMQ coberto — `new Queue`/`Exchange`, `@RabbitListener`, `convertAndSend`, com resolução de constantes Java; Kafka/JMS/outros brokers não testados, sem evidência real no workspace)
 - [x] 4. Dependências circulares verificadas
 - [x] 5. Blast radius calculado (profundidade 1 e 2)
-- [x] 6. Acoplamento classificado (Tight/Loose/Circular; Eventual reservado, sem evidência real ainda)
+- [x] 6. Acoplamento classificado (Tight/Loose/Circular/Eventual — Eventual agora com evidência real via arestas de fila RabbitMQ)
 - [x] 7. Visualização interativa gerada (Cytoscape.js, `graph-viewer.html`, 3+ nós — Mermaid não é mais usado como saída automática)
 - [x] 8. Dados sensíveis (PII/financeiro) rastreados separadamente
 - [x] 9. Nós de nível controller/service construídos
-- Resultado: 8/9 ✅ — item 3 (filas/eventos) pendente de implementação futura
+- Resultado: 9/9 ✅ — item 3 (filas/eventos) cobre RabbitMQ com evidência real; Kafka/JMS permanecem fora de escopo até evidência real em outro projeto
+
+Nós órfãos (RF-020 — sem nenhuma aresta):
+- Total: <n> (file: <n>, controller: <n>, service: <n>, queue: <n>)
+- Por projeto: <projectId>: <n>, ...
+- Amostra (até 30): <lista id/name/filePath>
 
 Validações:
 - Cache code-graph reaproveitado (sem reprocessar): ✅/❌
@@ -278,6 +311,7 @@ Próximo passo mínimo:
 - [ ] Diagrama Mermaid (RF-019) gerado apenas quando o grafo tiver 3+ nós, aplicando as convenções de cor normativas próprias deste agent, referenciando (não duplicando) `mermaid-diagrams`.
 - [ ] Gate de Paridade Funcional (RNF-012, §8.1) reportado com os 9 itens ✅/❌ explícitos.
 - [ ] Nenhuma referência a `dependency-graph-mapping` ou a subprocess/venv de terceiros reintroduzida neste agent.
+- [ ] Nós órfãos (RF-020) calculados via adjacência + adjacência reversa já construídas (sem lib externa) e reportados com agregado + amostra — nunca omitidos silenciosamente.
 - [ ] Grafo final consolidado indexado via `ctx_index` (`code-graph:<project-id>:<hash>`) antes de reportar o resultado — sem essa indexação, o grafo não fica disponível via `ctx_search` na sessão.
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)

@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
 # .githooks/pre-commit — Defesa em profundidade para R-043 (Local Overlay Pattern)
+# e R-044 (Anonimização Obrigatória de Evidência de Análise Real)
 #
-# Bloqueia commits que vazem dados LOCAIS/PRIVADOS de projetos para o
+# Bloqueia commits que vazem dados LOCAIS/PRIVADOS de projetos (R-043) ou
+# evidência real de análise (nomes de repo/caminhos absolutos, R-044) para o
 # repositório de governança compartilhado. Complementa (não substitui) o
-# .gitignore — protege contra `git add -f` e edições manuais acidentais.
+# `.gitignore`/revisão manual — protege contra `git add -f` e edições
+# acidentais.
 #
 # SETUP (uma vez por clone):
 #   git config core.hooksPath .githooks
 #
-# Ver: CLAUDE.md § R-043
+# Ver: CLAUDE.md § R-043, § R-044
 
 set -euo pipefail
 
@@ -40,9 +43,30 @@ if git diff --cached --name-only | grep -qx "docs/ai-context/catalog.local.yaml"
   blocked=1
 fi
 
+# 4) Defesa em profundidade para R-044 (Anonimização Obrigatória de Evidência
+#    de Análise Real): nenhum caminho de sistema de arquivos local ABSOLUTO
+#    pode aparecer em conteúdo ADICIONADO sob .github/** (exceto local/, já
+#    bloqueado acima) — sinal forte de vazamento de nome real de
+#    repositório/usuário via changelog/exemplo de agent analítico.
+#    CLAUDE.md/copilot-instructions.md são EXCLUÍDOS deste check: são os
+#    próprios arquivos de definição da regra R-044 e legitimamente contêm
+#    exemplos ilustrativos de caminho (ex.: "C:\Users\...", "D:\workspace\...")
+#    para explicar o que NÃO fazer — não são evidência real de projeto.
+staged_gov_files=$(git diff --cached --name-only | grep '^\.github/' | grep -v '^\.github/instructions/local/' || true)
+if [ -n "$staged_gov_files" ]; then
+  while IFS= read -r f; do
+    [ -z "$f" ] && continue
+    if git diff --cached -- "$f" | grep -qE '^\+.*([A-Za-z]:\\(Users|workspace)|/home/[A-Za-z0-9_.-]+/|/Users/[A-Za-z0-9_.-]+/)'; then
+      echo "❌ [R-044] Bloqueado: $f contém caminho de sistema de arquivos local absoluto (possível vazamento de evidência de projeto real)."
+      echo "   → Genericize caminhos/nomes antes de commitar. Ver CLAUDE.md § R-044."
+      blocked=1
+    fi
+  done <<< "$staged_gov_files"
+fi
+
 if [ "$blocked" -ne 0 ]; then
   echo ""
-  echo "Commit abortado — violação de R-043 (Local Overlay Pattern). Ver CLAUDE.md § R-043."
+  echo "Commit abortado — violação de R-043/R-044. Ver CLAUDE.md § R-043 / § R-044."
   exit 1
 fi
 
