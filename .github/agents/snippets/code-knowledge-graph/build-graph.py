@@ -75,8 +75,30 @@ def resolve_ts_import(from_file: str, spec: str) -> str | None:
     return str(base) + '.ts'  # melhor esforco
 
 
+def resolve_java_import(spec: str, project_roots: list[str]) -> str | None:
+    """Convencao Maven: import a.b.C -> <root>/a/b/C.java (root = .../src/main/java).
+    Libs externas (java.*, javax.*, org.springframework.*, etc.) nao resolvem contra
+    nenhum root e sao descartadas (mesmo criterio de 'so imports locais' do TS)."""
+    rel = spec.replace('.', '/') + '.java'
+    for root in project_roots:
+        candidate = Path(root) / rel
+        if candidate.exists():
+            return str(candidate.resolve())
+    return None
+
+
+# Registro de resolvers por rule-id do Semgrep: (linguagem, funcao-resolvedora).
+# Adicionar novo par aqui e o node/edge de import passa a ser construido
+# automaticamente por build_import_graph, sem duplicar o loop principal.
+IMPORT_RESOLVERS = {
+    'ts-import': ('typescript', lambda from_file, spec, roots: resolve_ts_import(from_file, spec)),
+    'java-import': ('java', lambda from_file, spec, roots: resolve_java_import(spec, roots)),
+}
+
+
 def build_import_graph(results: list[dict], project_roots: list[str]) -> dict:
-    """Pass 1+2: nos (arquivo) + arestas (import) intra-repo, RF-004/RF-005."""
+    """Pass 1+2: nos (arquivo) + arestas (import) intra-repo, RF-004/RF-005.
+    Cobre TS (ts-import) e Java (java-import) - ver IMPORT_RESOLVERS."""
     nodes: dict[str, dict] = {}
     edges: dict[str, dict] = {}
     adjacency: dict[str, set] = {}
@@ -94,17 +116,19 @@ def build_import_graph(results: list[dict], project_roots: list[str]) -> dict:
         return node_id
 
     for r in results:
-        if r['check_id'] != 'ts-import':
+        resolver_entry = IMPORT_RESOLVERS.get(r['check_id'])
+        if resolver_entry is None:
             continue
+        language, resolve_fn = resolver_entry
         from_file = r['path']
         spec = extract_value(r['extra']['message'])
         if not spec:
             continue
-        target = resolve_ts_import(from_file, spec)
+        target = resolve_fn(from_file, spec, project_roots)
         if not target or not Path(target).exists():
             continue
-        src_id = ensure_node(from_file, 'typescript')
-        tgt_id = ensure_node(target, 'typescript')
+        src_id = ensure_node(from_file, language)
+        tgt_id = ensure_node(target, language)
         edge_id = f'import::{src_id}=>{tgt_id}'
         if edge_id not in edges:
             same_project = project_id_for(from_file, project_roots) == project_id_for(target, project_roots)
@@ -118,21 +142,45 @@ def build_import_graph(results: list[dict], project_roots: list[str]) -> dict:
     return {'nodes': nodes, 'edges': edges, 'adjacency': adjacency}
 
 
-def apply_framework_annotations(graph: dict, results: list[dict]) -> None:
-    """Enriquece nos existentes com metadata.framework (Angular/Spring) - RF-002/RF-014."""
+def apply_framework_annotations(graph: dict, results: list[dict], project_roots: list[str]) -> None:
+    """Enriquece nos com metadata.framework (Angular/Spring/Reactive) - RF-002/RF-014.
+    Cobre decorators de classe (Service/Repository/Entity/Configuration/Controller-puro/
+    Reactive Mono-Flux) alem dos 3 originais - cria o no de arquivo quando ainda nao
+    existir (ex.: classe sem nenhum import local capturado por java-import/ts-import)."""
     framework_rules = {
         'angular-component-decorator': 'angular-component',
         'angular-injectable-decorator': 'angular-injectable',
         'spring-service-decorator': 'spring-service',
+        'spring-repository-decorator': 'spring-repository',
+        'spring-entity-decorator': 'spring-entity',
+        'spring-configuration-decorator': 'spring-configuration',
+        'spring-controller-decorator': 'spring-controller-plain',
+        'reactive-controller-mono': 'reactive-mono',
+        'reactive-controller-flux': 'reactive-flux',
+    }
+    java_rules = {
+        'spring-service-decorator', 'spring-repository-decorator', 'spring-entity-decorator',
+        'spring-configuration-decorator', 'spring-controller-decorator',
+        'reactive-controller-mono', 'reactive-controller-flux',
     }
     for r in results:
         cid = r['check_id']
         if cid not in framework_rules:
             continue
         f = r['path']
-        for node_id, node in graph['nodes'].items():
-            if node['filePath'] == f:
-                node['metadata']['framework'] = framework_rules[cid]
+        node_id = next((nid for nid, n in graph['nodes'].items() if n['filePath'] == f), None)
+        if node_id is None:
+            # arquivo sem no criado pelo import-graph (ex.: classe sem import local) -
+            # cria o no aqui mesmo, evitando descartar o achado do Semgrep.
+            language = 'java' if cid in java_rules else 'typescript'
+            pid = project_id_for(f, project_roots)
+            node_id = f'file::{pid}::{f}'
+            graph['nodes'][node_id] = {
+                'id': node_id, 'type': 'file', 'projectId': pid,
+                'name': Path(f).name, 'filePath': f, 'language': language, 'metadata': {},
+            }
+            graph['adjacency'].setdefault(node_id, set())
+        graph['nodes'][node_id]['metadata']['framework'] = framework_rules[cid]
 
     # Controllers Spring: cria nó mesmo se não capturado no import graph (Java não tem import-graph resolvido)
     for r in results:
@@ -258,6 +306,37 @@ def classify_risk(depth1_count: int) -> str:
     return 'Baixo'
 
 
+# Rule-ids que representam elemento estrutural (arquivo com import resolvivel ou
+# decorator de framework) - usado para calcular cobertura real RF-010/RNF-005.
+# Exclui rules de metadata pura (ts-field-*, spring-get/post-mapping, spring-bean-method,
+# spring-transactional-method, spring-autowired-field) que anotam metodo/campo, nao arquivo.
+STRUCTURAL_RULE_IDS = {
+    'ts-import', 'java-import',
+    'angular-component-decorator', 'angular-injectable-decorator', 'angular-ngmodule-decorator',
+    'angular-directive-decorator', 'angular-pipe-decorator',
+    'spring-service-decorator', 'spring-repository-decorator', 'spring-entity-decorator',
+    'spring-configuration-decorator', 'spring-controller-decorator', 'spring-rest-controller-with-mapping',
+    'reactive-controller-mono', 'reactive-controller-flux',
+    'ejb-stateless-decorator', 'ejb-stateful-decorator', 'ejb-singleton-decorator',
+    'ejb-messagedriven-decorator', 'ejb-local-remote-interface',
+}
+
+
+def compute_coverage(graph: dict, results: list[dict]) -> dict:
+    """RF-010/RNF-005: cobertura real = % de arquivos com achado estrutural do Semgrep
+    que efetivamente viraram no/aresta no grafo final (nao apenas 'Semgrep detectou')."""
+    structural_files = {r['path'] for r in results if r['check_id'] in STRUCTURAL_RULE_IDS}
+    graphed_files = {n['filePath'] for n in graph['nodes'].values() if n.get('filePath')}
+    covered = structural_files & graphed_files
+    total = len(structural_files)
+    pct = round(100 * len(covered) / total, 1) if total else 100.0
+    return {
+        'arquivosComAchadoEstrutural': total,
+        'arquivosModeladosNoGrafo': len(covered),
+        'coberturaPercentual': pct,
+    }
+
+
 # RF-021: matching cross-repo 1-para-N (corrige bug greedy 1-para-1 da rodada 3 - §16.4 do REQ)
 def build_cross_repo_edges(graph: dict, results: list[dict], project_roots: list[str]) -> dict:
     if len(project_roots) < 2:
@@ -378,12 +457,13 @@ def main():
     t0 = __import__('time').time()
     results = run_semgrep(project_roots, semgrep_bin, cache_file)
     graph = build_import_graph(results, project_roots)
-    apply_framework_annotations(graph, results)
+    apply_framework_annotations(graph, results, project_roots)
     hits = collect_integration_hits(results)
     build_architectural_edges(graph, hits, project_roots)
     sensitivity_findings = apply_data_sensitivity(graph, results)
     cross_repo = build_cross_repo_edges(graph, results, project_roots)
     cycles = detect_cycles(graph)
+    coverage = compute_coverage(graph, results)
     elapsed_ms = int((__import__('time').time() - t0) * 1000)
 
     coupling_counts = {'tight': 0, 'loose': 0, 'eventual': 0, 'circular': 0}
@@ -431,9 +511,14 @@ def main():
             'unmatchedJava': len(cross_repo['unmatchedJava']),
         },
         'blastRadiusTop5FanIn': blast_report,
+        'coberturaRF010': coverage,
     }
 
     print(json.dumps(summary, indent=2, ensure_ascii=False))
+    if coverage['coberturaPercentual'] < 80:
+        print(f"\nAVISO RF-010: cobertura {coverage['coberturaPercentual']}% < piso de 80% "
+              f"({coverage['arquivosModeladosNoGrafo']}/{coverage['arquivosComAchadoEstrutural']} arquivos) "
+              "- considerar motor de fallback complementar.", file=sys.stderr)
 
     out_nodes = list(graph['nodes'].values())
     out_edges = list(graph['edges'].values())
