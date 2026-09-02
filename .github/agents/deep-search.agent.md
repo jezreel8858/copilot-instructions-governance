@@ -114,6 +114,7 @@ Próximo passo mínimo:
 
 - [`../skills/tavily/SKILL.md`](../skills/tavily/SKILL.md)
 - [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md)
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md)
 - [`../skills/prompt-engineering-patterns/SKILL.md`](../skills/prompt-engineering-patterns/SKILL.md)
 - [`README.md`](README.md)
 - [`catalog.yaml`](catalog.yaml)

@@ -196,7 +196,6 @@ Próximo passo mínimo:
 - [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta eficiente sem poluir contexto.
 - [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) — rastreio de dependências e símbolos no código.
 - [`../skills/handoff-governance/SKILL.md`](../skills/handoff-governance/SKILL.md) — payload mínimo de handoff, usado no Fan-out de análise paralela.
-- [`../skills/tavily/SKILL.md`](../skills/tavily/SKILL.md) — não invocada diretamente por este agent; delegar a `@deep-search`, que aplica esta skill para pesquisa externa.
 
 ## Diretrizes
 

@@ -327,7 +327,6 @@ Se a solicitação pivotar de "extrair/validar regras" para "executar a refatora
 - **`code-tracing`** — 🔍 Localizar regras no código (grep → semântico → call chain)
 - **`mermaid-diagrams`** — 📊 Diagramas de estado para regras FLOW
 - **`context-mode`** — 🧠 Para análise de módulos grandes sem poluir contexto
-- **`terminal-governance`** — 🔧 Se usar grep no terminal em vez de grep_search
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 

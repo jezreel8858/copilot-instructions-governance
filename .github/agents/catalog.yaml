@@ -26,7 +26,6 @@ agents:
       - "analysis-architect"
     related_skills:
       - "context-mode"
-      - "tavily"
       - "agent-contracts"
       - "handoff-governance"
       - "confidence-fallback-policy"
@@ -358,7 +357,6 @@ agents:
       - "code-knowledge-graph"
     related_skills:
       - "context-mode"
-      - "tavily"
       - "agent-contracts"
       - "handoff-governance"
       - "agent-evals-lab"
@@ -454,7 +452,6 @@ agents:
       - "docs-curator"
     related_skills:
       - "context-mode"
-      - "tavily"
       - "agent-contracts"
       - "handoff-governance"
       - "agent-evals-lab"
@@ -732,7 +729,6 @@ agents:
     related_skills:
       - "context-mode"
       - "terminal-governance"
-      - "tavily"
       - "agent-contracts"
       - "handoff-governance"
       - "confidence-fallback-policy"
@@ -784,7 +780,6 @@ agents:
     related_skills:
       - "context-mode"
       - "terminal-governance"
-      - "tavily"
       - "agent-contracts"
       - "handoff-governance"
       - "confidence-fallback-policy"
@@ -834,7 +829,6 @@ agents:
     related_skills:
       - "context-mode"
       - "terminal-governance"
-      - "tavily"
       - "agent-contracts"
       - "handoff-governance"
       - "confidence-fallback-policy"
@@ -1513,8 +1507,8 @@ agents:
 
 metadata:
   total_agents: 35
-  last_updated: "2026-09-02T04:00:00Z"
-  changelog: "2026-09-02 (30) — A pedido do usuario ('analise todos os agents do projeto para avaliar com base no perfil e tools quais deles precisam ter terminal-governance e context-mode, se for preciso ajuste os tools tambem' e 'pode ajustar todos eles'), executada auditoria semantica em todos os 35 agents e aplicados os ajustes: (1) Adicionado 'list_dir' nas tools dos 8 agents que faltavam (refactor-executor, code-style-enforcer, security-reviewer, performance-agent, compliance-guardrails, devops-engineer, debugger, code-review) para conformidade com o tooling baseline universal (agent-contracts § 9). (2) Adicionada a skill terminal-governance nas Docs Sempre Anexadas e no catalog.yaml (related_skills/source_docs) de todos os agents que utilizam run_in_terminal (angular, spring-boot, spring-reactive, deep-search, code-knowledge-graph, refactor-executor, code-style-enforcer, security-reviewer, performance-agent, debugger; removida de business-rules-extractor onde era redundante sem terminal). (3) Adicionada a skill context-mode nas Docs Sempre Anexadas e no catalog.yaml de todos os agents que utilizam context-mode/* (code-review, code-knowledge-graph, security-reviewer, performance-agent, compliance-guardrails, devops-engineer, debugger, feature-planner). Validado com get_errors em todos os 12 arquivos modificados — sem erros. total_agents permanece 35. | 2026-09-02 (29) — A pedido do usuario ('faz sentido ajustar o script para ignorar os arquivos de testes seja qual for o framework? sujou muito o grafo'), validado empiricamente o problema (projeto Angular real: 31% dos nos e 35% das arestas eram arquivos .spec.ts, distorcendo blast-radius/fan-in de componentes) e implementado RF-026 em build-graph.js: nova funcao isTestFile() agnostica de framework/linguagem (Jest/Jasmine/Vitest/Mocha via *.spec.ts(x)/*.test.ts(x)/*.spec.js(x)/*.test.js(x); JUnit/TestNG/Failsafe via FooTest.java/FooTests.java/TestFoo.java/FooIT.java; diretorios __tests__/__mocks__/__snapshots__/e2e/e2e-playwright/cypress); aplicada no filtro de arquivos de buildGraph() com contagem em testFiles.ignorados. Default: EXCLUI testes (capacidade preservada via nova flag --include-tests, nunca removida). Validado: nos 1.143->789 (-31%), arestas 4.320->2.794 (-35%), orfaos 2->8 (aumento esperado e CORRETO: arquivos so referenciados por spec-file, nunca por producao, agora aparecem corretamente como orfao de producao). Confirmado que Java src/test/java ja era estruturalmente excluido (RF-023 so caminha src/main/java) — o vetor real de clutter e exclusivamente TypeScript (specs co-localizados em src/app). Atualizado: build-graph.js (parseArgs com --include-tests, isTestFile(), filtro no loop de arquivos, campo testFiles no retorno/summary, module.exports ampliado), code-knowledge-graph.agent.md (nova secao RF-026, paragrafo de decisao do motor atualizado, version 3.2.1->3.3.0), snippets/code-knowledge-graph/README.md (nova linha de capacidade, 2 novas limitacoes conhecidas #12/#13, secao de validacao dedicada, exemplo de CLI com --include-tests), catalog.yaml (este, version+domain+changelog). Validado com hook .githooks/pre-commit (R-043/R-044) antes de finalizar — sem vazamento de projeto real. Nenhum codigo de projeto analisado foi alterado (analise 100% read-only). total_agents permanece 35.
+  last_updated: "2026-09-02T04:30:00Z"
+  changelog: "2026-09-02 (31) — A pedido do usuario ('faz uma auditoria em todos agents para os seguintes pontos: 1- valide o perfil vs tools vs skills... e se encontrar algum gap ou anti-padrao vc deve ajustar 2- o unico agent que pode ter a skill tavily e o deep-search, os demais agents devem se precisar pesquisar na web ou internamente no projeto deve delegar para o agent-router e seguir o fluxo operacional padrao do projeto'), executada auditoria semantica completa: (1) Removida a skill tavily de related_skills no catalog.yaml dos 6 agents onde constava indevidamente (agent-router, analysis-architect, agent-factory, angular, spring-boot, spring-reactive) e de Docs Sempre Anexadas em analysis-architect.agent.md — deep-search permanece como o UNICO agent autorizado com a skill e tools tavily/*; demais agents delegam pesquisa ao agent-router/deep-search. (2) Corrigidas ferramentas baseline faltantes em 2 agents: 'file_search' adicionado em agentic-memory-manager.agent.md e 'list_dir' adicionado em binding-initializer.agent.md. (3) Corrigidas divergencias de terminal-governance: removida de Docs Sempre Anexadas de agent-auditor.agent.md e test-strategy.agent.md e de Skills Associadas em business-rules-extractor.agent.md (agents sem run_in_terminal), e adicionada em Docs Sempre Anexadas de deep-search.agent.md (que usa run_in_terminal). Validado com get_errors em todos os 8 arquivos modificados — sem erros. total_agents permanece 35. | 2026-09-02 (30) — A pedido do usuario ('analise todos os agents do projeto para avaliar com base no perfil e tools quais deles precisam ter terminal-governance e context-mode, se for preciso ajuste os tools tambem' e 'pode ajustar todos eles'), executada auditoria semantica em todos os 35 agents e aplicados os ajustes: (1) Adicionado 'list_dir' nas tools dos 8 agents que faltavam (refactor-executor, code-style-enforcer, security-reviewer, performance-agent, compliance-guardrails, devops-engineer, debugger, code-review) para conformidade com o tooling baseline universal (agent-contracts § 9). (2) Adicionada a skill terminal-governance nas Docs Sempre Anexadas e no catalog.yaml (related_skills/source_docs) de todos os agents que utilizam run_in_terminal (angular, spring-boot, spring-reactive, deep-search, code-knowledge-graph, refactor-executor, code-style-enforcer, security-reviewer, performance-agent, debugger; removida de business-rules-extractor onde era redundante sem terminal). (3) Adicionada a skill context-mode nas Docs Sempre Anexadas e no catalog.yaml de todos os agents que utilizam context-mode/* (code-review, code-knowledge-graph, security-reviewer, performance-agent, compliance-guardrails, devops-engineer, debugger, feature-planner). Validado com get_errors em todos os 12 arquivos modificados — sem erros. total_agents permanece 35. | 2026-09-02 (29) — A pedido do usuario ('faz sentido ajustar o script para ignorar os arquivos de testes seja qual for o framework? sujou muito o grafo'), validado empiricamente o problema (projeto Angular real: 31% dos nos e 35% das arestas eram arquivos .spec.ts, distorcendo blast-radius/fan-in de componentes) e implementado RF-026 em build-graph.js: nova funcao isTestFile() agnostica de framework/linguagem (Jest/Jasmine/Vitest/Mocha via *.spec.ts(x)/*.test.ts(x)/*.spec.js(x)/*.test.js(x); JUnit/TestNG/Failsafe via FooTest.java/FooTests.java/TestFoo.java/FooIT.java; diretorios __tests__/__mocks__/__snapshots__/e2e/e2e-playwright/cypress); aplicada no filtro de arquivos de buildGraph() com contagem em testFiles.ignorados. Default: EXCLUI testes (capacidade preservada via nova flag --include-tests, nunca removida). Validado: nos 1.143->789 (-31%), arestas 4.320->2.794 (-35%), orfaos 2->8 (aumento esperado e CORRETO: arquivos so referenciados por spec-file, nunca por producao, agora aparecem corretamente como orfao de producao). Confirmado que Java src/test/java ja era estruturalmente excluido (RF-023 so caminha src/main/java) — o vetor real de clutter e exclusivamente TypeScript (specs co-localizados em src/app). Atualizado: build-graph.js (parseArgs com --include-tests, isTestFile(), filtro no loop de arquivos, campo testFiles no retorno/summary, module.exports ampliado), code-knowledge-graph.agent.md (nova secao RF-026, paragrafo de decisao do motor atualizado, version 3.2.1->3.3.0), snippets/code-knowledge-graph/README.md (nova linha de capacidade, 2 novas limitacoes conhecidas #12/#13, secao de validacao dedicada, exemplo de CLI com --include-tests), catalog.yaml (este, version+domain+changelog). Validado com hook .githooks/pre-commit (R-043/R-044) antes de finalizar — sem vazamento de projeto real. Nenhum codigo de projeto analisado foi alterado (analise 100% read-only). total_agents permanece 35.
 
 2026-09-02 (28) — A pedido do usuario ('formaliza no projeto para que isso nao ocorra nunca mais'), formalizada regra normativa global **R-044 (Anonimizacao Obrigatoria de Evidencia de Analise Real)** em CLAUDE.md, extensao direta de R-038 para o caso especifico de evidencia (nomes de repo/classe/metodo/namespace/caminho) derivada de agents que analisam projetos reais do usuario (code-knowledge-graph, business-rules-extractor, context-builder, project-scanner) — motivada pelo incidente da rodada anterior (27), onde nomes reais vazaram em 5 arquivos antes de correcao manual. Regra normativa (R-044) inclui checklist proprio em CLAUDE.md (paralelo ao checklist de R-038), permite metricas numericas agregadas reais (nao identificam projeto) mas exige genericizacao de nomes/caminhos antes de persistir. Atualizado: CLAUDE.md (nova regra R-044 + checklist dedicado, header R-001..R-044), .github/copilot-instructions.md (referencia R-001..R-044, bullet operacional R-044), code-knowledge-graph.agent.md (novo item de nao-escopo citando R-044 e o incidente de origem, version 3.2.0->3.2.1), .github/skills/governance-audit-patterns/SKILL.md (nova categoria de smell 2.6 'Vazamento de Evidencia Real (R-044)', catalogo de 5->6 categorias), .githooks/pre-commit (novo check #4 de defesa em profundidade: bloqueia caminho de sistema de arquivos absoluto adicionado em qualquer arquivo staged sob .github/** exceto local/; CLAUDE.md/copilot-instructions.md excluidos do check pois legitimamente contem exemplos ilustrativos de caminho na propria definicao da regra). Hook testado empiricamente: bloqueia leak simulado (EXIT=1) e nao gera falso-positivo contra as edicoes reais desta rodada (EXIT=0); 1 bug de escaping de regex (4 barras invertidas ao inves de 2) encontrado e corrigido durante o teste funcional antes da validacao final. version deste agent 3.2.0->3.2.1 (fix de governanca/documentacao, sem mudanca funcional no motor). total_agents permanece 35.
 
