@@ -6,7 +6,7 @@ description: >-
   e reprodução mínima. Não corrige o código (isso é do agent especializado
   por stack); complementa bug-triage com investigação mais profunda.
 model: "Claude Sonnet 5"
-tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
+tools: ['read_file', 'list_dir', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Debugger
 
@@ -102,6 +102,8 @@ Próximo passo mínimo:
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
 - [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) — estratégias de rastreio.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada de contexto e otimização de tokens.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais (R-020).
 - Stack trace/log/sintoma — obrigatório.
 

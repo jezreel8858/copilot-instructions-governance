@@ -144,6 +144,7 @@ Executar checklist unificado da skill `specialist-hybrid-advisory-implementation
 - [`catalog.yaml`](catalog.yaml) — catálogo estruturado para roteamento.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais e normativas.
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais e fallback.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
 - [`../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md`](../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md) — padrão híbrido canônico (Advisory + Implementação).
 - [`../skills/frontend-componentization-patterns/SKILL.md`](../skills/frontend-componentization-patterns/SKILL.md) — baseline de componentização genérica.
 - [`../skills/angular-frontend-patterns/SKILL.md`](../skills/angular-frontend-patterns/SKILL.md) — baseline de patterns Angular (Advisory).

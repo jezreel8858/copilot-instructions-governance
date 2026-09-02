@@ -5,7 +5,7 @@ description: >-
   N+1 queries e profiling de latência (backend), otimização de query (banco).
   Nunca corrige, apenas analisa e reporta com evidência mensurável. Read-only.
 model: "Claude Sonnet 5"
-tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
+tools: ['read_file', 'list_dir', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Performance Agent
 
@@ -100,6 +100,8 @@ Próximo passo mínimo:
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
 - [`../skills/performance-engineering-patterns/SKILL.md`](../skills/performance-engineering-patterns/SKILL.md) — thresholds, padrões, ferramentas.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada de contexto e otimização de tokens.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais.
 - Código/query/página alvo — obrigatório.
 

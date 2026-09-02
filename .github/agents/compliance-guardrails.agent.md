@@ -6,7 +6,7 @@ description: >-
   pessoais. Distinto de agent-safety-guardrails (segurança do próprio agent
   de IA). Nunca corrige, apenas analisa e reporta. Read-only.
 model: "Claude Sonnet 5"
-tools: ['read_file', 'grep_search', 'file_search', 'run_subagent', 'context-mode/ctx_search']
+tools: ['read_file', 'list_dir', 'grep_search', 'file_search', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Compliance Guardrails
 
@@ -105,6 +105,7 @@ Próximo passo mínimo:
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
 - [`../skills/compliance-governance-patterns/SKILL.md`](../skills/compliance-governance-patterns/SKILL.md) — frameworks, checklists, findings comuns.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada de contexto e otimização de tokens.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais.
 - Código/config/fluxo de dado alvo — obrigatório.
 

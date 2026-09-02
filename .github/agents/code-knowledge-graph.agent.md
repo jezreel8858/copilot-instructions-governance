@@ -321,6 +321,7 @@ Próximo passo mínimo:
 - [`docs/ai-context/catalog.yaml`](../../docs/ai-context/catalog.yaml) — escopo cross-repo (RF-003).
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais (R-009, R-010, R-038).
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais e Context Mode.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
 - [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — execução em sandbox (`ctx_execute`/`ctx_execute_file`/`ctx_batch_execute`) e cache (`ctx_index`).
 - [`../skills/mermaid-diagrams/SKILL.md`](../skills/mermaid-diagrams/SKILL.md) — boas práticas de diagrama, reaproveitadas por RF-019 (convenções de cor são fonte normativa própria deste agent).
 - Projeto(s)-alvo (identificação explícita em `catalog.yaml`) — nunca inferir quais projetos processar sem o solicitante informar.

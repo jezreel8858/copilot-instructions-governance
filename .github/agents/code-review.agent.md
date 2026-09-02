@@ -5,7 +5,7 @@ description: >-
   impacto, testes e performance. Classifica achados por severidade, nunca
   corrige o código e delega para agents especializados quando necessário.
 model: "Claude Sonnet 5"
-tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
+tools: ['read_file', 'list_dir', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Code Review
 
@@ -113,7 +113,10 @@ Próximo passo mínimo:
 
 - [`../skills/code-review-patterns/SKILL.md`](../skills/code-review-patterns/SKILL.md) — taxonomia, dimensões e critérios de bloqueio.
 - [`../../docs/ai-context/catalog.yaml`](../../docs/ai-context/catalog.yaml) — mapa de adapters por projeto/stack.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada quando o módulo investigado for grande.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais.
+- [`../copilot-instructions.md`](../copilot-instructions.md)
 - Diff/PR/arquivo-alvo da revisão — obrigatório, sem isso não há o que revisar.
 
 ## Diretrizes

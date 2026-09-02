@@ -121,6 +121,7 @@ Próximo passo mínimo:
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
 - [`../skills/task-decomposition-patterns/SKILL.md`](../skills/task-decomposition-patterns/SKILL.md) — estratégias, template, validação.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada de contexto e otimização de tokens.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais (R-018).
 - Requisito/descrição da feature — obrigatório.
 

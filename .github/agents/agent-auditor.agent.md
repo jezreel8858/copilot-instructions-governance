@@ -112,9 +112,10 @@ Próximo Passo:
 
 - [`../skills/governance-audit-patterns/SKILL.md`](../skills/governance-audit-patterns/SKILL.md) — base normativa completa da auditoria.
 - [`../skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) — formato por perfil + tooling baseline.
-- [`../../docs/plan/plano-otimizacao-catalogo-agents.md`](../../docs/plan/plano-otimizacao-catalogo-agents.md) — Parte D (§5) com escopo oficial.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras normativas globais.
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais e autonomia.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta eficiente de escopo/cobertura atual.
 - [`README.md`](README.md) — catálogo textual para cruzamento.
 - [`catalog.yaml`](catalog.yaml) — catálogo estruturado para cobertura/overlap.
 
