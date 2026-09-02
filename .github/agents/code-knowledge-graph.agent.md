@@ -36,7 +36,7 @@ Ser o **único ponto de entrada** para construção e consulta do grafo de conhe
 - ✅ SEMPRE medir e reportar cobertura de nós/arestas e economia de bytes/tokens a cada construção (RF-010).
 - ✅ SEMPRE marcar `confidence: "exact"|"heuristic"` em toda aresta cross-repo (§6.2 do REQ).
 - ✅ SEMPRE calcular risco (RF-018) por contagem **real** de dependentes diretos no grafo já construído — nunca estimar/adivinhar a contagem sem percorrer a estrutura `Object`/`Set`.
-- ✅ SEMPRE invocar o motor único (`node build-graph.js <roots...>`, via `run_in_terminal`) — script sem dependência externa, sem risco de corromper ambiente compartilhado.
+- ✅ SEMPRE invocar o motor único (`node build-graph.js <roots...>`, via `run_in_terminal`) — script se encontra no projeto (deep-agents-copilot), sem dependência externa, sem risco de corromper ambiente compartilhado.
 - ✅ SEMPRE indexar o grafo final consolidado via `ctx_index` (`code-graph:<project-id>:<hash>`) ao término da construção — sem essa indexação o grafo não fica disponível para `ctx_search` durante o restante da sessão.
 
 > **Limitação conhecida (RNF-006/RNF-007 — NÃO IDENTIFICADO no REQ):** não há limiar de performance/latência definido para repositórios grandes ou múltiplos projetos simultâneos. Sem SLA garantido — sinalizar essa limitação no relatório quando o escopo processado for grande, nunca prometer tempo de execução (embora a evidência real de 2.668 arquivos em poucos segundos torne essa limitação menos crítica na prática).
