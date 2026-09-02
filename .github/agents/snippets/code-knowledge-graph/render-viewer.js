@@ -74,6 +74,7 @@ function renderHtml(graphData, title) {
   .b-file { background: #3794ff; }
   .b-controller { background: #ff9d00; color: #1e1e1e; }
   .b-service { background: #4ec9b0; color: #1e1e1e; }
+  .b-queue { background: #c586c0; color: #1e1e1e; }
   .b-tight { background: #f14c4c; }
   .b-loose { background: #cca700; color: #1e1e1e; }
   .b-circular { background: #c586c0; color: #1e1e1e; }
@@ -103,7 +104,7 @@ function renderHtml(graphData, title) {
 </div>
 <script>
 const GRAPH = ${dataJson};
-const typeClass = { file: 'b-file', controller: 'b-controller', service: 'b-service' };
+const typeClass = { file: 'b-file', controller: 'b-controller', service: 'b-service', queue: 'b-queue' };
 const couplingClass = { tight: 'b-tight', loose: 'b-loose', circular: 'b-circular', eventual: 'b-loose' };
 
 const elements = [];
@@ -124,11 +125,13 @@ const cy = cytoscape({
     }},
     { selector: 'node[type = "controller"]', style: { 'background-color': '#ff9d00', shape: 'diamond' } },
     { selector: 'node[type = "service"]', style: { 'background-color': '#4ec9b0', shape: 'round-triangle' } },
+    { selector: 'node[type = "queue"]', style: { 'background-color': '#c586c0', shape: 'hexagon', width: 18, height: 18 } },
     { selector: 'edge', style: {
       'width': 1, 'line-color': '#666', 'target-arrow-color': '#666', 'target-arrow-shape': 'triangle',
       'curve-style': 'bezier', 'opacity': 0.55, 'arrow-scale': 0.6,
     }},
     { selector: 'edge[coupling = "loose"]', style: { 'line-color': '#cca700', 'target-arrow-color': '#cca700', 'line-style': 'dashed' } },
+    { selector: 'edge[coupling = "eventual"]', style: { 'line-color': '#c586c0', 'target-arrow-color': '#c586c0', 'line-style': 'dotted' } },
     { selector: 'edge[coupling = "circular"]', style: { 'line-color': '#c586c0', 'target-arrow-color': '#c586c0', 'width': 2.5, 'opacity': 1 } },
     { selector: '.faded', style: { opacity: 0.06 } },
     { selector: '.highlighted', style: { opacity: 1, 'z-index': 999 } },
@@ -218,11 +221,12 @@ cy.on('tap', 'node', (ev) => {
   if (meta.framework) html += '<div class="row"><span class="k">framework:</span> ' + meta.framework + '</div>';
   if (meta.restPath) html += '<div class="row"><span class="k">restPath:</span> ' + meta.restPath + '</div>';
   if (meta.dataSensitivity) html += '<div class="row"><span class="k">sensibilidade:</span> ' + meta.dataSensitivity + '</div>';
+  if (meta.broker) html += '<div class="row"><span class="k">broker:</span> ' + meta.broker + '</div>';
   html += '<div class="row"><span class="k">fan-in (entrada):</span> ' + incoming.length + '</div>';
   html += '<div class="row"><span class="k">fan-out (saída):</span> ' + outgoing.length + '</div>';
   if (incoming.length) {
     html += '<h3>Depende deste nó (' + incoming.length + ')</h3>';
-    incoming.forEach(e => { html += '<div class="row">← ' + e.source().data('label') + ' <span class="badge ' + (couplingClass[e.data('coupling')]||'') + '">' + e.data('coupling') + '</span></div>'; });
+    incoming.forEach(e => { const role = (e.data('metadata')||{}).role; html += '<div class="row">← ' + e.source().data('label') + ' <span class="badge ' + (couplingClass[e.data('coupling')]||'') + '">' + e.data('coupling') + '</span>' + (role ? ' <span class="badge">' + role + '</span>' : '') + '</div>'; });
   }
   if (outgoing.length) {
     html += '<h3>Este nó depende de (' + outgoing.length + ')</h3>';

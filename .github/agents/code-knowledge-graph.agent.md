@@ -93,7 +93,7 @@ Estes 6 valores **substituem** qualquer autoavaliação subjetiva nas seções D
 ```
 Node {
   id: string                              // "<projectId>::<type>::<caminho-ou-fqName>"
-  type: "file" | "controller" | "service"
+  type: "file" | "controller" | "service" | "queue"
                                             // "file": MVP nível código (RF-004)
                                             // "controller"/"service": nível arquitetural — RF-014 constrói de fato (não é apenas reserva de schema)
   projectId: string
@@ -109,7 +109,7 @@ Node {
 ```
 Edge {
   id: string
-  type: "import" | "http"
+  type: "import" | "http" | "queue"
                                             // "import": MVP nível código (RF-005) — TypeScript e Java
                                             // "http": nível arquitetural — RF-014 constrói de fato a partir da coleta RF-013, e também usado para cross-repo matching (§6.2)
   sourceId: string
@@ -151,9 +151,9 @@ Edge {
 
 > Todas as capacidades abaixo são **puramente determinísticas** (RNF-011, reforça RNF-008 sem exceção nenhuma) — nenhuma delas invoca LLM.
 
-**RF-013 — Coleta de artefatos de integração:** via regex sobre o conteúdo já lido pelo motor único — HTTP clients (`this.http.get/post/put/delete`, `fetch`), getter `apiUrl` para cross-repo.
+**RF-013 — Coleta de artefatos de integração:** via regex sobre o conteúdo já lido pelo motor único — HTTP clients (`this.http.get/post/put/delete`, `fetch`), getter `apiUrl` para cross-repo, e mensageria RabbitMQ (`new Queue(...)`, `new DirectExchange/TopicExchange/FanoutExchange(...)`, `@RabbitListener(queues = ...)`, `rabbitTemplate.convertAndSend(...)`) com resolução de constantes Java (`static final String` referenciadas via `Classe.CONST` ou bare-name) — evidência real: `soma-vistoria-app` (`RabbitConfig`/`OrcamentoAutomaticoMensageriaServiceImpl`).
 
-**RF-014 — Construção de nós/arestas de nível arquitetural:** a partir da coleta do RF-013, constrói nós `type: "service"` (endpoint HTTP externo) e arestas `type: "http"`, com `confidence` no mesmo padrão do §6.2.
+**RF-014 — Construção de nós/arestas de nível arquitetural:** a partir da coleta do RF-013, constrói nós `type: "service"` (endpoint HTTP externo) e `type: "queue"` (fila RabbitMQ) e arestas `type: "http"`/`type: "queue"`, com `confidence` no mesmo padrão do §6.2 (`exact` quando o nome da fila resolve via literal/constante, `heuristic` quando usa o token bruto não resolvido).
 
 **RF-015 — Blast radius (profundidade 1 e 2):** BFS reverso sobre a estrutura `Object`/`Set` já existente (sem lib externa) — profundidade 1 = dependentes diretos do nó-alvo; profundidade 2 = dependentes dos dependentes.
 
@@ -166,6 +166,7 @@ Edge {
 | `import` intra-repo | `tight` |
 | `import` cross-repo / `http` / contrato formal | `loose` |
 | Qualquer aresta detectada em ciclo (RF-016) | `circular` — **força** este valor, independente do `type`/regra acima |
+| `queue` (fila/evento, RF-013/RF-014) | `eventual` — mensageria assíncrona (produtor/consumidor desacoplados no tempo) |
 
 **RF-018 — Classificação de risco (fonte normativa própria deste agent):**
 
@@ -178,6 +179,8 @@ Edge {
 
 **RF-019 — Visualização interativa (Cytoscape.js, substitui Mermaid como saída padrão):** quando o resultado do grafo construído tiver 3+ nós, gerar visualização via `node render-viewer.js --in <graph.json>` (script separado de `build-graph.js`) — produz `graph-viewer.html` com Cytoscape.js (busca, filtro por tipo/projeto, destaque de vizinhança BFS 1-nível, painel de detalhes por nó, realce de arestas `circular`), sem limite prático de nós/arestas. Convenções de cor por `coupling`: `tight` = vermelho, `loose` = laranja/tracejado, `circular` = roxo/realçado. Mermaid (`mermaid-diagrams/SKILL.md`) permanece disponível apenas para exportação pontual de subgrafo pequeno (<500 nós) a pedido explícito — nunca como saída automática do motor principal (limite prático de renderização do Mermaid tornaria a saída ilegível/quebrada para o grafo completo).
 
+**RF-020 — Detecção de nós órfãos:** após construir o grafo completo (incluindo nível arquitetural), identifica nós sem NENHUMA aresta (nem entrada nem saída) — sinal de arquivo morto, classe descoberta apenas via component-scan (ex.: `@Configuration` nunca importada explicitamente), ou fila/serviço declarado mas nunca referenciado. Reporta agregado (`total`, `byType`, `byProject`) + amostra acionável (até 30 nós) — nunca trata órfão como erro do motor por padrão (pode ser comportamento legítimo do framework), mas sempre sinaliza para triagem humana.
+
 ## Cobertura de Framework (RF-022)
 
 > Todas as regras abaixo são propostas próprias (`build-graph.js`), validadas com evidência real onde indicado.
@@ -188,6 +191,7 @@ Edge {
 | Spring Boot | `@RestController`+`@RequestMapping`, `@Service`, `@Repository` (+ idioma `interface extends JpaRepository`/`CrudRepository`), `@Entity`, `@Configuration` | ✅ `soma-pecas-app`/`soma-vistoria-app` (50 controllers, 306 `@Service`, 140 `@Repository`, 83 `@Entity`, 19 `@Configuration`) |
 | Spring Reactive/WebFlux | `Mono<T>`/`Flux<T>` em assinatura de método | ✅ evidência real, baixo volume (2 `Mono`, 2 `Flux` nos 2 backends testados) |
 | EJB/Jakarta EE | `@Stateless`/`@Stateful`/`@Singleton`/`@MessageDriven`, `@EJB` (injeção) | ⚠️ **Sem projeto real no workspace** — regras mantidas por completude, sem evidência real (mesma ressalva da versão anterior) |
+| RabbitMQ (Spring AMQP) | `new Queue`/`new DirectExchange`/`TopicExchange`/`FanoutExchange`, `@RabbitListener(queues = ...)`, `rabbitTemplate.convertAndSend(...)` — com resolução de constante Java (`Classe.CONST` ou bare-name) | ✅ `soma-vistoria-app` (1 fila, 1 exchange, 1 listener, 1 producer — `RabbitConfig`/`OrcamentoAutomaticoMensageriaServiceImpl`) |
 
 ## Decision Tree
 
@@ -240,14 +244,19 @@ Extensão arquitetural (RF-013..RF-019):
 Gate de Paridade Funcional (RNF-012 — checklist §8.1 do REQ):
 - [x] 1. Dependências de importação direta mapeadas
 - [x] 2. HTTP clients identificados (URLs hardcoded, configs de proxy, service discovery)
-- [ ] 3. Tópicos de fila/evento rastreados producer→consumer (não coberto pelo motor atual — RabbitMQ/Kafka pendente)
+- [x] 3. Tópicos de fila/evento rastreados producer→consumer (RabbitMQ coberto — `new Queue`/`Exchange`, `@RabbitListener`, `convertAndSend`, com resolução de constantes Java; Kafka/JMS/outros brokers não testados, sem evidência real no workspace)
 - [x] 4. Dependências circulares verificadas
 - [x] 5. Blast radius calculado (profundidade 1 e 2)
-- [x] 6. Acoplamento classificado (Tight/Loose/Circular; Eventual reservado, sem evidência real ainda)
+- [x] 6. Acoplamento classificado (Tight/Loose/Circular/Eventual — Eventual agora com evidência real via arestas de fila RabbitMQ)
 - [x] 7. Visualização interativa gerada (Cytoscape.js, `graph-viewer.html`, 3+ nós — Mermaid não é mais usado como saída automática)
 - [x] 8. Dados sensíveis (PII/financeiro) rastreados separadamente
 - [x] 9. Nós de nível controller/service construídos
-- Resultado: 8/9 ✅ — item 3 (filas/eventos) pendente de implementação futura
+- Resultado: 9/9 ✅ — item 3 (filas/eventos) cobre RabbitMQ com evidência real; Kafka/JMS permanecem fora de escopo até evidência real em outro projeto
+
+Nós órfãos (RF-020 — sem nenhuma aresta):
+- Total: <n> (file: <n>, controller: <n>, service: <n>, queue: <n>)
+- Por projeto: <projectId>: <n>, ...
+- Amostra (até 30): <lista id/name/filePath>
 
 Validações:
 - Cache code-graph reaproveitado (sem reprocessar): ✅/❌
@@ -278,6 +287,7 @@ Próximo passo mínimo:
 - [ ] Diagrama Mermaid (RF-019) gerado apenas quando o grafo tiver 3+ nós, aplicando as convenções de cor normativas próprias deste agent, referenciando (não duplicando) `mermaid-diagrams`.
 - [ ] Gate de Paridade Funcional (RNF-012, §8.1) reportado com os 9 itens ✅/❌ explícitos.
 - [ ] Nenhuma referência a `dependency-graph-mapping` ou a subprocess/venv de terceiros reintroduzida neste agent.
+- [ ] Nós órfãos (RF-020) calculados via adjacência + adjacência reversa já construídas (sem lib externa) e reportados com agregado + amostra — nunca omitidos silenciosamente.
 - [ ] Grafo final consolidado indexado via `ctx_index` (`code-graph:<project-id>:<hash>`) antes de reportar o resultado — sem essa indexação, o grafo não fica disponível via `ctx_search` na sessão.
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
