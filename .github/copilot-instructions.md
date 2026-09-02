@@ -3,7 +3,7 @@
 > Fonte de verdade operacional: [`CLAUDE.md`](../CLAUDE.md).
 > Mapa de Adapters (compartilhado): [`docs/ai-context/catalog.yaml`](../docs/ai-context/catalog.yaml).
 > Mapa de Projetos (LOCAL/gitignored, R-043): `docs/ai-context/catalog.local.yaml`.
-> IDs normativos: consulte `R-001..R-043` em `CLAUDE.md`.
+> IDs normativos: consulte `R-001..R-044` em `CLAUDE.md`.
 
 ---
 
@@ -112,6 +112,7 @@ Esta matriz é **responsabilidade do roteador** — não é regra global.
 - **Postura Senior Engineer (R-029)**: bullets/tabelas > parágrafos · código limpo sem narrativa inline · tom direto sem filler de IA.
 - **Plano Auto-Implementável (R-031)**: plano aprovado → execução integral sem interrupção. Pré-voo: escopo + contingências inline `[fallback: X]` + critério de falha tolerável. Parada permitida APENAS por: commit autônomo, credencial exposta, ou estado irrecuperável. Relatório final substitui checkpoints intermediários.
 - **Genericidade Obrigatória (R-038)**: toda documentação em `.github/` **DEVE ser genérica**. Sem projetos específicos, tecnologias exclusivas ou convenções de domínio. Se é específico → vai para `.github/instructions/*.instructions.md` (adapter). Teste: substitua projeto por `[PROJETO]` e tech por `[TECH]` — continua válido?
+- **Anonimização de Evidência Real (R-044)**: agents que analisam repositórios reais (`code-knowledge-graph`, `business-rules-extractor`, `context-builder`, `project-scanner`) **NUNCA** persistem nomes de repositório/classe/método/pacote/caminho real em changelog, README ou `.agent.md` commitado — genericize (`[PROJETO-X]`, `ServicoExemploX`, `com.exemplo.*`) ANTES de escrever. Métricas numéricas agregadas podem permanecer reais. Evidência real crua só é permitida na resposta efêmera do chat. Ver checklist em `CLAUDE.md` § R-044.
 - **Grafo de Roteamento (R-040)**: o roteamento de agents DEVE ser declarado como dado estruturado em `docs/ai-context/routing-graph.yaml`. A Decision Tree em prosa é documentação derivada. Toda nova rota exige: *(a)* entrada no grafo; *(b)* atualização da Decision Tree; *(c)* novo caso em `docs/ai-context/evals/casos-roteamento.yaml`.
 
 ### 2.1) context-mode — Regras Obrigatórias de Roteamento (JetBrains Copilot)

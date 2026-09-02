@@ -94,6 +94,17 @@ Consolida, a partir de pesquisa de mercado (2026), um catálogo objetivo de "che
 | Severidade | Alta se sobreposição ativa (2 agents competindo pelo mesmo papel); Sugestão se é apenas um gap de categoria intencionalmente não coberta (ver `categorizacao-agents-mercado.md` §5) |
 | Remediação | Propor fusão/substituição (via `@agent-factory` + atualização de `agent-router`) ou registrar como gap intencional em `categorizacao-agents-mercado.md` §5 |
 
+### 2.6 — Vazamento de Evidência Real (R-044)
+
+| Campo | Conteúdo |
+|---|---|
+| Sintoma | Arquivo commitado sob `.github/**` (exceto `local/`), `CLAUDE.md` ou `docs/ai-context/catalog.yaml` contém nome de repositório/classe/método/pacote/namespace/caminho de arquivo REAL derivado de análise de projeto do usuário (changelog, seção de validação, exemplo "evidência real") — típico de agents analíticos (`code-knowledge-graph`, `business-rules-extractor`, `context-builder`, `project-scanner`) que documentam achados reais como prova de funcionamento |
+| Como detectar | `grep_search` por padrões de caminho absoluto (`[A-Za-z]:\\`, `/home/`, `/Users/`) e por nomes próprios de empresa/produto conhecidos nos arquivos de governança recém-alterados; comparar com o checklist de `CLAUDE.md` § R-044 |
+| Origem (TrustAgent) | Intrínseco — agent confunde "evidência útil na resposta ao chat" (efêmera) com "evidência persistível em arquivo compartilhado" |
+| Severidade | Bloqueador (mesma severidade de R-038 — vazamento de dado de projeto real para repositório compartilhado) |
+| Remediação | Genericizar in-place (repositório → `[PROJETO-X]`, classe/método → `ServicoExemploX`/`operacaoExemploX`, pacote → `com.exemplo.*`, caminho → `<workspace>\[PROJETO-X]`) — métricas numéricas agregadas podem permanecer reais; se o agent de origem não tem guardrail explícito de R-044, acionar `@agent-factory` para adicioná-lo |
+
+
 ## 3) Severidade — Reaproveitamento da Taxonomia Existente
 
 Esta skill **reaproveita** (não recria) a taxonomia de `code-review-patterns`:
@@ -115,7 +126,7 @@ Para riscos de segurança (excessive agency, tool sprawl, goal hijacking), refer
 
 | Smell | Local(is) afetado(s) | Severidade | Remediação sugerida | Agent a acionar |
 |---|---|---|---|---|
-| <2.1..2.5> | <arquivo(s)> | Bloqueador/Alto/Sugestão | <ação objetiva> | <@agent-factory/@skill-factory/@docs-curator> |
+| <2.1..2.6> | <arquivo(s)> | Bloqueador/Alto/Sugestão | <ação objetiva> | <@agent-factory/@skill-factory/@docs-curator> |
 
 ## Resumo por Severidade
 - Bloqueador: N
@@ -128,7 +139,7 @@ Para riscos de segurança (excessive agency, tool sprawl, goal hijacking), refer
 
 ## 6) Checklist de Conformidade da Auditoria
 
-- [ ] Todo achado classificado em uma das 5 categorias de smell (§2) — não inventar 6ª categoria sem justificar aqui primeiro.
+- [ ] Todo achado classificado em uma das 6 categorias de smell (§2) — não inventar 7ª categoria sem justificar aqui primeiro.
 - [ ] Severidade reaproveitada de `code-review-patterns` (Bloqueador/Alto/Sugestão).
 - [ ] Origem classificada como intrínseca ou extrínseca (TrustAgent) quando relevante.
 - [ ] Remediação aponta agent executor real do catálogo (nunca "corrigir diretamente" — agent de auditoria é read-only).
@@ -137,7 +148,7 @@ Para riscos de segurança (excessive agency, tool sprawl, goal hijacking), refer
 ## 7) Anti-padrões
 
 - ❌ Agent de auditoria aplicar a correção diretamente (deve ser read-only — só análise e recomendação).
-- ❌ Inventar categoria de smell fora das 5 listadas sem atualizar esta skill primeiro.
+- ❌ Inventar categoria de smell fora das 6 listadas sem atualizar esta skill primeiro.
 - ❌ Duplicar taxonomia de severidade ou checklist de segurança já existentes em outras skills.
 - ❌ Reportar achado sem apontar agent executor de remediação (relatório inacionável).
 
