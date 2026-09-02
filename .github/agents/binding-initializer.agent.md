@@ -6,7 +6,7 @@ description:
   ecossistema via `ask_questions` (1 pergunta) e gera o esqueleto dos artefatos.
   Projetos são adicionados depois via `/add-project-context`.
 model: "Claude Haiku 4.5"
-tools: ['ask_questions', 'read_file', 'create_file', 'grep_search', 'file_search', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
+tools: ['ask_questions', 'read_file', 'create_file', 'grep_search', 'file_search', 'list_dir', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_batch_execute']
 ---
 
 # Inicializador de Binding Context

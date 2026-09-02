@@ -5,7 +5,7 @@ description: >-
   Infrastructure-as-Code — por segurança, resiliência e boas práticas.
   Nunca corrige, apenas analisa e reporta. Read-only.
 model: "Claude Sonnet 5"
-tools: ['read_file', 'grep_search', 'file_search', 'run_subagent', 'context-mode/ctx_search']
+tools: ['read_file', 'list_dir', 'grep_search', 'file_search', 'run_subagent', 'context-mode/ctx_search']
 ---
 # DevOps Engineer
 
@@ -101,6 +101,7 @@ Próximo passo mínimo:
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
 - [`../skills/devops-agent-patterns/SKILL.md`](../skills/devops-agent-patterns/SKILL.md) — checklists por artefato.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada de contexto e otimização de tokens.
 - [`../instructions/devops.instructions.md`](../instructions/devops.instructions.md) — convenções genéricas.
 - Artefato-alvo (Dockerfile/manifest/pipeline/IaC) — obrigatório.
 

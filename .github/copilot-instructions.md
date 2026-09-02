@@ -67,9 +67,9 @@ Agent ativo de turno anterior? (R-042)
 [Rota decidida]
     ↓
 @bug-triage | @test-strategy | @refactor-planner |
-@impact-architect | @docs-curator | @code-review |
-@requirements-analyst | @angular | @spring-boot | @spring-reactive |
-@deep-search | @analysis-architect
+@analysis-architect | @docs-engineer | @code-review |
+@requirements-analyst | @angular-engineer | @spring-boot-engineer | @spring-reactive-engineer |
+@deep-search
     ↓
 [Execução específica — em task_mode]
     ↓ (toda resposta abre com "Agente Ativo: <name>" — visibilidade de fluxo, agent-contracts § 0)
@@ -350,22 +350,21 @@ Escolha uma ação:
 - `code-review` -> revisão de código (diff/PR) antes do merge, por severidade (read-only).
 - `requirements-analyst` -> elicitação e estruturação de requisitos funcionais e não-funcionais a partir de pedido de negócio ambíguo.
 - `test-strategy` -> estratégia de testes.
-- `test-implementation` -> implementação de testes unitários, integração e E2E.
-- `test-fix` -> correção de testes quebrados a partir de relatório de falhas (opera somente nos testes identificados).
+- `test-engineer` -> implementação de testes (unit/integration/E2E), correção de testes quebrados e expansão de cobertura — modos `create`/`fix`/`coverage` (fusão de test-implementation + test-fix).
 - `business-rules-extractor` -> extração de regras de negócio de código-fonte e documentação em `.md`; validação de refatorações contra regras documentadas.
 - `refactor-planner` -> planejamento de refatoração.
-- `impact-architect` -> análise de impacto técnico.
-- `docs-curator` -> curadoria de documentação de governança.
+- `docs-engineer` -> autoria e curadoria de documentação técnica em `.md` — modos `author`/`curate` (fusão de docs-writer + docs-curator).
 - `deep-search` -> triagem e roteamento de pesquisa interna e externa.
 - `analysis-architect` -> análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL); metodologia B1/B2/B3.
-- `angular` -> especialista Angular com perfil híbrido: análise/recomendação (arquitetura, reatividade, performance, segurança, acessibilidade, testes, upgrade) E implementação de feature/bugfix (testing-first, diff mínimo).
-- `spring-boot` -> especialista Spring Boot com perfil híbrido: análise/recomendação (arquitetura, Java/JDK, performance, observabilidade, segurança, migração) E implementação de feature/bugfix (virtual threads vs reativo, testing-first).
-- `spring-reactive` -> especialista Spring WebFlux/Reactor com perfil híbrido: análise/recomendação (capacidade, resiliência, backpressure, observabilidade) E implementação de feature/bugfix (sem bloqueio de event-loop, testing-first).
-- `agent-factory` -> criar/revisar agents customizados com padrão estrutural.
+- `angular-engineer` -> especialista Angular com perfil híbrido: análise/recomendação (arquitetura, reatividade, performance, segurança, acessibilidade, testes, upgrade) E implementação de feature/bugfix (testing-first, diff mínimo).
+- `spring-boot-engineer` -> especialista Spring Boot com perfil híbrido: análise/recomendação (arquitetura, Java/JDK, performance, observabilidade, segurança, migração) E implementação de feature/bugfix (virtual threads vs reativo, testing-first).
+- `spring-reactive-engineer` -> especialista Spring WebFlux/Reactor com perfil híbrido: análise/recomendação (capacidade, resiliência, backpressure, observabilidade) E implementação de feature/bugfix (sem bloqueio de event-loop, testing-first).
+- `governance-factory` -> criar/revisar agent, skill ou prompt via parâmetro `type` (fusão de agent-factory + skill-factory + prompt-factory).
 - `binding-initializer` -> ⚡ inicializar `catalog.yaml` + `binding.md` + `catalog.local.yaml.example` para novo repositório (1 pergunta — R-034)
 - `adapter-generator` -> ⚡ gerar automaticamente adapters por-projeto em `.github/instructions/local/` (gitignored, R-043) via `/add-project-context`
-- `skill-factory` -> ⭐ criar/revisar skills com padrão estrutural de SKILL.md e `.index.json` atômico
-- `prompt-factory` -> 📝 criar/revisar `.prompt.md` seguindo padrão canônico Copilot 2026 (frontmatter, body, kebab-case, README)
+- `runtime-verifier` -> verificação de saúde do ambiente (build/dependências/serviços) antes de testes/codificadores; read-only.
+- `pr-gatekeeper` -> preparação de PR pós-aprovação (diff, commit semântico, matriz de risco, changelog); nunca commit/push autônomo.
+- `database-specialist` -> migrações de schema, otimização de query e integridade referencial.
 
 ### Skills atuais
 

@@ -36,7 +36,7 @@ Ser o **único ponto de entrada** para construção e consulta do grafo de conhe
 - ✅ SEMPRE medir e reportar cobertura de nós/arestas e economia de bytes/tokens a cada construção (RF-010).
 - ✅ SEMPRE marcar `confidence: "exact"|"heuristic"` em toda aresta cross-repo (§6.2 do REQ).
 - ✅ SEMPRE calcular risco (RF-018) por contagem **real** de dependentes diretos no grafo já construído — nunca estimar/adivinhar a contagem sem percorrer a estrutura `Object`/`Set`.
-- ✅ SEMPRE invocar o motor único (`node build-graph.js <roots...>`, via `run_in_terminal`) — script sem dependência externa, sem risco de corromper ambiente compartilhado.
+- ✅ SEMPRE invocar o motor único (`node build-graph.js <roots...>`, via `run_in_terminal`) — script se encontra no projeto (deep-agents-copilot), sem dependência externa, sem risco de corromper ambiente compartilhado.
 - ✅ SEMPRE indexar o grafo final consolidado via `ctx_index` (`code-graph:<project-id>:<hash>`) ao término da construção — sem essa indexação o grafo não fica disponível para `ctx_search` durante o restante da sessão.
 
 > **Limitação conhecida (RNF-006/RNF-007 — NÃO IDENTIFICADO no REQ):** não há limiar de performance/latência definido para repositórios grandes ou múltiplos projetos simultâneos. Sem SLA garantido — sinalizar essa limitação no relatório quando o escopo processado for grande, nunca prometer tempo de execução (embora a evidência real de 2.668 arquivos em poucos segundos torne essa limitação menos crítica na prática).
@@ -321,6 +321,7 @@ Próximo passo mínimo:
 - [`docs/ai-context/catalog.yaml`](../../docs/ai-context/catalog.yaml) — escopo cross-repo (RF-003).
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais (R-009, R-010, R-038).
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais e Context Mode.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
 - [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — execução em sandbox (`ctx_execute`/`ctx_execute_file`/`ctx_batch_execute`) e cache (`ctx_index`).
 - [`../skills/mermaid-diagrams/SKILL.md`](../skills/mermaid-diagrams/SKILL.md) — boas práticas de diagrama, reaproveitadas por RF-019 (convenções de cor são fonte normativa própria deste agent).
 - Projeto(s)-alvo (identificação explícita em `catalog.yaml`) — nunca inferir quais projetos processar sem o solicitante informar.
@@ -358,7 +359,7 @@ Próximo passo mínimo:
 | [`@analysis-architect`](analysis-architect.agent.md) | consumidor precisa de blast radius/acoplamento/risco (RF-015..RF-018) para decisão técnica a partir do grafo já construído (RF-009), ou precisa validar o Gate de Paridade Funcional (RNF-012) antes de autorizar RF-012 | project-id(s), nós/arestas relevantes, cobertura reportada, status do gate §8.1 |
 | [`@refactor-planner`](refactor-planner.agent.md) | consumidor precisa de impacto de refatoração a partir do grafo já construído, incluindo blast radius e detecção de ciclo (RF-009/RF-015/RF-016) | project-id(s), nós/arestas relevantes |
 | [`@bug-triage`](bug-triage.agent.md) | consumidor precisa rastrear cadeia de chamadas a partir do grafo já construído (RF-009) | project-id(s), nó de origem, tipo de aresta buscado |
-| [`@agent-factory`](agent-factory.agent.md) | qualquer ajuste estrutural deste próprio agent (rename, nova ferramenta, etc.) | proposta de mudança + justificativa |
+| [`@governance-factory`](governance-factory.agent.md) | qualquer ajuste estrutural deste próprio agent (rename, nova ferramenta, etc.) | proposta de mudança + justificativa |
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 

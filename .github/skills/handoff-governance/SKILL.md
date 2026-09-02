@@ -67,7 +67,7 @@ handoff_payload:
 
 ```yaml
 handoff_payload:
-  para: "@test-implementation"
+  para: "@test-engineer"
   motivo: "Estratégia mapeada — pronto para implementar suítes"
   contexto:
     solicitacao_original: "Testes para OrderService"
@@ -142,18 +142,18 @@ handoff_payload:
 @agent-router (triagem)
        │
        ├──→ @bug-triage (bug reportado)
-       │         └──→ @impact-architect (bug tem impacto sistêmico)
+       │         └──→ @analysis-architect (bug tem impacto sistêmico)
        │
        ├──→ @test-strategy (planejar testes)
-       │         └──→ @test-implementation (executar suítes)
+       │         └──→ @test-engineer (executar suítes)
        │
        ├──→ @refactor-planner (planejar refatoração)
-       │         └──→ @impact-architect (análise de impacto necessária antes)
+       │         └──→ @analysis-architect (análise de impacto necessária antes)
        │
        ├──→ @deep-search (pesquisa técnica interna/externa)
        │         └──→ @analysis-architect (análise cross-projeto)
        │
-       └──→ @docs-curator (documentar resultado)
+       └──→ @docs-engineer (documentar resultado)
 ```
 
 ---
@@ -181,13 +181,13 @@ Agent receptor confirma:
 
 | Situação | Escalonamento |
 |---|---|
-| Bug com impacto sistêmico desconhecido | `@bug-triage` → `@impact-architect` |
-| Refatoração sem análise de dependências | `@refactor-planner` → `@impact-architect` |
-| Implementação sem estratégia definida | `@test-implementation` → `@test-strategy` primeiro |
+| Bug com impacto sistêmico desconhecido | `@bug-triage` → `@analysis-architect` |
+| Refatoração sem análise de dependências | `@refactor-planner` → `@analysis-architect` |
+| Implementação sem estratégia definida | `@test-engineer` → `@test-strategy` primeiro |
 | Dúvida técnica que precisa de pesquisa | Qualquer agent → `@deep-search` |
-| Documentação a atualizar após mudança | Qualquer agent → `@docs-curator` |
+| Documentação a atualizar após mudança | Qualquer agent → `@docs-engineer` |
 | **Mudança de fase na mesma conversa** (requisito→implementação, análise→código, revisão→correção) | Downstream atual **DEVE** retornar a `@agent-router` (R-042, re-triagem obrigatória) — **nunca prosseguir sozinho** |
-| Especialista híbrido (`@angular`/`@spring-boot`/`@spring-reactive`) recebe pedido de código **fora** do próprio domínio de stack | Specialist → `@agent-router` com handoff (dentro do próprio domínio, o specialist implementa diretamente — não é deriva) |
+| Especialista híbrido (`@angular-engineer`/`@spring-boot-engineer`/`@spring-reactive-engineer`) recebe pedido de código **fora** do próprio domínio de stack | Specialist → `@agent-router` com handoff (dentro do próprio domínio, o specialist implementa diretamente — não é deriva) |
 
 ### 5.2) Anti Sticky-Session (R-042)
 

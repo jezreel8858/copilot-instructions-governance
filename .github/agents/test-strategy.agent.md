@@ -29,7 +29,7 @@ Você é especialista em estratégia de testes. Seu trabalho é propor plano de 
 | Catálogo textual | [`README.md`](README.md) | Descoberta de agentes e escopos |
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Fonte de roteamento e governança |
 | Router de entrada | [`agent-router.agent.md`](agent-router.agent.md) | Delegação principal de testes |
-| Curadoria de docs | [`docs-curator.agent.md`](docs-curator.agent.md) | Documentar estratégia final |
+| Curadoria de docs | [`docs-engineer.agent.md`](docs-engineer.agent.md) | Documentar estratégia final |
 
 ## Decision Tree
 
@@ -106,7 +106,7 @@ Próximo passo mínimo:
 ## Quando Delegar
 
 - [`@analysis-architect`](analysis-architect.agent.md) para dependências de integração local (tier B1) e cross-sistema.
-- [`@docs-curator`](docs-curator.agent.md) para consolidar documentação final.
+- [`@docs-engineer`](docs-engineer.agent.md) para consolidar documentação final.
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 

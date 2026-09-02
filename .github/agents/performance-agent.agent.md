@@ -5,7 +5,7 @@ description: >-
   N+1 queries e profiling de latência (backend), otimização de query (banco).
   Nunca corrige, apenas analisa e reporta com evidência mensurável. Read-only.
 model: "Claude Sonnet 5"
-tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
+tools: ['read_file', 'list_dir', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Performance Agent
 
@@ -100,6 +100,8 @@ Próximo passo mínimo:
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
 - [`../skills/performance-engineering-patterns/SKILL.md`](../skills/performance-engineering-patterns/SKILL.md) — thresholds, padrões, ferramentas.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada de contexto e otimização de tokens.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais.
 - Código/query/página alvo — obrigatório.
 
@@ -118,7 +120,7 @@ Próximo passo mínimo:
 
 ## Quando Delegar
 
-- [`@spring-boot`](spring-boot.agent.md) / [`@spring-reactive`](spring-reactive.agent.md) / [`@angular`](angular.agent.md) quando o achado exigir implementação da correção (perfil híbrido do specialist).
+- [`@spring-boot-engineer`](spring-boot-engineer.agent.md) / [`@spring-reactive-engineer`](spring-reactive-engineer.agent.md) / [`@angular-engineer`](angular-engineer.agent.md) quando o achado exigir implementação da correção (perfil híbrido do specialist).
 - [`@analysis-architect`](analysis-architect.agent.md) quando o achado indicar problema de arquitetura mais amplo.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 

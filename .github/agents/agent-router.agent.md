@@ -50,10 +50,10 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 | Router de pesquisa | [`deep-search.agent.md`](deep-search.agent.md) | Pesquisa interna aprofundada e externa (atômica/composta) |
 | Arquiteto de análise | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Análise de impacto local (tier B1) e integração cross-sistema |
 | Sumarização de código | [`code-summarizer.agent.md`](code-summarizer.agent.md) | Ponto de entrada único (RF-008) — modelo híbrido AST/heurística → LLM leve fallback |
-| Especialista Angular | [`angular.agent.md`](angular.agent.md) | Advisory — análise/recomendação, nunca implementa |
-| Especialista Spring Boot | [`spring-boot.agent.md`](spring-boot.agent.md) | Advisory — análise/recomendação, nunca implementa |
-| Especialista Spring Reactive | [`spring-reactive.agent.md`](spring-reactive.agent.md) | Advisory — análise/recomendação, nunca implementa |
-| Factory de agents | [`agent-factory.agent.md`](agent-factory.agent.md) | Governança de criação/revisão de agents |
+| Especialista Angular | [`angular-engineer.agent.md`](angular-engineer.agent.md) | Perfil híbrido — Advisory (análise/recomendação) E Implementação (feature/bugfix) |
+| Especialista Spring Boot | [`spring-boot-engineer.agent.md`](spring-boot-engineer.agent.md) | Perfil híbrido — Advisory (análise/recomendação) E Implementação (feature/bugfix) |
+| Especialista Spring Reactive | [`spring-reactive-engineer.agent.md`](spring-reactive-engineer.agent.md) | Perfil híbrido — Advisory (análise/recomendação) E Implementação (feature/bugfix) |
+| Factory de agents | [`governance-factory.agent.md`](governance-factory.agent.md) | Governança de criação/revisão de agents |
 | Cost-Tier Ceiling (Model Enforcement) | [`../skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) § 10 | Teto de custo de plataforma em cadeias `run_subagent` — mitigação obrigatória (nunca iniciar com `Auto`) |
 
 ## Model Awareness — Solicitação de Modelo na Delegação (R-036, versão viável)
@@ -79,7 +79,7 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 | Tipo de Solicitação | Intenção Clara? | Código-Alvo Presente? | Governa Multi-Projeto? | Ação |
 |---|:---:|:---:|:---:|---|
 | *"Ajuste o teste X após bugfix"* | ✅ Sim | ✅ Sim | ❌ Não | **Roteie direto** → @test-strategy |
-| *"Corrija estes testes quebrados (com relatório)"* | ✅ Sim | ✅ Sim | ❌ Não | **Roteie direto** → @test-fix |
+| *"Corrija estes testes quebrados (com relatório)"* | ✅ Sim | ✅ Sim | ❌ Não | **Roteie direto** → @test-engineer |
 | *"Crie novo adapter backend"* | ✅ Sim | ❌ Não | ✅ Sim | **Roteie** → @analysis-architect (tier B1 para impacto local) |
 | *"Implemente feature de listagem"* | ✅ Sim | ❌ Não | ❌ Não | **Roteie direto** → downstream (vai pedir escopo se precisar) |
 | *"Refatore regra em 3 projetos"* | ✅ Sim | ❌ Não | ✅ Sim | **Roteie** → @analysis-architect |
@@ -148,20 +148,20 @@ Pedido recebido (já refinado por @prompt-structuring)?
 |- É pedido para sumarizar código-fonte / reduzir volume de código levado ao contexto (não é revisão/correção)?
 |  |- Sim -> @code-summarizer
 |  \- Não
-|- É análise/recomendação Angular sem implementação (arquitetura, reatividade, performance, a11y, upgrade)?
-|  |- Sim -> @angular
+|- É análise/recomendação OU implementação de feature/bugfix em Angular (arquitetura, reatividade, performance, a11y, upgrade)?
+|  |- Sim -> @angular-engineer
 |  \- Não
-|- É análise/recomendação Spring Boot sem implementação (arquitetura, Java/JDK, observabilidade, migração)?
-|  |- Sim -> @spring-boot
+|- É análise/recomendação OU implementação de feature/bugfix em Spring Boot (arquitetura, Java/JDK, observabilidade, migração)?
+|  |- Sim -> @spring-boot-engineer
 |  \- Não
-|- É análise/recomendação backend reativo Spring WebFlux/Reactor sem implementação?
-|  |- Sim -> @spring-reactive
+|- É análise/recomendação OU implementação de feature/bugfix reativo Spring WebFlux/Reactor?
+|  |- Sim -> @spring-reactive-engineer
 |  \- Não
 |- É estratégia/plano de testes?
 |  |- Sim -> @test-strategy
 |  \- Não
 |- É correção de testes quebrados com relatório de falhas?
-|  |- Sim -> @test-fix
+|  |- Sim -> @test-engineer
 |  \- Não
 |- É extração de regras de negócio ou validação de refatoração?
 |  |- Sim -> @business-rules-extractor
@@ -276,18 +276,18 @@ Próximo passo mínimo:
 - `@requirements-analyst` (`requirements-analyst.agent.md`) para elicitação e estruturação de requisitos a partir de pedido de negócio ambíguo (não confundir com `@business-rules-extractor`, que é reverso — código existente → regra).
 - `@feature-planner` (`feature-planner.agent.md`) para decomposição de feature nova em subtasks — não confundir com `@refactor-planner` (refatoração de código existente).
 - `@code-summarizer` (`code-summarizer.agent.md`) para sumarização de código-fonte agnóstica a linguagem (RF-008) — reduzir bytes/tokens de arquivo levado ao contexto; nunca para revisar/corrigir código (isso é `@code-review`/`@bug-triage`).
-- `@angular` (`angular.agent.md`) para análise/recomendação Angular sem implementação.
-- `@spring-boot` (`spring-boot.agent.md`) para análise/recomendação backend Spring Boot sem implementação.
-- `@spring-reactive` (`spring-reactive.agent.md`) para análise/recomendação backend reativo Spring WebFlux/Reactor sem implementação.
+- `@angular-engineer` (`angular-engineer.agent.md`) para análise/recomendação OU implementação de feature/bugfix em Angular.
+- `@spring-boot-engineer` (`spring-boot-engineer.agent.md`) para análise/recomendação OU implementação de feature/bugfix em backend Spring Boot.
+- `@spring-reactive-engineer` (`spring-reactive-engineer.agent.md`) para análise/recomendação OU implementação de feature/bugfix em backend reativo Spring WebFlux/Reactor.
 - `@test-strategy` (`test-strategy.agent.md`) para estratégia/plano de testes.
-- `@test-fix` (`test-fix.agent.md`) para correção de testes quebrados com relatório de falhas.
+- `@test-engineer` (`test-engineer.agent.md`) para correção de testes quebrados com relatório de falhas.
 - `@business-rules-extractor` (`business-rules-extractor.agent.md`) para extração de regras de negócio e validação de refatorações.
 - `@refactor-planner` (`refactor-planner.agent.md`) para planejamento de refactor do zero.
 - `@refactor-executor` (`refactor-executor.agent.md`) para executar um plano de refactor já aprovado por `@refactor-planner` — nunca cria o plano.
 - `@agentic-memory-manager` (`agentic-memory-manager.agent.md`) para persistência/recuperação de memória entre sessões — não confundir com `@context-builder` (consolidação pontual, read-only).
 - `@analysis-architect` (`analysis-architect.agent.md`) para impacto técnico local (tier B1) e análise cross-sistema.
-- `@docs-curator` (`docs-curator.agent.md`) para curadoria de documentação já existente.
-- `@docs-writer` (`docs-writer.agent.md`) para escrita/geração de documentação técnica nova em `.md`, agnóstica de domínio.
+- `@docs-engineer` (`docs-engineer.agent.md`) para curadoria de documentação já existente.
+- `@docs-engineer` (`docs-engineer.agent.md`) para escrita/geração de documentação técnica nova em `.md`, agnóstica de domínio.
 - [`@deep-search`](deep-search.agent.md) como fallback para pesquisa interna/externa.
 - [`@analysis-architect`](analysis-architect.agent.md) como fallback para integração cross-sistema.
 

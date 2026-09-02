@@ -43,7 +43,7 @@ Opera em dois modos:
 | Skill de rastreio | [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) | Localizar regras no código (grep → semântico → call chain) |
 | Skill de diagramas | [`../skills/mermaid-diagrams/SKILL.md`](../skills/mermaid-diagrams/SKILL.md) | Diagramas de estado para fluxos complexos |
 | Docs de saída | `docs/business-rules/*.md` | Destino de toda documentação gerada |
-| Agent de curadoria | [`docs-curator.agent.md`](docs-curator.agent.md) | Para revisão e curadoria pós-geração |
+| Agent de curadoria | [`docs-engineer.agent.md`](docs-engineer.agent.md) | Para revisão e curadoria pós-geração |
 | Agent de impacto | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Quando violação de regra tem impacto amplo (tier B1 local ou cross-sistema) |
 | Agent de refatoração | [`refactor-planner.agent.md`](refactor-planner.agent.md) | Quando validação precede plano de refactor |
 
@@ -302,7 +302,7 @@ Próximo passo mínimo:
 |---|---|
 | Violação com impacto em múltiplos módulos | `@analysis-architect` (tier B1) |
 | Violação detectada exige plano de refatoração segura | `@refactor-planner` |
-| Documento de regras gerado precisa de curadoria/revisão | `@docs-curator` |
+| Documento de regras gerado precisa de curadoria/revisão | `@docs-engineer` |
 | Violação implica bug em produção | `@bug-triage` |
 | Regras novas detectadas precisam de testes | `@test-strategy` |
 | Modo `validate` precisa enriquecer severidade com blast radius/risco estrutural, ou modo `extract` em escopo de projeto grande/cross-repo precisa mapear "Dependências" da regra a partir de grafo já construído (nunca construir grafo sob demanda) | `@code-knowledge-graph` |
@@ -327,7 +327,6 @@ Se a solicitação pivotar de "extrair/validar regras" para "executar a refatora
 - **`code-tracing`** — 🔍 Localizar regras no código (grep → semântico → call chain)
 - **`mermaid-diagrams`** — 📊 Diagramas de estado para regras FLOW
 - **`context-mode`** — 🧠 Para análise de módulos grandes sem poluir contexto
-- **`terminal-governance`** — 🔧 Se usar grep no terminal em vez de grep_search
 
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 

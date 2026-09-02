@@ -6,7 +6,7 @@ description: >-
   apenas identifica violações de convenção documentada. Complementa
   code-review (dimensão "convenções" genérica) com verificação sistemática.
 model: "Claude Haiku 4.5"
-tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent']
+tools: ['read_file', 'list_dir', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent']
 ---
 # Code Style Enforcer
 
@@ -87,6 +87,7 @@ Próximo passo mínimo:
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
 - [`../../docs/ai-context/catalog.yaml`](../../docs/ai-context/catalog.yaml) — mapa de adapters.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
 - Código/diff alvo — obrigatório.
 
 ## Diretrizes

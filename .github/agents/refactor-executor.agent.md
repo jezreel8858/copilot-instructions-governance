@@ -6,7 +6,7 @@ description: >-
   (business-rules-extractor) e reporta progresso com rollback se necessário.
   Nunca cria o plano (isso é refactor-planner); apenas executa plano existente.
 model: "Claude Sonnet 5"
-tools: ['read_file', 'insert_edit_into_file', 'replace_string_in_file', 'grep_search', 'file_search', 'get_errors', 'run_subagent', 'run_in_terminal']
+tools: ['read_file', 'insert_edit_into_file', 'replace_string_in_file', 'list_dir', 'grep_search', 'file_search', 'get_errors', 'run_subagent', 'run_in_terminal']
 ---
 # Refactor Executor
 
@@ -95,6 +95,7 @@ Próximo passo mínimo:
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
 - Plano de refatoração aprovado (de `refactor-planner`) — obrigatório.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
 - [`../skills/business-rules-governance/SKILL.md`](../skills/business-rules-governance/SKILL.md) — se regras documentadas existirem.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais (R-031, R-002).
 
@@ -114,7 +115,7 @@ Próximo passo mínimo:
 
 - [`@refactor-planner`](refactor-planner.agent.md) quando não houver plano aprovado ainda.
 - [`@business-rules-extractor`](business-rules-extractor.agent.md) quando regras de negócio não estiverem documentadas e forem necessárias antes de prosseguir.
-- [`@test-implementation`](test-implementation.agent.md) quando a fase exigir criação de novos testes de regressão.
+- [`@test-engineer`](test-engineer.agent.md) quando a fase exigir criação de novos testes de regressão.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

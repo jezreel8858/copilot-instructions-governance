@@ -93,7 +93,7 @@ Arquivo faltando: <arquivo>
 
 ### **PASSO 2: Detectar Ambiente de Execução (Environment Fingerprint)**
 
-Detecta terminal(is) disponível(is), versão de Python, versão de Node.js e versão de Java/JDK nesta máquina — registra em `catalog.local.yaml` (gitignored, R-043) para reuso por agents downstream (`test-implementation`, `devops-engineer`, `spring-boot`, `spring-reactive`, etc.) sem repetir a detecção a cada sessão.
+Detecta terminal(is) disponível(is), versão de Python, versão de Node.js e versão de Java/JDK nesta máquina — registra em `catalog.local.yaml` (gitignored, R-043) para reuso por agents downstream (`test-engineer`, `devops-engineer`, `spring-boot-engineer`, `spring-reactive-engineer`, etc.) sem repetir a detecção a cada sessão.
 
 > Preferir `context-mode/ctx_execute` (sandbox, Think in Code — R-008); `run_in_terminal` é fallback apenas se o MCP estiver indisponível. Nunca bloqueia a sessão — item ausente é registrado como `available: false`.
 
@@ -112,7 +112,7 @@ Detecta terminal(is) disponível(is), versão de Python, versão de Node.js e ve
 | Shell ativo nesta sessão | `$SHELL`, `$OSTYPE`, `$ComSpec`, nome do processo pai (heurística, best-effort) | Informativo — não crítico se impreciso |
 | Python | tentar `python --version`, depois `python3 --version`, depois `py --version` (Windows launcher) — usar o **primeiro que executa com sucesso** | ⚠️ Aliases de app-store (ex.: `WindowsApps\python.exe`) podem existir no PATH mas apontar para instalação quebrada/ausente — sempre validar rodando `--version`, nunca confiar só na existência do caminho |
 | Node.js | `node --version` | Capturar também `npm --version` se disponível |
-| Java/JDK | `java -version` (saída vai para **stderr**, capturar com `2>&1`) + `echo $JAVA_HOME` (Unix) / `echo %JAVA_HOME%` (Windows) | Relevante para `spring-boot`, `spring-reactive` e a skill `java-jdk-backend-governance` (LTS: 17, 21) — registrar mesmo se não for LTS, apenas informativo |
+| Java/JDK | `java -version` (saída vai para **stderr**, capturar com `2>&1`) + `echo $JAVA_HOME` (Unix) / `echo %JAVA_HOME%` (Windows) | Relevante para `spring-boot-engineer`, `spring-reactive-engineer` e a skill `java-jdk-backend-governance` (LTS: 17, 21) — registrar mesmo se não for LTS, apenas informativo |
 
 Se algum item não for encontrado ou falhar, registrar `available: false` — **nunca falhar/bloquear a sessão** por isso.
 
@@ -178,7 +178,7 @@ Exibir modelo em uso — apenas **informativo**, não bloqueante:
 
 > `/init-context` carrega contexto de governança — não bloqueia por modelo.
 > A verificação bloqueante (R-036 com `ask_questions`) ocorre ao invocar agents
-> de implementação: `@bug-triage`, `@test-implementation`, `@refactor-planner`, etc.
+> de implementação: `@bug-triage`, `@test-engineer`, `@refactor-planner`, etc.
 
 ---
 
@@ -538,7 +538,7 @@ Invoque `/init-context` **manualmente** em caso de:
 | "Copilot não respeita regras após" | Regras não foram relevantes no downstream | Reexecutar `/init-context` ou ativar diagnostics com `/ctx-doctor` |
 | "Python/Node não encontrado" | Ferramenta não instalada ou fora do PATH | Normal — registrado como `available: false`, não bloqueia a sessão; instalar se necessário para o agent alvo |
 | "Path de Python existe mas `--version` falha" | Alias quebrado (ex.: stub da Microsoft Store apontando para instalação removida) | Detecção deve tentar o próximo candidato (`python3`, `py`) — nunca considerar `available: true` só pela existência do path |
-| "Java não encontrado / JAVA_HOME vazio" | JDK não instalado ou não configurado no PATH | Normal — registrado como `available: false`; relevante apenas antes de invocar `spring-boot`/`spring-reactive` |
+| "Java não encontrado / JAVA_HOME vazio" | JDK não instalado ou não configurado no PATH | Normal — registrado como `available: false`; relevante apenas antes de invocar `spring-boot-engineer`/`spring-reactive-engineer` |
 
 ---
 
@@ -579,5 +579,5 @@ PASSO 4/5/7 atualizados para o Local Overlay Pattern (R-043): projetos deixam de
 Novo PASSO 2 (Environment Fingerprint): detecta shells disponíveis (PowerShell/CMD/Git Bash/WSL/bash/zsh), shell ativo na sessão, versão de Python e versão de Node.js — registra em `catalog.local.yaml` (chave `environment:`, gitignored, R-043) para reuso por agents downstream sem repetir detecção a cada sessão. PASSOs 2-7 renumerados para 3-8. Adicionado `run_in_terminal` e as tools `context-mode/ctx_execute`, `ctx_batch_execute`, `ctx_search`, `ctx_stats` ao frontmatter (corrige gap pré-existente onde PASSO 6/7 antigos já as citavam no corpo sem declará-las). Cache de detecção válido por 7 dias (evita reexecução redundante). Tratamento explícito de aliases quebrados de Python (ex.: stub da Microsoft Store) — nunca considerar `available: true` apenas pela existência do path, sempre validar `--version`. Complementado por `.githooks/pre-commit` (defesa em profundidade — bloqueia commit acidental de `catalog.local.yaml` mesmo com `git add -f`).
 
 *v1.7 — 2026-09-01*
-PASSO 2 estendido com detecção de Java/JDK (`java -version` + `JAVA_HOME`) — relevante para os agents `spring-boot`/`spring-reactive` e a skill `java-jdk-backend-governance` (LTS 17/21). Nova chave `environment.java` no schema persistido em `catalog.local.yaml`. `/health` ganhou CAT-7 (Environment Fingerprint) — auditoria read-only de presença/idade do fingerprint (TTL 7 dias), sem redetectar nem escrever no overlay local (isso permanece exclusivo do `/init-context`).
+PASSO 2 estendido com detecção de Java/JDK (`java -version` + `JAVA_HOME`) — relevante para os agents `spring-boot-engineer`/`spring-reactive-engineer` e a skill `java-jdk-backend-governance` (LTS 17/21). Nova chave `environment.java` no schema persistido em `catalog.local.yaml`. `/health` ganhou CAT-7 (Environment Fingerprint) — auditoria read-only de presença/idade do fingerprint (TTL 7 dias), sem redetectar nem escrever no overlay local (isso permanece exclusivo do `/init-context`).
 

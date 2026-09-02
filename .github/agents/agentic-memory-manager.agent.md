@@ -6,7 +6,7 @@ description: >-
   (read-only) com capacidade de escrita governada de memória procedimental,
   sempre com aprovação humana explícita para mudanças procedimentais.
 model: "Claude Haiku 4.5"
-tools: ['read_file', 'create_file', 'insert_edit_into_file', 'list_dir', 'grep_search', 'ask_questions', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_index', 'context-mode/ctx_execute']
+tools: ['read_file', 'create_file', 'insert_edit_into_file', 'file_search', 'list_dir', 'grep_search', 'ask_questions', 'run_subagent', 'context-mode/ctx_search', 'context-mode/ctx_index', 'context-mode/ctx_execute']
 ---
 # Agentic Memory Manager
 

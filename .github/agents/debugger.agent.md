@@ -6,7 +6,7 @@ description: >-
   e reprodução mínima. Não corrige o código (isso é do agent especializado
   por stack); complementa bug-triage com investigação mais profunda.
 model: "Claude Sonnet 5"
-tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
+tools: ['read_file', 'list_dir', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Debugger
 
@@ -32,7 +32,7 @@ Você é especialista em **investigar causa raiz de comportamento inesperado** �
 |---|---|---|
 | Skill base (estratégias de rastreio) | [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) | grep vs semântico, parsing de stack trace, call graph |
 | Agent de triagem | [`bug-triage.agent.md`](bug-triage.agent.md) | Ponto de entrada para bugs simples/classificação inicial |
-| Agent de correção por stack | `spring-boot.agent.md` / `angular.agent.md` / `spring-reactive.agent.md` | Implementa o fix após diagnóstico |
+| Agent de correção por stack | `spring-boot-engineer.agent.md` / `angular-engineer.agent.md` / `spring-reactive-engineer.agent.md` | Implementa o fix após diagnóstico |
 
 ## Decision Tree
 
@@ -86,7 +86,7 @@ Caminho de Correção Sugerido (não implementado):
 Confiança: <0.00–1.00> | Rota: rule-based|semantic|llm-based
 
 Handoff sugerido:
-- <@spring-boot|@angular|@spring-reactive — para implementar fix>
+- <@spring-boot-engineer|@angular-engineer|@spring-reactive-engineer — para implementar fix>
 
 Próximo passo mínimo:
 - <ação curta>
@@ -102,6 +102,8 @@ Próximo passo mínimo:
 ## Docs Sempre Anexadas (pre-fetch obrigatório)
 
 - [`../skills/code-tracing/SKILL.md`](../skills/code-tracing/SKILL.md) — estratégias de rastreio.
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
+- [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) — coleta indexada de contexto e otimização de tokens.
 - [`../../CLAUDE.md`](../../CLAUDE.md) — regras globais (R-020).
 - Stack trace/log/sintoma — obrigatório.
 
@@ -119,7 +121,7 @@ Próximo passo mínimo:
 ## Quando Delegar
 
 - [`@bug-triage`](bug-triage.agent.md) quando o sintoma for simples e não exigir investigação profunda.
-- [`@spring-boot`](spring-boot.agent.md) / [`@angular`](angular.agent.md) / [`@spring-reactive`](spring-reactive.agent.md) para implementar o fix após diagnóstico.
+- [`@spring-boot-engineer`](spring-boot-engineer.agent.md) / [`@angular-engineer`](angular-engineer.agent.md) / [`@spring-reactive-engineer`](spring-reactive-engineer.agent.md) para implementar o fix após diagnóstico.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

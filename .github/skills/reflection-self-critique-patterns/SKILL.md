@@ -46,7 +46,7 @@ Gap de mercado identificado em `docs/plan/categorizacao-agents-mercado.md` §5.1
    - Teste: contra o comando de cobertura executado (não contra "parece certo").
    - Código: contra `get_errors` + testes executados (grounded, não intrínseco).
 3. REVISAR: se o critério objetivo falhar, corrigir e repetir 1 vez.
-4. LIMITE: máximo 1 round de revisão automática — se ainda falhar, reportar como bloqueante (R-020, formato 3 linhas), nunca insistir em loop (alinhado à regra já existente "Sem Loops" de `test-implementation`).
+4. LIMITE: máximo 1 round de revisão automática — se ainda falhar, reportar como bloqueante (R-020, formato 3 linhas), nunca insistir em loop (alinhado à regra já existente "Sem Loops" de `test-engineer`).
 ```
 
 **Regra de ouro:** a crítica deve ser **grounded** (verificável externamente: comando executado, lint, fonte real) sempre que possível — crítica puramente intrínseca ("parece bom") tem cobertura fraca de blind-spot (mesma limitação do modelo que gerou o erro).
@@ -77,9 +77,9 @@ Gap de mercado identificado em `docs/plan/categorizacao-agents-mercado.md` §5.1
 
 ## 6) Consumidores Mapeados
 
-- `docs-writer` — reexamina o `.md` gerado contra `documentation-writing-patterns` + fonte real antes de reportar (1 round).
-- `test-implementation` — reexamina cobertura/resultado do comando de teste executado antes de reportar `SUCESSO` (grounded — já é comportamento parcialmente presente na "Regra de Ouro: Bloqueia Teste Falhando"; esta skill formaliza como passo de Reflection nomeado).
-- `agent-factory` / `skill-factory` / `prompt-factory` — aplicam o gate de autocrítica semântica de [`governance-factory-patterns/SKILL.md`](../governance-factory-patterns/SKILL.md) § 3.1 antes do checklist estrutural: confirmam que toda referência cruzada a outro artefato (ex.: "agent X consome skill Y") é dependência funcional real, não rótulo. Caso concreto que motivou o gate: `deep-search` registrado incorretamente como consumidor desta própria skill (corrigido — ver §5 anti-padrões, item de scope-creep).
+- `docs-engineer` — reexamina o `.md` gerado contra `documentation-writing-patterns` + fonte real antes de reportar (1 round).
+- `test-engineer` — reexamina cobertura/resultado do comando de teste executado antes de reportar `SUCESSO` (grounded — já é comportamento parcialmente presente na "Regra de Ouro: Bloqueia Teste Falhando"; esta skill formaliza como passo de Reflection nomeado).
+- `governance-factory` — aplica o gate de autocrítica semântica de [`governance-factory-patterns/SKILL.md`](../governance-factory-patterns/SKILL.md) § 3.1 antes do checklist estrutural: confirma que toda referência cruzada a outro artefato (ex.: "agent X consome skill Y") é dependência funcional real, não rótulo. Caso concreto que motivou o gate: `deep-search` registrado incorretamente como consumidor desta própria skill (corrigido — ver § 5 anti-padrões, item de scope-creep).
 - **Futuro:** qualquer novo agent Executor que produza artefato revisável antes de reportar sucesso.
 
 ## 7) Referências

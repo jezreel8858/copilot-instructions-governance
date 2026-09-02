@@ -16,9 +16,9 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-  - .github/agents/angular.agent.md
-  - .github/agents/spring-boot.agent.md
-  - .github/agents/spring-reactive.agent.md
+  - .github/agents/angular-engineer.agent.md
+  - .github/agents/spring-boot-engineer.agent.md
+  - .github/agents/spring-reactive-engineer.agent.md
 tools: []
 ---
 
@@ -124,7 +124,7 @@ Toda implementação de feature/bugfix no modo Implementação **deve** ser acom
 ## 7) Consumidores Mapeados
 
 - `angular`, `spring-boot`, `spring-reactive` — os 3 specialists híbridos atuais.
-- **Futuro:** qualquer novo specialist híbrido (ex.: `python-django`, `nodejs-nestjs`, `react`) herda o padrão via `@agent-factory`, que deve referenciar esta skill como template adicional ao criar novos specialists de stack.
+- **Futuro:** qualquer novo specialist híbrido (ex.: `python-django`, `nodejs-nestjs`, `react`) herda o padrão via `@governance-factory`, que deve referenciar esta skill como template adicional ao criar novos specialists de stack.
 
 ## 8) Referências
 

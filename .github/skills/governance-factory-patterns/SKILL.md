@@ -17,9 +17,7 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-  - .github/agents/agent-factory.agent.md
-  - .github/agents/skill-factory.agent.md
-  - .github/agents/prompt-factory.agent.md
+  - .github/agents/governance-factory.agent.md
 tools: []
 ---
 
@@ -27,7 +25,7 @@ tools: []
 
 ## 0) Problema Resolvido
 
-`agent-factory`, `skill-factory` e `prompt-factory` compartilham ~90% da mesma lógica operacional (criar vs. revisar vs. auditar em lote; checklist de qualidade estrutural; atualização atômica de catálogo). Sem esta skill, cada um reimplementa o mesmo fluxo com pequenas variações de nomenclatura — risco de drift entre os 3 quando uma regra normativa muda (ex.: R-015).
+Esta skill formaliza o fluxo compartilhado pelos 3 tipos de artefato de governança criados/revisados por `governance-factory` (agent, skill, prompt) — que antes eram 3 agents distintos (`agent-factory`, `skill-factory`, `prompt-factory`) e foram fundidos em um só, pois compartilhavam ~90% da mesma lógica operacional (criar vs. revisar vs. auditar em lote; checklist de qualidade estrutural; atualização atômica de catálogo). Sem esta skill, cada `type` reimplementaria o mesmo fluxo com pequenas variações de nomenclatura — risco de drift quando uma regra normativa muda (ex.: R-015).
 
 ## 1) Decision Tree Canônica (Factory Pattern)
 
@@ -128,17 +126,15 @@ Nenhuma criação/revisão de artefato de governança é considerada completa se
 - ❌ Duplicar artefato existente por não ter buscado por escopo semântico (só buscar por nome exato é insuficiente).
 - ❌ Agent criado sem `run_subagent` no frontmatter (estruturalmente incapaz de cumprir R-042).
 - ❌ Skill criada sem `triggers` em PT-BR ou com `source_docs` apontando para arquivo inexistente.
-- ❌ Reinventar o fluxo de Decision Tree em vez de referenciar esta skill — risco de drift entre os 3 factory agents.
+- ❌ Reinventar o fluxo de Decision Tree em vez de referenciar esta skill — risco de drift entre os 3 `type` (agent/skill/prompt) do `governance-factory`.
 - ❌ Registrar referência cruzada a outra skill/agent (ex.: "consumidor de X") sem confirmar dependência funcional real — pular o gate §3.1 e validar só a estrutura (achado real: `deep-search` registrado como consumidor de `reflection-self-critique-patterns` sem uso funcional).
 - ❌ Definir `model:` como array ou como slug kebab-case sem rodar `get_errors` (§9) — achado real: 15+ agents/prompts com `Unknown model` por usar `["a","b"]` ou `claude-haiku-4.5` em vez do display name oficial.
 - ❌ `description` do frontmatter virar resumo de changelog/RF-ID (§10) — achado real: `code-knowledge-graph` v2.1.0 com description de +1300 caracteres misturando função do agent com histórico de correções.
 
 ## 7) Consumidores Mapeados
 
-- `agent-factory` — mantém especificidade de templates (`research-agent.md`/`operational-agent.md`), referencia esta skill para o fluxo genérico e checklist.
-- `skill-factory` — mantém especificidade do template `SKILL.md`, referencia esta skill para o fluxo genérico e checklist.
-- `prompt-factory` — mantém especificidade de template/naming `.prompt.md`, referencia esta skill para o fluxo genérico e checklist.
-- **Futuro:** qualquer 4º "factory" (ex.: `instructions-factory`, se vier a existir) herda o padrão sem reinventar o fluxo.
+- `governance-factory` — único consumidor; mantém especificidade por `type` (templates `research-agent.md`/`operational-agent.md` para `type: agent`, template `SKILL.md` para `type: skill`, template/naming `.prompt.md` para `type: prompt`), referencia esta skill para o fluxo genérico e checklist comum aos 3 tipos.
+- **Futuro:** qualquer novo tipo de artefato de governança (ex.: `instructions-factory`, se vier a existir) herda o padrão sem reinventar o fluxo.
 
 ## 8) Referências
 
@@ -151,7 +147,7 @@ Nenhuma criação/revisão de artefato de governança é considerada completa se
 
 ## 9) Seleção e Validação de Modelo (`model:` — obrigatório para `agent`/`prompt`)
 
-> Aplica-se a `agent-factory` e `prompt-factory` (skills não têm campo `model:` — ver tabela §2). Fecha 2 gaps reais encontrados em auditoria (2026-09-01): (a) 15+ artefatos usavam array `["a","b"]` — campo não suporta lista, sempre falha; (b) slugs kebab-case (`claude-haiku-4.5`) não são reconhecidos pelo validador do IDE — o nome correto é o **display name oficial** (Title Case).
+> Aplica-se quando `governance-factory` cria `type: agent` ou `type: prompt` (skills não têm campo `model:` — ver tabela §2). Fecha 2 gaps reais encontrados em auditoria (2026-09-01): (a) 15+ artefatos usavam array `["a","b"]` — campo não suporta lista, sempre falha; (b) slugs kebab-case (`claude-haiku-4.5`) não são reconhecidos pelo validador do IDE — o nome correto é o **display name oficial** (Title Case).
 
 ### 9.1) Classificação de Perfil (escolha do tier — antes de qualquer validação técnica)
 

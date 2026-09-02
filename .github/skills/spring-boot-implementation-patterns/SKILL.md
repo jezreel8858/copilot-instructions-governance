@@ -16,7 +16,7 @@ triggers:
 source_docs:
   - CLAUDE.md
   - .github/copilot-instructions.md
-  - .github/agents/spring-boot.agent.md
+  - .github/agents/spring-boot-engineer.agent.md
   - .github/skills/spring-boot-backend-patterns/SKILL.md
   - .github/instructions/spring-boot-backend.instructions.md
 tools: []
@@ -28,19 +28,19 @@ tools: []
 
 - Ao implementar feature nova (Entity/Service/Controller) em Spring Boot.
 - Ao corrigir bug com causa raiz já localizada no código.
-- Ao decidir concorrência **durante a escrita do código**: virtual threads (Java 21+, blocking simples) vs `@spring-reactive` (I/O-bound extremo) — ver matriz de decisão abaixo.
+- Ao decidir concorrência **durante a escrita do código**: virtual threads (Java 21+, blocking simples) vs `@spring-reactive-engineer` (I/O-bound extremo) — ver matriz de decisão abaixo.
 
 ## Matriz de Decisão — Concorrência (mercado 2026)
 
 | Cenário | Escolha | Racional |
 |---|---|---|
 | CRUD típico, <1000 req concorrentes, JDBC/JPA | Virtual threads (`spring.threads.virtual.enabled=true`) | Código blocking simples escala sem reescrever para reativo |
-| Alta concorrência I/O-bound extrema, drivers reativos disponíveis | WebFlux/Reactor (`@spring-reactive`) | Ganho real só com stack 100% não-bloqueante ponta a ponta |
+| Alta concorrência I/O-bound extrema, drivers reativos disponíveis | WebFlux/Reactor (`@spring-reactive-engineer`) | Ganho real só com stack 100% não-bloqueante ponta a ponta |
 | CPU-bound | Nenhum dos dois resolve sozinho | Escalar horizontalmente ou otimizar algoritmo |
 
 ## Workflow — Feature Nova
 
-1. Confirmar escopo/critério de aceite (handoff de `@requirements-analyst`/`@impact-architect` se houver).
+1. Confirmar escopo/critério de aceite (handoff de `@requirements-analyst`/`@analysis-architect` se houver).
 2. Escrever teste (unitário e, se aplicável, `@DataJpaTest`/slice) antes da implementação (testing-first).
 3. Implementar seguindo o adapter do projeto (`spring-boot-backend.instructions.md`): `@Entity`/`@Builder`, `XxxService`+`XxxServiceImpl`, `@RequiredArgsConstructor` com `private final`, controller com `@ResponseStatus` explícito.
 4. Nunca retornar `Entity` diretamente do controller — sempre DTO de borda.

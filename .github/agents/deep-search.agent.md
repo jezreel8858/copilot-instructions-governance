@@ -114,6 +114,7 @@ Próximo passo mínimo:
 
 - [`../skills/tavily/SKILL.md`](../skills/tavily/SKILL.md)
 - [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md)
+- [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md)
 - [`../skills/prompt-engineering-patterns/SKILL.md`](../skills/prompt-engineering-patterns/SKILL.md)
 - [`README.md`](README.md)
 - [`catalog.yaml`](catalog.yaml)
@@ -147,7 +148,7 @@ Próximo passo mínimo:
 
 Se a solicitação pivotar de "pesquisar" para "implementar/aplicar alteração", retornar para `@agent-router` com handoff via `run_subagent` (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
 
-**Gatilho de deriva:** pedido de implementação da aplicação; pedido de criação de skill (`@skill-factory`); pedido de criação de prompt (`@prompt-factory`); pedido de análise crítica profunda (→ `@analysis-architect`).
+**Gatilho de deriva:** pedido de implementação da aplicação; pedido de criação de skill (`@governance-factory`); pedido de criação de prompt (`@governance-factory`); pedido de análise crítica profunda (→ `@analysis-architect`).
 
 ## Combina Com (Commands)
 
