@@ -227,6 +227,7 @@ Este agent implementa dentro do seu domínio (WebFlux/Reactor), mas **não é ge
 | [`@docs-engineer`](docs-engineer.agent.md) | houver necessidade de atualização formal de documentação/catálogo | decisão final, fontes e mudanças documentais |
 | [`@deep-search`](deep-search.agent.md) | precisar de pesquisa externa (documentação oficial, changelog, versão, best practice de mercado) que não está disponível localmente/indexado | hipóteses, lacunas e perguntas de pesquisa |
 | [`@spring-boot-engineer`](spring-boot-engineer.agent.md) | pedido pivotar para Spring MVC tradicional (não-reativo) em vez de WebFlux/Reactor | requisitos funcionais, motivação da mudança, escopo MVC |
+| [`@code-knowledge-graph`](code-knowledge-graph.agent.md) | precisar medir blast radius (`fn-impact`/`diff-impact`) antes de alterar um símbolo compartilhado (Mono/Flux chain) | símbolo/arquivo alvo, comando desejado |
 
 ## Combina Com (Commands)
 

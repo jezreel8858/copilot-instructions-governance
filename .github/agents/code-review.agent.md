@@ -141,6 +141,7 @@ Próximo passo mínimo:
 - [`@analysis-architect`](analysis-architect.agent.md) quando o achado exigir análise de impacto/dependências mais profunda (tier B1 local ou cross-sistema).
 - [`@test-strategy`](test-strategy.agent.md) quando faltar cobertura de teste em caminho crítico.
 - [`@refactor-planner`](refactor-planner.agent.md) quando o achado indicar dívida técnica estrutural.
+- [`@code-knowledge-graph`](code-knowledge-graph.agent.md) quando precisar de blast radius/diff-impact estrutural do PR antes de aprovar (`diff-impact`, `check`).
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

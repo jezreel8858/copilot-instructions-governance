@@ -116,6 +116,7 @@ Próximo passo mínimo:
 - [`@refactor-planner`](refactor-planner.agent.md) quando não houver plano aprovado ainda.
 - [`@business-rules-extractor`](business-rules-extractor.agent.md) quando regras de negócio não estiverem documentadas e forem necessárias antes de prosseguir.
 - [`@test-engineer`](test-engineer.agent.md) quando a fase exigir criação de novos testes de regressão.
+- [`@code-knowledge-graph`](code-knowledge-graph.agent.md) para medir blast radius (`fn-impact`/`diff-impact`) antes de aplicar cada fase e validar (`check`) após aplicar.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

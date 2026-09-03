@@ -190,6 +190,7 @@ Executar checklist unificado da skill `specialist-hybrid-advisory-implementation
 | [`@test-engineer`](test-engineer.agent.md) | a demanda for aumentar cobertura de teste em código já existente, sem feature/bugfix novo | escopo de arquivos/classes a testar, framework |
 | [`@docs-engineer`](docs-engineer.agent.md) | houver necessidade de atualizar documentação/catálogo formalmente | decisão final, fontes, mudanças documentais requeridas |
 | [`@deep-search`](deep-search.agent.md) | precisar de pesquisa externa (documentação oficial, changelog, versão, best practice de mercado) que não está disponível localmente/indexado | hipótese de pesquisa, perguntas-chave, lacunas e contexto já coletado |
+| [`@code-knowledge-graph`](code-knowledge-graph.agent.md) | precisar medir blast radius (`fn-impact`/`diff-impact`) antes de alterar um símbolo compartilhado, ou checar consumidores de um componente/export | símbolo/arquivo alvo, comando desejado |
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 

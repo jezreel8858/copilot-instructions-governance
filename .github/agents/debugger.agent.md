@@ -121,6 +121,7 @@ Próximo passo mínimo:
 ## Quando Delegar
 
 - [`@bug-triage`](bug-triage.agent.md) quando o sintoma for simples e não exigir investigação profunda.
+- [`@code-knowledge-graph`](code-knowledge-graph.agent.md) para navegar call graph/blast radius (`query`/`path`/`execution_flow`) antes de formular hipótese de causa raiz.
 - [`@spring-boot-engineer`](spring-boot-engineer.agent.md) / [`@angular-engineer`](angular-engineer.agent.md) / [`@spring-reactive-engineer`](spring-reactive-engineer.agent.md) para implementar o fix após diagnóstico.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 

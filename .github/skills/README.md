@@ -77,6 +77,7 @@ Toda skill deve declarar no topo:
 | **`compliance-governance-patterns`** | 🛡️ **Tier 2** | ⭐ ***(NEW)*** SOC 2/GDPR/LGPD/HIPAA/ISO 27001, audit trails, least privilege e retenção de dado pessoal — base do agent `compliance-guardrails` |
 | **`task-decomposition-patterns`** | 📋 **Tier 2** | ⭐ ***(NEW)*** Decomposição sequencial/hierárquica/paralela, granularidade 2-3 níveis, validação de dependências — base do agent `feature-planner` |
 | **`devops-agent-patterns`** | 🐳 **Tier 2** | ⭐ ***(NEW)*** Checklists de revisão Dockerfile/Kubernetes/CI-CD/IaC e estratégias de deployment — base do agent `devops-engineer` |
+| **`codegraph-optave-usage`** | 🕸️ **Tier 2** | ⭐ ***(NEW)*** Uso da lib externa `@optave/codegraph` (CLI local, zero API keys) como motor único de build/consulta de grafo de código — query, blast radius, ciclos, dead code, CI gate. Documenta gaps aceitos (RabbitMQ, SOAP cross-repo, coupling taxonomy, risco PII, viewer HTML) na migração total do script legado `build-graph.js` — base do agent `code-knowledge-graph` |
 
 ## 4) Instructions associadas
 

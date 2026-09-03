@@ -105,6 +105,7 @@ Próximo passo mínimo:
 ## Quando Delegar
 
 - [`@code-review`](code-review.agent.md) quando o pedido for revisão geral (não apenas estilo).
+- [`@code-knowledge-graph`](code-knowledge-graph.agent.md) para checar complexidade (`complexity`) e papel do símbolo (`node_roles`) antes de classificar achado.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

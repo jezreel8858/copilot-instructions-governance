@@ -134,6 +134,7 @@ Próximo passo mínimo:
 - [`@compliance-guardrails`](compliance-guardrails.agent.md) quando achado envolver dado pessoal/regulado (GDPR/LGPD/HIPAA).
 - [`@bug-triage`](bug-triage.agent.md) quando vulnerabilidade for também bug funcional confirmado.
 - [`@code-review`](code-review.agent.md) quando o pedido for revisão geral (não especializada em segurança).
+- [`@code-knowledge-graph`](code-knowledge-graph.agent.md) para rastrear dataflow interprocedural (`dataflow`) e chamadas dinâmicas suspeitas (`ast_query -k call|new|throw`) antes de concluir taint analysis.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)

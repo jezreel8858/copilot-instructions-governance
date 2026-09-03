@@ -178,6 +178,7 @@ Este agent implementa dentro do seu domínio (Spring Boot), mas **não é genera
 | [`@docs-engineer`](docs-engineer.agent.md) | houver necessidade de atualização formal de documentação/catálogo | decisão final, fontes e mudanças documentais |
 | [`@deep-search`](deep-search.agent.md) | precisar de pesquisa externa (documentação oficial, changelog, versão, best practice de mercado) que não está disponível localmente/indexado | hipóteses, lacunas e perguntas de pesquisa |
 | [`@spring-reactive-engineer`](spring-reactive-engineer.agent.md) | pedido pivotar para stack 100% reativa (WebFlux/Reactor) em vez de Spring MVC tradicional | cenário de carga/I-O, motivação da migração, escopo reativo |
+| [`@code-knowledge-graph`](code-knowledge-graph.agent.md) | precisar medir blast radius (`fn-impact`/`diff-impact`) antes de alterar um símbolo compartilhado (service/repository) | símbolo/arquivo alvo, comando desejado |
 
 ## Combina Com (Commands)
 
