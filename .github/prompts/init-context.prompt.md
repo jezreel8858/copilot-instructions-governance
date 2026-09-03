@@ -93,7 +93,7 @@ Arquivo faltando: <arquivo>
 
 ### **PASSO 2: Detectar Ambiente de Execução (Environment Fingerprint)**
 
-Detecta terminal(is) disponível(is), versão de Python, versão de Node.js e versão de Java/JDK nesta máquina — registra em `catalog.local.yaml` (gitignored, R-043) para reuso por agents downstream (`test-engineer`, `devops-engineer`, `spring-boot-engineer`, `spring-reactive-engineer`, etc.) sem repetir a detecção a cada sessão.
+Detecta terminal(is) disponível(is), versão de Python, versão de Node.js, versão de Java/JDK e CLI do Codegraph (`@optave/codegraph`) nesta máquina — registra em `catalog.local.yaml` (gitignored, R-043) para reuso por agents downstream (`code-knowledge-graph`, `test-engineer`, `devops-engineer`, `spring-boot-engineer`, `spring-reactive-engineer`, etc.) sem repetir a detecção a cada sessão.
 
 > Preferir `context-mode/ctx_execute` (sandbox, Think in Code — R-008); `run_in_terminal` é fallback apenas se o MCP estiver indisponível. Nunca bloqueia a sessão — item ausente é registrado como `available: false`.
 
@@ -113,6 +113,7 @@ Detecta terminal(is) disponível(is), versão de Python, versão de Node.js e ve
 | Python | tentar `python --version`, depois `python3 --version`, depois `py --version` (Windows launcher) — usar o **primeiro que executa com sucesso** | ⚠️ Aliases de app-store (ex.: `WindowsApps\python.exe`) podem existir no PATH mas apontar para instalação quebrada/ausente — sempre validar rodando `--version`, nunca confiar só na existência do caminho |
 | Node.js | `node --version` | Capturar também `npm --version` se disponível |
 | Java/JDK | `java -version` (saída vai para **stderr**, capturar com `2>&1`) + `echo $JAVA_HOME` (Unix) / `echo %JAVA_HOME%` (Windows) | Relevante para `spring-boot-engineer`, `spring-reactive-engineer` e a skill `java-jdk-backend-governance` (LTS: 17, 21) — registrar mesmo se não for LTS, apenas informativo |
+| Codegraph CLI | `codegraph --version` | Relevante para `@code-knowledge-graph` e FASE 4 de `/add-project-context` (`@optave/codegraph`) — registrar versão se disponível |
 
 Se algum item não for encontrado ou falhar, registrar `available: false` — **nunca falhar/bloquear a sessão** por isso.
 
@@ -144,6 +145,9 @@ environment:
     available: true
     version: "<major.minor.patch>"
     java_home: "<caminho-ou-null-se-nao-definido>"
+  codegraph:
+    available: true
+    version: "<major.minor.patch>"
 ```
 
 **Exibir:**
@@ -156,6 +160,7 @@ environment:
 ├─ Python: ✅/❌ <versão> (<path>)
 ├─ Node.js: ✅/❌ <versão> (<path>)
 ├─ Java/JDK: ✅/❌ <versão> (JAVA_HOME: <path-ou-"não definido">)
+├─ Codegraph CLI: ✅/❌ <versão ou "não instalado"> (@optave/codegraph)
 └─ Registrado em: docs/ai-context/catalog.local.yaml (gitignored — nunca commitado, R-043)
 ```
 
@@ -416,6 +421,7 @@ Ao concluir `/init-context`, Copilot **EXIBE**:
 ║ [✅] Environment Fingerprint (PASSO 2)                   ║
 ║      Shell ativo: <shell> | Python: <versão ou ausente>  ║
 ║      Node.js: <versão ou ausente> | Java: <versão ou ausente> ║
+║      Codegraph CLI: <versão ou ausente>                  ║
 ║      Registrado em: catalog.local.yaml (gitignored)      ║
 ║                                                           ║
 ║ [✅] Modelo conforme (R-036)                             ║
@@ -468,6 +474,7 @@ Ao final do checklist, Copilot **SEMPRE** sintetiza em bullets objetivos as reco
 💡 RECOMENDAÇÕES PARA ESTA SESSÃO
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 [Environment] <se python/node ausente: "Instale <ferramenta> antes de invocar agents que dependem dele (ex.: test-implementation, devops-engineer)">
+[Environment] <se codegraph ausente: "Instale o codegraph (npm install -g @optave/codegraph) para habilitar grafo de conhecimento em /add-project-context e @code-knowledge-graph">
 [Model]       <se mismatch: "Troque para <model-esperado> antes de agents de implementação (R-036)">
 [Binding]     <se incompleto: "Execute binding-initializer — catalog.yaml/binding.md ausentes (R-034)">
 [Extends]     <se houver projeto sem extends: "Configure herança em <n> projeto(s) pendente(s) — PASSO 6">
@@ -539,6 +546,7 @@ Invoque `/init-context` **manualmente** em caso de:
 | "Python/Node não encontrado" | Ferramenta não instalada ou fora do PATH | Normal — registrado como `available: false`, não bloqueia a sessão; instalar se necessário para o agent alvo |
 | "Path de Python existe mas `--version` falha" | Alias quebrado (ex.: stub da Microsoft Store apontando para instalação removida) | Detecção deve tentar o próximo candidato (`python3`, `py`) — nunca considerar `available: true` só pela existência do path |
 | "Java não encontrado / JAVA_HOME vazio" | JDK não instalado ou não configurado no PATH | Normal — registrado como `available: false`; relevante apenas antes de invocar `spring-boot-engineer`/`spring-reactive-engineer` |
+| "Codegraph CLI não encontrado" | `@optave/codegraph` não instalado globalmente | Normal — registrado como `available: false`; executar `npm install -g @optave/codegraph` antes de `/add-project-context` |
 
 ---
 
@@ -550,7 +558,7 @@ Ao completar `/init-context`, você verá:
 CONTEXTO INICIALIZADO COM SUCESSO
 
 [PASSO 1] Diretrizes base — OK
-[PASSO 2] Environment fingerprint — DETECTADO (shell/python/node/java registrados em catalog.local.yaml)
+[PASSO 2] Environment fingerprint — DETECTADO (shell/python/node/java/codegraph registrados em catalog.local.yaml)
 [PASSO 3] Modelo ativo — INFORMADO
 [PASSO 4] Regras criticas — ATIVAS (R-001..R-040)
 [PASSO 5] Binding context — VALIDO (<n> projetos registrados)
@@ -580,4 +588,7 @@ Novo PASSO 2 (Environment Fingerprint): detecta shells disponíveis (PowerShell/
 
 *v1.7 — 2026-09-01*
 PASSO 2 estendido com detecção de Java/JDK (`java -version` + `JAVA_HOME`) — relevante para os agents `spring-boot-engineer`/`spring-reactive-engineer` e a skill `java-jdk-backend-governance` (LTS 17/21). Nova chave `environment.java` no schema persistido em `catalog.local.yaml`. `/health` ganhou CAT-7 (Environment Fingerprint) — auditoria read-only de presença/idade do fingerprint (TTL 7 dias), sem redetectar nem escrever no overlay local (isso permanece exclusivo do `/init-context`).
+
+*v1.8 — 2026-09-03*
+PASSO 2 estendido com detecção do CLI `@optave/codegraph` (`codegraph --version`) — relevante para o agent `@code-knowledge-graph` e a FASE 4 de `/add-project-context`. Nova chave `environment.codegraph` no schema persistido em `catalog.local.yaml`. Recomendações e troubleshooting atualizados com instruções de instalação via `npm install -g @optave/codegraph`.
 

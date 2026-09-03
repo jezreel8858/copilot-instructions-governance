@@ -34,7 +34,7 @@ Auto-carregar contexto estruturado de um projeto com Intent Classification + Mul
 >                  Nenhum arquivo é criado ou modificado nos projetos externos.
 >                  Projeto/adapter são LOCAIS (gitignored, R-043) — nunca commitados.
 >
-> **Se você é o Copilot**: Execute as FASES 1 → 2 → 3 → 4 sequencialmente conforme descrito abaixo. **FASE 4 (grafo de conhecimento) é OBRIGATÓRIA** — nunca opcional, nunca pulada.
+> **Se você é o Copilot**: Execute as FASES 1 → 2 → 3 → 4 → 4.1 sequencialmente conforme descrito abaixo. **FASE 4 (grafo de conhecimento) é OBRIGATÓRIA** — nunca opcional, nunca pulada. FASE 4.1 (integrações multi-projeto) executa automaticamente quando houver >1 projeto registrado.
 
 ---
 
@@ -123,7 +123,7 @@ Este repositório de governança não possui docs/ai-context/catalog.yaml ou bin
 
 ---
 
-## 📋 Fluxo Automático — 4 Fases (3 de binding + 1 obrigatória de grafo de conhecimento)
+## 📋 Fluxo Automático — 5 Fases (3 de binding + 1 de grafo + 1 de fronteiras multi-projeto)
 
 ### FASE 1: **Scanner via Agent Especializado** (Determinístico, Offline, Read-Only)
 
@@ -269,9 +269,9 @@ O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de 
 
 **Sanity check final (defesa em profundidade — R-043):** antes de reportar sucesso, executar `git status --short docs/ai-context/catalog.yaml .github/instructions/` e confirmar que **nenhuma** dessas duas entradas aparece como modificada/staged (o esperado é aparecerem apenas `catalog.local.yaml` e `.github/instructions/local/*`, ambos já gitignored e portanto invisíveis ao `git status` padrão). Se `catalog.yaml` aparecer como modificado, PARAR e reportar erro — algo escreveu no arquivo errado.
 
-### FASE 4: **Construção Obrigatória do Grafo de Conhecimento de Código** (bloqueante, sem opt-out)
+### FASE 4: **Construção e Registro Obrigatório no Grafo de Conhecimento** (bloqueante, sem opt-out)
 
-> **Por que é obrigatória (não mais opcional):** o grafo de conhecimento (`code-knowledge-graph`) é a única forma de garantir que o mapa estrutural do projeto (imports, chamadas, acoplamento, blast radius) permaneça **sempre disponível** via `ctx_index`/`ctx_search`, independente de quanto o contexto da conversa cresça ou seja truncado. Modelos de menor capacidade (ex.: Claude Haiku) degradam a retenção de detalhes de projeto conforme o contexto aumenta — indexar o grafo fora da janela de contexto (em cache pesquisável) é a mitigação estrutural para essa perda, não uma conveniência. Por isso esta fase **nunca pergunta "deseja construir?"** — ela sempre executa como parte do registro do projeto, exatamente como FASE 3 (binding).
+> **Por que é obrigatória (não mais opcional):** o grafo de conhecimento (`code-knowledge-graph`) é a única forma de garantir que o mapa estrutural do projeto (imports, chamadas, acoplamento, blast radius) permaneça **sempre disponível** via `ctx_index`/`ctx_search`, independente de quanto o contexto da conversa cresça ou seja truncado. Modelos de menor capacidade (ex.: Claude Haiku) degradam a retenção de detalhes de projeto conforme o contexto aumenta — indexar o grafo fora da janela de contexto (em cache pesquisável) e registrá-lo no **Registry do Codegraph** para o MCP multi-repo é a mitigação estrutural para essa perda. Por isso esta fase **nunca pergunta "deseja construir?"** — ela sempre executa como parte do registro do projeto, exatamente como FASE 3 (binding).
 
 **Pré-requisito**: FASE 3 concluída com sucesso — `project-id` já existe em `catalog.local.yaml` (o agent indexa na chave `code-graph:<project-id>:<hash>`).
 
@@ -281,26 +281,78 @@ O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de 
    ```
    run_subagent(
      agentName: "code-knowledge-graph",
-     description: "Construir grafo obrigatório do projeto <nome>",
-     task: "RF-001 (fluxo agora MANDATÓRIO de /add-project-context, não mais sugestão):
+     description: "Construir grafo obrigatório e registrar no MCP do projeto <nome>",
+     task: "RF-001 (fluxo MANDATÓRIO de /add-project-context):
             projeto recém-registrado <nome-projeto> (project-id em catalog.local.yaml),
-            path <caminho-absoluto>. Invocar o motor único (node build-graph.js <roots...>,
-            via run_in_terminal — gera apenas graph.json) e indexar via ctx_index ao final —
-            persistência já autorizada por esta invocação, sem pedir confirmação adicional.
-            Se o solicitante precisar de visualização interativa, gerar também via
-            node render-viewer.js --in <graph.json> (Cytoscape.js, sem limite de nós —
-            Mermaid não é mais usado como saída automática, limite prático de ~500 nós)."
+            path <caminho-absoluto>.
+            1. Invocar o motor @optave/codegraph (codegraph build <caminho-absoluto>) gerando .codegraph/graph.db.
+            2. Registrar automaticamente o repositório no catálogo MCP multi-repo: codegraph registry add <caminho-absoluto>.
+            3. Indexar resumo estruturado via ctx_index na chave code-graph:<project-id>:<hash>.
+            4. Se solicitado visualizador interativo, gerar via codegraph plot --output codegraph-view.html --cluster community --color-by role --size-by fan-in --no-open."
    )
    ```
-4. Reportar o resultado (nós/arestas, cobertura, status da indexação) como parte do relatório de sucesso da FASE 4 — **falha desta fase não é bloqueante para o registro do projeto já feito na FASE 3** (aditivo), mas DEVE ser reportada com evidência e próximo passo mínimo se não completar.
+4. Reportar o resultado (nós/arestas, cobertura, status do registry MCP e da indexação) como parte do relatório de sucesso da FASE 4 — **falha desta fase não é bloqueante para o registro do projeto já feito na FASE 3** (aditivo), mas DEVE ser reportada com evidência e próximo passo mínimo se não completar.
 
 **Saída esperada:**
 ```
-[FASE 4 ✅] run_subagent(code-knowledge-graph) — grafo obrigatório construído
-├─ Motor: pattern-matching (Node.js, build-graph.js) — gera graph.json
+[FASE 4 ✅] run_subagent(code-knowledge-graph) — grafo construído e registrado no MCP
+├─ Motor: @optave/codegraph (CLI, .codegraph/graph.db)
+├─ MCP Registry: ✅ Registrado no catálogo multi-repo (codegraph registry add)
 ├─ Nós: <n> | Arestas: <n> | Cobertura: <%>
 ├─ Indexado via ctx_index: ✅ code-graph:<project-id>:<hash>
-└─ Grafo disponível para consulta (ctx_search) no restante da sessão e em sessões futuras
+└─ Grafo disponível para consulta (ctx_search e MCP multi-repo) no restante da sessão
+```
+
+### FASE 4.1: **Descoberta de Integrações Multi-Projeto e Configuração de Fronteiras (`manifesto.boundaries`)**
+
+> **Objetivo**: Quando houver mais de 1 projeto registrado no repositório de governança (identificado em `.github/instructions/local/` ou `catalog.local.yaml`), o Copilot identifica relações de integração/dependência entre o novo projeto e os projetos já existentes, configurando automaticamente o manifesto de fronteiras arquiteturais (`manifesto.boundaries`) em `.codegraphrc.json` para deixar o ecossistema pronto para auditoria de arquitetura, CI gates e detecção de drift.
+
+1. **Condição de ativação**: Listar projetos registrados em `.github/instructions/local/` (ou ler chaves de `catalog.local.yaml`).
+   - Se total de projetos registrados $\le 1$ → pular esta fase e prosseguir para FASE 4.5.
+   - Se total de projetos registrados $\ge 2$ → executar passos 2, 3 e 4 abaixo.
+
+2. **Sequência de Perguntas de Integração via `ask_questions` (R-027)**:
+   ```
+   [Q-INT1] "Quais projetos registrados possuem integração direta com '<novo-projeto>'?"
+     - Opções geradas: Lista dos outros projetos existentes em catalog.local.yaml (ex.: "meu-projeto-backend", "meu-auth-service") + "Nenhuma integração direta"
+     - Multi-seleção: Sim (permite selecionar múltiplos projetos integrados)
+
+   [Q-INT2] "Qual a direção/papel da integração com cada projeto selecionado?" (somente se selecionou projetos em Q-INT1)
+     - Opções:
+       (A) "<novo-projeto> consome APIs/serviços de [projeto-selecionado]" (ex.: Frontend ➔ Backend)
+       (B) "[projeto-selecionado] consome APIs/serviços de <novo-projeto>" (ex.: Backend ➔ Microserviço)
+       (C) "Integração bidirecional / eventos assíncronos"
+       (D) "Compartilhamento de contratos / módulos compartilhados (aliases)"
+   ```
+
+3. **Configuração Automática do Manifesto (`.codegraphrc.json`)**:
+   - A partir das respostas, gerar/atualizar o arquivo `.codegraphrc.json` no projeto com as regras de fronteira (`manifesto.boundaries`) e `aliases` correspondentes:
+     ```json
+     {
+       "manifesto": {
+         "boundaries": {
+           "modules": {
+             "<novo-projeto>": "src/**",
+             "<projeto-integrado>": "<path_externo-do-outro-projeto>/src/**"
+           },
+           "rules": [
+             {
+               "from": "<modulo-consumidor>",
+               "onlyTo": ["<modulo-provedor>"]
+             }
+           ]
+         }
+       }
+     }
+     ```
+   - Deixar o manifesto pronto para validação contínua com `codegraph check --staged --boundaries` e visualização com `codegraph plot --cluster community` / `codegraph communities --drift`.
+
+4. **Saída esperada:**
+```
+[FASE 4.1 ✅] Fronteiras Arquiteturais Multi-Projeto Configuradas
+├─ Projetos integrados: <novo-projeto> ➔ <projeto-integrado>
+├─ Manifesto configurado: .codegraphrc.json (boundaries.rules ativas)
+└─ Pronto para validação via codegraph check --boundaries e inspeção de drift
 ```
 
 ### FASE 4.5: **Sugestão de Sumarização de Código-Fonte** (não-bloqueante, opcional)
@@ -368,12 +420,21 @@ Deseja também iniciar a sumarização de código-fonte via agent especialista a
 🚀 Projeto adicionado! Agora pronto para: /deep-search, /plan, /implement
 ```
 
-[FASE 4 ✅] run_subagent(code-knowledge-graph) — grafo obrigatório construído
+[FASE 4 ✅] run_subagent(code-knowledge-graph) — grafo obrigatório construído e registrado no MCP
 ```
-├─ Motor: pattern-matching (Node.js, build-graph.js) — gera graph.json
+├─ Motor: @optave/codegraph (CLI, .codegraph/graph.db)
+├─ MCP Registry: ✅ Registrado no catálogo multi-repo (codegraph registry add)
 ├─ Nós: 128 | Arestas: 340 | Cobertura: 92%
 ├─ Indexado via ctx_index: ✅ code-graph:meu-projeto-backend:a1b2c3
-└─ Grafo disponível para consulta (ctx_search) no restante da sessão e em sessões futuras
+└─ Grafo disponível para consulta (ctx_search e MCP multi-repo) no restante da sessão
+```
+
+[FASE 4.1 ✅] Fronteiras Arquiteturais Multi-Projeto Configuradas (quando >1 projeto)
+```
+├─ Perguntas de integração respondidas via ask_questions (Q-INT1 / Q-INT2)
+├─ Projetos integrados: meu-frontend ➔ meu-projeto-backend
+├─ Manifesto gerado/atualizado: .codegraphrc.json (boundaries.rules ativas)
+└─ Pronto para validação via codegraph check --boundaries e inspeção de drift
 ```
 
 ---
@@ -431,7 +492,7 @@ Antes de confirmar `"Proceder? (y/n)"` em Fase 2:
 | "Execução abortada" | Erro em patch/edição de arquivo | Revisar preview, corrigir entrada e reexecutar |
 | "catalog.local.yaml não existe" | Primeira vez nesta máquina/clone | Copiar de `catalog.local.yaml.example` (feito automaticamente no Health Check) |
 | "catalog.yaml apareceu modificado no git status" | Escrita indevida no arquivo compartilhado — violação de R-043 | PARAR, reverter via `git checkout docs/ai-context/catalog.yaml`, reportar bug |
-| "build-graph.js falhou na FASE 4" | Node.js indisponível ou erro de sintaxe no script | Verificar `node --version` (Environment Fingerprint de `/init-context`); reportar erro real — motor único não tem fallback, FASE 4 é reportada como não-bloqueante mas com evidência do erro |
+| "codegraph falhou na FASE 4" | CLI `@optave/codegraph` não instalado globalmente | Executar `npm install -g @optave/codegraph` e verificar `codegraph --version`; FASE 4 reporta erro real mas não bloqueia o binding da FASE 3 |
 
 ---
 
@@ -452,7 +513,8 @@ Após invocar `/add-project-context D:\workspace\[meu-projeto]`, verifique:
 - [ ] **Pós-execução**: `docs/ai-context/catalog.local.yaml` foi atualizado (gitignored)?
 - [ ] **Pós-execução**: `docs/ai-context/catalog.yaml` (compartilhado) permaneceu **intocado**?
 - [ ] **Pós-execução**: `.github/instructions/README.md` foi sincronizado (referência, sem dado real)?
-- [ ] **FASE 4 (OBRIGATÓRIA, sem opt-out)**: `code-knowledge-graph` foi invocado sempre logo após a FASE 3, sem `ask_questions` de "deseja construir?", e o grafo foi indexado via `ctx_index` (`code-graph:<project-id>:<hash>`)?
+- [ ] **FASE 4 (OBRIGATÓRIA, sem opt-out)**: `code-knowledge-graph` foi invocado sempre logo após a FASE 3 (gerando o grafo via `codegraph build`, registrando no catálogo MCP via `codegraph registry add` e indexando via `ctx_index`), sem `ask_questions` de "deseja construir?"?
+- [ ] **FASE 4.1**: se houver >1 projeto registrado em `.github/instructions/local/` (ou `catalog.local.yaml`), o Copilot disparou a sequência de `ask_questions` de integração e configurou o manifesto de fronteiras (`manifesto.boundaries`) em `.codegraphrc.json`?
 - [ ] **FASE 4.5 (opcional)**: se usuário aceitou, `code-summarizer` foi invocado **depois** da FASE 4?
 
 **Se todos checkpoints completaram**: ✅ **Sucesso!**  

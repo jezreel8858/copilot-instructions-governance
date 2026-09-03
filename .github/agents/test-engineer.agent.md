@@ -151,6 +151,7 @@ Este agent substitui `test-implementation` + `test-fix`, que compartilhavam 100%
 - [`@test-strategy`](test-strategy.agent.md) — redefinir escopo/cenários de cobertura.
 - [`@bug-triage`](bug-triage.agent.md) — causa raiz ambígua ou fix exige lógica de negócio.
 - [`@analysis-architect`](analysis-architect.agent.md) — impacto cross-módulo do fix/teste.
+- [`@code-knowledge-graph`](code-knowledge-graph.agent.md) — identificar símbolos sem cobertura (`node_roles --role dead`) e priorizar por complexidade (`complexity`, `triage`) antes de escolher o que testar.
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
 

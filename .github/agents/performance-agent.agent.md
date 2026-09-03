@@ -122,6 +122,7 @@ Próximo passo mínimo:
 
 - [`@spring-boot-engineer`](spring-boot-engineer.agent.md) / [`@spring-reactive-engineer`](spring-reactive-engineer.agent.md) / [`@angular-engineer`](angular-engineer.agent.md) quando o achado exigir implementação da correção (perfil híbrido do specialist).
 - [`@analysis-architect`](analysis-architect.agent.md) quando o achado indicar problema de arquitetura mais amplo.
+- [`@code-knowledge-graph`](code-knowledge-graph.agent.md) para rastrear dataflow/complexity/execution_flow (`dataflow`, `complexity`, `triage`) e localizar hotspots reais antes de reportar.
 - [`@agent-router`](agent-router.agent.md) entry point obrigatório (R-037).
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
