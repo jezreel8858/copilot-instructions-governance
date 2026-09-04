@@ -2,7 +2,7 @@
 
 > Fonte de verdade operacional: [`CLAUDE.md`](../CLAUDE.md).
 > Mapa de Adapters (compartilhado): [`docs/ai-context/catalog.yaml`](../docs/ai-context/catalog.yaml).
-> Mapa de Projetos (LOCAL/gitignored, R-043): `docs/ai-context/catalog.local.yaml`.
+> Mapa de Projetos (LOCAL/gitignored, R-043): [`docs/ai-context/catalog.local.yaml`](../docs/ai-context/catalog.local.yaml).
 > IDs normativos: consulte `R-001..R-044` em `CLAUDE.md`.
 
 ---
@@ -105,7 +105,7 @@ Esta matriz é **responsabilidade do roteador** — não é regra global.
 - **Não crie arquivos auxiliares** sem pedido explícito.
 - **Não releia arquivos** já no contexto da conversa.
 - **Pre-fetch automático pelo agent**: ao selecionar um agent, carregue automaticamente os `source_docs` declarados no `catalog.yaml` e anuncie o que foi anexado. Usuário pode rejeitar com "Sem pre-fetch".
-- **Execução via Context Mode (R-008)**: SEMPRE use `ctx_execute`/`ctx_execute_file`/`ctx_batch_execute` para comandos. Terminal é fallback APENAS quando MCP indisponível.
+- **Execução via Context Mode (R-008 — Think in Code)**: Use **100% o `context-mode` MCP** para leitura, busca, escrita em lote, análise e remoção de arquivos (`ctx_execute`, `ctx_execute_file`, `ctx_index`, `ctx_search`). O processamento acontece no sandbox e apenas o resultado limpo entra na conversa. `read_file` e `replace_string_in_file` são reservados exclusivamente para edições cirúrgicas pontuais do editor. `run_in_terminal` é **FALLBACK de última instância** restrito exclusivamente a comandos de ciclo de vida (`git`, `npm install`, `mvn`, `pytest`) — comandos de varredura/leitura (`cat`, `grep`, `find`, scripts inline `node -e`) são terminantemente proibidos no terminal.
 - **Sem código inline em agents/skills/prompts (R-026)**: blocos com implementações > 8 linhas pertencem a `snippets/`, `templates/` ou `commands/`. Referencie por caminho ou declare em `source_docs:`.
 - **Clarificação Obrigatória (R-027)**: qualquer dúvida → `ask_questions` com opções descritivas + última opção aberta. **Proibido inferir ou deduzir** intenção.
 - **Estrutura de Resposta (R-028)**: toda implementação abre com resumo em 5 seções (Abordagem · Componentes · Código · Passos Cruciais · Impacto).
@@ -113,6 +113,7 @@ Esta matriz é **responsabilidade do roteador** — não é regra global.
 - **Plano Auto-Implementável (R-031)**: plano aprovado → execução integral sem interrupção. Pré-voo: escopo + contingências inline `[fallback: X]` + critério de falha tolerável. Parada permitida APENAS por: commit autônomo, credencial exposta, ou estado irrecuperável. Relatório final substitui checkpoints intermediários.
 - **Genericidade Obrigatória (R-038)**: toda documentação em `.github/` **DEVE ser genérica**. Sem projetos específicos, tecnologias exclusivas ou convenções de domínio. Se é específico → vai para `.github/instructions/*.instructions.md` (adapter). Teste: substitua projeto por `[PROJETO]` e tech por `[TECH]` — continua válido?
 - **Anonimização de Evidência Real (R-044)**: agents que analisam repositórios reais (`code-knowledge-graph`, `business-rules-extractor`, `context-builder`, `project-scanner`) **NUNCA** persistem nomes de repositório/classe/método/pacote/caminho real em changelog, README ou `.agent.md` commitado — genericize (`[PROJETO-X]`, `ServicoExemploX`, `com.exemplo.*`) ANTES de escrever. Métricas numéricas agregadas podem permanecer reais. Evidência real crua só é permitida na resposta efêmera do chat. Ver checklist em `CLAUDE.md` § R-044.
+- **Exclusividade do Motor de Grafo (@code-knowledge-graph — R-045 / RNF-004)**: O CLI `@optave/codegraph` e o banco `.codegraph/graph.db` são recursos de uso e execução **EXCLUSIVOS** do agent `@code-knowledge-graph`. NENHUM outro agent tem permissão para rodar comandos `codegraph *` diretamente no terminal ou varrer diretórios manualmente (`list_dir`, `read_dir`) para mapear arquitetura, camadas, chamadas ou dependências. Toda análise estrutural DEVE ser delegada compulsoriamente via `run_subagent(agentName: 'code-knowledge-graph', ...)`. Agents especialistas operam em modo Advisory de forma estritamente analítica e read-only — `run_in_terminal` é restrito ao modo Implementação (testing-first).
 - **Grafo de Roteamento (R-040)**: o roteamento de agents DEVE ser declarado como dado estruturado em `docs/ai-context/routing-graph.yaml`. A Decision Tree em prosa é documentação derivada. Toda nova rota exige: *(a)* entrada no grafo; *(b)* atualização da Decision Tree; *(c)* novo caso em `docs/ai-context/evals/casos-roteamento.yaml`.
 
 ### 2.1) context-mode — Regras Obrigatórias de Roteamento (JetBrains Copilot)
@@ -146,6 +147,7 @@ Quando as tools de context-mode estiverem disponíveis, elas viram o caminho pad
 - Web/docs: `ctx_fetch_and_index` → `ctx_search`.
 - Coleta e resposta em lote: `ctx_batch_execute(commands, queries)`.
 - Arquivo grande para análise: `ctx_execute_file(path, language, code)`.
+- Código-fonte de projeto registrado: indexar via `ctx_index(path: "<projeto>/src", source: "code:<project-id>")` e consultar via `ctx_search(source: "code:<project-id>")` — nunca varredura terminal.
 - Saída de tool externa grande: salvar em arquivo e processar por `ctx_execute_file` ou indexar via `ctx_index(path)`.
 
 **Regras de economia de contexto (token budget):**
@@ -503,7 +505,7 @@ Cada adapter na raiz de `.github/instructions/` deve:
 - **Instructions:** `.github/instructions/README.md` + `.github/instructions/*.instructions.md`
 - **Agents:** `.github/agents/README.md` + `.github/agents/catalog.yaml`
 - **Skills:** `.github/skills/README.md` + `.github/skills/.index.json`
-- **Prompts Workflow:** `/research` `/plan` `/implement` `/validate` `/commit` `/review`
+- **Prompts Workflow:** `/deep-search` `/plan` `/implement` `/validate` `/commit` `/review` `/connect-integration-graphs` `/visualize-graph`
 - **Prompts Context Mode:** `/ctx-checkpoint` `/ctx-resume` `/ctx-doctor` `/ctx-status` `/ctx-insight`
 - **Índice completo:** `.github/prompts/README.md`
 - **Hooks:** `.github/hooks/README.md` + `.github/hooks/context-mode.json`

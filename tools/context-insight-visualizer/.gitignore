@@ -1,0 +1,11 @@
+# Output gerado pelo visualizador (HTML standalone)
+dist/
+dist/*.html
+
+# Caches locais e arquivos temporários
+*.local.*
+*.tmp
+__pycache__/
+*.pyc
+.pytest_cache/
+

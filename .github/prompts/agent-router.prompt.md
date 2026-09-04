@@ -5,7 +5,7 @@ description:
   para classificar a solicitação, garantir Health Check de binding (R-034) e
   Prompt Structuring (R-041), e delegar para o agent downstream correto.
   NÃO implementa código de domínio — apenas triagem e roteamento.
-model: "Gemini 3.7 Flash"
+model: "Gemini 3.8 Flash"
 tools: ['list_dir', 'read_file', 'file_search', 'grep_search', 'ask_questions', 'run_subagent', 'context-mode/ctx_search']
 source_docs:
   - CLAUDE.md

@@ -1,0 +1,9 @@
+dist/
+exports/
+*.db
+*.html
+!template/index.html
+*.local.json
+bridges.local.json
+
+

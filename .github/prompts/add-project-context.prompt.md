@@ -5,7 +5,7 @@ description:
   Orquestra descoberta estruturada de projeto com Intent Classification + Multi-Query RRF.
   Análise estática offline → geração automática de YAML/Markdown → validação e binding atômico.
   Execute UMA VEZ POR PROJETO (reutilizável). PRÉ-REQUISITO `/init-context` já executado.
-model: "Claude Sonnet 5"
+model: "Gemini 3.8 Flash"
 tools: ['file_search', 'grep_search', 'read_file', 'run_in_terminal', 'run_subagent', 'ask_questions', 'context-mode/ctx_search']
 source_docs:
   - .github/skills/yaml-governance/SKILL.md
@@ -302,6 +302,43 @@ O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de 
 ├─ Indexado via ctx_index: ✅ code-graph:<project-id>:<hash>
 └─ Grafo disponível para consulta (ctx_search e MCP multi-repo) no restante da sessão
 ```
+
+### FASE 4.2: **Indexação de Código-Fonte no Knowledge Base (`ctx_index`)** (bloqueante, sem opt-out)
+
+> **Objetivo:** Indexar os arquivos de código-fonte do projeto (`src/`) no Knowledge Base persistente (FTS5 SQLite) via `ctx_index`.
+> **Por que é essencial:** Evita que agentes subsequentes (`angular-engineer`, `spring-boot-engineer`, etc.) executem comandos de terminal (`grep`, `find`, `cat`, `node -e`) ou usem múltiplos `read_file` para entender a lógica. Com o código indexado, qualquer busca por classes, decorators, stores ou métodos é resolvida via `ctx_search(source: "code:<project-id>")` com mínimo consumo de tokens.
+
+1. **Identificar subpasta de código**:
+   - Angular / React / Vue / Node: `<caminho-absoluto>/src`
+   - Spring Boot / Java: `<caminho-absoluto>/src/main/java`
+   - Python: `<caminho-absoluto>/src` ou `<caminho-absoluto>/<pacote>`
+   - Fallback genérico: `<caminho-absoluto>/src` se existir; caso contrário `<caminho-absoluto>`.
+2. **Executar `ctx_index` de código**:
+   ```javascript
+   ctx_index({
+     path: "<subpasta-de-codigo>",
+     source: "code:<project-id>",
+     exclude: [
+       "**/*.spec.ts",
+       "**/*Test.java",
+       "**/test/**",
+       "**/tests/**",
+       "**/assets/**",
+       "**/environments/**",
+       "**/dist/**",
+       "**/build/**",
+       "**/node_modules/**"
+     ],
+     maxFiles: 200
+   })
+   ```
+3. **Exibir confirmação no relatório**:
+   ```
+   [FASE 4.2 ✅] Código-fonte indexado no Knowledge Base (FTS5)
+   ├─ Origem: <subpasta-de-codigo>
+   ├─ Source: code:<project-id>
+   └─ Pronto para consultas limpas via ctx_search (sem poluição de terminal)
+   ```
 
 ### FASE 4.1: **Descoberta de Integrações Multi-Projeto e Configuração de Fronteiras (`manifesto.boundaries`)**
 

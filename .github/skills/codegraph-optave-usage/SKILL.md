@@ -30,6 +30,12 @@ Skill genérica para operar `@optave/codegraph` (repo `optave/ops-codegraph-tool
 - Responder perguntas de impacto, dependência, dead code, ciclo e complexidade sem depender de scripts legados ad-hoc.
 - Servir de base para `check` em CI (exit code 0/1) e para agents/skills consumidores do grafo.
 
+## 1.1) Governança de Acesso: Operador Exclusivo (@code-knowledge-graph — R-045 / RNF-004)
+
+- **Operador único**: os comandos desta skill (`codegraph build`, `codegraph query`, `codegraph fn-impact`, etc.) são de competência e execução **EXCLUSIVAS** do agent `@code-knowledge-graph`.
+- **Proibição universal**: NENHUM outro agent (specialists híbridos como `angular-engineer`, `spring-boot-engineer`, `spring-reactive-engineer`, analistas como `analysis-architect`, ou routers) está autorizado a executar o CLI `codegraph` diretamente via terminal (`run_in_terminal`) ou acessar `.codegraph/graph.db`.
+- **Canal de consumo**: qualquer agent que necessite de mapeamento estrutural de dependências, arquitetura, chamadas ou blast radius DEVE invocar compulsoriamente `@code-knowledge-graph` via `run_subagent(agentName: 'code-knowledge-graph', ...)`.
+
 ## 2) Instalação e verificação
 
 | Passo | Comando |
@@ -110,6 +116,17 @@ codegraph plot --cluster community --color-by role --size-by fan-in -o graph-vie
 
 O arquivo `.codegraphrc.json` (ou `.codegraph/config.json`) na raiz do projeto permite personalizar o comportamento de parsing, regras e fronteiras arquiteturais:
 
+### 5.0) Chaves de Filtro de Arquivos (`exclude`, `ignoreDirs`, `ignoreAdditionalDirs`, `extensions`)
+
+| Chave | Tipo | Efeito |
+|---|---|---|
+| `exclude` | `string[]` (glob) | Padrões de arquivo/caminho excluídos do parsing (ex.: `**/*.spec.ts`, `dist/**`, `*.class`) |
+| `ignoreDirs` | `string[]` | Substitui a lista padrão de diretórios ignorados pelo motor |
+| `ignoreAdditionalDirs` | `string[]` | Diretórios adicionais ignorados **em complemento** à lista padrão (não substitui) |
+| `extensions` | `string[]` | Restringe parsing às extensões informadas; se omitido, usa o conjunto padrão das 34 linguagens |
+
+**Templates prontos por stack** (`docs/agent-context/templates/codegraph/`): `angular.codegraphrc.json` (Angular + Capacitor), `spring-boot.codegraphrc.json`, `spring-reactive.codegraphrc.json` (herda base Spring Boot + geradores openapi/reactor) e `ejb-legacy.codegraphrc.json`. Ver detalhes em [`docs/agent-context/codegraph-guia-uso.md`](../../../docs/agent-context/codegraph-guia-uso.md) §7.
+
 ### 5.1) Fronteiras Arquiteturais (`manifesto.boundaries`)
 Define camadas e regras de dependência entre módulos:
 
@@ -179,7 +196,7 @@ Qualquer agent/skill que consuma o grafo produzido por `@optave/codegraph` deve 
 ## 8) Checklist
 
 - [ ] `codegraph --version` confirmado antes de qualquer build.
-- [ ] Verificar existência de `.codegraphrc.json` no projeto para honrar `boundaries` e `aliases`.
+- [ ] Verificar existência de `.codegraphrc.json` no projeto; se ausente, provisionar o template compatível com a stack (`docs/agent-context/templates/codegraph/`) antes do build, para honrar `exclude`/`ignoreAdditionalDirs`/`boundaries`/`aliases`.
 - [ ] `codegraph build .` executado (ou `watch` ativo) antes de qualquer query.
 - [ ] `-T`/`--no-tests` aplicado em queries de impacto/blast radius, salvo necessidade explícita de incluir testes.
 - [ ] CI usa `codegraph check --staged` como gate, não como sugestão.
@@ -190,5 +207,5 @@ Qualquer agent/skill que consuma o grafo produzido por `@optave/codegraph` deve 
 
 - Repositório oficial: `github.com/optave/ops-codegraph-tool`
 - Pacote npm: `@optave/codegraph`
-- Consumidor principal previsto: `.github/agents/code-knowledge-graph.agent.md` (substitui script legado `build-graph.js` — verificar se o agent já existe no catálogo antes de referenciar em produção; se ainda não existir, esta skill serve de base de conhecimento para sua criação futura via `@governance-factory`).
+- Consumidor principal previsto: `.github/agents/code-knowledge-graph.agent.md` — motor oficial de grafo de conhecimento de código no repositório.
 

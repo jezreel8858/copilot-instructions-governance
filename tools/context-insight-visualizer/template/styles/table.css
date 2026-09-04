@@ -1,0 +1,101 @@
+/* ==========================================================================
+   table.css — Tabela de Sessões Recentes, Filtros e Busca
+   ========================================================================== */
+
+.table-card {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--elevation-1);
+}
+
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.table-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  width: 320px;
+  max-width: 100%;
+}
+
+.table-search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--md-sys-color-on-surface);
+  font-size: 13px;
+  width: 100%;
+}
+
+.table-search-box input::placeholder {
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.mat-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.mat-data-table th {
+  background-color: var(--md-sys-color-surface-container-high);
+  color: var(--md-sys-color-on-surface-variant);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.mat-data-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  color: #f1f5f9;
+}
+
+.mat-data-table tbody tr:hover {
+  background-color: var(--md-sys-color-surface-container-high);
+}
+
+.session-id-pill {
+  font-family: var(--font-family-mono);
+  font-size: 11px;
+  color: var(--md-sys-color-primary);
+  background-color: rgba(208, 188, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.table-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+

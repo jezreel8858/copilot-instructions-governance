@@ -6,6 +6,21 @@ Formato: [Semantic Versioning](https://semver.org/) | [Conventional Commits](htt
 
 ---
 
+## [1.9.0] — 2026-09-04
+
+### Adicionado
+- **`tools/context-insight-visualizer/`**: Suíte analítica completa e dashboard standalone (HTML/CSS/JS puro com design tokens do Angular Material 3 Dark Theme e gerador em Python) para métricas locais do Context Mode MCP (`sessions/*.db`, `stats-pid-*.json`, `content/*.db`). Replicando a arquitetura validada de `tools/codegraph-visualizer/` (zero dependências npm em runtime, zero lock-in SaaS, execução offline via `file://`).
+  - **Sidebar M3 com 5 Visões Profissionais**:
+    - `Dashboard`: Top KPIs (Sessões, R:W Ratio, Compact Rate, Error Rate, PPS), Heatmap 24h ("When You Code"), Volume temporal e cards de Insights determinísticos (`Nice`, `Heads up`, `Fix this`, `FYI`).
+    - `Knowledge Base`: Catálogo de 250+ fontes indexadas agrupadas por recência (*Hoje, Ontem, Esta Semana, Anteriores*), proporção de código e modal de inspeção de chunks.
+    - `Sessions & Decisions`: Auditoria cronológica de sessões, timeline de eventos com prioridade e **Diário de Decisões Técnicas** com exportação direta para Markdown (`.md`).
+    - `Search`: Mecanismo de busca unificado na memória local com destaque em tempo real sobre fontes, decisões técnicas e sessões.
+    - `Enterprise`: Painel executivo com matriz de personas de liderança (CTO, EM, DevEx, CISO, QA, Developer) calculando ROI, economia financeira e conformidade.
+  - `schemas/insight-data.schema.json`: contrato formal de dados unificado (JSON Schema draft 2020-12) validando todas as estruturas.
+  - `generator/`: motor de extração multi-DB com fallback de diretórios, cálculo de KPIs executivos, diário de decisões e empacotador de HTML.
+
+---
+
 ## [1.8.0] — 2026-08-30
 
 ### Adicionado

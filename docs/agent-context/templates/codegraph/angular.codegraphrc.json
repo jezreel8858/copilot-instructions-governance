@@ -1,0 +1,38 @@
+{
+  "exclude": [
+    "dist/**",
+    ".angular/**",
+    "coverage/**",
+    "android/**",
+    "ios/**",
+    "**/*.spec.ts",
+    "**/*.stories.ts",
+    "**/*.d.ts",
+    "polyfills.ts",
+    "**/*.html",
+    "**/*.scss",
+    "**/*.css",
+    "codegraph-view.html",
+    "*.iml"
+  ],
+  "ignoreDirs": [
+    "node_modules",
+    "dist",
+    ".angular",
+    "coverage",
+    "android",
+    "ios",
+    ".git",
+    ".idea"
+  ],
+  "ignoreAdditionalDirs": [
+    "tmp",
+    ".firebase"
+  ],
+  "extensions": [
+    ".ts",
+    ".tsx",
+    ".js"
+  ]
+}
+

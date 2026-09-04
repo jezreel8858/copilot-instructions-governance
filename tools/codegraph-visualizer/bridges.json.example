@@ -1,0 +1,21 @@
+[
+  {
+    "src_proj": "[PROJETO-FRONTEND]",
+    "src_symbol": "UsuarioApiService",
+    "tgt_proj": "[PROJETO-BACKEND]",
+    "tgt_symbol": "UsuarioController",
+    "label": "GET /v1/usuarios",
+    "description": "Consulta de dados de usuário e permissões",
+    "protocol": "HTTP REST (JSON)"
+  },
+  {
+    "src_proj": "[PROJETO-SERVICO-A]",
+    "src_symbol": "IntegracaoClientServiceImpl",
+    "tgt_proj": "[PROJETO-SERVICO-B]",
+    "tgt_symbol": "WebhookReceiverController",
+    "label": "POST /v1/eventos",
+    "description": "Notificação assíncrona de eventos de domínio",
+    "protocol": "HTTP REST"
+  }
+]
+

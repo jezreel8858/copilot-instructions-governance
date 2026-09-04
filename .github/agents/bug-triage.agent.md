@@ -1,5 +1,6 @@
 ---
 name: bug-triage
+version: "1.0.0"
 description: 
   Triar bugs e regressões com foco em reprodução, hipótese de causa raiz e plano
   mínimo de correção sem implementar a solução. Genérico — agnóstico de sistema

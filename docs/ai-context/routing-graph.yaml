@@ -434,8 +434,8 @@ arestas:
   # Grafo de conhecimento de código-fonte cross-projeto (RF-001/RF-002/RF-011)
   - de: agent-router
     para: code-knowledge-graph
-    prioridade: 1.95
-    threshold_score: 0.90
+    prioridade: 1.59
+    threshold_score: 0.85
     nivel_routing: rule-based
     condicoes:
       keywords:
@@ -446,11 +446,18 @@ arestas:
         - "quais classes implementam"
         - "relação estrutural de código"
         - "árvore de dependências de código"
-      sinal_r006: "É pedido de construir/consultar relação estrutural entre símbolos de código (nós/arestas), não de sumarizar/revisar/corrigir o código?"
+        - "estruturado em termos de camadas"
+        - "camadas e fluxo de dados"
+        - "fluxo de dados"
+        - "separação de estado e persistência"
+        - "arquitetura de camadas"
+        - "mapear chamadas entre camadas"
+      sinal_r006: "É pedido de construir/consultar relação estrutural entre símbolos de código (nós/arestas), camadas ou fluxo de dados do projeto?"
       nao_confundir_com:
         - "sumarizar código"                       # → code-summarizer
         - "revisar/corrigir código"                # → bug-triage/code-review/refactor-planner
-        - "acoplamento arquitetural entre sistemas" # → analysis-architect (dependency-graph-mapping, fora de escopo deste agent)
+        - "implementação/feature de componente"    # → angular-engineer / spring-boot-engineer
+        - "acoplamento arquitetural entre sistemas" # → analysis-architect (cross-sistema/contratos)
 
   # Delegação interna: qualquer agent downstream pode invocar code-knowledge-graph sob demanda (RF-002)
   - de: "*downstream"

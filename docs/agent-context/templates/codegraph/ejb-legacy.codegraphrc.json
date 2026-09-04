@@ -1,0 +1,34 @@
+{
+  "exclude": [
+    "**/*_Stub.java",
+    "**/*_Tie.java",
+    "**/*_Skel.java",
+    "**/ear/**",
+    "**/exploded/**",
+    "**/WEB-INF/lib/**",
+    "**/META-INF/lib/**",
+    "*.ear",
+    "*.war",
+    "*.class",
+    "*.jar",
+    "*.iml"
+  ],
+  "ignoreDirs": [
+    "ear",
+    "exploded",
+    "target",
+    "build",
+    ".git",
+    ".idea"
+  ],
+  "ignoreAdditionalDirs": [
+    "WEB-INF/lib",
+    "META-INF/lib"
+  ],
+  "extensions": [
+    ".java",
+    ".xml",
+    ".properties"
+  ]
+}
+

@@ -105,6 +105,13 @@ Toda implementação de feature/bugfix no modo Implementação **deve** ser acom
 
 **Regra de ouro:** nenhuma implementação é reportada como concluída sem evidência de teste executado (comando + resultado) no bloco "Testes Executados" do Formato de Saída (§3).
 
+## 4.1) Separação de Papéis: Mapeamento Estrutural vs. Especialização de Domínio (R-045 / RNF-004)
+
+- **Modo Advisory é estritamente analítico (read-only)**: specialists NUNCA executam `run_in_terminal` em modo Advisory. O uso de terminal é restrito exclusivamente ao modo Implementação para execução de testes (testing-first) e linter.
+- **Exclusividade do `@code-knowledge-graph`**: o CLI `@optave/codegraph` e a extração determinística de chamadas, blast radius, ciclos e dependências pertencem com exclusividade ao `@code-knowledge-graph`.
+- **Proibição de usurpação de papel**: specialists NUNCA executam comandos do CLI `codegraph` diretamente nem realizam varreduras exploratórias de diretórios (`list_dir`, `read_dir`) para mapear arquitetura ou dependências.
+- **Fluxo de delegação obrigatório**: quando a análise exigir relações entre camadas, fluxo de chamadas ou dependências de módulos/serviços, o specialist DEVE invocar `@code-knowledge-graph` via `run_subagent(agentName: 'code-knowledge-graph', ...)`. O papel do specialist é interpretar tecnicamente o resultado do grafo sob a ótica das melhores práticas do seu framework (Angular, Spring, etc.).
+
 ## 5) Checklist Unificado — Antes de Analisar/Implementar
 
 - [ ] Modo desambiguado explicitamente (Advisory vs. Implementação) — via pergunta direta ou intenção inequívoca do pedido.

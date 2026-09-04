@@ -44,11 +44,11 @@ O terminal (`run_in_terminal`) é a **última opção** — não o padrão.
 
 | Situação | Ferramenta preferida | Terminal é fallback? |
 |---|---|---|
-| Analisar arquivo grande | `ctx_execute_file` | Sim |
-| Buscar padrão em código | `ctx_batch_execute` / `grep_search` | Sim |
+| Analisar arquivo grande / buscar padrões | `ctx_search` / `ctx_execute_file` | Sim |
+| Buscar trechos de código em projetos indexados | `ctx_search(source: "code:<project>")` | Sim |
+| Manipular arquivos/pastas (leitura, escrita, `rm`, `mkdir`, `mv`) | `ctx_execute` (Node.js sandbox via `fs`) | Sim |
 | Instalar dependências (`npm install`, `pip install`) | — | ✅ Terminal obrigatório |
 | Operações git (`git status`, `git diff`) | — | ✅ Terminal obrigatório |
-| Operações de filesystem (`mkdir`, `rm`, `mv`) | — | ✅ Terminal obrigatório |
 | Rodar build/test em CI local | — | ✅ Terminal obrigatório |
 
 **Quando terminal for necessário, aplique todas as regras desta skill.**
@@ -162,6 +162,9 @@ cd projeto && npm install && echo "Instalado com sucesso"
 | Padrão | Por quê é proibido | Alternativa |
 |---|---|---|
 | `curl` / `wget` no terminal | Exfiltração de dados, payload malicioso, output irrestrito | `ctx_fetch_and_index` + `ctx_search` |
+| `node -e '...'` ou scripts shell ad-hoc | Poluição de contexto, bypass de ferramentas de parsing e risco de crash | Usar `read_file`, `grep_search`, `ctx_execute_file` ou MCP tools |
+| `codegraph *` fora de `@code-knowledge-graph` | Violação de R-045 / RNF-004; motor exclusivo de grafo | Delegar compulsoriamente via `run_subagent(agentName: 'code-knowledge-graph')` |
+| `find`/`grep`/`ls` exploratório no terminal | Polui contexto; proibido em modo Advisory | Usar MCP (`read_file`, `grep_search`, `file_search`, `ctx_search`) |
 | `watch <comando>` | Loop infinito — bloqueia o agent e inflaciona tokens indefinidamente | Executar uma vez com output filtrado |
 | `npm test --watch` / `jest --watch` | Modo watch — agent nunca recebe saída final | Usar `--watchAll=false` ou `--run` |
 | `ng test` sem `--watch=false` | Karma em modo watch indefinido | `ng test --watch=false` |

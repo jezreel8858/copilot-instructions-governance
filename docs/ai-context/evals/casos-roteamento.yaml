@@ -362,6 +362,22 @@ canonicos:
     critico: false
     threshold: 0.85
 
+  - id: "canon-028"
+    descricao: "Mapeamento estrutural de arquitetura, camadas e fluxo de dados (code-knowledge-graph direto)"
+    input:
+      solicitacao: "Como este projeto está estruturado em termos de camadas e fluxo de dados? Existe separação clara entre a gestão de estado e a persistência?"
+    expected:
+      agent_route: "code-knowledge-graph"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Delegado: @code-knowledge-graph"
+    nao_confundir_com:
+      - "recomendação específica de framework sem grafo"  # → angular-engineer / spring-boot-engineer
+    critico: true
+    threshold: 0.90
+
 # ─────────────────────────────────────────────
 # SUITE 2 — Casos Ambíguos (threshold ≥ 0.70)
 # Intenção ambígua que exige clarificação ou roteamento defensivo.
@@ -619,6 +635,17 @@ regressao:
       agent_route: "code-review"
     nao_deve:
       agent_route: "code-summarizer"
+    critico: true
+    threshold: 1.00
+
+  - id: "regr-019"
+    descricao: "REGRESSÃO: pergunta sobre estrutura de camadas e fluxo de dados do projeto (camadas/store/persistência) DEVE rotear primeiro para code-knowledge-graph para extração do grafo estrutural, nunca direto para especialista de stack sem mapeamento"
+    input:
+      solicitacao: "Como este projeto está estruturado em termos de camadas e fluxo de dados? Existe separação clara entre a gestão de estado e a persistência?"
+    expected:
+      agent_route: "code-knowledge-graph"
+    nao_deve:
+      agent_route: "angular-engineer"
     critico: true
     threshold: 1.00
 
