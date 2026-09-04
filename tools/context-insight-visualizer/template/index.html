@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Context Insight — Local Analytics (Angular Material 3)</title>
+
+  <!-- Google Material Fonts & Icons (com fallback local seguro em CSS) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+
+  <!-- Bundle Modular de Estilos (Injetado pelo TemplateBundler) -->
+  <!-- __INJECT_BUNDLE_STYLES__ -->
+</head>
+<body>
+
+  <div class="app-shell">
+
+    <!-- Sidebar Lateral de Navegação (M3 Dark Theme) -->
+    <aside class="mat-sidebar">
+      <div class="sidebar-header">
+        <h1 class="sidebar-brand-title">CONTEXT MODE</h1>
+        <div class="sidebar-brand-sub">
+          <span>Insight</span>
+          <span class="mat-badge-tag" style="margin-left:auto;">Local</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-link active" data-view="dashboard" onclick="switchView('dashboard')">
+          <span class="material-symbols-outlined nav-link-icon">database</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-link" data-view="knowledge" onclick="switchView('knowledge')">
+          <span class="material-symbols-outlined nav-link-icon">psychology</span>
+          <span>Knowledge Base</span>
+        </div>
+        <div class="nav-link" data-view="sessions" onclick="switchView('sessions')">
+          <span class="material-symbols-outlined nav-link-icon">history</span>
+          <span>Sessions</span>
+        </div>
+        <div class="nav-link" data-view="search" onclick="switchView('search')">
+          <span class="material-symbols-outlined nav-link-icon">search</span>
+          <span>Search</span>
+        </div>
+        <div class="nav-link" data-view="executive" onclick="switchView('executive')">
+          <span class="material-symbols-outlined nav-link-icon">domain</span>
+          <span>Enterprise</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <span class="material-symbols-outlined" style="font-size:14px;">lock</span>
+        <span>Local &bull; Read-only</span>
+      </div>
+    </aside>
+
+    <!-- Conteúdo Principal -->
+    <div class="mat-main-content">
+
+      <!-- Top App Bar Superior -->
+      <header class="mat-top-app-bar">
+        <div class="mat-brand">
+          <span class="material-symbols-outlined mat-brand-icon">insights</span>
+          <span class="mat-brand-title">Context Mode Insight</span>
+          <span class="mat-badge-tag">Standalone M3</span>
+        </div>
+        <div class="mat-actions">
+          <!-- Seletor de Projetos -->
+          <select id="projectSelect" class="mat-btn mat-btn-outlined" style="padding: 0 12px; height: 36px;" aria-label="Filtrar por projeto">
+            <option value="all">Todos os Projetos</option>
+          </select>
+
+          <!-- Botão de Exportação JSON -->
+          <button class="mat-btn mat-btn-outlined" onclick="exportInsightsJson()" title="Exportar dados consolidados em JSON">
+            <span class="material-symbols-outlined" style="font-size: 16px;">download</span>
+            <span>Exportar JSON</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Container das Visões (SPA) -->
+      <main class="app-container">
+
+        <!-- ===================================================================
+             ABA 1: DASHBOARD
+             =================================================================== -->
+        <div class="app-view active" id="view-dashboard">
+          
+          <!-- Seção 1: Top KPIs Executivos -->
+          <section>
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-card-header">
+                  <span class="kpi-label">Sessões</span>
+                  <span class="material-symbols-outlined kpi-icon">history</span>
+                </div>
+                <div class="kpi-value" id="kpiTotalSessions">0</div>
+                <div class="kpi-subtext">Total de sessões gravadas</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-card-header">
+                  <span class="kpi-label">Read : Write Ratio</span>
+                  <span class="material-symbols-outlined kpi-icon">menu_book</span>
+                </div>
+                <div class="kpi-value" id="kpiRwRatio">0.0 : 1</div>
+                <div class="kpi-subtext">Leituras por arquivo gravado</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-card-header">
+                  <span class="kpi-label">Compact Rate</span>
+                  <span class="material-symbols-outlined kpi-icon">psychology</span>
+                </div>
+                <div class="kpi-value" id="kpiCompactRate">0.0%</div>
+                <div class="kpi-subtext">Sessões com estouro de contexto</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-card-header">
+                  <span class="kpi-label">Error Rate</span>
+                  <span class="material-symbols-outlined kpi-icon">shield</span>
+                </div>
+                <div class="kpi-value" id="kpiErrorRate">0.0%</div>
+                <div class="kpi-subtext">Taxa de erro em tool calls</div>
+              </div>
+
+              <div class="kpi-card">
+                <div class="kpi-card-header">
+                  <span class="kpi-label">Prompts / Sessão</span>
+                  <span class="material-symbols-outlined kpi-icon">tune</span>
+                </div>
+                <div class="kpi-value" id="kpiPromptsPerSession">0.0</div>
+                <div class="kpi-subtext">Interações do usuário por sessão</div>
+              </div>
+            </div>
+
+            <!-- Faixa de Economia -->
+            <div class="secondary-kpi-strip" style="margin-top: 12px;">
+              <div class="secondary-pill">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-primary);">savings</span>
+                <span>Tokens economizados no sandbox: <strong id="pillTokensSaved">0</strong></span>
+              </div>
+              <div class="secondary-pill">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: #10b981;">attach_money</span>
+                <span>Custo de API evitado: <strong id="pillDollarsSaved">$0.00</strong></span>
+              </div>
+              <div class="secondary-pill">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: #06b6d4;">timer</span>
+                <span>Tempo salvo com subagentes: <strong id="pillTimeSaved">0 min</strong></span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Seção 2: Insights & Ações (Regras Determinísticas) -->
+          <section>
+            <div class="section-header">
+              <div class="section-title-wrap">
+                <span class="material-symbols-outlined section-icon">lightbulb</span>
+                <div>
+                  <h2 class="section-title">Insights & Ações</h2>
+                  <div class="section-desc">Recomendações determinísticas avaliadas sobre seu histórico local de uso</div>
+                </div>
+              </div>
+              <div class="mat-chip-set" id="severityChips">
+                <div class="mat-chip active" data-sev="all" onclick="setSeverityFilter('all')">Todos</div>
+                <div class="mat-chip" data-sev="positive" onclick="setSeverityFilter('positive')">Nice</div>
+                <div class="mat-chip" data-sev="warning" onclick="setSeverityFilter('warning')">Heads up</div>
+                <div class="mat-chip" data-sev="critical" onclick="setSeverityFilter('critical')">Fix this</div>
+                <div class="mat-chip" data-sev="neutral" onclick="setSeverityFilter('neutral')">FYI</div>
+              </div>
+            </div>
+
+            <div class="insights-grid" id="insightsContainer"></div>
+          </section>
+
+          <!-- Seção 3: Painéis de Gráficos e Atividade -->
+          <section>
+            <div class="section-header">
+              <div class="section-title-wrap">
+                <span class="material-symbols-outlined section-icon">analytics</span>
+                <div>
+                  <h2 class="section-title">Atividade & Padrões Operacionais</h2>
+                  <div class="section-desc">Volume de eventos, distribuição horária e detalhamento de ferramentas</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="charts-grid">
+              <!-- Volume Temporal -->
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div>
+                    <div class="chart-card-title">
+                      <span class="material-symbols-outlined" style="font-size: 18px; color: var(--md-sys-color-primary);">show_chart</span>
+                      <span>Volume de Atividade Recente</span>
+                    </div>
+                    <div class="chart-card-desc">Eventos e sessões nos últimos dias registrados</div>
+                  </div>
+                </div>
+                <div class="activity-svg-wrap" id="activityChartContainer"></div>
+              </div>
+
+              <!-- When You Code -->
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div>
+                    <div class="chart-card-title">
+                      <span class="material-symbols-outlined" style="font-size: 18px; color: var(--md-sys-color-cyan);">schedule</span>
+                      <span>When You Code</span>
+                    </div>
+                    <div class="chart-card-desc">Distribuição de eventos pelas 24 horas do dia</div>
+                  </div>
+                </div>
+                <div class="heatmap-mini-stats">
+                  <div class="mini-stat-item">
+                    <div class="mini-stat-value" id="statPeakHour" style="color: var(--md-sys-color-cyan);">--</div>
+                    <div class="mini-stat-label">Pico de Horário</div>
+                  </div>
+                  <div class="mini-stat-item">
+                    <div class="mini-stat-value" id="statPeakEvents">0</div>
+                    <div class="mini-stat-label">Eventos no Pico</div>
+                  </div>
+                  <div class="mini-stat-item">
+                    <div class="mini-stat-value" id="statActiveHours">0</div>
+                    <div class="mini-stat-label">Horas Ativas</div>
+                  </div>
+                </div>
+                <div class="heatmap-blocks-container" id="whenYouCodeBars"></div>
+                <div class="heatmap-footer-labels">
+                  <span>00:00</span>
+                  <span>06:00</span>
+                  <span>12:00</span>
+                  <span>18:00</span>
+                  <span>23:00</span>
+                </div>
+              </div>
+
+              <!-- Distribuição de Ferramentas -->
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div>
+                    <div class="chart-card-title">
+                      <span class="material-symbols-outlined" style="font-size: 18px; color: var(--md-sys-color-primary);">build</span>
+                      <span>Uso Geral de Ferramentas</span>
+                    </div>
+                    <div class="chart-card-desc">Chamadas por categoria de ação</div>
+                  </div>
+                </div>
+                <div id="toolUsageContainer"></div>
+              </div>
+
+              <!-- Ferramentas MCP -->
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div>
+                    <div class="chart-card-title">
+                      <span class="material-symbols-outlined" style="font-size: 18px; color: var(--md-sys-color-cyan);">terminal</span>
+                      <span>Ferramentas Context Mode (MCP)</span>
+                    </div>
+                    <div class="chart-card-desc">Chamadas e bytes processados em sandbox</div>
+                  </div>
+                </div>
+                <div id="mcpToolsContainer"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+
+        <!-- ===================================================================
+             ABA 2: KNOWLEDGE BASE
+             =================================================================== -->
+        <div class="app-view" id="view-knowledge">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <span class="material-symbols-outlined section-icon">psychology</span>
+              <div>
+                <h2 class="section-title">Knowledge Base</h2>
+                <div class="section-desc">Documentos técnicos, instruções de agentes e arquivos indexados em chunks FTS5</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI Strip da Knowledge Base -->
+          <div class="kpi-grid" style="margin-bottom: 24px;">
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <span class="kpi-label">Fontes Indexadas</span>
+                <span class="material-symbols-outlined kpi-icon">layers</span>
+              </div>
+              <div class="kpi-value" id="kbStatTotalSources">0</div>
+              <div class="kpi-subtext">Arquivos e URLs persistidos</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <span class="kpi-label">Total de Chunks</span>
+                <span class="material-symbols-outlined kpi-icon">data_object</span>
+              </div>
+              <div class="kpi-value" id="kbStatTotalChunks">0</div>
+              <div class="kpi-subtext">Fragmentos pesquisáveis em FTS5</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <span class="kpi-label">Proporção de Código</span>
+                <span class="material-symbols-outlined kpi-icon">code</span>
+              </div>
+              <div class="kpi-value" id="kbStatCodePct">0%</div>
+              <div class="kpi-subtext">Chunks identificados como código</div>
+            </div>
+            <div class="kpi-card">
+              <div class="kpi-card-header">
+                <span class="kpi-label">Última Indexação</span>
+                <span class="material-symbols-outlined kpi-icon">schedule</span>
+              </div>
+              <div class="kpi-value" id="kbStatFreshestDate" style="font-size: 20px;">--</div>
+              <div class="kpi-subtext">Recência da base de conhecimento</div>
+            </div>
+          </div>
+
+          <!-- Catálogo de Fontes Agrupadas -->
+          <div id="knowledgeSourcesContainer"></div>
+        </div>
+
+
+        <!-- ===================================================================
+             ABA 3: SESSIONS & DECISIONS
+             =================================================================== -->
+        <div class="app-view" id="view-sessions">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <span class="material-symbols-outlined section-icon">history</span>
+              <div>
+                <h2 class="section-title">Sessões & Decisões Técnicas</h2>
+                <div class="section-desc">Auditoria completa de sessões, timelines e diário de decisões persistidas</div>
+              </div>
+            </div>
+            <!-- Subtabs & Export -->
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div class="mat-chip-set">
+                <div class="mat-chip active" id="subtabBtnSessions" onclick="setSessionsSubTab('sessions')">
+                  <span class="material-symbols-outlined" style="font-size:15px;">list_alt</span>
+                  <span>Sessões Ativas</span>
+                </div>
+                <div class="mat-chip" id="subtabBtnDecisions" onclick="setSessionsSubTab('decisions')">
+                  <span class="material-symbols-outlined" style="font-size:15px;">rule</span>
+                  <span>Diário de Decisões (<span id="decisionsTotalCount">0</span>)</span>
+                </div>
+              </div>
+              <button class="mat-btn mat-btn-outlined" onclick="exportDecisionsMarkdown()" title="Exportar decisões técnicas em Markdown">
+                <span class="material-symbols-outlined" style="font-size:16px;">download</span>
+                <span>Exportar Decisões (.md)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Subtab 1: Sessões Recentes -->
+          <div id="sessionsSubTabContent">
+            <div class="table-card">
+              <div class="table-toolbar">
+                <div class="table-search-box">
+                  <span class="material-symbols-outlined" style="font-size: 16px; color: var(--md-sys-color-on-surface-variant);">search</span>
+                  <input type="text" placeholder="Buscar sessão por ID ou projeto..." oninput="handleTableSearch(this.value)" aria-label="Buscar sessão">
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table class="mat-data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 140px;">Sessão ID</th>
+                      <th>Projeto</th>
+                      <th style="width: 160px;">Início</th>
+                      <th style="width: 110px;">Duração</th>
+                      <th style="width: 90px;">Eventos</th>
+                      <th style="width: 110px;">Compactações</th>
+                    </tr>
+                  </thead>
+                  <tbody id="sessionsTableBody"></tbody>
+                </table>
+              </div>
+              <div class="table-pagination">
+                <span id="tablePageInfo">Página 1</span>
+                <button class="mat-btn mat-btn-outlined" style="height: 28px; padding: 0 10px; font-size: 11px;" onclick="prevTablePage()">Anterior</button>
+                <button class="mat-btn mat-btn-outlined" style="height: 28px; padding: 0 10px; font-size: 11px;" onclick="nextTablePage()">Próxima</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subtab 2: Diário de Decisões -->
+          <div id="decisionsSubTabContent" style="display:none;">
+            <div class="decisions-list" id="decisionsListContainer"></div>
+          </div>
+        </div>
+
+
+        <!-- ===================================================================
+             ABA 4: SEARCH
+             =================================================================== -->
+        <div class="app-view" id="view-search">
+          <div class="search-hero-box">
+            <div style="margin-bottom: 16px;">
+              <h2 style="font-size: 20px; font-weight: 700; color: #f8fafc;">Busca Unificada na Memória</h2>
+              <p style="font-size: 13px; color: var(--md-sys-color-on-surface-variant); margin-top: 2px;">
+                Pesquise em tempo real em todas as fontes indexadas, decisões de arquitetura e histórico de sessões.
+              </p>
+            </div>
+
+            <div class="search-input-wrap">
+              <span class="material-symbols-outlined" style="font-size: 20px; color: var(--md-sys-color-primary);">search</span>
+              <input type="text" id="memorySearchInput" placeholder="Digite para buscar em toda a memória (ex: adapter, rule, auth, firestore)..." oninput="handleMemorySearch(this.value)">
+            </div>
+
+            <div class="mat-chip-set" id="searchFilterChips" style="margin-top: 14px;">
+              <div class="mat-chip active" data-filter="all" onclick="setMemorySearchFilter('all')">Tudo</div>
+              <div class="mat-chip" data-filter="sources" onclick="setMemorySearchFilter('sources')">Fontes (KB)</div>
+              <div class="mat-chip" data-filter="decisions" onclick="setMemorySearchFilter('decisions')">Decisões</div>
+              <div class="mat-chip" data-filter="sessions" onclick="setMemorySearchFilter('sessions')">Sessões</div>
+              <span id="searchResultCount" style="margin-left: auto; font-size: 12px; color: var(--md-sys-color-on-surface-variant);"></span>
+            </div>
+          </div>
+
+          <div id="searchResultsContainer"></div>
+        </div>
+
+
+        <!-- ===================================================================
+             ABA 5: ENTERPRISE & PERSONAS
+             =================================================================== -->
+        <div class="app-view" id="view-executive">
+          <div class="section-header">
+            <div class="section-title-wrap">
+              <span class="material-symbols-outlined section-icon">domain</span>
+              <div>
+                <h2 class="section-title">Enterprise & Liderança</h2>
+                <div class="section-desc">Métricas de impacto, ROI e conformidade estruturadas por papel organizacional</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="personas-grid" id="executivePersonasContainer"></div>
+        </div>
+
+      </main>
+
+      <!-- Rodapé -->
+      <footer class="app-footer">
+        Context Mode Insight &bull; Analytics local e offline do context-mode &bull; Zero SaaS lock-in &bull; Padrão Angular Material 3
+      </footer>
+
+    </div>
+
+  </div>
+
+  <!-- Modal / Drawer: Detalhe da Fonte (Knowledge Base) -->
+  <div class="mat-dialog-backdrop" id="sourceDetailModal" onclick="if(event.target===this) closeSourceDetailModal()">
+    <div class="mat-dialog-panel">
+      <div class="mat-dialog-header">
+        <h3 class="mat-dialog-title" id="sourceModalTitle">Detalhes da Fonte</h3>
+        <button class="mat-btn mat-btn-outlined" style="height:28px;padding:0 8px;" onclick="closeSourceDetailModal()">
+          <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+        </button>
+      </div>
+      <div class="mat-dialog-body" id="sourceModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Modal / Drawer: Timeline da Sessão (Sessions) -->
+  <div class="mat-dialog-backdrop" id="sessionEventsModal" onclick="if(event.target===this) closeSessionEventsModal()">
+    <div class="mat-dialog-panel">
+      <div class="mat-dialog-header">
+        <h3 class="mat-dialog-title" id="sessionModalTitle">Timeline da Sessão</h3>
+        <button class="mat-btn mat-btn-outlined" style="height:28px;padding:0 8px;" onclick="closeSessionEventsModal()">
+          <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+        </button>
+      </div>
+      <div class="mat-dialog-body" id="sessionModalBody"></div>
+    </div>
+  </div>
+
+  <!-- Bundle Modular de Scripts (Injetado pelo TemplateBundler) -->
+  <!-- __INJECT_BUNDLE_SCRIPTS__ -->
+</body>
+</html>
+

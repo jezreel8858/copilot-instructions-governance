@@ -1,0 +1,383 @@
+/* ==========================================================================
+   views.css — Estilos Específicos para as 5 Abas do Context Insight
+   ========================================================================== */
+
+/* ── App Shell com Sidebar M3 ── */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+.mat-sidebar {
+  width: 240px;
+  background-color: var(--md-sys-color-surface-dim);
+  border-right: 1px solid var(--md-sys-color-outline-variant);
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 150;
+}
+
+.sidebar-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.sidebar-brand-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f8fafc;
+}
+
+.sidebar-brand-sub {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface-variant);
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  transition: var(--transition-default);
+  user-select: none;
+}
+
+.nav-link:hover {
+  color: #f8fafc;
+  background-color: var(--md-sys-color-surface-container);
+}
+
+.nav-link.active {
+  color: var(--md-sys-color-primary);
+  background-color: var(--md-sys-color-surface-container-high);
+  border-left-color: var(--md-sys-color-primary);
+  font-weight: 600;
+}
+
+.nav-link-icon {
+  font-size: 18px;
+}
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mat-main-content {
+  margin-left: 240px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── Controle de Visões (SPA Tab Switching) ── */
+.app-view {
+  display: none;
+}
+
+.app-view.active {
+  display: block;
+}
+
+/* ── Knowledge Base View ── */
+.date-group-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--md-sys-color-primary);
+  margin: 24px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 14px;
+}
+
+.source-card {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: var(--transition-default);
+  display: flex;
+  flex-direction: column;
+}
+
+.source-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--md-sys-color-primary);
+  box-shadow: var(--elevation-2);
+}
+
+.source-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.source-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f8fafc;
+  line-height: 1.35;
+  word-break: break-all;
+}
+
+.source-path {
+  font-size: 11px;
+  font-family: var(--font-family-mono);
+  color: var(--md-sys-color-on-surface-variant);
+  margin-bottom: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.source-stats {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px dashed var(--md-sys-color-outline-variant);
+}
+
+/* ── Decisions Stream ── */
+.decisions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.decision-card {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-left: 4px solid var(--md-sys-color-cyan);
+  border-radius: var(--radius-sm);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.decision-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+}
+
+.decision-text {
+  font-size: 13px;
+  line-height: 1.5;
+  color: #f1f5f9;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Search View ── */
+.search-hero-box {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.search-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--md-sys-color-surface-container-high);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--radius-full);
+  padding: 10px 18px;
+  width: 100%;
+}
+
+.search-input-wrap input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f8fafc;
+  font-size: 15px;
+  width: 100%;
+}
+
+.search-result-card {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.search-result-badge {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  width: fit-content;
+}
+
+.search-result-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.search-result-snippet {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--md-sys-color-on-surface-variant);
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 8px 12px;
+  border-radius: var(--radius-xs);
+  font-family: var(--font-family-mono);
+}
+
+/* ── Executive / Enterprise Personas Grid ── */
+.personas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 18px;
+}
+
+.persona-card {
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.persona-blue {
+  background-color: rgba(59, 130, 246, 0.05);
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.persona-purple {
+  background-color: rgba(168, 85, 247, 0.05);
+  border: 1px solid rgba(168, 85, 247, 0.3);
+}
+
+.persona-cyan {
+  background-color: rgba(6, 182, 212, 0.05);
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.persona-red {
+  background-color: rgba(239, 68, 68, 0.05);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.persona-amber {
+  background-color: rgba(245, 158, 11, 0.05);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.persona-emerald {
+  background-color: rgba(16, 185, 129, 0.05);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+/* ── Modal / Overlay Dialogs ── */
+.mat-dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 24px;
+}
+
+.mat-dialog-backdrop.open {
+  display: flex;
+}
+
+.mat-dialog-panel {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: var(--radius-lg);
+  width: 780px;
+  max-width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+.mat-dialog-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mat-dialog-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.mat-dialog-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+

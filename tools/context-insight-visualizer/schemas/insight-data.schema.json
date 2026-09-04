@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://deep-agents-copilot/tools/context-insight-visualizer/schemas/insight-data.schema.json",
+  "title": "ContextInsightData",
+  "description": "Contrato de dados unificado para o visualizador standalone de métricas do Context Mode.",
+  "type": "object",
+  "required": ["version", "meta", "kpis", "insightsActions"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Versão do schema do contrato de dados.",
+      "default": "1.0.0"
+    },
+    "meta": {
+      "type": "object",
+      "required": ["generatedAt", "sourcePaths", "warnings"],
+      "properties": {
+        "generatedAt": {
+          "type": "string",
+          "description": "Timestamp ISO 8601 da geração do snapshot."
+        },
+        "sourcePaths": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Caminhos e diretórios de dados locais lidos."
+        },
+        "warnings": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Avisos de introspecção ou fontes ausentes/parciais."
+        },
+        "statsPidCount": {
+          "type": "integer",
+          "description": "Quantidade de arquivos stats-pid-*.json processados."
+        },
+        "sessionDbsCount": {
+          "type": "integer",
+          "description": "Quantidade de bancos sessions/*.db processados."
+        },
+        "contentDbsCount": {
+          "type": "integer",
+          "description": "Quantidade de bancos content/*.db processados."
+        }
+      }
+    },
+    "kpis": {
+      "type": "object",
+      "required": [
+        "totalSessions",
+        "readWriteRatio",
+        "compactRate",
+        "errorRatePct",
+        "promptsPerSession"
+      ],
+      "properties": {
+        "totalSessions": { "type": "number", "description": "Total de sessões registradas." },
+        "readWriteRatio": { "type": "number", "description": "Razão de leituras de arquivo para escritas (reads : writes)." },
+        "compactRate": { "type": "number", "description": "Percentual de sessões que sofreram compactação de contexto (%)." },
+        "errorRatePct": { "type": "number", "description": "Taxa de erro nas chamadas de ferramenta (%)." },
+        "promptsPerSession": { "type": "number", "description": "Média de prompts do usuário por sessão." },
+        "totalEvents": { "type": "number", "description": "Total acumulado de eventos de sessão." },
+        "totalErrors": { "type": "number", "description": "Total de falhas ou erros registrados." },
+        "totalCompacts": { "type": "number", "description": "Total de eventos de compactação." },
+        "totalReads": { "type": "number", "description": "Total de eventos de leitura de arquivo." },
+        "totalWrites": { "type": "number", "description": "Total de eventos de escrita de arquivo." },
+        "tokensSaved": { "type": "number", "description": "Estimativa de tokens economizados." },
+        "dollarsSaved": { "type": "number", "description": "Estimativa de custo economizado em USD." },
+        "timeSavedMin": { "type": "number", "description": "Tempo estimado economizado em minutos por paralelismo." }
+      }
+    },
+    "sessions": {
+      "type": "array",
+      "description": "Lista das sessões agregadas ordenadas por início decrescente.",
+      "items": {
+        "type": "object",
+        "required": ["sessionId", "startedAt", "eventCount"],
+        "properties": {
+          "sessionId": { "type": "string" },
+          "projectDir": { "type": "string" },
+          "projectName": { "type": "string" },
+          "startedAt": { "type": ["string", "null"] },
+          "lastEventAt": { "type": ["string", "null"] },
+          "durationMin": { "type": "number" },
+          "eventCount": { "type": "number" },
+          "compactCount": { "type": "number" }
+        }
+      }
+    },
+    "sessionsByDate": {
+      "type": "array",
+      "description": "Volume diário de sessões e eventos.",
+      "items": {
+        "type": "object",
+        "required": ["date", "count", "events"],
+        "properties": {
+          "date": { "type": "string" },
+          "count": { "type": "number" },
+          "events": { "type": "number" },
+          "compacts": { "type": "number" }
+        }
+      }
+    },
+    "hourlyPattern": {
+      "type": "array",
+      "description": "Histograma de eventos pelas 24 horas do dia (When You Code).",
+      "items": {
+        "type": "object",
+        "required": ["hour", "count"],
+        "properties": {
+          "hour": { "type": "integer", "minimum": 0, "maximum": 23 },
+          "count": { "type": "number" }
+        }
+      }
+    },
+    "toolUsage": {
+      "type": "array",
+      "description": "Distribuição de uso geral de ferramentas.",
+      "items": {
+        "type": "object",
+        "required": ["tool", "count"],
+        "properties": {
+          "tool": { "type": "string" },
+          "count": { "type": "number" }
+        }
+      }
+    },
+    "mcpTools": {
+      "type": "array",
+      "description": "Detalhamento de chamadas a ferramentas context-mode MCP.",
+      "items": {
+        "type": "object",
+        "required": ["tool", "count"],
+        "properties": {
+          "tool": { "type": "string" },
+          "count": { "type": "number" },
+          "bytes": { "type": "number" }
+        }
+      }
+    },
+    "projects": {
+      "type": "array",
+      "description": "Atividade agregada por projeto.",
+      "items": {
+        "type": "object",
+        "required": ["projectDir", "projectName", "sessions", "events"],
+        "properties": {
+          "projectDir": { "type": "string" },
+          "projectName": { "type": "string" },
+          "sessions": { "type": "number" },
+          "events": { "type": "number" },
+          "compacts": { "type": "number" }
+        }
+      }
+    },
+    "subagents": {
+      "type": "object",
+      "properties": {
+        "total": { "type": "number" },
+        "bursts": { "type": "number" },
+        "maxConcurrent": { "type": "number" },
+        "parallelCount": { "type": "number" },
+        "sequentialCount": { "type": "number" },
+        "timeSavedMin": { "type": "number" }
+      }
+    },
+    "insightsActions": {
+      "type": "array",
+      "description": "Cards de insights avaliados deterministicamente pelo motor de regras.",
+      "items": {
+        "type": "object",
+        "required": ["id", "severity", "badge", "icon", "metric", "evidence", "action", "roi"],
+        "properties": {
+          "id": { "type": "string" },
+          "severity": {
+            "type": "string",
+            "enum": ["positive", "warning", "critical", "neutral"]
+          },
+          "badge": { "type": "string" },
+          "icon": { "type": "string" },
+          "metric": { "type": "string" },
+          "evidence": { "type": "string" },
+          "action": { "type": "string" },
+          "roi": { "type": "string" }
+        }
+      }
+    },
+    "sources": {
+      "type": "array",
+      "description": "Lista de fontes indexadas na Knowledge Base."
+    },
+    "chunksBySource": {
+      "type": "object",
+      "description": "Dicionário de chunks agrupados por id da fonte."
+    },
+    "decisions": {
+      "type": "array",
+      "description": "Diário de decisões técnicas gravadas nos eventos das sessões."
+    },
+    "detailedEvents": {
+      "type": "array",
+      "description": "Amostra de eventos detalhados recentes para linha do tempo."
+    },
+    "executivePersonas": {
+      "type": "array",
+      "description": "Cartões de personas executivas com ROI e métricas por papel."
+    }
+  }
+}
+

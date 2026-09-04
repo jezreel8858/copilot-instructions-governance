@@ -1,0 +1,175 @@
+/* ==========================================================================
+   charts.css — Painéis de Gráficos, Heatmap de Horário e Barras de Proporção
+   ========================================================================== */
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chart-card {
+  background-color: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--elevation-1);
+}
+
+.chart-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.chart-card-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chart-card-desc {
+  font-size: 12px;
+  color: var(--md-sys-color-on-surface-variant);
+  margin-top: 2px;
+}
+
+/* ── When You Code: Heatmap / 24h Blocks ── */
+.heatmap-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--md-sys-color-outline-variant);
+}
+
+.mini-stat-item {
+  text-align: center;
+}
+
+.mini-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #f8fafc;
+}
+
+.mini-stat-label {
+  font-size: 11px;
+  color: var(--md-sys-color-on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.heatmap-blocks-container {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 4px;
+  align-items: flex-end;
+  height: 90px;
+  padding: 8px 0;
+}
+
+.heatmap-bar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.heatmap-bar-fill {
+  width: 100%;
+  border-radius: 2px;
+  background-color: var(--md-sys-color-cyan);
+  transition: height 0.3s ease;
+  min-height: 2px;
+}
+
+.heatmap-bar-label {
+  font-size: 9px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--font-family-mono);
+}
+
+.heatmap-footer-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--md-sys-color-on-surface-variant);
+  font-family: var(--font-family-mono);
+  margin-top: 4px;
+}
+
+/* ── Activity Time-series SVG Chart ── */
+.activity-svg-wrap {
+  width: 100%;
+  height: 180px;
+  position: relative;
+}
+
+.activity-svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ── Tool Usage List & Progress Bars ── */
+.tool-usage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tool-usage-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tool-usage-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.tool-name {
+  font-weight: 500;
+  color: #f1f5f9;
+  font-family: var(--font-family-mono);
+}
+
+.tool-count {
+  color: var(--md-sys-color-on-surface-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+.tool-bar-bg {
+  height: 6px;
+  background-color: var(--md-sys-color-surface-container-high);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.tool-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background-color: var(--md-sys-color-primary);
+  transition: width 0.4s ease;
+}
+
