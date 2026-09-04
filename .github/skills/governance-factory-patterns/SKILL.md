@@ -29,14 +29,20 @@ Esta skill formaliza o fluxo compartilhado pelos 3 tipos de artefato de governan
 
 ## 1) Decision Tree Canônica (Factory Pattern)
 
-```
+```text
 Solicitação de criar/revisar/auditar artefato de governança
     ↓
 Tipo de artefato? → agent | skill | prompt
     ↓
 Já existe artefato equivalente? (busca por nome + por escopo semântico)
     ├─ Sim → propor REVISÃO do existente (nunca duplicar)
-    └─ Não → prosseguir para criação
+    └─ Não → prosseguir para CRIAÇÃO
+    ↓
+[Se CRIAÇÃO — OBRIGATÓRIO] Delegar ao @deep-search via run_subagent:
+    Pesquisar na web (quando disponível via Tavily) e internamente sobre
+    as melhores diretrizes e skills recomendadas para o artefato
+    ↓
+[Após retorno do @deep-search] Consumir síntese e incorporar diretrizes/skills ao escopo
     ↓
 Coletar campos obrigatórios via ask_questions (ver `structured-intake-patterns`
 para o padrão de intake, se aplicável)
@@ -73,6 +79,7 @@ Reportar no Formato de Saída (§4 desta skill)
 - [ ] Nome em `kebab-case`, sem espaços/maiúsculas.
 - [ ] Campo obrigatório do tipo de artefato presente (ver tabela §2).
 - [ ] Não duplica artefato existente (busca prévia por nome E por escopo semântico).
+- [ ] Se CRIAÇÃO: pesquisa prévia de melhores diretrizes e skills delegada ao `@deep-search` (web/local) e síntese incorporada ao design do artefato.
 - [ ] Catálogo/índice atualizado **na mesma entrega** (R-015 — nunca "depois").
 - [ ] README correspondente atualizado **na mesma entrega**.
 - [ ] Se `agent`: `run_subagent` presente no frontmatter `tools:` (bloqueante — R-042); seção "Retorno ao Router" declarada; banner "Agente Ativo" presente no Formato de Saída.
@@ -102,6 +109,7 @@ Validações:
 - Nome kebab-case: ✅/❌
 - Campo obrigatório do tipo presente: ✅/❌
 - Não duplica artefato existente: ✅/❌
+- [se criação] Pesquisa prévia via @deep-search executada e incorporada: ✅/❌
 - Catálogo/índice atualizado atomicamente (R-015): ✅/❌
 - README atualizado atomicamente: ✅/❌
 - [se agent] run_subagent presente (R-042): ✅/❌
@@ -122,6 +130,8 @@ Nenhuma criação/revisão de artefato de governança é considerada completa se
 
 ## 6) Anti-padrões
 
+- ❌ Criar novo agent, prompt ou skill sem delegar previamente a pesquisa de melhores diretrizes e skills ao `@deep-search` (web quando disponível / repositório).
+- ❌ Descartar ou ignorar os achados retornados pelo `@deep-search` ao gerar o artefato.
 - ❌ Criar artefato e "esquecer" de atualizar catálogo/README na mesma entrega (viola R-015).
 - ❌ Duplicar artefato existente por não ter buscado por escopo semântico (só buscar por nome exato é insuficiente).
 - ❌ Agent criado sem `run_subagent` no frontmatter (estruturalmente incapaz de cumprir R-042).

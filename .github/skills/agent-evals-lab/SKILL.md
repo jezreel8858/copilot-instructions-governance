@@ -262,7 +262,7 @@ evals:
 
 Os casos de teste desta skill estão materializados em:
 
-**[`docs/ai-context/evals/casos-roteamento.yaml`](../../../docs/ai-context/evals/casos-roteamento.yaml)**
+**[`.github/agents/evals/casos-roteamento.yaml`](../../agents/evals/casos-roteamento.yaml)**
 
 Estrutura do arquivo:
 - `canonicos` — 10 casos com threshold 0.90 e `critico: true`

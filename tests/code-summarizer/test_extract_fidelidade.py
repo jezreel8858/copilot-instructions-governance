@@ -1,7 +1,7 @@
 """
 test_extract_fidelidade.py — Suíte 1 do contrato de evals (fidelidade_multistack).
 
-Automatiza os 4 casos "fid-00X-*" de docs/ai-context/evals/casos-code-summarizer.yaml
+Automatiza os 4 casos "fid-00X-*" de .github/agents/evals/casos-code-summarizer.yaml
 contra os scripts REAIS de Modo 1 (Determinístico):
   - extract-treesitter.js (Java, Angular/TypeScript) — via subprocess (cli-runner.js)
   - extract-sql.js (SQL)                              — via subprocess (cli-runner.js)

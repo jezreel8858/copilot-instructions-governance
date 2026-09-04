@@ -24,7 +24,7 @@
 | Agent | `deep-search` | 🔎 ***(NEW)*** Retriever/Researcher para pesquisa interna (repo + context-mode + terminal read-only) e externa (Tavily), com decomposição paralela de pesquisa composta |
 | Agent | `analysis-architect` | Análise técnica unificada: impacto local (tier B1), risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL) com metodologia B1/B2/B3 |
 | Agent | `agent-auditor` | 🧪 ***(NEW)*** Auditoria semântica de governança do próprio catálogo (agents/skills/prompts): detecta smells e gaps, classifica severidade e recomenda handoff para executores, sempre read-only |
-| Agent | `governance-factory` | 🏭 ***(FUSÃO)*** Criação/revisão de agent, skill ou prompt via parâmetro `type` — substitui agent-factory + skill-factory + prompt-factory, que compartilhavam o mesmo fluxo canônico |
+| Agent | `governance-factory` | 🏭 ***(FUSÃO v1.1.0)*** Criação/revisão de agent, skill ou prompt via parâmetro `type`; na criação de qualquer artefato, delega compulsoriamente pesquisa prévia de mercado/skills ao `deep-search` antes de materializar o arquivo |
 | Agent | `context-builder` | Coletar, condensar e persistir contexto técnico em `docs/context/` |
 | Agent | `binding-initializer` | ⚡ ***(NEW)*** Criar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — Health Check R-034) |
 | Agent | `adapter-generator` | ⚡ ***(NEW)*** Gerar automaticamente adapters em `.github/instructions/` via `/add-project-context` |
@@ -68,7 +68,7 @@
 | Pesquisa interna aprofundada (repo/context-mode/terminal) ou pesquisa externa composta | `deep-search` |
 | Análise técnica, impacto, contratos, integrações cross-sistema | `analysis-architect` |
 | 🧪 Auditoria semântica de governança do catálogo (smells/gaps em agents, skills e prompts) | `agent-auditor` |
-| Criação/revisão de agent, skill ou prompt | `governance-factory` (`type: agent\|skill\|prompt`) |
+| Criação/revisão de agent, skill ou prompt (com pesquisa prévia via `@deep-search` na criação) | `governance-factory` (`type: agent\|skill\|prompt`) |
 | Consolidação de contexto para execução posterior | `context-builder` |
 | ⚡ Binding context faltando (Health Check) | `binding-initializer` |
 | ⚡ Gerar adapters após /add-project-context | `adapter-generator` |

@@ -1,6 +1,6 @@
 """
 test_custo_contrato.py — trilha CI (contrato/cálculo puro) para o grupo
-`custo_economia_rnf002` de docs/ai-context/evals/casos-code-summarizer.yaml.
+`custo_economia_rnf002` de .github/agents/evals/casos-code-summarizer.yaml.
 
 ⚠️ LIMITAÇÃO CONHECIDA E ACEITA: `avaliar_custo_economia()` é cálculo matemático
 puro (comparação de dois números), não depende de LLM nem de execução real do agent

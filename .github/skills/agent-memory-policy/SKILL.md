@@ -104,7 +104,7 @@ Capacidade mais avançada: o agent atualiza instruções comportamentais com bas
 - [ ] **Rollback definido**: como reverter para versão anterior se o comportamento regredir? (Git tag ou arquivo `SKILL.md.bak`)
 - [ ] **Escopo delimitado**: quais seções do prompt o agent pode modificar? (ex.: apenas `<examples>` e `triggers:`, nunca o bloco `CRÍTICO` ou `Regras Herdadas`)
 - [ ] **Aprovação humana obrigatória** (R-027): toda atualização procedimental requer confirmação explícita via `ask_questions` — nunca automática
-- [ ] **Baseline de evals**: ao menos 1 caso no `docs/ai-context/evals/casos-roteamento.yaml` cobrindo o comportamento atual como ground truth pré-atualização
+- [ ] **Baseline de evals**: ao menos 1 caso no `.github/agents/evals/casos-roteamento.yaml` cobrindo o comportamento atual como ground truth pré-atualização
 
 **Ciclo de atualização procedimental:**
 
@@ -173,7 +173,7 @@ Monitoramento via agent-observability-otel (span: invoke_agent)
 - [ ] Para procedimental: 4 pré-requisitos atendidos (rollback, escopo, aprovação, baseline de evals)
 - [ ] Atualização proposta via `ask_questions` com diff explícito antes de aplicar
 - [ ] Versão anterior preservada via Git (commit de backup antes da mudança)
-- [ ] Caso de eval adicionado em `docs/ai-context/evals/casos-roteamento.yaml`
+- [ ] Caso de eval adicionado em `.github/agents/evals/casos-roteamento.yaml`
 - [ ] Monitoramento ativo em `agent-observability-otel` para detectar drift de comportamento
 
 ---
@@ -186,5 +186,5 @@ Monitoramento via agent-observability-otel (span: invoke_agent)
 - `context-mode/SKILL.md` seção 10 — short-term vs long-term: `.github/skills/context-mode/SKILL.md`
 - `agent-observability-otel/SKILL.md` — rastreamento de drift comportamental: `.github/skills/agent-observability-otel/SKILL.md`
 - `agent-safety-guardrails/SKILL.md` — guardrails de segurança: `.github/skills/agent-safety-guardrails/SKILL.md`
-- `docs/ai-context/evals/casos-roteamento.yaml` — baseline de casos de teste: fonte de verdade para regressão
+- `.github/agents/evals/casos-roteamento.yaml` — baseline de casos de teste: fonte de verdade para regressão
 

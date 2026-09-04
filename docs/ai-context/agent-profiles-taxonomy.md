@@ -35,7 +35,7 @@
 
 **Cobertura pós-implementação**: 26 → **35 agents** | 47 → **52 skills** | 77% → **~95% de cobertura de perfis do mercado**.
 
-**Governança atualizada atomicamente (R-015)**: `agents/catalog.yaml`, `agents/README.md`, `skills/.index.json`, `skills/README.md`, `docs/ai-context/routing-graph.yaml` (9 nós + 9 arestas, R-040), `docs/ai-context/evals/casos-roteamento.yaml` (+8 casos canônicos, +1 ambíguo).
+**Governança atualizada atomicamente (R-015)**: `agents/catalog.yaml`, `agents/README.md`, `skills/.index.json`, `skills/README.md`, `docs/ai-context/routing-graph.yaml` (9 nós + 9 arestas, R-040), `.github/agents/evals/casos-roteamento.yaml` (+8 casos canônicos, +1 ambíguo).
 
 ---
 

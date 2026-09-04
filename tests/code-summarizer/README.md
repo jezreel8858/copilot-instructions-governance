@@ -1,7 +1,7 @@
 # Testes automatizados — code-summarizer
 
 Suíte pytest que transforma o contrato de evals
-[`docs/ai-context/evals/casos-code-summarizer.yaml`](../../docs/ai-context/evals/casos-code-summarizer.yaml)
+[`.github/agents/evals/casos-code-summarizer.yaml`](../../.github/agents/evals/casos-code-summarizer.yaml)
 em testes executáveis contra os scripts de referência do Modo 1 (Determinístico) do
 agent `code-summarizer`, em
 [`.github/agents/snippets/code-summarizer/`](../../.github/agents/snippets/code-summarizer/).

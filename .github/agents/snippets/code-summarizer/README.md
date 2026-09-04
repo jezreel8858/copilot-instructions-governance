@@ -5,7 +5,7 @@
 
 ## Status
 
-Implementação de **referência inicial**, **validada via smoke test real** em 2026-08-31 contra os 4 golden fixtures em `docs/ai-context/evals/fixtures/code-summarizer/`, e **automatizada via pytest** por `@test-implementation` (ver [`../../../../tests/code-summarizer/README.md`](../../../../tests/code-summarizer/README.md)). Resultado (9 testes reais passed, 4 pending documentados — grupos que dependem de orquestração/runtime do agent):
+Implementação de **referência inicial**, **validada via smoke test real** em 2026-08-31 contra os 4 golden fixtures em `.github/agents/evals/fixtures/code-summarizer/`, e **automatizada via pytest** por `@test-implementation` (ver [`../../../../tests/code-summarizer/README.md`](../../../../tests/code-summarizer/README.md)). Resultado (9 testes reais passed, 4 pending documentados — grupos que dependem de orquestração/runtime do agent):
 
 | Stack | Script | Resultado do smoke test / suíte pytest |
 |---|---|---|
@@ -18,7 +18,7 @@ Comando de reprodução manual (Java/TS/SQL): `npm install` nesta pasta, depois 
 
 **Ação recomendada decorrente do achado SQL:** ao implementar o Modo 2 (fallback LLM) no `code-summarizer`, garantir que arquivos `.sql` com `GENERATED ALWAYS` cheguem lá automaticamente — não é necessário código adicional, o fallback já é o comportamento padrão do agent quando `parseErrorDetected: true`.
 
-**Status atualizado:** a suíte completa `docs/ai-context/evals/casos-code-summarizer.yaml` já foi parcialmente automatizada — grupos `fidelidade_multistack` e `seguranca_rnf005` (8 de 8 casos aplicáveis) rodam via pytest real contra estes scripts. Grupos `orquestracao_rf008`, `custo_hibrido_rnf001`, `custo_economia_rnf002` e o caso `gov-cs-001` de `governanca_rnf007` seguem **pending** — dependem de orquestração completa do agent (run_subagent, cache, Decision Tree) ainda não implementada como harness executável. Ver `tests/code-summarizer/README.md` para detalhes e rastreabilidade por ID.
+**Status atualizado:** a suíte completa `.github/agents/evals/casos-code-summarizer.yaml` já foi parcialmente automatizada — grupos `fidelidade_multistack` e `seguranca_rnf005` (8 de 8 casos aplicáveis) rodam via pytest real contra estes scripts. Grupos `orquestracao_rf008`, `custo_hibrido_rnf001`, `custo_economia_rnf002` e o caso `gov-cs-001` de `governanca_rnf007` seguem **pending** — dependem de orquestração completa do agent (run_subagent, cache, Decision Tree) ainda não implementada como harness executável. Ver `tests/code-summarizer/README.md` para detalhes e rastreabilidade por ID.
 
 ## Validação "no quente" (código de produção real, fora dos golden fixtures)
 

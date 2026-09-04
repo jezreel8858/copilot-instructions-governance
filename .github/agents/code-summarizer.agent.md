@@ -50,47 +50,12 @@ Estes 4 valores **substituem** qualquer autoavaliação subjetiva de "preservei 
 | Item | Caminho/Uso | Observação |
 |---|---|---|
 | Catálogo de stacks cobertas | [`docs/ai-context/catalog.yaml`](../../docs/ai-context/catalog.yaml) | Escopo multi-stack (RF-005) — Java/Spring Boot, Angular/TS, Python, SQL |
-| Casos de eval e golden files | [`docs/ai-context/evals/casos-code-summarizer.yaml`](../../docs/ai-context/evals/casos-code-summarizer.yaml) | Fixtures por stack para autoteste/validação de fidelidade (RF-004/RF-005) — usados na validação do threshold fechado |
+| Casos de eval e golden files | [`evals/casos-code-summarizer.yaml`](evals/casos-code-summarizer.yaml) | Fixtures por stack para autoteste/validação de fidelidade (RF-004/RF-005) — usados na validação do threshold fechado |
 | Catálogo textual de agents | [`README.md`](README.md) | Registro deste agent como ponto de entrada único |
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Registro oficial para invocação via `run_subagent` |
 | Especialistas de stack (apoio a heurística) | [`spring-boot-engineer.agent.md`](spring-boot-engineer.agent.md), [`angular-engineer.agent.md`](angular-engineer.agent.md) | Consultar para calibrar heurística por stack quando necessário |
 | Skill de operação em sandbox | [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) | `ctx_execute`/`ctx_execute_file` executam a via determinística; `ctx_index` persiste cache (RNF-003) |
 | Skill de contratos de agent | [`../skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) | Tooling baseline (§9) e formato de saída por perfil (§8) |
-
-## Libs de Parsing por Stack (Modo 1) — FECHADO (decisão `@analysis-architect`, 2026-08-31)
-
-> Pesquisa externa por `@deep-search` + validação técnica por `@analysis-architect` no contexto real do sandbox `ctx_execute`/`ctx_execute_file`.
-
-| Stack | Lib (tool interna, nunca exposta — RNF-007) | Motivo |
-|---|---|---|
-| Java | `web-tree-sitter` (grammar `tree-sitter-java`) | WASM puro, sem compilação nativa; roda sob `ctx_execute(language:"javascript")` |
-| Angular/TypeScript | `web-tree-sitter` (grammar `tree-sitter-typescript`) | Mesma lib/API de Java — 1 Query Language (S-expression) reaproveitada para 2 stacks |
-| Python | `ast` (módulo nativo da stdlib) | `ctx_execute` já roda `language:"python"` nativamente; `ast` é canônico, sem custo de download/init de WASM — supera `tree-sitter-python` no contexto deste sandbox |
-| SQL | `node-sql-parser` (npm, ~1k⭐, Apache-2.0) | Gramática comunitária `tree-sitter-sql` é imatura; `node-sql-parser` retorna AST semântico (`tableList`/`columnList`) pronto, multi-dialeto |
-
-**Definição operacional de "bloco de decisão" por stack** (usada nos critérios de 80% acima):
-
-| Stack | Nós a contar como bloco de decisão |
-|---|---|
-| Java/TS (tree-sitter) | `if_statement`, `switch_statement`, `conditional_expression` (ternário), **e** `binary_expression` com operador relacional (`>`,`<`,`>=`,`<=`,`==`,`!=`) em posição de retorno/atribuição (cobre padrão `computed(() => x > y)` do Angular Signals) |
-| Python (`ast`) | `If`, `IfExp` (ternário), `Compare`, `Raise` |
-| SQL (`node-sql-parser`) | `CHECK` constraint, coluna `GENERATED ALWAYS AS`, cláusula `WHERE`/`HAVING` |
-
-**Riscos conhecidos (mitigar na implementação):**
-- Overhead de `Parser.init()` do `web-tree-sitter` por chamada — agrupar múltiplos arquivos por chamada `ctx_execute`, não 1-arquivo-por-vez (RNF-002).
-- **CONFIRMADO por smoke test (2026-08-31):** `node-sql-parser` **falha** ao parsear DDL Postgres com `GENERATED ALWAYS AS (...) STORED` (erro: `Expected "--", "/*", "BY"...`). Comportamento correto e esperado: `parseErrorDetected: true` aciona automaticamente o critério (iii) do threshold → fallback para Modo 2. Não requer correção no script — é o design funcionando como projetado.
-- `npm install web-tree-sitter tree-sitter-java tree-sitter-typescript node-sql-parser` é permitido por `context-mode/SKILL.md` §5/§6.
-
-**Implementação de referência (R-026 — código real vive fora deste arquivo):**
-
-| Stack | Script | Executado via |
-|---|---|---|
-| Java / Angular-TS | [`snippets/code-summarizer/extract-treesitter.js`](snippets/code-summarizer/extract-treesitter.js) | `ctx_execute_file(language:"javascript")` |
-| Python | [`snippets/code-summarizer/extract-python-ast.py`](snippets/code-summarizer/extract-python-ast.py) | `ctx_execute_file(language:"python")` |
-| SQL | [`snippets/code-summarizer/extract-sql.js`](snippets/code-summarizer/extract-sql.js) | `ctx_execute_file(language:"javascript")` |
-| Segredo/credencial (cross-stack) | [`snippets/code-summarizer/secret-redaction.js`](snippets/code-summarizer/secret-redaction.js) | Importado pelos scripts acima — garante RNF-005 |
-
-Índice completo e status de validação: [`snippets/code-summarizer/README.md`](snippets/code-summarizer/README.md).
 
 ## Decision Tree
 

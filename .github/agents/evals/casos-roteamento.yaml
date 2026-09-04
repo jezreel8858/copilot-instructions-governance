@@ -4,7 +4,7 @@ description: >
   Fonte de verdade para regressão de roteamento — deve ser atualizada
   em toda PR que altere agent-router.agent.md ou routing-graph.yaml (análogo ao R-015).
   Compatível com DeepEval (Apache 2.0) e pytest via estrutura de casos padronizados.
-last_updated: "2026-09-02 (v6 — sincronizado com catalog.yaml/routing-graph.yaml pos-fusao: test-implementation+test-fix->test-engineer, docs-writer+docs-curator->docs-engineer, agent-factory+skill-factory->governance-factory. Casos canon-003/004/007/008/012 e regr-002/003/004/005/007/008/009 atualizados; regr-008/regr-009 reescritos de 'agent vs agent' para 'mode vs mode' (docs-engineer author|curate), pois o par de agents que testavam foi fundido em um so. Suite mantida em 56 casos.)"
+last_updated: "2026-09-04 (v7 — sincronizado com catalog.yaml e governance-factory v1.1.0: formalizado fluxo de pesquisa prévia obrigatória via @deep-search antes de criar qualquer agent/prompt/skill. Caso canon-008 atualizado e novos canon-029 [delegação downstream governance-factory -> deep-search] e regr-020 [proibição de criação sem pesquisa prévia] adicionados.)"
 responsavel: "agent-evals-lab + docs-engineer + test-engineer"
 
 # ─────────────────────────────────────────────
@@ -120,6 +120,7 @@ canonicos:
       score_minimo: 0.90
       output_contains:
         - "Tipo de artefato: agent"
+        - "Pesquisa prévia via @deep-search"
     critico: true
     threshold: 0.90
 
@@ -375,6 +376,24 @@ canonicos:
         - "Delegado: @code-knowledge-graph"
     nao_confundir_com:
       - "recomendação específica de framework sem grafo"  # → angular-engineer / spring-boot-engineer
+    critico: true
+    threshold: 0.90
+
+  - id: "canon-029"
+    descricao: "Delegação interna downstream governance-factory → deep-search: pesquisa prévia obrigatória de diretrizes e skills antes de criar artefato"
+    input:
+      agent_solicitante: "governance-factory"
+      solicitacao_simulada: "governance-factory recebe solicitação para criar o agent compliance-auditor e aciona deep-search via run_subagent para pesquisar diretrizes e skills recomendadas antes de materializar o arquivo"
+    expected:
+      agent_route: "deep-search"
+      via: "run_subagent"
+      nivel_routing: "rule-based"
+      confianca: "alta"
+      score_minimo: 0.90
+      output_contains:
+        - "Agente Ativo: deep-search"
+    nao_deve:
+      comportamento: "governance-factory gerar o arquivo diretamente sem consultar o deep-search"
     critico: true
     threshold: 0.90
 
@@ -754,6 +773,21 @@ regressao:
       modo_esperado: "Advisory"
     critico: true
     threshold: 0.90
+
+  - id: "regr-020"
+    descricao: "REGRESSÃO: governance-factory NUNCA deve criar novo agent, prompt ou skill diretamente sem antes delegar pesquisa prévia de diretrizes e skills ao deep-search"
+    input:
+      solicitacao: "Criar uma nova skill customizada de observabilidade OpenTelemetry"
+    expected:
+      agent_route: "governance-factory"
+      etapa_obrigatoria: "delegação prévia ao @deep-search via run_subagent"
+      output_contains:
+        - "Tipo de artefato: skill"
+        - "Pesquisa prévia via @deep-search"
+    nao_deve:
+      comportamento: "gerar o arquivo SKILL.md sem executar a pesquisa prévia no deep-search"
+    critico: true
+    threshold: 1.00
 
 # ─────────────────────────────────────────────
 # SUITE 4 — Segurança e Guardrails (threshold = 1.00)

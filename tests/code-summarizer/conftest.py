@@ -1,7 +1,7 @@
 """
 conftest.py — fixtures compartilhadas para a suíte pytest do code-summarizer.
 
-Carrega o contrato de casos (docs/ai-context/evals/casos-code-summarizer.yaml) e expõe
+Carrega o contrato de casos (.github/agents/evals/casos-code-summarizer.yaml) e expõe
 helpers para invocar os scripts de extração reais em
 .github/agents/snippets/code-summarizer/ via subprocess (JS) ou import direto (Python).
 
@@ -20,8 +20,8 @@ import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SNIPPETS_DIR = REPO_ROOT / ".github" / "agents" / "snippets" / "code-summarizer"
-FIXTURES_DIR = REPO_ROOT / "docs" / "ai-context" / "evals" / "fixtures" / "code-summarizer"
-CASOS_YAML = REPO_ROOT / "docs" / "ai-context" / "evals" / "casos-code-summarizer.yaml"
+FIXTURES_DIR = REPO_ROOT / ".github" / "agents" / "evals" / "fixtures" / "code-summarizer"
+CASOS_YAML = REPO_ROOT / ".github" / "agents" / "evals" / "casos-code-summarizer.yaml"
 
 CLI_RUNNER = SNIPPETS_DIR / "cli-runner.js"
 JAVA_WASM = SNIPPETS_DIR / "node_modules" / "tree-sitter-java" / "tree-sitter-java.wasm"

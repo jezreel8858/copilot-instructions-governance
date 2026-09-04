@@ -37,7 +37,7 @@ Você é especialista em auditoria semântica de governança do catálogo de IA 
 | Catálogo textual | [`README.md`](README.md) | Contexto de papéis e roteamento atual |
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Base para cobertura de categoria e sobreposição |
 | Grafo de roteamento | [`../../docs/ai-context/routing-graph.yaml`](../../docs/ai-context/routing-graph.yaml) | Checagem de cobertura/consistência de rotas |
-| Evals de roteamento | [`../../docs/ai-context/evals/casos-roteamento.yaml`](../../docs/ai-context/evals/casos-roteamento.yaml) | Evidência de cobertura de cenários críticos |
+| Evals de roteamento | [`evals/casos-roteamento.yaml`](evals/casos-roteamento.yaml) | Evidência de cobertura de cenários críticos |
 | Agent analítico de referência | [`analysis-architect.agent.md`](analysis-architect.agent.md) | Estrutura read-only para perfil Critic/Analyst |
 
 ## Decision Tree

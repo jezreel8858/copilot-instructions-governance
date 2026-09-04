@@ -188,7 +188,7 @@ governance_artefacts:
 
   - id: "evals-roteamento"
     name: "Suíte de Casos de Avaliação de Roteamento"
-    source: "docs/ai-context/evals/casos-roteamento.yaml"
+    source: ".github/agents/evals/casos-roteamento.yaml"
     description: >
       Suíte de testes de regressão de roteamento: casos canônicos (threshold 0.90),
       ambíguos (0.70), regressão (1.00) e segurança (1.00). Atualizar obrigatoriamente
@@ -202,13 +202,13 @@ governance_artefacts:
 
   - id: "evals-code-summarizer"
     name: "Suíte de Casos de Avaliação do Agent code-summarizer (RF-008)"
-    source: "docs/ai-context/evals/casos-code-summarizer.yaml"
+    source: ".github/agents/evals/casos-code-summarizer.yaml"
     description: >
       Suíte de evals de risco Alto/P1 do code-summarizer (RF-004, RF-005, RF-008,
       RNF-001, RNF-002, RNF-005, RNF-007), gerada a partir de
       docs/test-strategy/TEST-STRATEGY-code-summarizer.md. Inclui 4 golden files
       sintéticos por stack (Java/Spring Boot, Angular/TS, Python, SQL) em
-      docs/ai-context/evals/fixtures/code-summarizer/. Threshold de fallback (TODO-b)
+      .github/agents/evals/fixtures/code-summarizer/. Threshold de fallback (TODO-b)
       fechado em 2026-08-31 por @analysis-architect (libs por stack: web-tree-sitter
       Java/TS, ast nativo Python, node-sql-parser SQL) — casos RNF-001 não são mais
       provisórios.
