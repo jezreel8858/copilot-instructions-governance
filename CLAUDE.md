@@ -25,7 +25,7 @@ Em caso de conflito, siga esta ordem:
 - **R-005 (Não inventar catálogo)**: não listar agent/skill inexistente.
 - **R-006 (Pré-condições — Roteador)**: vide [`agent-router.agent.md`](.github/agents/agent-router.agent.md) § *Matriz de Decisão: Quando Pedir Contexto*. Regra específica do roteador; não é norma global.
 - **R-007 (Decisões explícitas)**: registrar decisões relevantes em bullets curtos.
-- **R-008 (Execução preferencial)**: para comandos e análise pesada, prefira `ctx_execute`, `ctx_execute_file` ou `ctx_batch_execute`. Terminal é fallback apenas quando `ctx_*` estiver indisponível. Se Context Mode falhar, PARE e informe o problema.
+- **R-008 (Execução preferencial via context-mode — Think in Code)**: para leitura, escrita, análise, busca e remoção de arquivos, use **100% o `context-mode` MCP** (`ctx_execute`, `ctx_execute_file`, `ctx_batch_execute`, `ctx_index`, `ctx_search`). O processamento de dados e mutações de filesystem devem ocorrer no sandbox em código, imprimindo apenas o resultado derivado limpo. `read_file` e `replace_string_in_file` são restritos a edições cirúrgicas pontuais do editor. `run_in_terminal` é **FALLBACK de última instância** restrito exclusivamente a comandos de ciclo de vida (`git`, `npm install`, `mvn`, `pytest`) — comandos de inspeção/varredura de arquivos no shell (`find`, `grep`, `cat`, `dir`, scripts inline `node -e`) são estritamente proibidos. Se o Context Mode falhar, PARE e informe o problema.
 - **R-009 (Sem arquivos autônomos)**: nunca crie arquivos de qualquer formato sem solicitação explícita. Se julgar necessário, SOLICITE aprovação ANTES.
 - **R-010 (Segurança)**: nunca expor credenciais, tokens ou dados sensíveis.
 - **R-011 (Sem overengineering)**: implementar o necessário para a fase atual.

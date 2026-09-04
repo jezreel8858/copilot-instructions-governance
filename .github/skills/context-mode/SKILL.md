@@ -67,6 +67,27 @@ Skill para operar `ctx_*` com mínimo consumo de contexto: coletar em lote, proc
 | Docs/web externa | fetch/manual | `ctx_fetch_and_index` + `ctx_search` |
 | Indexação de payload grande | `ctx_index(content: ...)` | `ctx_index(path: ...)` |
 | Arquivo-fonte > 300 linhas OU > 20KB, para reduzir contexto | Ler/anexar conteúdo bruto ao chat | `run_subagent(agentName: "code-summarizer")`, depois anexar o resumo retornado |
+| Mapear código-fonte de projeto para busca | Varredura com grep/find/cat no terminal | `ctx_index(path: "<projeto>/src", source: "code:<project-id>", exclude: [...])` |
+
+## 3.1) Padrão de Indexação de Código-Fonte de Projetos (`code:<project-id>`)
+
+Para evitar que agents leiam arquivos repetidamente ou recorram ao terminal (`find`, `grep`, scripts Node), projetos registrados devem ter sua pasta de código (`src/` ou equivalente) indexada no Knowledge Base (FTS5):
+
+- **Chave canônica (`source`)**: `code:<project-id>` (ex.: `code:worship-scale-app`).
+- **Caminho (`path`)**: subpasta de código real (ex.: `<raiz>/src`), **nunca a raiz cega do projeto** (para evitar `.git`, `node_modules`, `dist`, `.angular`).
+- **Exclusões obrigatórias (`exclude`)**: `["**/*.spec.ts", "**/*Test.java", "**/assets/**", "**/environments/**", "**/dist/**", "**/node_modules/**"]`.
+- **Hard cap de arquivos (`maxFiles`)**: padrão seguro `200` para proteger contra blow-up do FTS5.
+- **Consumo posterior**: qualquer busca de código semântica ou estrutural usa:
+  ```javascript
+  ctx_search({
+    source: "code:<project-id>",
+    queries: ["nomeDaClasse", "padrao arquitetural", "metodo"]
+  })
+  ```
+- **Detecção de alteração (Staleness / Frescor de cache)**:
+  - O `context-mode` armazena o hash SHA-256 de cada arquivo indexado. Se você alterar o arquivo no disco, o `ctx_search` sinaliza o trecho com a flag `[STALE / OUTDATED]`.
+  - **Regra de Ouro (Search para Descobrir, Read para Editar)**: O `ctx_search` serve como mapa de localização. Antes de editar qualquer arquivo, o agent deve obrigatoriamente reler o arquivo real com `read_file` para garantir que está aplicando a mudança sobre a versão mais recente em disco.
+  - Para reindexar após grandes alterações: basta chamar `ctx_index` novamente sobre a mesma subpasta e `source` (recalculo incremental rápido).
 
 ## 4) Guardrails de economia (token budget)
 

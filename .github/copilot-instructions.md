@@ -105,7 +105,7 @@ Esta matriz é **responsabilidade do roteador** — não é regra global.
 - **Não crie arquivos auxiliares** sem pedido explícito.
 - **Não releia arquivos** já no contexto da conversa.
 - **Pre-fetch automático pelo agent**: ao selecionar um agent, carregue automaticamente os `source_docs` declarados no `catalog.yaml` e anuncie o que foi anexado. Usuário pode rejeitar com "Sem pre-fetch".
-- **Execução via Context Mode (R-008)**: SEMPRE use `ctx_execute`/`ctx_execute_file`/`ctx_batch_execute` para comandos. Terminal é fallback APENAS quando MCP indisponível.
+- **Execução via Context Mode (R-008 — Think in Code)**: Use **100% o `context-mode` MCP** para leitura, busca, escrita em lote, análise e remoção de arquivos (`ctx_execute`, `ctx_execute_file`, `ctx_index`, `ctx_search`). O processamento acontece no sandbox e apenas o resultado limpo entra na conversa. `read_file` e `replace_string_in_file` são reservados exclusivamente para edições cirúrgicas pontuais do editor. `run_in_terminal` é **FALLBACK de última instância** restrito exclusivamente a comandos de ciclo de vida (`git`, `npm install`, `mvn`, `pytest`) — comandos de varredura/leitura (`cat`, `grep`, `find`, scripts inline `node -e`) são terminantemente proibidos no terminal.
 - **Sem código inline em agents/skills/prompts (R-026)**: blocos com implementações > 8 linhas pertencem a `snippets/`, `templates/` ou `commands/`. Referencie por caminho ou declare em `source_docs:`.
 - **Clarificação Obrigatória (R-027)**: qualquer dúvida → `ask_questions` com opções descritivas + última opção aberta. **Proibido inferir ou deduzir** intenção.
 - **Estrutura de Resposta (R-028)**: toda implementação abre com resumo em 5 seções (Abordagem · Componentes · Código · Passos Cruciais · Impacto).
@@ -147,6 +147,7 @@ Quando as tools de context-mode estiverem disponíveis, elas viram o caminho pad
 - Web/docs: `ctx_fetch_and_index` → `ctx_search`.
 - Coleta e resposta em lote: `ctx_batch_execute(commands, queries)`.
 - Arquivo grande para análise: `ctx_execute_file(path, language, code)`.
+- Código-fonte de projeto registrado: indexar via `ctx_index(path: "<projeto>/src", source: "code:<project-id>")` e consultar via `ctx_search(source: "code:<project-id>")` — nunca varredura terminal.
 - Saída de tool externa grande: salvar em arquivo e processar por `ctx_execute_file` ou indexar via `ctx_index(path)`.
 
 **Regras de economia de contexto (token budget):**

@@ -226,6 +226,9 @@ Este agent implementa dentro do seu domínio (Angular), mas **não é generalist
   <rule id="GRAPH_DELEGATION_ONLY">
     Se precisar de visão de grafo/camadas: delegue exclusivamente para `code-knowledge-graph`. Nunca rode o CLI diretamente.
   </rule>
+  <rule id="USE_CTX_SEARCH_FOR_CODE">
+    Para consultar trechos ou implementações de código: utilize prioritariamente `ctx_search(source: 'code:[project-id]', queries: [...])` em vez de múltiplos reads ou varreduras no terminal.
+  </rule>
 </final_turn_constraints>
 ```
 

@@ -16,7 +16,7 @@ tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'run_subagent', '
 
 Ser o **único ponto de entrada** para construção e consulta do grafo de conhecimento de código-fonte no repositório (RF-001/RF-002/RF-011 do REQ). Recebe um ou mais projetos via `run_subagent`, invoca o **motor único de extração** — a lib externa **`@optave/codegraph`** (CLI local, Node.js/TypeScript nativo, zero API keys, zero LLM) — e constrói/consulta nós e arestas de código **exclusivamente por via determinística** (parsing AST nativo/Rust via `@optave/codegraph`, sem qualquer inferência de modelo) — **nunca invoca LLM** para completar ou inferir relações (RNF-008). Cobre, desde o MVP, escopo cross-projeto via `docs/ai-context/catalog.yaml` (RF-003).
 
-> **Migração de motor (2026-09-03, v4.0.0 — decisão TOTAL, não híbrida):** o motor próprio `build-graph.js` (pattern-matching via regex, usado até v3.3.0) foi **substituído integralmente** por `@optave/codegraph`. Decisão tomada explicitamente pelo usuário do repositório, com ciência formal de gaps funcionais (ver "Gate de Paridade Funcional" abaixo) apontados por `@analysis-architect` antes da migração — o usuário optou por aceitar a perda dessas capacidades em troca de: (a) parsing via AST real (motor nativo) em vez de regex, mais robusto para 34 linguagens; (b) dataflow analysis + CFG + interprocedural dataflow — capacidade nova que o motor anterior nunca teve; (c) CI gate nativo (`codegraph check`), dead-code detection, complexity metrics, community detection e co-change analysis — nenhum dos quais o motor anterior cobria. Uso da lib documentado na skill [`codegraph-optave-usage`](../skills/codegraph-optave-usage/SKILL.md).
+O motor `@optave/codegraph` fornece parsing via AST real (motor nativo) para 34 linguagens, dataflow analysis + CFG + interprocedural dataflow, CI gate nativo (`codegraph check`), dead-code detection, complexity metrics, community detection e co-change analysis. Uso da lib documentado na skill [`codegraph-optave-usage`](../skills/codegraph-optave-usage/SKILL.md).
 
 ## CRÍTICO: ESCOPO DO AGENT
 
@@ -81,7 +81,6 @@ Estes valores **substituem** qualquer autoavaliação subjetiva nas seções Dec
 | Catálogo estruturado | [`catalog.yaml`](catalog.yaml) | Registro oficial para invocação via `run_subagent` |
 | Skill de operação em sandbox | [`../skills/context-mode/SKILL.md`](../skills/context-mode/SKILL.md) | `ctx_execute`/`ctx_execute_file` disponíveis para consultas pontuais; `ctx_index` persiste o resultado final |
 | Skill de contratos de agent | [`../skills/agent-contracts/SKILL.md`](../skills/agent-contracts/SKILL.md) | Tooling baseline (§9) e formato de saída por perfil (§8) |
-| **Scripts legados depreciados (quarentena, R-002 reversibilidade)** | [`snippets/code-knowledge-graph/build-graph.js`](snippets/code-knowledge-graph/build-graph.js), [`render-viewer.js`](snippets/code-knowledge-graph/render-viewer.js) | **Não usados nesta versão** — mantidos apenas como referência histórica/rollback. Não invocar em produção; ver seção "Histórico de Migração" |
 
 ## Modelo de Dados (saída do `@optave/codegraph`)
 
@@ -121,7 +120,7 @@ Estes valores **substituem** qualquer autoavaliação subjetiva nas seções Dec
 | — | Dataflow + CFG + interprocedural (capacidade NOVA, sem equivalente no motor anterior) | ✅ **Ganho** | `codegraph dataflow`/`codegraph cfg` |
 | — | Dead-code, complexity, community detection, co-change (capacidades NOVAS) | ✅ **Ganho** | Sem equivalente no motor anterior |
 
-**Resultado: 4/9 ✅, 2/9 ⚠️ parcial, 3/9 ❌ aceitos conscientemente** (RabbitMQ #3, coupling #6, risco PII/financeiro #8) — mais 4 capacidades novas ganhas que o motor anterior nunca teve, e o item de visualização (#7) corrigido de ❌ para ✅ em 2026-09-03 após validação real de `codegraph plot`. Este resultado é definitivo para esta versão; qualquer reversão exige novo ciclo `@deep-search`+`@analysis-architect` (mesma exigência do anti-padrão histórico, agora aplicada em sentido inverso: reintroduzir `build-graph.js` como motor único).
+**Resultado: 4/9 ✅, 2/9 ⚠️ parcial, 3/9 ❌ aceitos conscientemente** (RabbitMQ #3, coupling #6, risco PII/financeiro #8) — mais 4 capacidades novas ganhas pelo `@optave/codegraph` (dataflow/CFG, dead-code, complexity, community), e o item de visualização (#7) coberto nativamente via `codegraph plot`.
 
 ## Decision Tree
 
@@ -222,15 +221,8 @@ Próximo passo mínimo:
 - Habilitar o MCP server completo (34 tools) de `@optave/codegraph` (viola R-024 — Least-Tools); usar sempre CLI ou subconjunto mínimo documentado na skill.
 - Afirmar cobertura de RabbitMQ/mensageria, SOAP cross-repo, coupling taxonomy ou risco PII/financeiro sem sinalizar que são gaps aceitos desta migração (viola transparência do Gate de Paridade Funcional).
 - Reproduzir segredo/credencial do código original em qualquer saída reportada (viola R-010/RNF-003).
-- Reintroduzir `build-graph.js`/`render-viewer.js` como motor de produção sem novo ciclo `@deep-search`+`@analysis-architect` — permanecem em quarentena (§Catálogo), não em uso.
 - Reportar o resultado final sem indexar via `ctx_index` (`code-graph:<project-id>:<hash>`) — deixa o resultado indisponível para `ctx_search` no restante da sessão.
 
-## Histórico de Migração (v3.3.0 → v4.0.0)
-
-- **Motivo:** usuário solicitou avaliação de libs de mercado (`code-review-graph`, `Graphify`, `@optave/codegraph`) para substituir o motor próprio `build-graph.js`. `@analysis-architect` reprovou (NO-GO) migração total/híbrida para `code-review-graph` (Python, gaps em RabbitMQ/SOAP/coupling/risco/visualização) e reprovou `Graphify` por usar LLM na camada semântica (viola RNF-008). Para `@optave/codegraph`, o parecer foi **GO CONDICIONAL** (recomendando híbrido + RF formal + verificação `@deep-search` antes de integrar) — o usuário optou conscientemente por **migração TOTAL**, aceitando os gaps documentados no Gate de Paridade Funcional acima, sem executar a verificação independente recomendada.
-- **O que foi preservado:** `build-graph.js` e `render-viewer.js` permanecem no repositório (`snippets/code-knowledge-graph/`), não deletados, como referência histórica e caminho de rollback (R-002) — não estão em uso por este agent nesta versão.
-- **O que mudou:** motor de extração, modelo de dados de saída (sem schema `Node`/`Edge` unificado), Gate de Paridade Funcional (de 9/9 para 4/9 + 2 parciais + 3 gaps aceitos + 4 ganhos novos).
-- **Correção 2026-09-03 (mesmo dia, pós-validação real):** o item "visualização interativa" (Gate #7) foi documentado incorretamente como gap na primeira versão desta migração. Testado ao vivo no projeto `worship-scale-app`: `codegraph plot` gera HTML standalone via `vis-network`, com clustering (Leiden), color-by, size-by e overlays de complexidade/risco — 148 nós renderizados de um grafo de 4.794 símbolos (estratégia de seed top-fanin evita saturar o navegador). Gate corrigido de 4/9+5❌ para 4/9✅ (item 7 incluído)+2/9⚠️+3/9❌. Skill `codegraph-optave-usage` atualizada com nova seção §4.1 documentando o comando.
 
 ## Quando Delegar
 

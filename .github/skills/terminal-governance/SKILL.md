@@ -44,11 +44,11 @@ O terminal (`run_in_terminal`) é a **última opção** — não o padrão.
 
 | Situação | Ferramenta preferida | Terminal é fallback? |
 |---|---|---|
-| Analisar arquivo grande | `ctx_execute_file` | Sim |
-| Buscar padrão em código | `ctx_batch_execute` / `grep_search` | Sim |
+| Analisar arquivo grande / buscar padrões | `ctx_search` / `ctx_execute_file` | Sim |
+| Buscar trechos de código em projetos indexados | `ctx_search(source: "code:<project>")` | Sim |
+| Manipular arquivos/pastas (leitura, escrita, `rm`, `mkdir`, `mv`) | `ctx_execute` (Node.js sandbox via `fs`) | Sim |
 | Instalar dependências (`npm install`, `pip install`) | — | ✅ Terminal obrigatório |
 | Operações git (`git status`, `git diff`) | — | ✅ Terminal obrigatório |
-| Operações de filesystem (`mkdir`, `rm`, `mv`) | — | ✅ Terminal obrigatório |
 | Rodar build/test em CI local | — | ✅ Terminal obrigatório |
 
 **Quando terminal for necessário, aplique todas as regras desta skill.**

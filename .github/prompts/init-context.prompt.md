@@ -359,16 +359,17 @@ Verificar se a sessão atual do Context Mode está sendo rastreada para evitar "
 
 ---
 
-### **PASSO 8: Verificar Cache de Grafo de Conhecimento e Sumarização (por Projeto)**
+### **PASSO 8: Verificar Cache de Grafo de Conhecimento, Código e Sumarização (por Projeto)**
 
-Para cada projeto registrado em `catalog.local.yaml` (gitignored, R-043 — nunca em `catalog.yaml`), verificar se já existe cache de **grafo de conhecimento** (`@code-knowledge-graph`) e de **sumarização** (`@code-summarizer`) no Context Mode — evita reconstrução/reprocessamento desnecessário e informa ao usuário o que já está disponível para consulta imediata.
+Para cada projeto registrado em `catalog.local.yaml` (gitignored, R-043 — nunca em `catalog.yaml`), verificar se já existe cache de **grafo de conhecimento** (`@code-knowledge-graph`), de **código-fonte indexado** (`code:<project-id>`) e de **sumarização** (`@code-summarizer`) no Context Mode — evita reconstrução/reprocessamento desnecessário e informa ao usuário o que já está disponível para consulta imediata via `ctx_search`.
 
 ```
-[Health Check] Cache de Grafo/Sumarização por Projeto
+[Health Check] Cache de Grafo/Código/Sumarização por Projeto
 ├─ Projetos registrados em catalog.local.yaml: <n>
 ├─ Se <n> = 0 → pular este passo (nenhum projeto para checar)
 └─ Para cada <project-id>:
     ├─ ctx_search(queries: ["code-graph:<project-id>:*"])   → grafo cacheado?
+    ├─ ctx_search(queries: ["*"], source: "code:<project-id>") → código-fonte indexado no FTS5?
     └─ ctx_search(queries: ["code-summary:<project-id>:*"]) → sumários cacheados?
 ```
 
@@ -377,22 +378,23 @@ Para cada projeto registrado em `catalog.local.yaml` (gitignored, R-043 — nunc
 **Exibir tabela consolidada:**
 
 ```
-📊 STATUS DE CACHE — Grafo de Conhecimento e Sumarização
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Projeto           | Grafo (code-graph:*) | Sumarização (code-summary:*)
-------------------|----------------------|------------------------------
-<project-id-1>    | ✅ cacheado          | ✅ cacheado
-<project-id-2>    | ❌ ausente           | ⚠️ parcial (<n> arquivos)
-<project-id-3>    | ❌ ausente           | ❌ ausente
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Status: <n-com-grafo>/<n-total> com grafo | <n-com-sumario>/<n-total> com sumarização
+📊 STATUS DE CACHE — Grafo, Código-Fonte e Sumarização
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Projeto           | Grafo (code-graph:*) | Código (code:*) | Sumarização (code-summary:*)
+------------------|----------------------|-----------------|-----------------------------
+<project-id-1>    | ✅ cacheado          | ✅ indexado     | ✅ cacheado
+<project-id-2>    | ❌ ausente           | ❌ ausente      | ⚠️ parcial (<n> arquivos)
+<project-id-3>    | ❌ ausente           | ❌ ausente      | ❌ ausente
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Status: <n-com-grafo>/<n-total> com grafo | <n-com-codigo>/<n-total> com código indexado | <n-com-sumario>/<n-total> com sumarização
 ```
 
-**Se algum projeto estiver sem cache (grafo e/ou sumarização):**
+**Se algum projeto estiver sem cache (grafo, código e/ou sumarização):**
 
 ```
 ℹ️ Cache ausente não bloqueia a sessão — apenas informativo.
    → Para construir grafo: invocar @code-knowledge-graph (RF-002, sob demanda)
+   → Para indexar código-fonte: executar ctx_index(path: "<projeto>/src", source: "code:<project-id>")
    → Para sumarizar: invocar @code-summarizer (RF-002, sob demanda)
    → Nenhuma construção automática é feita por este prompt (R-009 — sem ação autônoma sem confirmação)
 ```

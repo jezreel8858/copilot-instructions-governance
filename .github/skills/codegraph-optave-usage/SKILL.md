@@ -207,5 +207,5 @@ Qualquer agent/skill que consuma o grafo produzido por `@optave/codegraph` deve 
 
 - Repositório oficial: `github.com/optave/ops-codegraph-tool`
 - Pacote npm: `@optave/codegraph`
-- Consumidor principal previsto: `.github/agents/code-knowledge-graph.agent.md` (substitui script legado `build-graph.js` — verificar se o agent já existe no catálogo antes de referenciar em produção; se ainda não existir, esta skill serve de base de conhecimento para sua criação futura via `@governance-factory`).
+- Consumidor principal previsto: `.github/agents/code-knowledge-graph.agent.md` — motor oficial de grafo de conhecimento de código no repositório.
 

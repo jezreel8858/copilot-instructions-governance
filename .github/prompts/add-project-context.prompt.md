@@ -303,6 +303,43 @@ O Copilot aplica mudanças **atomicamente por plano validado** (sem depender de 
 └─ Grafo disponível para consulta (ctx_search e MCP multi-repo) no restante da sessão
 ```
 
+### FASE 4.2: **Indexação de Código-Fonte no Knowledge Base (`ctx_index`)** (bloqueante, sem opt-out)
+
+> **Objetivo:** Indexar os arquivos de código-fonte do projeto (`src/`) no Knowledge Base persistente (FTS5 SQLite) via `ctx_index`.
+> **Por que é essencial:** Evita que agentes subsequentes (`angular-engineer`, `spring-boot-engineer`, etc.) executem comandos de terminal (`grep`, `find`, `cat`, `node -e`) ou usem múltiplos `read_file` para entender a lógica. Com o código indexado, qualquer busca por classes, decorators, stores ou métodos é resolvida via `ctx_search(source: "code:<project-id>")` com mínimo consumo de tokens.
+
+1. **Identificar subpasta de código**:
+   - Angular / React / Vue / Node: `<caminho-absoluto>/src`
+   - Spring Boot / Java: `<caminho-absoluto>/src/main/java`
+   - Python: `<caminho-absoluto>/src` ou `<caminho-absoluto>/<pacote>`
+   - Fallback genérico: `<caminho-absoluto>/src` se existir; caso contrário `<caminho-absoluto>`.
+2. **Executar `ctx_index` de código**:
+   ```javascript
+   ctx_index({
+     path: "<subpasta-de-codigo>",
+     source: "code:<project-id>",
+     exclude: [
+       "**/*.spec.ts",
+       "**/*Test.java",
+       "**/test/**",
+       "**/tests/**",
+       "**/assets/**",
+       "**/environments/**",
+       "**/dist/**",
+       "**/build/**",
+       "**/node_modules/**"
+     ],
+     maxFiles: 200
+   })
+   ```
+3. **Exibir confirmação no relatório**:
+   ```
+   [FASE 4.2 ✅] Código-fonte indexado no Knowledge Base (FTS5)
+   ├─ Origem: <subpasta-de-codigo>
+   ├─ Source: code:<project-id>
+   └─ Pronto para consultas limpas via ctx_search (sem poluição de terminal)
+   ```
+
 ### FASE 4.1: **Descoberta de Integrações Multi-Projeto e Configuração de Fronteiras (`manifesto.boundaries`)**
 
 > **Objetivo**: Quando houver mais de 1 projeto registrado no repositório de governança (identificado em `.github/instructions/local/` ou `catalog.local.yaml`), o Copilot identifica relações de integração/dependência entre o novo projeto e os projetos já existentes, configurando automaticamente o manifesto de fronteiras arquiteturais (`manifesto.boundaries`) em `.codegraphrc.json` para deixar o ecossistema pronto para auditoria de arquitetura, CI gates e detecção de drift.
