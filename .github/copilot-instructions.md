@@ -2,7 +2,7 @@
 
 > Fonte de verdade operacional: [`CLAUDE.md`](../CLAUDE.md).
 > Mapa de Adapters (compartilhado): [`docs/ai-context/catalog.yaml`](../docs/ai-context/catalog.yaml).
-> Mapa de Projetos (LOCAL/gitignored, R-043): `docs/ai-context/catalog.local.yaml`.
+> Mapa de Projetos (LOCAL/gitignored, R-043): [`docs/ai-context/catalog.local.yaml`](../docs/ai-context/catalog.local.yaml).
 > IDs normativos: consulte `R-001..R-044` em `CLAUDE.md`.
 
 ---
@@ -503,7 +503,7 @@ Cada adapter na raiz de `.github/instructions/` deve:
 - **Instructions:** `.github/instructions/README.md` + `.github/instructions/*.instructions.md`
 - **Agents:** `.github/agents/README.md` + `.github/agents/catalog.yaml`
 - **Skills:** `.github/skills/README.md` + `.github/skills/.index.json`
-- **Prompts Workflow:** `/research` `/plan` `/implement` `/validate` `/commit` `/review`
+- **Prompts Workflow:** `/deep-search` `/plan` `/implement` `/validate` `/commit` `/review` `/connect-integration-graphs` `/visualize-graph`
 - **Prompts Context Mode:** `/ctx-checkpoint` `/ctx-resume` `/ctx-doctor` `/ctx-status` `/ctx-insight`
 - **Índice completo:** `.github/prompts/README.md`
 - **Hooks:** `.github/hooks/README.md` + `.github/hooks/context-mode.json`

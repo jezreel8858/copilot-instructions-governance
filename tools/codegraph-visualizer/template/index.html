@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codegraph Visualizer — Multi-Repo Knowledge Graph (2D & 3D)</title>
+<!-- Google Material Fonts & Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+<!-- 2D Engine (vis-network) & 3D Engine (3d-force-graph) -->
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script src="https://unpkg.com/three"></script>
+<script src="https://unpkg.com/3d-force-graph"></script>
+
+<!-- Modular Stylesheet Bundle (Compilado pelo TemplateBundler) -->
+<!-- __INJECT_BUNDLE_STYLES__ -->
+</head>
+<body>
+<!-- Top App Bar -->
+<header class="mat-top-app-bar">
+  <div class="app-title">
+    <span class="material-symbols-outlined">hub</span>
+    <span>Codegraph Visualizer — Multi-Repo</span>
+  </div>
+  <div class="header-chips" id="headerChips">
+    <div class="mat-chip mat-chip-all active" onclick="toggleAllProjects()">
+      <span>Todos os Projetos</span>
+      <span class="chip-count" id="countAll">0</span>
+    </div>
+  </div>
+</header>
+
+<!-- Stats Strip -->
+<div class="stats-strip">
+  <div class="stats-items">
+    <div class="stat-pill"><span class="material-symbols-outlined" style="font-size:16px; color:#3b82f6;">grain</span> Exibindo: <b id="statVisibleNodes">0</b> de <span id="statTotalNodes">0</span> nós</div>
+    <div class="stat-pill"><span class="material-symbols-outlined" style="font-size:16px; color:#64748b;">timeline</span> Arestas: <b id="statVisibleEdges">0</b></div>
+    <div class="stat-pill"><span class="material-symbols-outlined" style="font-size:16px; color:#db2777;">conversion_path</span> Pontes REST: <b id="statBridgeCount">0</b></div>
+    <div class="stat-pill"><span class="material-symbols-outlined" style="font-size:16px; color:#ef4444;">link_off</span> Isolados/Órfãos: <b id="statIsolatedCount">0</b></div>
+    <div class="stat-pill" id="statFocusAlert" style="display:none; color:#d97706;"><span class="material-symbols-outlined" style="font-size:16px;">filter_alt</span> Foco Ativo: <b id="statFocusName">-</b> <a onclick="clearSubtreeFocus()" style="cursor:pointer; text-decoration:underline; margin-left:4px;">[Remover]</a></div>
+  </div>
+  <div class="stats-actions" style="display:flex; align-items:center; gap:8px;">
+    <button class="mat-btn mat-btn-outlined" style="height:26px; font-size:11px; padding:0 8px;" onclick="resetAllFilters()" title="Redefinir todos os filtros para o padrão">
+      <span class="material-symbols-outlined" style="font-size:14px;">filter_alt_off</span>
+      <span>Limpar Filtros</span>
+    </button>
+    <button class="mat-btn mat-btn-outlined" id="btnToggleControlBar" style="height:26px; font-size:11px; padding:0 8px; background:#ffffff; font-weight:600;" onclick="toggleControlBar()" title="Ocultar ou exibir a barra de filtros para maximizar o canvas do grafo">
+      <span class="material-symbols-outlined" id="iconToggleControlBar" style="font-size:14px;">expand_less</span>
+      <span id="textToggleControlBar">Ocultar Filtros</span>
+    </button>
+  </div>
+</div>
+
+<!-- Progress Bar for Physics Stabilization -->
+<div id="stabilizationProgress"><div id="progressBarFill"></div></div>
+
+<!-- Control Bar with Rich Filters -->
+<div class="mat-control-bar" id="matControlBar">
+  <!-- Search Input wrapped in mat-mdc-form-field for unified baseline and label alignment -->
+  <div class="mat-mdc-form-field" style="width: 210px;">
+    <span class="mat-mdc-form-field-label">Buscar Símbolo</span>
+    <div class="mat-search-container">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input type="text" id="searchInput" class="mat-search-input" placeholder="ex: Auth, Service..." autocomplete="off" aria-label="Buscar símbolo no grafo">
+      <button id="searchClearBtn" class="mat-search-clear material-symbols-outlined" aria-label="Limpar busca">close</button>
+      <div id="searchSuggestions"></div>
+    </div>
+  </div>
+
+  <!-- Multi-Select Repositórios Dropdown -->
+  <div class="mat-mdc-form-field" id="formFieldRepos">
+    <span class="mat-mdc-form-field-label">Repositórios</span>
+    <div class="mat-mdc-select-trigger" id="trigger_repos" onclick="openRepoMenuOverlay(this, event)">
+      <span class="mat-mdc-select-value-text" id="repoSelectedSummary">Todos</span>
+      <span class="mat-mdc-select-arrow material-symbols-outlined">arrow_drop_down</span>
+    </div>
+  </div>
+
+  <!-- 1. Connectivity / Isolation Filter -->
+  <div class="mat-mdc-form-field" id="formFieldConnectivity">
+    <span class="mat-mdc-form-field-label">Conectividade</span>
+    <div class="mat-mdc-select-trigger" id="trigger_connectivitySelect" onclick="openMatSelectOverlay('connectivitySelect', this, event)">
+      <span class="mat-mdc-select-value-text" id="label_connectivitySelect">Todos os Nós</span>
+      <span class="mat-mdc-select-arrow material-symbols-outlined">arrow_drop_down</span>
+    </div>
+  </div>
+
+  <!-- 2. Role Filter -->
+  <div class="mat-mdc-form-field" id="formFieldRole">
+    <span class="mat-mdc-form-field-label">Papel (Role)</span>
+    <div class="mat-mdc-select-trigger" id="trigger_roleSelect" onclick="openMatSelectOverlay('roleSelect', this, event)">
+      <span class="mat-mdc-select-value-text" id="label_roleSelect">Todos os Papéis</span>
+      <span class="mat-mdc-select-arrow material-symbols-outlined">arrow_drop_down</span>
+    </div>
+  </div>
+
+  <!-- 3. Kind Filter -->
+  <div class="mat-mdc-form-field" id="formFieldKind">
+    <span class="mat-mdc-form-field-label">Tipo</span>
+    <div class="mat-mdc-select-trigger" id="trigger_kindSelect" onclick="openMatSelectOverlay('kindSelect', this, event)">
+      <span class="mat-mdc-select-value-text" id="label_kindSelect">Todos os Tipos</span>
+      <span class="mat-mdc-select-arrow material-symbols-outlined">arrow_drop_down</span>
+    </div>
+  </div>
+
+  <!-- 4. Coupling Filter -->
+  <div class="mat-mdc-form-field" id="formFieldCoupling">
+    <span class="mat-mdc-form-field-label">Acoplamento</span>
+    <div class="mat-mdc-select-trigger" id="trigger_couplingSelect" onclick="openMatSelectOverlay('couplingSelect', this, event)">
+      <span class="mat-mdc-select-value-text" id="label_couplingSelect">Todos</span>
+      <span class="mat-mdc-select-arrow material-symbols-outlined">arrow_drop_down</span>
+    </div>
+  </div>
+
+  <!-- 5. Density LOD -->
+  <div class="mat-mdc-form-field" id="formFieldDensity">
+    <span class="mat-mdc-form-field-label">Densidade</span>
+    <div class="mat-mdc-select-trigger" id="trigger_densitySelect" onclick="openMatSelectOverlay('densitySelect', this, event)">
+      <span class="mat-mdc-select-value-text" id="label_densitySelect">🌟 Pontes & Core (Rápido)</span>
+      <span class="mat-mdc-select-arrow material-symbols-outlined">arrow_drop_down</span>
+    </div>
+  </div>
+
+  <!-- Actions Group -->
+  <div class="mat-control-actions">
+    <!-- 6. Mode Toggle 2D / 3D -->
+    <button id="btnToggleMode" class="mat-btn mat-btn-mode" onclick="toggleDimensionMode()">
+      <span class="material-symbols-outlined" style="font-size:16px;">view_in_ar</span>
+      <span id="modeText">Modo 3D (WebGL GPU)</span>
+    </button>
+
+    <!-- 7. Architecture Metrics Modal Button -->
+    <button id="btnMetricsModal" class="mat-btn mat-btn-outlined" style="color:#4f46e5; border-color:#c7d2fe; background:#eef2ff;" onclick="openMetricsModal()">
+      <span class="material-symbols-outlined" style="font-size:16px;">analytics</span>
+      <span>Métricas & Ciclos</span>
+    </button>
+
+    <!-- 8. Physics Toggle Button -->
+    <button id="btnTogglePhysics" class="mat-btn mat-btn-physics" onclick="togglePhysics()">
+      <span class="material-symbols-outlined" style="font-size:16px;">pause</span>
+      <span id="physicsBtnText">Física: Congelada</span>
+    </button>
+  </div>
+
+  <!-- 9. Layout selector -->
+  <div class="mat-mdc-form-field" id="layoutGroup">
+    <span class="mat-mdc-form-field-label">Layout</span>
+    <div class="mat-mdc-select-trigger" id="trigger_layoutSelect" onclick="openMatSelectOverlay('layoutSelect', this, event)">
+      <span class="mat-mdc-select-value-text" id="label_layoutSelect">Orgânico (Força)</span>
+      <span class="mat-mdc-select-arrow material-symbols-outlined">arrow_drop_down</span>
+    </div>
+  </div>
+</div>
+
+<!-- Main Area -->
+<div id="mainLayout">
+  <div id="graphContainer">
+    <div id="networkGraph2D"></div>
+    <div id="networkGraph3D"></div>
+
+    <!-- Legend -->
+    <div class="mat-legend" id="legendBox">
+      <h4>Legenda de Repositórios</h4>
+      <div id="legendRows"></div>
+      <div class="legend-row" style="margin-top:5px;">
+        <span style="color:#E91E63; font-weight:bold;">━━━►</span>
+        <span><b>Ponte de Integração REST</b></span>
+      </div>
+      <div class="legend-row" style="margin-top:3px;">
+        <span style="display:inline-block; width:10px; height:10px; border:1px dashed #ef4444; background:#fef2f2; border-radius:2px;"></span>
+        <span><b>Nó Isolado / Órfão (0 lig.)</b></span>
+      </div>
+    </div>
+
+    <!-- Floating Action Buttons (FAB) -->
+    <div class="mat-fab-container">
+      <button class="mat-fab" onclick="zoomIn()" title="Aumentar Zoom">
+        <span class="material-symbols-outlined">add</span>
+      </button>
+      <button class="mat-fab" onclick="zoomOut()" title="Diminuir Zoom">
+        <span class="material-symbols-outlined">remove</span>
+      </button>
+      <button class="mat-fab" onclick="fitView()" title="Ajustar Tela">
+        <span class="material-symbols-outlined">fit_screen</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Side Sheet Inspector -->
+  <aside id="sideInspector" style="display:none;">
+    <div class="inspector-header">
+      <div>
+        <span id="sideBadge" class="mat-chip" style="margin-bottom:4px;"></span>
+        <h2 id="sideTitle">Nome do Símbolo</h2>
+      </div>
+      <button class="inspector-close" onclick="closeInspector()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="inspector-body">
+      <!-- Subgraph Focus Action -->
+      <button class="btn-action-focus" id="btnFocusEgo" onclick="focusSelectedNodeSubgraph()">
+        <span class="material-symbols-outlined" style="font-size:16px;">filter_center_focus</span>
+        <span>Isolar Subgrafo deste Símbolo</span>
+      </button>
+
+      <!-- Metadata Card -->
+      <div class="inspector-card">
+        <h3><span class="material-symbols-outlined" style="font-size:15px;">info</span> Propriedades</h3>
+        <div class="prop-row">
+          <span class="prop-label">Repositório:</span>
+          <span class="prop-value" id="sideProject">-</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Tipo:</span>
+          <span class="prop-value" id="sideKind">-</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Papel (Role):</span>
+          <span class="prop-value" id="sideRole">-</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Arquivo:</span>
+          <span class="prop-value prop-code" id="sideFile">-</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Fan-in:</span>
+          <span class="prop-value" id="sideFanIn">-</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Fan-out:</span>
+          <span class="prop-value" id="sideFanOut">-</span>
+        </div>
+        <div class="prop-row">
+          <span class="prop-label">Classificação:</span>
+          <span class="prop-value" id="sideCoupling">-</span>
+        </div>
+      </div>
+
+      <!-- REST Bridges Card -->
+      <div class="inspector-card" id="sideBridgeCard" style="display:none; border-color:#fbcfe8; background:#fdf2f8;">
+        <h3 style="color:#db2777;"><span class="material-symbols-outlined" style="font-size:15px;">conversion_path</span> Pontes Cross-Repo REST</h3>
+        <div id="sideBridgeList"></div>
+      </div>
+
+      <!-- Inbound Callers Card -->
+      <div class="inspector-card">
+        <h3><span class="material-symbols-outlined" style="font-size:15px;">call_received</span> Chamadores Diretos (<span id="countSideCallers">0</span>)</h3>
+        <div id="sideCallerList"></div>
+      </div>
+
+      <!-- Outbound Dependencies Card -->
+      <div class="inspector-card">
+        <h3><span class="material-symbols-outlined" style="font-size:15px;">call_made</span> Dependências (<span id="countSideCallees">0</span>)</h3>
+        <div id="sideCalleeList"></div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- Modal de Métricas Arquiteturais, Ciclos e Fronteiras -->
+<div id="metricsModalOverlay" onclick="if(event.target===this) closeMetricsModal()">
+  <div class="metrics-modal-card">
+    <div class="modal-header">
+      <div class="modal-title">
+        <span class="material-symbols-outlined" style="color:#818cf8; font-size:22px;">analytics</span>
+        <span>Auditoria Arquitetural — Métricas, Ciclos e Fronteiras</span>
+      </div>
+      <button class="inspector-close" style="color:#ffffff;" onclick="closeMetricsModal()">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab-btn active" id="tabBtnMetrics" onclick="switchModalTab('metrics')">📊 Métricas de Módulos (Martin)</button>
+      <button class="modal-tab-btn" id="tabBtnCycles" onclick="switchModalTab('cycles')">🔄 Ciclos de Dependência (<span id="modalCyclesCount">0</span>)</button>
+      <button class="modal-tab-btn" id="tabBtnViolations" onclick="switchModalTab('violations')">🛡️ Violações de Fronteiras (<span id="modalViolationsCount">0</span>)</button>
+    </div>
+    <div class="modal-content-body" id="modalTabMetrics">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <span style="font-size:12px; color:#64748b;">Métricas de Robert C. Martin: <b>Ca</b> (Aferente), <b>Ce</b> (Eferente), <b>I</b> (Instabilidade = Ce/(Ca+Ce)), <b>A</b> (Abstratilidade), <b>D</b> (Distância da Sequência Principal).</span>
+        <input type="text" id="filterModuleInput" oninput="renderMetricsTable(this.value)" placeholder="Filtrar pacote..." style="padding:4px 8px; border-radius:6px; border:1px solid #cbd5e1; font-size:11.5px; width:200px;">
+      </div>
+      <div style="max-height:55vh; overflow-y:auto;">
+        <table class="metrics-table">
+          <thead>
+            <tr>
+              <th>Projeto / Pacote</th>
+              <th style="width:50px;">Nós</th>
+              <th style="width:40px;">Ca</th>
+              <th style="width:40px;">Ce</th>
+              <th style="width:130px;">Instabilidade (I)</th>
+              <th style="width:60px;">Abstr. (A)</th>
+              <th style="width:60px;">Dist. (D)</th>
+              <th>Zona Arquitetural</th>
+            </tr>
+          </thead>
+          <tbody id="metricsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-content-body" id="modalTabCycles" style="display:none;">
+      <div id="cyclesListContainer"></div>
+    </div>
+    <div class="modal-content-body" id="modalTabViolations" style="display:none;">
+      <div id="violationsListContainer"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CDK Overlay Container (Angular Material 3 Popovers, Menus & Selects) -->
+<div id="cdkOverlayContainer" class="cdk-overlay-container" style="display:none;">
+  <div id="cdkOverlayBackdrop" class="cdk-overlay-backdrop" onclick="closeAllOverlays()"></div>
+  <div id="cdkOverlayPane" class="cdk-overlay-pane"></div>
+</div>
+
+<!-- Modular Script Bundle (Compilado pelo TemplateBundler) -->
+<!-- __INJECT_BUNDLE_SCRIPTS__ -->
+</body>
+</html>
+
+

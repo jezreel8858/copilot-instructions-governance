@@ -1,0 +1,122 @@
+:root {
+  --md-primary: #0052cc;
+  --md-surface: #ffffff;
+  --md-background: #f8fafc;
+  --md-surface-variant: #f1f5f9;
+  --md-outline: #cbd5e1;
+  --md-text: #0f172a;
+  --md-text-secondary: #475569;
+  --mat-elevation-1: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --mat-elevation-2: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1);
+  --mat-elevation-3: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', -apple-system, sans-serif;
+  background: var(--md-background);
+  color: var(--md-text);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Top App Bar */
+.mat-top-app-bar {
+  background: #0f172a;
+  color: #ffffff;
+  height: 60px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--mat-elevation-2);
+  z-index: 20;
+  flex-shrink: 0;
+}
+
+.app-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.app-title .material-symbols-outlined { color: #60a5fa; font-size: 24px; }
+.header-chips { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+/* Stats Strip */
+.stats-strip {
+  background: #f1f5f9;
+  border-bottom: 1px solid var(--md-outline);
+  padding: 4px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11.5px;
+  color: var(--md-text-secondary);
+  z-index: 15;
+  flex-shrink: 0;
+}
+
+.stats-items { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.stat-pill { display: inline-flex; align-items: center; gap: 4px; }
+.stat-pill b { color: var(--md-text); }
+
+/* Loading Progress Bar */
+#stabilizationProgress {
+  position: absolute;
+  top: 96px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #e2e8f0;
+  z-index: 30;
+  overflow: hidden;
+  display: none;
+}
+
+#progressBarFill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #3b82f6, #ec4899);
+  transition: width 0.1s ease;
+}
+
+/* Main Container */
+#mainLayout {
+  flex: 1;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  min-height: 0;
+  width: 100%;
+}
+
+#graphContainer {
+  flex: 1;
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+}
+
+#networkGraph2D, #networkGraph3D {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+}
+
+#networkGraph3D { display: none; }
+

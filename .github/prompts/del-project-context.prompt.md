@@ -3,7 +3,7 @@ name: del-project-context
 type: governance-cleanup
 input_type: project-name
 output_type: audit-log
-model: "Claude Haiku 4.5"
+model: "Gemini 3.8 Flash"
 
 description:
   Remove contexto estruturado de um projeto do overlay local (catalog.local.yaml,

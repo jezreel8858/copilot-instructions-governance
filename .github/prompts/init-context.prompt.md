@@ -5,7 +5,7 @@ description:
   Carrega CLAUDE.md + copilot-instructions.md, valida conformidade R-001..R-040 + Model Enforcement (R-036).
   Execute UMA ÚNICA VEZ no início da sessão ANTES de /add-project-context ou qualquer agent.
   NÃO REPITA na mesma sessão — faz 1x apenas.
-model: "Claude Haiku 4.5"
+model: "Gemini 3.8 Flash"
 tools: ['read_file', 'list_dir', 'run_subagent', 'run_in_terminal', 'context-mode/ctx_execute', 'context-mode/ctx_batch_execute', 'context-mode/ctx_search', 'context-mode/ctx_stats']
 source_docs:
   - CLAUDE.md

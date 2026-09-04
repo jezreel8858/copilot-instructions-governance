@@ -1,0 +1,132 @@
+/* Modal Dialog for Metrics & Cycles */
+#metricsModalOverlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.metrics-modal-card {
+  width: 100%;
+  max-width: 1020px;
+  max-height: 88vh;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  padding: 16px 22px;
+  background: #0f172a;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title { font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+
+.modal-tabs {
+  display: flex;
+  background: #f1f5f9;
+  border-bottom: 1px solid #cbd5e1;
+  padding: 0 16px;
+}
+
+.modal-tab-btn {
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.modal-tab-btn.active {
+  color: #0052cc;
+  border-bottom-color: #0052cc;
+  background: #ffffff;
+}
+
+.modal-content-body {
+  padding: 16px 22px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.metrics-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11.5px;
+  text-align: left;
+}
+
+.metrics-table th {
+  background: #f8fafc;
+  padding: 8px 10px;
+  border-bottom: 2px solid #cbd5e1;
+  font-weight: 700;
+  color: #334155;
+  position: sticky;
+  top: 0;
+}
+
+.metrics-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+
+.metrics-table tr:hover { background: #f1f5f9; }
+
+.instability-bar-container {
+  width: 70px;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.instability-bar-fill { height: 100%; }
+
+.zone-tag-pain { background: #fee2e2; color: #991b1b; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+.zone-tag-uselessness { background: #fef3c7; color: #92400e; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+.zone-tag-balanced { background: #ecfdf5; color: #065f46; padding: 2px 6px; border-radius: 4px; font-weight: 700; font-size: 10px; }
+
+.cycle-card {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.cycle-flow-chain {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 11px;
+  color: #be123c;
+  margin: 6px 0;
+  word-break: break-all;
+}
+

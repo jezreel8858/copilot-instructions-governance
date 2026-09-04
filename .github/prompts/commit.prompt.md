@@ -4,7 +4,7 @@ description:
   Gera mensagem de commit seguindo Conventional Commits.
   Analisa arquivos modificados, verifica secrets expostos, infere escopo/tipo
   e produz mensagem pronta para uso. NÃO executa git add/commit/push.
-model: "Claude Haiku 4.5"
+model: "Gemini 3.8 Flash"
 tools: ['read_file', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent']
 source_docs:
   - CLAUDE.md

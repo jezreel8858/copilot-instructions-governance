@@ -5,7 +5,7 @@ description:
   Orquestra descoberta estruturada de projeto com Intent Classification + Multi-Query RRF.
   Análise estática offline → geração automática de YAML/Markdown → validação e binding atômico.
   Execute UMA VEZ POR PROJETO (reutilizável). PRÉ-REQUISITO `/init-context` já executado.
-model: "Claude Sonnet 5"
+model: "Gemini 3.8 Flash"
 tools: ['file_search', 'grep_search', 'read_file', 'run_in_terminal', 'run_subagent', 'ask_questions', 'context-mode/ctx_search']
 source_docs:
   - .github/skills/yaml-governance/SKILL.md

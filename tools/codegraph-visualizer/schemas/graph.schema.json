@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CodegraphUnifiedSchema",
+  "description": "Contrato de schema versionado para nós, arestas, métricas arquiteturais, ciclos e pontes cross-repo",
+  "type": "object",
+  "required": ["version", "projects", "nodes", "edges"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "enum": ["2.0.0", "1.0.0"]
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "name", "type"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "displayName": { "type": "string" },
+          "type": { "type": "string" },
+          "path": { "type": "string" },
+          "db": { "type": "string" }
+        }
+      }
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "project", "kind", "file"],
+        "properties": {
+          "id": { "type": "string" },
+          "label": { "type": "string" },
+          "project": { "type": "string" },
+          "projectDisplayName": { "type": "string" },
+          "projectType": { "type": "string" },
+          "kind": { "type": "string" },
+          "typeTag": { "type": "string" },
+          "file": { "type": "string" },
+          "line": { "type": "integer" },
+          "role": { "type": "string" },
+          "coupling": { "type": "string", "enum": ["tight", "loose", "eventual", "circular"] },
+          "fanIn": { "type": "integer" },
+          "fanOut": { "type": "integer" },
+          "isDiffChanged": { "type": "boolean" },
+          "diffStatus": { "type": "string", "enum": ["added", "modified", "deleted", "unchanged"] }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "from", "to", "kind"],
+        "properties": {
+          "id": { "type": "string" },
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "kind": { "type": "string" },
+          "crossRepo": { "type": "boolean" },
+          "isCycle": { "type": "boolean" },
+          "label": { "type": "string" },
+          "description": { "type": "string" },
+          "protocol": { "type": "string" },
+          "status": { "type": "string", "enum": ["COMPATIBLE", "BREAKING", "UNVERIFIED"] }
+        }
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["packageId", "project", "totalNodes", "ca", "ce", "instability", "abstractness", "distance", "zone"],
+        "properties": {
+          "packageId": { "type": "string" },
+          "project": { "type": "string" },
+          "packagePath": { "type": "string" },
+          "totalNodes": { "type": "integer" },
+          "abstractNodes": { "type": "integer" },
+          "ca": { "type": "integer" },
+          "ce": { "type": "integer" },
+          "instability": { "type": "number" },
+          "abstractness": { "type": "number" },
+          "distance": { "type": "number" },
+          "zone": { "type": "string" },
+          "zoneType": { "type": "string", "enum": ["pain", "uselessness", "balanced", "neutral"] }
+        }
+      }
+    },
+    "cycles": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": { "type": "string" }
+      }
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "from_module": { "type": "string" },
+          "to_module": { "type": "string" },
+          "edge_id": { "type": "string" },
+          "source_node": { "type": "string" },
+          "target_node": { "type": "string" },
+          "rule": { "type": "string" }
+        }
+      }
+    }
+  }
+}
+

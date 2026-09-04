@@ -5,7 +5,7 @@ description: >-
   Entry point obrigatório agent-first para classificar solicitações e delegar ao
   agent downstream correto, com fallback para pesquisa e análise de integração.
   Aplica re-triagem obrigatória por turno (R-042 — anti sticky-session).
-model: "Gemini 3.7 Flash"
+model: "Gemini 3.8 Flash"
 tools: ['list_dir', 'read_file', 'file_search', 'grep_search', 'ask_questions', 'run_subagent', 'context-mode/ctx_search']
 ---
 # Agent Router

@@ -1,0 +1,66 @@
+---
+name: visualize-graph
+description:
+  Gera e abre a visualização interativa do grafo de conhecimento multi-repo em Angular Material 3
+  (2D/3D), integrando AST de código, classificação de acoplamento, filtros arquiteturais
+  (isolados/órfãos, papéis, camadas, multi-select de repositórios) e pontes de integração REST.
+model: "Gemini 3.8 Flash"
+tools: ['read_file', 'file_search', 'list_dir', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_execute']
+source_docs:
+  - CLAUDE.md
+  - .github/copilot-instructions.md
+  - docs/ai-context/catalog.yaml
+  - tools/codegraph-visualizer/README.md
+  - tools/codegraph-visualizer/bridges.json
+---
+
+# `/visualize-graph`
+
+> **Propósito**: compilar e abrir a visualização interativa unificada do Grafo de Conhecimento Multi-Repo
+> com interface Angular Material 3, alternância entre Canvas 2D de alta performance (com auto-freeze de física)
+> e WebGL 3D acelerado por GPU (Three.js), filtros avançados de conectividade (nós isolados/órfãos, papéis
+> arquiteturais, camadas e seleção múltipla de repositórios) e rastreamento de pontes REST cross-repo.
+
+---
+
+## 🎯 Uso
+
+```bash
+/visualize-graph                                      → Gera grafo unificado em tools/codegraph-visualizer/dist/index.html e abre no navegador
+/visualize-graph --diff HEAD~1                        → Destaca nós modificados e calcula blast radius de PR
+/visualize-graph --bridges custom-bridges.json        → Utiliza mapeamento de pontes customizado
+```
+
+---
+
+## 📋 Fluxo de Execução
+
+1. **Localizar Bancos de Dados SQLite do Grafo**:
+   - Verificar a existência dos arquivos `.codegraph/graph.db` nos repositórios registrados no catálogo (`catalog.local.yaml` / `catalog.yaml`).
+   - Se algum projeto não possuir grafo construído, alertar e sugerir rodar `codegraph build` no repositório correspondente.
+
+2. **Carregar Pontes REST Cross-Repo**:
+   - Carregar o registro central de pontes em `tools/codegraph-visualizer/bridges.json`.
+
+3. **Executar Generator Multi-Repo**:
+   - Executar o script Python de build no local único centralizado:
+   ```bash
+   python tools/codegraph-visualizer/generator/generate-graph.py --output "tools/codegraph-visualizer/dist/index.html" --open
+   ```
+
+4. **Confirmar e Entregar Evidência**:
+   - Reportar ao usuário o total de nós, arestas, pontes mapeadas e o caminho do arquivo HTML gerado.
+
+---
+
+## 🚨 Regras de Autonomia
+
+- ✅ SEMPRE utilizar o template standalone em `tools/codegraph-visualizer/template/index.html`.
+- ✅ SEMPRE verificar se o arquivo HTML gerado é auto-contido e executável offline.
+- ❌ NÃO recriar bancos SQLite do zero se o `graph.db` já existir e estiver atualizado.
+- ❌ NÃO expor credenciais ou dados sensíveis nos títulos dos nós.
+
+---
+
+*v1.0 — visualize-graph prompt — 2026-09-04*
+
