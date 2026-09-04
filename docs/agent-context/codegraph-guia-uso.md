@@ -266,9 +266,33 @@ Quando o servidor é iniciado, ele disponibiliza as seguintes ferramentas para o
 
 ## 7) 🛠️ Configurações Avançadas (`.codegraphrc.json`)
 
-Você pode criar um arquivo `.codegraphrc.json` (ou `.codegraph/config.json`) na raiz do projeto para definir regras arquiteturais, aliases de resolução e limites de qualidade personalizados.
+Você pode criar um arquivo `.codegraphrc.json` (ou `.codegraph/config.json`) na raiz do projeto para definir regras arquiteturais, aliases de resolução, filtros de arquivos e limites de qualidade personalizados.
 
-### A) Regras de Fronteiras Arquiteturais (`boundaries`)
+### A0) Chaves de Filtro de Arquivos Suportadas
+
+| Chave | Tipo | Efeito |
+|---|---|---|
+| `exclude` | `string[]` (glob) | Padrões de arquivo/caminho a excluir do parsing (ex.: `**/*.spec.ts`, `dist/**`) |
+| `ignoreDirs` | `string[]` | Diretórios ignorados integralmente na varredura (substitui a lista padrão do motor quando definida) |
+| `ignoreAdditionalDirs` | `string[]` | Diretórios adicionais ignorados **em complemento** à lista padrão do motor (não substitui, apenas soma) |
+| `extensions` | `string[]` | Restringe o parsing às extensões informadas (ex.: `[".ts", ".java"]`); se omitido, o motor usa o conjunto padrão das 34 linguagens suportadas |
+
+> 💡 Use `exclude` para padrões glob pontuais (arquivos gerados, specs, stubs) e `ignoreAdditionalDirs` para diretórios inteiros que não fazem parte da lista padrão do motor (ex.: `android/`, `ios/`, `target/`, `ear/`) — evita reescrever toda a lista padrão via `ignoreDirs`.
+
+### A1) Templates Prontos por Stack
+
+Templates de `.codegraphrc.json` prontos para uso ficam em [`docs/agent-context/templates/codegraph/`](templates/codegraph/):
+
+| Stack | Template | Cobre |
+|---|---|---|
+| Angular (+ Capacitor) | [`angular.codegraphrc.json`](templates/codegraph/angular.codegraphrc.json) | `dist`, `.angular`, `coverage`, `android`, `ios`, specs/stories, `.d.ts`, `polyfills.ts`, templates/estilos, `codegraph-view.html`, `*.iml` |
+| Spring Boot | [`spring-boot.codegraphrc.json`](templates/codegraph/spring-boot.codegraphrc.json) | `target`/`build`, `.gradle`/`.mvn`, wrappers (`mvnw`/`gradlew`), fontes geradas, artefatos compilados (`*.jar`/`*.war`/`*.class`), `*.iml`, `.factorypath` |
+| Spring Reactive | [`spring-reactive.codegraphrc.json`](templates/codegraph/spring-reactive.codegraphrc.json) | Herda base do Spring Boot + `**/generated/openapi/**`, `**/generated/reactor-*` |
+| EJB Legado | [`ejb-legacy.codegraphrc.json`](templates/codegraph/ejb-legacy.codegraphrc.json) | Stubs/Ties/Skels gerados (`_Stub`/`_Tie`/`_Skel`), `ear`/`exploded`, libs `WEB-INF`/`META-INF`, artefatos `*.ear`/`*.war`/`*.class`/`*.jar`, `*.iml` |
+
+Para aplicar: copie o template correspondente para a raiz do projeto-alvo como `.codegraphrc.json`, ajustando `exclude`/`ignoreAdditionalDirs` conforme peculiaridades locais antes do `codegraph build`.
+
+### B) Regras de Fronteiras Arquiteturais (`boundaries`)
 
 O motor de manifesto permite definir camadas e regras estritas de comunicação entre módulos, identificando desvios arquiteturais automaticamente:
 
@@ -304,7 +328,7 @@ O motor de manifesto permite definir camadas e regras estritas de comunicação 
 
 ---
 
-### B) Mapeamento de Módulos e Monorepos (`aliases`)
+### C) Mapeamento de Módulos e Monorepos (`aliases`)
 
 Para monorepos ou projetos que utilizam caminhos customizados de import (TypeScript `paths` ou pacotes locais), configure aliases para que a AST resolva as referências cruzadas:
 
@@ -322,7 +346,7 @@ O `codegraph` conecta os nós dessas pastas automaticamente no grafo único.
 
 ---
 
-### C) Integração e Exportação Cross-Sistema (Neo4j & GraphML)
+### D) Integração e Exportação Cross-Sistema (Neo4j & GraphML)
 
 Para visualizar integrações entre múltiplos sistemas em um banco de grafos unificado (Enterprise Graph):
 

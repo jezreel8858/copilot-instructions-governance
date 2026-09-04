@@ -53,3 +53,4 @@ __pycache__/
 docs/ai-context/catalog.local.yaml
 .github/instructions/local/
 
+.codegraph/

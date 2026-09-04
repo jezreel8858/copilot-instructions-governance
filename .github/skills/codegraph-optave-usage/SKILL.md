@@ -110,6 +110,17 @@ codegraph plot --cluster community --color-by role --size-by fan-in -o graph-vie
 
 O arquivo `.codegraphrc.json` (ou `.codegraph/config.json`) na raiz do projeto permite personalizar o comportamento de parsing, regras e fronteiras arquiteturais:
 
+### 5.0) Chaves de Filtro de Arquivos (`exclude`, `ignoreDirs`, `ignoreAdditionalDirs`, `extensions`)
+
+| Chave | Tipo | Efeito |
+|---|---|---|
+| `exclude` | `string[]` (glob) | Padrões de arquivo/caminho excluídos do parsing (ex.: `**/*.spec.ts`, `dist/**`, `*.class`) |
+| `ignoreDirs` | `string[]` | Substitui a lista padrão de diretórios ignorados pelo motor |
+| `ignoreAdditionalDirs` | `string[]` | Diretórios adicionais ignorados **em complemento** à lista padrão (não substitui) |
+| `extensions` | `string[]` | Restringe parsing às extensões informadas; se omitido, usa o conjunto padrão das 34 linguagens |
+
+**Templates prontos por stack** (`docs/agent-context/templates/codegraph/`): `angular.codegraphrc.json` (Angular + Capacitor), `spring-boot.codegraphrc.json`, `spring-reactive.codegraphrc.json` (herda base Spring Boot + geradores openapi/reactor) e `ejb-legacy.codegraphrc.json`. Ver detalhes em [`docs/agent-context/codegraph-guia-uso.md`](../../../docs/agent-context/codegraph-guia-uso.md) §7.
+
 ### 5.1) Fronteiras Arquiteturais (`manifesto.boundaries`)
 Define camadas e regras de dependência entre módulos:
 
@@ -179,7 +190,7 @@ Qualquer agent/skill que consuma o grafo produzido por `@optave/codegraph` deve 
 ## 8) Checklist
 
 - [ ] `codegraph --version` confirmado antes de qualquer build.
-- [ ] Verificar existência de `.codegraphrc.json` no projeto para honrar `boundaries` e `aliases`.
+- [ ] Verificar existência de `.codegraphrc.json` no projeto; se ausente, provisionar o template compatível com a stack (`docs/agent-context/templates/codegraph/`) antes do build, para honrar `exclude`/`ignoreAdditionalDirs`/`boundaries`/`aliases`.
 - [ ] `codegraph build .` executado (ou `watch` ativo) antes de qualquer query.
 - [ ] `-T`/`--no-tests` aplicado em queries de impacto/blast radius, salvo necessidade explícita de incluir testes.
 - [ ] CI usa `codegraph check --staged` como gate, não como sugestão.

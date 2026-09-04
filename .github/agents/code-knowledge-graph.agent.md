@@ -7,7 +7,7 @@ description: >-
   determinístico — nunca invoca LLM. Motor único: lib externa `@optave/codegraph`
   (CLI local, zero API keys, Node.js/TypeScript nativo). FASE obrigatória de
   `/add-project-context`; grafo sempre indexado via `ctx_index` para reuso na sessão.
-model: "Claude Haiku 4.5"
+model: "Gemini 3.8 Flash"
 tools: ['read_file', 'grep_search', 'file_search', 'list_dir', 'run_subagent', 'run_in_terminal', 'context-mode/ctx_search', 'context-mode/ctx_execute', 'context-mode/ctx_execute_file', 'context-mode/ctx_index', 'context-mode/ctx_batch_execute']
 ---
 
@@ -126,10 +126,7 @@ Estes valores **substituem** qualquer autoavaliação subjetiva nas seções Dec
 - Já existe resultado cacheado para o hash atual do projeto (`ctx_search` em `code-graph:*`)?
   - Sim → retornar cacheado, sem reprocessar (RNF-002).
   - Não → prosseguir para construção.
-- `codegraph --version` responde?
-  - Não → instalar via `npm install -g @optave/codegraph` (`run_in_terminal`) antes de prosseguir; se instalação falhar, reportar erro compacto (3 linhas, R-020) e parar.
-  - Sim → prosseguir.
-- **Passe 0 (build):** `codegraph build .` no diretório-raiz de cada projeto do escopo. Se o projeto contiver `.codegraphrc.json` (ou `.codegraph/config.json`), as regras de `boundaries` e `aliases` são respeitadas automaticamente pelo motor (skill `codegraph-optave-usage` §5).
+- **Passe 0 (build):** `codegraph --version` responde? Se não, instalar via `npm install -g @optave/codegraph` (`run_in_terminal`) antes de prosseguir; se instalação falhar, reportar erro compacto (3 linhas, R-020) e parar. Verificar em seguida se o projeto contém `.codegraphrc.json` (ou `.codegraph/config.json`); se ausente, detectar a stack a partir de `catalog.yaml` e provisionar o template compatível de [`docs/agent-context/templates/codegraph/`](../../docs/agent-context/templates/codegraph/) (`angular.codegraphrc.json`, `spring-boot.codegraphrc.json`, `spring-reactive.codegraphrc.json` ou `ejb-legacy.codegraphrc.json`) antes de rodar `codegraph build .` — as regras de `exclude`/`ignoreAdditionalDirs`/`boundaries`/`aliases` são respeitadas automaticamente pelo motor (skill `codegraph-optave-usage` §5). Executar `codegraph build .` no diretório-raiz de cada projeto do escopo.
 - **Passe 1 (consulta solicitada):** executar o(s) comando(s) `codegraph` relevantes à pergunta feita (query/fn-impact/cycles/dataflow/cfg/roles/complexity/co-change/audit — ver skill §4), sempre com `-T` salvo pedido explícito em contrário. Se a solicitação pedir validação de arquitetura/CI, rodar `codegraph check --staged --boundaries`.
 - A pergunta toca RabbitMQ/mensageria, SOAP cross-repo, classificação de coupling, ou risco PII/financeiro?
   - Sim → reportar explicitamente como **gap aceito da migração** (ver Gate de Paridade Funcional) — nunca inventar resposta nem tentar aproximar com outro comando sem sinalizar a limitação.
@@ -183,7 +180,7 @@ Próximo passo mínimo:
 - [ ] Solicitação veio via `run_subagent` (nunca CLI direto por outro agent) — RF-001/RF-002/RNF-004.
 - [ ] Cache `code-graph:*` verificado antes de reprocessar (RNF-002).
 - [ ] `codegraph --version` confirmado (instalar via `npm install -g @optave/codegraph` se ausente).
-- [ ] Verificar existência de `.codegraphrc.json` no projeto para honrar `boundaries` e `aliases` (skill `codegraph-optave-usage` §5).
+- [ ] Verificar existência de `.codegraphrc.json` no projeto; se ausente, detectar a stack via `catalog.yaml` e provisionar o template compatível de `docs/agent-context/templates/codegraph/` antes do build, para honrar `exclude`/`ignoreAdditionalDirs`/`boundaries`/`aliases` (skill `codegraph-optave-usage` §5).
 - [ ] Se RF-001 (FASE 4 obrigatória de `/add-project-context`), persistir automaticamente sem `ask_questions` extra; se RF-002 (sob demanda), confirmação explícita do usuário obtida antes de persistir (R-009).
 - [ ] `-T`/`--no-tests` aplicado nas consultas, salvo pedido explícito em contrário.
 - [ ] Cobertura de nós/arestas calculada e reportada (RF-010/RNF-005).

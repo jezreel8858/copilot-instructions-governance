@@ -1,0 +1,41 @@
+{
+  "exclude": [
+    "target/**",
+    "build/**",
+    ".gradle/**",
+    ".mvn/**",
+    "mvnw",
+    "mvnw.cmd",
+    "gradlew",
+    "gradlew.bat",
+    "**/target/generated-sources/**",
+    "**/build/generated/**",
+    "**/generated/openapi/**",
+    "**/generated/reactor-*",
+    "*.jar",
+    "*.war",
+    "*.class",
+    "*.iml",
+    ".factorypath"
+  ],
+  "ignoreDirs": [
+    "target",
+    "build",
+    ".gradle",
+    ".mvn",
+    ".git",
+    ".idea"
+  ],
+  "ignoreAdditionalDirs": [
+    "logs"
+  ],
+  "extensions": [
+    ".java",
+    ".kt",
+    ".xml",
+    ".properties",
+    ".yml",
+    ".yaml"
+  ]
+}
+

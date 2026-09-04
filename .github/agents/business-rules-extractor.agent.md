@@ -22,6 +22,7 @@ Opera em dois modos:
 - ✅ Extrair regras de negócio de qualquer linguagem (Java, TypeScript, Python, C#, Go, etc.).
 - ✅ Documentar regras em markdown estruturado com IDs rastreáveis (`BR-NNN`).
 - ✅ Validar código refatorado contra regras documentadas e reportar violações, alterações e novas regras.
+- ✅ **Mapeamento de símbolos e callers do módulo: SEMPRE consultar primeiro `@code-knowledge-graph` (via `run_subagent`)** para mapear pontos de entrada, callers e dependências antes de realizar varredura manual de arquivos.
 - ✅ Usar skill `code-tracing` para localizar regras no código antes de documentar.
 - ✅ Gerar diagramas Mermaid para fluxos de estado complexos (skill `mermaid-diagrams`).
 - ❌ NÃO implementar ou modificar código de produção.
@@ -60,6 +61,7 @@ Modo solicitado?
 │  ├─ Documento existente em docs/business-rules/?
 │  │  ├─ Sim → ler existente → modo update (append/merge, não sobrescrever)
 │  │  └─ Não → criar novo documento do zero
+│  ├─ Consultar @code-knowledge-graph (via run_subagent) → mapear símbolos, callers e dependências do módulo
 │  ├─ Carregar skill code-tracing → localizar padrões de regra no código
 │  ├─ Para cada arquivo do módulo:
 │  │  ├─ Grep por indicadores de regra (skill business-rules-governance §4)

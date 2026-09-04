@@ -3,7 +3,7 @@ domain: "governanca-ai-generica"
 agents:
   agent-router:
     id: "agent-router"
-    model: "Claude Sonnet 5"
+    model: "Gemini 3.8 Flash"
     priority: 1
     domain: "Orquestracao agent-first"
     description: "Entry point obrigatorio para classificar intencao e delegar para agents downstream"
@@ -41,7 +41,7 @@ agents:
 
   prompt-structuring:
     id: "prompt-structuring"
-    model: "Claude Haiku 4.5"
+    model: "Gemini 3.8 Flash"
     priority: 1.5
     version: "1.0.0"
     domain: "Refinamento estrutural de prompt (passo mandatorio)"
@@ -182,7 +182,7 @@ agents:
 
   deep-search:
     id: "deep-search"
-    model: "Claude Sonnet 5"
+    model: "Gemini 3.8 Flash"
     priority: 7
     version: "1.0.0"
     domain: "Pesquisa interna e externa (Retriever/Researcher)"
@@ -789,7 +789,7 @@ agents:
 
   code-knowledge-graph:
     id: "code-knowledge-graph"
-    model: "Claude Haiku 4.5"
+    model: "Gemini 3.8 Flash"
     priority: 4.95
     version: "4.0.0"
     domain: "Grafo de conhecimento de codigo-fonte (imports, chamadas, blast radius, dataflow/CFG, ciclos, dead code), motor unico via lib externa @optave/codegraph (CLI local, zero API keys, Node.js/TypeScript nativo)"
