@@ -42,6 +42,7 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 - [`../copilot-instructions.md`](../copilot-instructions.md) — regras operacionais locais
 - [`catalog.yaml`](catalog.yaml) — catálogo estruturado de agents (verdade para roteamento)
 - [`../../docs/ai-context/routing-graph.yaml`](../../docs/ai-context/routing-graph.yaml) — **grafo declarado de roteamento** (fonte de verdade estrutural — nós, arestas, condições e política de cascata); a Decision Tree abaixo é documentação derivada deste arquivo
+- [`../../docs/ai-context/evals/casos-roteamento.yaml`](../../docs/ai-context/evals/casos-roteamento.yaml) — **suíte de evals e casos canônicos de roteamento** (fonte de verdade empírica — comparar a intenção do usuário contra `canonicos`, `ambiguos` e `regressao` antes de decidir a rota)
 
 **Referências por Tipo de Delegação:**
 
@@ -49,6 +50,7 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 |---|---|---|
 | Catálogo textual | [`README.md`](README.md) | Fonte de referência para roteamento humano |
 | Grafo de roteamento | [`../../docs/ai-context/routing-graph.yaml`](../../docs/ai-context/routing-graph.yaml) | Fonte estrutural — nós, arestas, thresholds e cascata |
+| Suíte de evals / Casos | [`../../docs/ai-context/evals/casos-roteamento.yaml`](../../docs/ai-context/evals/casos-roteamento.yaml) | ⭐ Verificação compulsória de precedentes (casos canônicos e regressões conhecidas) |
 | Prompt structuring | [`prompt-structuring.agent.md`](prompt-structuring.agent.md) | ⚠️ Passo mandatório pré-classificação (R-041) — loop máx. 5 iterações |
 | Skill — Técnicas de prompt | [`../skills/prompt-engineering-patterns/SKILL.md`](../skills/prompt-engineering-patterns/SKILL.md) | Base de conhecimento do `prompt-structuring`; consultar se o router precisar avaliar completude do handoff |
 | Router de pesquisa | [`deep-search.agent.md`](deep-search.agent.md) | Pesquisa interna aprofundada e externa (atômica/composta) |
@@ -234,6 +236,7 @@ Próximo passo mínimo:
 - [ ] Se ambos ausentes → delegar ao `@binding-initializer` e **PARAR roteamento**.
 - [ ] **[OBRIGATÓRIO - R-042]** Há agent ativo de turno anterior? Verificar deriva de intenção antes de assumir que a triagem já ocorreu nesta conversa.
 - [ ] **[OBRIGATÓRIO - SEGUNDO, R-041]** Solicitação já refinada por `@prompt-structuring`? Se não → delegar e aguardar retorno antes de classificar.
+- [ ] **[OBRIGATÓRIO - CONFERÊNCIA DE CASOS]** Comparar a solicitação com a base de precedentes em `docs/ai-context/evals/casos-roteamento.yaml` (verificar se há caso correspondente em `canonicos:` ou anti-padrão em `regressao:` — ex: `canon-028` para camadas/fluxo -> `code-knowledge-graph`).
 - [ ] Se pelo menos um presente → prosseguir com classificação de intenção.
 - [ ] Intenção principal identificada.
 - [ ] Rota escolhida no catálogo real.
@@ -251,7 +254,11 @@ Próximo passo mínimo:
 - **Aplicar R-006** (Matriz de Decisão acima) **antes de rotear**:
   - Se intenção é clara + código-alvo presente + sem multi-projeto → roteie direto.
   - Se ambíguo ou requer análise cross-projeto → roteie para agent especializado.
-- **CLAUDE.md, copilot-instructions.md, catalog.yaml** são infraestrutura do projeto — **assuma que existem e use sem pedir anexo.**
+- **[OBRIGATÓRIO] Avaliação de Precedentes (`casos-roteamento.yaml`)**:
+  Antes de confirmar a rota downstream, o router DEVE consultar os casos em `docs/ai-context/evals/casos-roteamento.yaml` como gabarito de decisão:
+  - Se a intenção for análoga a um caso de `canonicos:`, adote compulsoriamente a rota definida naquele caso.
+  - Se a rota pretendida colidir com um caso de `regressao:`, aborte o roteamento errado imediatamente (ex.: `regr-019` proíbe mandar dúvidas de camadas/fluxo para `angular-engineer` em vez de `code-knowledge-graph`).
+- **CLAUDE.md, copilot-instructions.md, catalog.yaml, casos-roteamento.yaml** são infraestrutura do projeto — **assuma que existem e use sem pedir anexo.**
 - Mantenha o conteúdo em PT-BR.
 - Prefira delegação única por solicitação.
 - Use justificativa curta e verificável.
