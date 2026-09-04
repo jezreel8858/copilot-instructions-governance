@@ -95,6 +95,15 @@ class DiffChecker:
                     break
             node_module_map[n["id"]] = matched_mod or "unassigned"
 
+        # Indexa regras por módulo de origem para avaliação direta
+        rules_by_from = {}
+        for rule in rules:
+            rf = rule.get("from")
+            if rf:
+                rules_by_from.setdefault(rf, []).append(rule)
+
+        wildcard_rules = rules_by_from.get("*", [])
+
         # Avalia cada regra contra as arestas existentes
         for e in edges:
             src_id = e["from"]
@@ -105,10 +114,8 @@ class DiffChecker:
             if not src_mod or not tgt_mod or src_mod == tgt_mod or src_mod == "unassigned":
                 continue
 
-            for rule in rules:
-                rule_from = rule.get("from")
-                if rule_from != src_mod and rule_from != "*":
-                    continue
+            applicable_rules = rules_by_from.get(src_mod, []) + wildcard_rules
+            for rule in applicable_rules:
 
                 # Regra onlyTo (apenas para os módulos listados)
                 if "onlyTo" in rule:

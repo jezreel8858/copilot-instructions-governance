@@ -156,13 +156,21 @@ class MetricsCalculator:
 
         cycle_node_ids = set()
         cycle_edge_ids = set()
+        node_to_scc = {}
 
-        for c in cycles:
-            c_set = set(c)
-            cycle_node_ids.update(c_set)
-            for e in edges:
-                if e["from"] in c_set and e["to"] in c_set:
-                    cycle_edge_ids.add(e.get("id"))
+        # Mapeia cada nó de ciclo para seu componente SCC em O(V)
+        for scc_idx, c in enumerate(cycles):
+            for node in c:
+                node_to_scc[node] = scc_idx
+                cycle_node_ids.add(node)
+
+        # Identifica arestas internas ao ciclo em uma única passada O(E) em vez de O(C * E)
+        for e in edges:
+            u = e.get("from")
+            v = e.get("to")
+            scc_u = node_to_scc.get(u)
+            if scc_u is not None and scc_u == node_to_scc.get(v):
+                cycle_edge_ids.add(e.get("id"))
 
         return cycles, cycle_node_ids, cycle_edge_ids
 
