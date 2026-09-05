@@ -3,7 +3,7 @@
   "domain": "governanca-ai-generica",
   "generated_at": "2026-08-30T16:00:00Z",
   "summary": {
-    "total_skills": 53
+    "total_skills": 57
   },
   "skills": [
     {
@@ -677,6 +677,50 @@
       "description": "Uso da lib externa @optave/codegraph (CLI local e MCP Server enxuto, zero API keys) como motor único de build/consulta de grafo de conhecimento de código — build, query, blast radius, ciclos, dead code, dataflow e CI gate — base do agent code-knowledge-graph.",
       "path": ".github/skills/codegraph-optave-usage/SKILL.md",
       "related_agents": [
+        "@code-knowledge-graph"
+      ]
+    },
+    {
+      "name": "angular-performance-patterns",
+      "tier": 2,
+      "category": "quality",
+      "path": ".github/skills/angular-performance-patterns/SKILL.md",
+      "related_agents": [
+        "@angular-engineer",
+        "@performance-agent",
+        "@analysis-architect"
+      ]
+    },
+    {
+      "name": "spring-boot-performance-patterns",
+      "tier": 2,
+      "category": "quality",
+      "path": ".github/skills/spring-boot-performance-patterns/SKILL.md",
+      "related_agents": [
+        "@spring-boot-engineer",
+        "@performance-agent",
+        "@analysis-architect"
+      ]
+    },
+    {
+      "name": "spring-reactive-performance-patterns",
+      "tier": 2,
+      "category": "quality",
+      "path": ".github/skills/spring-reactive-performance-patterns/SKILL.md",
+      "related_agents": [
+        "@spring-reactive-engineer",
+        "@performance-agent",
+        "@analysis-architect"
+      ]
+    },
+    {
+      "name": "refactoring-planning-patterns",
+      "tier": 2,
+      "category": "process",
+      "path": ".github/skills/refactoring-planning-patterns/SKILL.md",
+      "related_agents": [
+        "@refactor-planner",
+        "@analysis-architect",
         "@code-knowledge-graph"
       ]
     }

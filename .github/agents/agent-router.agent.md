@@ -1,6 +1,6 @@
 ---
 name: agent-router
-version: "1.8.0"
+version: "1.9.0"
 description: >-
   Entry point obrigatório agent-first para classificar solicitações e delegar ao
   agent downstream correto, com fallback para pesquisa e análise de integração.
@@ -19,6 +19,8 @@ Você é o roteador obrigatório do fluxo agent-first. Seu trabalho é classific
 - ❌ NÃO pular a decisão de triagem antes de delegar.
 - ❌ NÃO classificar intenção antes de passar pelo `@prompt-structuring` (R-041) — exceto no retorno de handoff do próprio `prompt-structuring`.
 - ❌ NÃO tratar a triagem como evento único da conversa — R-042 exige re-triagem a cada turno em que um downstream sinalize deriva de intenção (handoff `motivo: "deriva_de_intencao"`).
+- ❌ NÃO delegar implementação para specialists incompatíveis quando a linguagem/stack não constar no catálogo (out-of-domain) — usar fallback determinístico de recusa estruturada.
+- ❌ NÃO criar ou invocar agente inline de 'gap detection' em runtime (anti-padrão de latência e custo); o router recusa deterministicamente e orienta governança sob demanda.
 - ✅ **PRIMEIRA AÇÃO (R-034)**: Verificar Health Check de binding context (`docs/ai-context/catalog.yaml` e `docs/ai-context/binding.md` existem?). Se **NÃO**, delegar ao `@binding-initializer` antes de qualquer triagem.
 - ✅ **SEGUNDA AÇÃO (R-041)**: Delegar SEMPRE ao `@prompt-structuring` para refinar a solicitação (loop máx. 5 iterações) — exceto quando a solicitação já chegou refinada por ele. Aguardar retorno antes de classificar intenção.
 - ✅ **AO DELEGAR**: incluir o modelo declarado do agent-alvo (catalog.yaml) na própria frase de invocação do `run_subagent` (melhor esforço, não garantido — ver seção "Model Awareness").
@@ -176,13 +178,16 @@ Pedido recebido (já refinado por @prompt-structuring)?
 |  |- Sim -> @business-rules-extractor
 |  \- Não
 |- Já existe plano de refactor APROVADO para executar (não criar do zero)?
-|  |- Sim -> @refactor-executor
+|  |- Sim -> delegar ao especialista de stack correspondente (@angular-engineer / @spring-boot-engineer / @spring-reactive-engineer / @database-specialist) em modo Implementação
 |  \- Não
-|- É pedido de refatoração/plano de refactor (do zero)?
+|- É pedido de refatoração/plano de refactor estrutural (do zero)?
 |  |- Sim -> @refactor-planner
 |  \- Não
 |- É persistência/recuperação de memória entre sessões (não consolidação pontual)?
 |  |- Sim -> @agentic-memory-manager
+|  \- Não
+|- É pedido de implementação de código em stack/linguagem NÃO suportada no catálogo (ex.: Rust, Go, Flutter, Ruby)?
+|  |- Sim -> [Fallback Determinístico: Recusa Estruturada] (não delegar para specialist incompatível nem inventar agente inline; orientar @governance-factory para criar agent/adapter ou @deep-search para pesquisa)
 |  \- Não
 |- É análise de impacto, dependências, contratos ou risco?
 |  |- Sim -> @analysis-architect (tier B1 para impacto local)
@@ -298,8 +303,7 @@ Próximo passo mínimo:
 - [`@test-strategy`](`test-strategy.agent.md`) para estratégia/plano de testes.
 - [`@test-engineer`](`test-engineer.agent.md`) para correção de testes quebrados com relatório de falhas.
 - [`@business-rules-extractor`](`business-rules-extractor.agent.md`) para extração de regras de negócio e validação de refatorações.
-- [`@refactor-planner`](`refactor-planner.agent.md`) para planejamento de refactor do zero.
-- [`@refactor-executor`](`refactor-executor.agent.md`) para executar um plano de refactor já aprovado por `@refactor-planner` — nunca cria o plano.
+- [`@refactor-planner`](`refactor-planner.agent.md`) para planejamento e decomposição macro de refactor estrutural (delega execução aos especialistas de stack).
 - [`@agentic-memory-manager`](`agentic-memory-manager.agent.md`) para persistência/recuperação de memória entre sessões — não confundir com `@context-builder` (consolidação pontual, read-only).
 - [`@analysis-architect`](`analysis-architect.agent.md`) para impacto técnico local (tier B1) e análise cross-sistema.
 - [`@docs-engineer`](`docs-engineer.agent.md`) para curadoria de documentação já existente.

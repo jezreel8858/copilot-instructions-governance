@@ -112,7 +112,7 @@ flowchart TD
     P --> E
 
     E --> G1["🎯 Planning/Analysis\nrequirements-analyst · deep-search\nfeature-planner"]
-    E --> G2["📐 Architecture/Design\nanalysis-architect · code-knowledge-graph\nbusiness-rules-extractor · refactor-planner\nrefactor-executor"]
+    E --> G2["📐 Architecture/Design\nanalysis-architect · code-knowledge-graph\nbusiness-rules-extractor · refactor-planner"]
     E --> G3["💻 Implementation (Specialists)\nangular-engineer · spring-boot-engineer\nspring-reactive-engineer · database-specialist\ncode-summarizer"]
     E --> G4["✅ Quality/Validation\nbug-triage · debugger · test-strategy\ntest-engineer · code-review · code-style-enforcer\nsecurity-reviewer · performance-agent\ndevops-engineer · runtime-verifier"]
     E --> G5["📚 Documentation/Learning\ndocs-engineer · context-builder"]
@@ -123,7 +123,7 @@ flowchart TD
     K -. "turno N+1: deriva de intenção\ndetectada (R-042)" .-> E
 ```
 
-> 34 agents catalogados, agrupados em 6 perfis de mercado — ver [§ Cobertura de Mercado](#cobertura-de-mercado--perfis-de-agents) para o diagrama detalhado por agent e a análise de aderência às práticas consolidadas.
+> 33 agents catalogados, agrupados em 6 perfis de mercado — ver [§ Cobertura de Mercado](#cobertura-de-mercado--perfis-de-agents) para o diagrama detalhado por agent e a análise de aderência às práticas consolidadas.
 
 ### Para Adicionar Novo Adapter
 
@@ -160,13 +160,13 @@ Frameworks de referência (Claude Code/Agent SDK da Anthropic, Microsoft Agent F
 | Categoria de Mercado | Perfis Esperados | Cobertos Neste Projeto | Cobertura |
 |---|---|---|---|
 | 🎯 Planning & Analysis | Planner, PM/Analyst, Researcher | `requirements-analyst`, `deep-search`, `feature-planner` | ✅ 100% |
-| 📐 Architecture & Design | Architect, Impact Analyzer, Rules Extractor, Refactor Planner | `analysis-architect`, `code-knowledge-graph`, `business-rules-extractor`, `refactor-planner`, `refactor-executor` | ✅ 100% |
+| 📐 Architecture & Design | Architect, Impact Analyzer, Rules Extractor, Refactor Planner | `analysis-architect`, `code-knowledge-graph`, `business-rules-extractor`, `refactor-planner` | ✅ 100% |
 | 💻 Implementation | Coder por stack, Debugger, DB Specialist | `angular-engineer`, `spring-boot-engineer`, `spring-reactive-engineer`, `database-specialist`, `code-summarizer` | ✅ 100% |
 | ✅ Quality & Validation | Test Strategy/Impl, Reviewer, Security, Performance, QA, Runtime | `bug-triage`, `debugger`, `test-strategy`, `test-engineer`, `code-review`, `code-style-enforcer`, `security-reviewer`, `performance-agent`, `devops-engineer`, `runtime-verifier` | ✅ 100% |
 | 📚 Documentation & Learning | Docs Engineer, Context Builder | `docs-engineer`, `context-builder` | ✅ 100% |
 | 🔄 Governance & Orchestration | Router, Memory Manager, Guardrails, Factories, Gatekeeper | `agent-router`, `prompt-structuring`, `governance-factory`, `agent-auditor`, `binding-initializer`, `adapter-generator`, `agentic-memory-manager`, `compliance-guardrails`, `pr-gatekeeper` | ✅ 100% |
 
-**Resultado**: **34 agents ativos**, cobrindo **~95% dos 22 perfis consolidados de mercado** — nível de maturidade comparável ao modelo de referência SpecWeave (11 agents core, expandido aqui com granularidade enterprise adicional em segurança/performance/compliance/banco de dados).
+**Resultado**: **33 agents ativos**, cobrindo **~95% dos 22 perfis consolidados de mercado** — nível de maturidade comparável ao modelo de referência SpecWeave (11 agents core, expandido aqui com granularidade enterprise adicional em segurança/performance/compliance/banco de dados).
 
 ### Mapa de Agents por Perfil (Mermaid)
 
@@ -185,7 +185,6 @@ graph TB
         B2[code-knowledge-graph]
         B3[business-rules-extractor]
         B4[refactor-planner]
-        B5[refactor-executor]
     end
 
     subgraph CAT3["💻 IMPLEMENTATION — Specialists Híbridos"]
@@ -308,12 +307,12 @@ graph TB
 - ✅ `database.instructions.md` — Banco de dados / Migrações
 - ✅ `devops.instructions.md` — Docker, Kubernetes, CI/CD
 
-### Agents (34 catalogados — ver [§ Cobertura de Mercado](#cobertura-de-mercado--perfis-de-agents) para o mapa completo)
-- ✅ `agent-router` v1.5.0 — PASSO 0.3 de re-triagem por deriva de intenção (R-042), output com campo `Agente Ativo`, roteamento direto para todos os 33 agents downstream
+### Agents (33 catalogados — ver [§ Cobertura de Mercado](#cobertura-de-mercado--perfis-de-agents) para o mapa completo)
+- ✅ `agent-router` v1.5.0 — PASSO 0.3 de re-triagem por deriva de intenção (R-042), output com campo `Agente Ativo`, roteamento direto para todos os 32 agents downstream
 - ✅ `prompt-structuring` — passo mandatório pós-Health Check (R-041), loop de auto-refinamento (máx. 5 iterações)
-- ✅ 32 agents downstream especializados, agrupados por função:
+- ✅ 31 agents downstream especializados, agrupados por função:
   - **Planejamento/Análise:** `requirements-analyst`, `deep-search`, `feature-planner`
-  - **Arquitetura/Design:** `analysis-architect`, `code-knowledge-graph`, `business-rules-extractor`, `refactor-planner`, `refactor-executor`
+  - **Arquitetura/Design:** `analysis-architect`, `code-knowledge-graph`, `business-rules-extractor`, `refactor-planner`
   - **Implementação (Specialists híbridos):** `angular-engineer`, `spring-boot-engineer`, `spring-reactive-engineer`, `database-specialist`, `code-summarizer`
   - **Qualidade/Validação:** `bug-triage`, `debugger`, `test-strategy`, `test-engineer` (fusão `test-implementation` + `test-fix`), `code-review`, `code-style-enforcer`, `security-reviewer`, `performance-agent`, `devops-engineer`, `runtime-verifier`
   - **Documentação:** `docs-engineer` (fusão `docs-writer` + `docs-curator` — modos `author`/`curate`), `context-builder`

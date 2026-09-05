@@ -31,7 +31,7 @@
 | DevOps Engineer | 🟠 P3 | ✅ **RESOLVIDO** | `devops-engineer.agent.md` | `devops-agent-patterns/SKILL.md` |
 | Debugger (genérico) | 🟠 P3 | ✅ **RESOLVIDO** | `debugger.agent.md` | Reaproveitou `code-tracing` existente (R-003) |
 | Code Style Enforcer | 🟠 P3 | ✅ **RESOLVIDO** | `code-style-enforcer.agent.md` | Reaproveitou `code-review-patterns` existente |
-| Refactor Executor | 🟠 P3 | ✅ **RESOLVIDO** | `refactor-executor.agent.md` | Reaproveitou `business-rules-governance` existente |
+| Refactor Executor | 🟠 P3 | 🔄 **CONSOLIDADO** | Consolidado diretamente nos especialistas de stack (`angular-engineer`, `spring-boot-engineer`, etc.) | Execução idiomática testing-first via perfil híbrido |
 
 **Cobertura pós-implementação**: 26 → **35 agents** | 47 → **52 skills** | 77% → **~95% de cobertura de perfis do mercado**.
 

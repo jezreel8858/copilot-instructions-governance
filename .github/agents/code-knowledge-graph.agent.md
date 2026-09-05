@@ -233,7 +233,6 @@ Próximo passo mínimo:
 | [`@refactor-planner`](refactor-planner.agent.md) | consumidor precisa de impacto de refatoração a partir do grafo já construído, incluindo blast radius e detecção de ciclo | project-id(s), resultado relevante |
 | [`@bug-triage`](bug-triage.agent.md) | consumidor precisa rastrear cadeia de chamadas a partir do grafo já construído | project-id(s), nó de origem, comando usado |
 | [`@debugger`](debugger.agent.md) | consumidor precisa navegar call graph/blast radius (`query`/`path`/`execution_flow`/`sequence`) para formular hipótese de causa raiz | símbolo/arquivo de origem, comando(s) desejado(s) |
-| [`@refactor-executor`](refactor-executor.agent.md) | consumidor precisa medir blast radius antes de aplicar cada fase de um plano e validar (`check`) após aplicar | fase do plano, símbolo/arquivo alvo |
 | [`@code-review`](code-review.agent.md) | consumidor precisa de blast radius/diff-impact estrutural do PR antes de aprovar (`diff-impact`, `check`) | diff/PR em revisão, arquivos tocados |
 | [`@code-style-enforcer`](code-style-enforcer.agent.md) | consumidor precisa de complexidade (`complexity`) ou papel do símbolo (`node_roles`) antes de classificar achado de estilo | símbolo/arquivo alvo |
 | [`@performance-agent`](performance-agent.agent.md) | consumidor precisa rastrear dataflow/complexity/execution_flow para localizar hotspots reais | símbolo/arquivo alvo, sintoma de performance |

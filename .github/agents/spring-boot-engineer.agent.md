@@ -49,6 +49,7 @@ Atuar como referência enterprise Spring Boot em 2 modos: **(1) Advisory** — a
 | Skill base (perfil híbrido) | [`.github/skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md`](../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md) | ⭐ Padrão canônico de desambiguação de modo (Advisory/Implementação), formato de saída e checklist base |
 | Skill (nova) | [`.github/skills/spring-boot-backend-patterns/SKILL.md`](../skills/spring-boot-backend-patterns/SKILL.md) | Baseline de padrões Spring Boot enterprise — modo Advisory |
 | Skill de implementação | [`.github/skills/spring-boot-implementation-patterns/SKILL.md`](../skills/spring-boot-implementation-patterns/SKILL.md) | ⭐ Workflow de codificação (feature/bugfix), virtual threads vs reativo, testing-first — modo Implementação |
+| Skill base (performance) | [`.github/skills/spring-boot-performance-patterns/SKILL.md`](../skills/spring-boot-performance-patterns/SKILL.md) | Engenharia de performance: Virtual Threads, pinning, HikariCP, N+1/EntityGraph, Caffeine+Redis, ZGC |
 | Skill (nova) | [`.github/skills/java-jdk-backend-governance/SKILL.md`](../skills/java-jdk-backend-governance/SKILL.md) | Governança de versões Java/JDK |
 | Adapter do projeto | `.github/instructions/<projeto>-backend.instructions.md` ou `spring-boot-backend.instructions.md` | Convenções de codificação obrigatórias no modo Implementação |
 | Skill de testes | `test-implementation-spring-boot` | Padrões detalhados JUnit 5 + Mockito |
@@ -64,6 +65,7 @@ Atuar como referência enterprise Spring Boot em 2 modos: **(1) Advisory** — a
 | Existente | `confidence-fallback-policy` | Score de confiança e fallback explícito |
 | Existente | `agent-evals-lab` | Critérios de consistência da recomendação |
 | Existente | `code-tracing` | Rastreio técnico de evidências no codebase |
+| Existente | `spring-boot-performance-patterns` | Engenharia de performance: Loom, pinning, HikariCP, N+1, multi-level cache, ZGC e CDS |
 | — | Pesquisa externa | Delegar a `@deep-search` (via `run_subagent`) quando necessário — este agent não possui tool `tavily/*` |
 
 ## Decision Tree
@@ -139,6 +141,7 @@ Executar checklist unificado da skill `specialist-hybrid-advisory-implementation
 - [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
 - [`../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md`](../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md) — padrão híbrido canônico (Advisory + Implementação).
 - [`../skills/spring-boot-backend-patterns/SKILL.md`](../skills/spring-boot-backend-patterns/SKILL.md) — baseline de padrões Spring Boot (Advisory).
+- [`../skills/spring-boot-performance-patterns/SKILL.md`](../skills/spring-boot-performance-patterns/SKILL.md) — baseline de engenharia de performance (Loom, pinning, HikariCP, N+1, multi-level cache, ZGC).
 - [`../skills/spring-boot-implementation-patterns/SKILL.md`](../skills/spring-boot-implementation-patterns/SKILL.md) — ⭐ workflow de implementação, testing-first (Implementação).
 - [`../skills/java-jdk-backend-governance/SKILL.md`](../skills/java-jdk-backend-governance/SKILL.md) — baseline de versões Java/JDK.
 - Adapter do projeto (`.github/instructions/<projeto>-backend.instructions.md` ou `spring-boot-backend.instructions.md`) — **obrigatório no modo Implementação**.

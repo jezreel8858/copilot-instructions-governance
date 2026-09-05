@@ -354,7 +354,7 @@ Escolha uma ação:
 - `test-strategy` -> estratégia de testes.
 - `test-engineer` -> implementação de testes (unit/integration/E2E), correção de testes quebrados e expansão de cobertura — modos `create`/`fix`/`coverage` (fusão de test-implementation + test-fix).
 - `business-rules-extractor` -> extração de regras de negócio de código-fonte e documentação em `.md`; validação de refatorações contra regras documentadas.
-- `refactor-planner` -> planejamento de refatoração.
+- `refactor-planner` -> planejamento e decomposição macro de refatoração estrutural (delega execução aos especialistas de stack).
 - `docs-engineer` -> autoria e curadoria de documentação técnica em `.md` — modos `author`/`curate` (fusão de docs-writer + docs-curator).
 - `deep-search` -> triagem e roteamento de pesquisa interna e externa.
 - `analysis-architect` -> análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL); metodologia B1/B2/B3.
@@ -374,6 +374,7 @@ Escolha uma ação:
 - `context-mode` -> organização de contexto e pesquisa sobre conteúdo já indexado/lido.
 - `context-compact` -> compactação pós-leitura e geração de resumos executáveis.
 - `context-builder` -> coleta e condensação de contexto técnico em `docs/context/`.
+- `refactoring-planning-patterns` -> planejamento de refatoração estrutural (Mikado, Branch by Abstraction, Strangler Fig, safety net).
 
 **Pesquisa e Documentação:**
 - `tavily` -> pesquisa externa e documentação atualizada.
@@ -383,6 +384,10 @@ Escolha uma ação:
 - `sonarqube-governance` -> monitoramento de métricas de qualidade via SonarQube.
 - `yaml-governance` -> boas práticas para leitura, geração e validação de arquivos YAML/YML.
 - `git-governance` -> convenções de git workflow, branch naming e commit standards.
+- `performance-engineering-patterns` -> revisão especializada de performance (Core Web Vitals, N+1, latência, profiling).
+- `angular-performance-patterns` -> engenharia de performance Angular (Zoneless, Signals, @defer, SSR incremental, CWV).
+- `spring-boot-performance-patterns` -> engenharia de performance Spring Boot (Virtual Threads, pinning, HikariCP, N+1, cache, ZGC).
+- `spring-reactive-performance-patterns` -> engenharia de performance reativa (event-loop, BlockHound, flatMap tuning, backpressure, Netty).
 
 **Testes — Genéricos (agnósticos de stack):**
 - `test-implementation-backend` -> padrões agnósticos de testes para qualquer backend.

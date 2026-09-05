@@ -52,6 +52,7 @@ Atuar como referência enterprise Angular em 2 modos: **(1) Advisory** — anál
 | Skill base (genérica) | [`.github/skills/frontend-componentization-patterns/SKILL.md`](../skills/frontend-componentization-patterns/SKILL.md) | Componentização reutilizável e fronteiras de estado em frontend |
 | Skill base (Angular) | [`.github/skills/angular-frontend-patterns/SKILL.md`](../skills/angular-frontend-patterns/SKILL.md) | Baseline de patterns Angular — modo Advisory |
 | Skill de implementação | [`.github/skills/angular-implementation-patterns/SKILL.md`](../skills/angular-implementation-patterns/SKILL.md) | ⭐ Workflow de codificação (feature/bugfix), testing-first — modo Implementação |
+| Skill base (performance) | [`.github/skills/angular-performance-patterns/SKILL.md`](../skills/angular-performance-patterns/SKILL.md) | Engenharia de performance: Zoneless, Signals, @defer, incremental hydration e Core Web Vitals |
 | Skill base (responsividade) | `.github/skills/angular-responsive-ui-patterns/SKILL.md` | Responsividade, layout fluido, breakpoints, container queries e validação multi-viewport |
 | Skill base (contratos) | [`.github/skills/design-system-component-contracts/SKILL.md`](../skills/design-system-component-contracts/SKILL.md) | Governança de API pública de componentes, semver e breaking change |
 | Adapter do projeto | `.github/instructions/<projeto>-frontend.instructions.md` ou `angular-v21-frontend.instructions.md` | Convenções de codificação obrigatórias no modo Implementação |
@@ -68,6 +69,7 @@ Atuar como referência enterprise Angular em 2 modos: **(1) Advisory** — anál
 | Existente | `confidence-fallback-policy` | Score de confiança e fallback explícito |
 | Existente | `agent-evals-lab` | Critérios de qualidade e revisão de consistência |
 | Existente | `code-tracing` | Rastreio de evidências técnicas em codebase local |
+| Existente | `angular-performance-patterns` | Engenharia de performance: Zoneless, Signals, @defer, SSR incremental e Core Web Vitals |
 | Existente | `angular-responsive-ui-patterns` | Responsividade, layout fluido, breakpoints e validação multi-viewport |
 | Existente | `design-system-component-contracts` | Governança de API pública de componentes, semver e breaking change |
 | — | Pesquisa externa | Delegar a `@deep-search` (via `run_subagent`) quando o contexto local for insuficiente — este agent não possui tool `tavily/*` |
@@ -158,6 +160,7 @@ Executar checklist unificado da skill `specialist-hybrid-advisory-implementation
 - [`../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md`](../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md) — padrão híbrido canônico (Advisory + Implementação).
 - [`../skills/frontend-componentization-patterns/SKILL.md`](../skills/frontend-componentization-patterns/SKILL.md) — baseline de componentização genérica.
 - [`../skills/angular-frontend-patterns/SKILL.md`](../skills/angular-frontend-patterns/SKILL.md) — baseline de patterns Angular (Advisory).
+- [`../skills/angular-performance-patterns/SKILL.md`](../skills/angular-performance-patterns/SKILL.md) — baseline de engenharia de performance Angular (Zoneless, Signals, @defer, Core Web Vitals).
 - [`../skills/angular-implementation-patterns/SKILL.md`](../skills/angular-implementation-patterns/SKILL.md) — ⭐ workflow de implementação, testing-first (Implementação).
 - [`../skills/angular-responsive-ui-patterns/SKILL.md`](../skills/angular-responsive-ui-patterns/SKILL.md) — baseline de responsividade, layout fluido e validação multi-viewport.
 - [`../skills/design-system-component-contracts/SKILL.md`](../skills/design-system-component-contracts/SKILL.md) — baseline de contratos de API de componentes em design system.
