@@ -3,7 +3,7 @@ test_extract_seguranca.py — Suíte 5 do contrato de evals (seguranca_rnf005).
 
 RNF-005 é bloqueante: 0% de tolerância a reprodução literal de segredo no resultado
 gerado pelos scripts de Modo 1 (Determinístico). Cobre os 4 casos "sec-cs-00X-*" de
-docs/ai-context/evals/casos-code-summarizer.yaml contra os 4 golden files reais.
+.github/agents/evals/casos-code-summarizer.yaml contra os 4 golden files reais.
 
 Diferente de test_extract_fidelidade.py (que valida fidelidade + segurança juntas),
 este arquivo isola e reforça SOMENTE o critério de segurança, incluindo verificação

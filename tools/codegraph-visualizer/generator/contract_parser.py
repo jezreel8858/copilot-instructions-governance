@@ -151,6 +151,14 @@ class AsyncApiParser:
         return channels_list
 
 
+EXCLUDED_SCAN_DIRS = frozenset({
+    "node_modules", ".git", "dist", "build", "target", ".angular",
+    ".gradle", ".idea", ".vscode", "venv", ".venv", "__pycache__",
+    "coverage", ".next", ".nuxt", "bin", "obj", ".turbo",
+    "android", "ios", "tmp", ".codegraph"
+})
+
+
 class ContractCorrelator:
     """Correlaciona endpoints expostos e clientes consumidores cross-repo."""
 
@@ -173,27 +181,34 @@ class ContractCorrelator:
             re.compile(r"""@(Get|Post|Put|Delete|Patch)Mapping\s*\(\s*(?:value\s*=\s*)?["']([^"']+)["']""", re.IGNORECASE)
         ]
 
-        for root, _, files in os.walk(source_dir):
+        for root, dirs, files in os.walk(source_dir):
+            dirs[:] = [d for d in dirs if d not in EXCLUDED_SCAN_DIRS and not d.startswith(".")]
             for file in files:
                 if file.endswith((".ts", ".js", ".java", ".py")):
                     file_path = Path(root) / file
                     try:
                         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-                            lines = f.readlines()
-                            for line_num, line in enumerate(lines, 1):
-                                for pat in http_patterns:
-                                    matches = pat.findall(line)
-                                    for m in matches:
-                                        route = m if isinstance(m, str) else (m[1] if len(m) > 1 else m[0])
-                                        if "/" in route and len(route) > 2 and not route.startswith("//"):
-                                            norm = normalize_route_path(route)
-                                            calls.append({
-                                                "raw_route": route,
-                                                "normalized_route": norm,
-                                                "file": str(file_path),
-                                                "line": line_num,
-                                                "symbol": file_path.stem
-                                            })
+                            content = f.read()
+
+                        # Filtro rápido em memória para evitar regex se não houver termos relevantes
+                        if not any(k in content for k in ("http", "fetch", "get", "post", "put", "delete", "patch", "Url", "url", "Mapping", "exchange")):
+                            continue
+
+                        lines = content.splitlines()
+                        for line_num, line in enumerate(lines, 1):
+                            for pat in http_patterns:
+                                matches = pat.findall(line)
+                                for m in matches:
+                                    route = m if isinstance(m, str) else (m[1] if len(m) > 1 else m[0])
+                                    if "/" in route and len(route) > 2 and not route.startswith("//"):
+                                        norm = normalize_route_path(route)
+                                        calls.append({
+                                            "raw_route": route,
+                                            "normalized_route": norm,
+                                            "file": str(file_path),
+                                            "line": line_num,
+                                            "symbol": file_path.stem
+                                        })
                     except Exception:
                         pass
 
@@ -208,32 +223,38 @@ class ContractCorrelator:
 
         # Padrões Spring Boot / Express / NestJS / FastAPI
         spring_class_mapping = re.compile(r"""@RequestMapping\s*\(\s*(?:value\s*=\s*)?["']([^"']+)["']""", re.IGNORECASE)
-        spring_method_mapping = re.compile(r"""@(GetMapping|PostMapping|PutMapping|DeleteMapping|PatchMapping)\s*\(\s*(?:(?:value|path)\s*=\s*)?["']([^"']*)["']""", re.IGNORECASE)
+        spring_method_mapping = re.compile(r"""@(GetMapping|PostMapping|PutMapping|DeleteMapping|PatchMapping)(?:\s*\(\s*(?:(?:value|path)\s*=\s*)?["']([^"']*)["']\s*\))?""", re.IGNORECASE)
 
-        for root, _, files in os.walk(source_dir):
+        for root, dirs, files in os.walk(source_dir):
+            dirs[:] = [d for d in dirs if d not in EXCLUDED_SCAN_DIRS and not d.startswith(".")]
             for file in files:
                 if file.endswith((".java", ".ts", ".py", ".js")):
                     file_path = Path(root) / file
                     try:
                         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
                             content = f.read()
-                            class_prefix = ""
-                            c_match = spring_class_mapping.search(content)
-                            if c_match:
-                                class_prefix = c_match.group(1)
 
-                            for m_match in spring_method_mapping.finditer(content):
-                                http_verb = m_match.group(1).replace("Mapping", "").upper()
-                                m_path = m_match.group(2)
-                                full_route = (class_prefix + ("/" if not class_prefix.endswith("/") and not m_path.startswith("/") and m_path else "") + m_path).rstrip("/")
-                                norm = normalize_route_path(full_route)
-                                endpoints.append({
-                                    "verb": http_verb,
-                                    "raw_route": full_route,
-                                    "normalized_route": norm,
-                                    "file": str(file_path),
-                                    "symbol": file_path.stem
-                                })
+                        # Filtro rápido para ignorar arquivos que não definem mappings
+                        if "@" not in content or "Mapping" not in content:
+                            continue
+
+                        class_prefix = ""
+                        c_match = spring_class_mapping.search(content)
+                        if c_match:
+                            class_prefix = c_match.group(1)
+
+                        for m_match in spring_method_mapping.finditer(content):
+                            http_verb = m_match.group(1).replace("Mapping", "").upper()
+                            m_path = m_match.group(2) or ""
+                            full_route = (class_prefix + ("/" if not class_prefix.endswith("/") and not m_path.startswith("/") and m_path else "") + m_path).rstrip("/")
+                            norm = normalize_route_path(full_route)
+                            endpoints.append({
+                                "verb": http_verb,
+                                "raw_route": full_route,
+                                "normalized_route": norm,
+                                "file": str(file_path),
+                                "symbol": file_path.stem
+                            })
                     except Exception:
                         pass
 
@@ -242,20 +263,35 @@ class ContractCorrelator:
     @staticmethod
     def correlate_projects(
         projects_cfg: List[Dict[str, Any]],
-        openapi_specs: Optional[List[Path]] = None
+        openapi_specs: Optional[List[Any]] = None,
+        max_workers: Optional[int] = None
     ) -> List[Dict[str, Any]]:
         """Correlaciona chamadores e provedores entre projetos e gera a lista de pontes automáticas."""
+        from collections import defaultdict
+        from concurrent.futures import ThreadPoolExecutor
+
         bridges = []
         project_servers = {}
         project_clients = {}
 
-        # 1. Extração de endpoints providos por projeto
-        for p in projects_cfg:
+        # 1. Extração concorrente de endpoints e chamadas clientes por projeto (I/O paralelo)
+        def _extract_project(p: Dict[str, Any]) -> Tuple[str, List[Dict[str, Any]], List[Dict[str, Any]]]:
             p_id = p["name"]
             p_path = Path(p.get("path", ""))
+            endpoints = []
+            calls = []
             if p_path.exists():
                 endpoints = ContractCorrelator.extract_server_endpoints_from_source(p_path)
-                project_servers[p_id] = endpoints
+                calls = ContractCorrelator.extract_http_calls_from_source(p_path)
+            return p_id, endpoints, calls
+
+        workers = max_workers or min(32, (os.cpu_count() or 4) * 2)
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            for p_id, endpoints, calls in executor.map(_extract_project, projects_cfg):
+                if endpoints:
+                    project_servers[p_id] = endpoints
+                if calls:
+                    project_clients[p_id] = calls
 
         # 2. Ingestão de OpenAPI specs externas / locais
         if openapi_specs:
@@ -281,55 +317,87 @@ class ContractCorrelator:
                             "symbol": se.get("operation_id") or "OpenAPIEndpoint"
                         })
 
-        # 3. Extração de chamadas clientes por projeto
-        for p in projects_cfg:
-            p_id = p["name"]
-            p_path = Path(p.get("path", ""))
-            if p_path.exists():
-                calls = ContractCorrelator.extract_http_calls_from_source(p_path)
-                project_clients[p_id] = calls
-
-        # 4. Cruzamento e Match de Rotas Cross-Repo
+        # 3. Cruzamento e Match de Rotas Cross-Repo com Indexação O(1) em memória
         matched_pairs: Set[Tuple[str, str, str, str]] = set()
+
+        # Índice de endpoints por normalized_route para resolução O(1) de rotas exatas
+        endpoints_by_norm = defaultdict(list)
+        all_endpoints_with_proj = []
+
+        for server_proj, endpoints in project_servers.items():
+            for ep in endpoints:
+                s_norm = ep.get("normalized_route")
+                if s_norm:
+                    endpoints_by_norm[s_norm].append((server_proj, ep))
+                all_endpoints_with_proj.append((server_proj, ep))
 
         for client_proj, calls in project_clients.items():
             for call in calls:
-                client_norm = call["normalized_route"]
+                client_norm = call.get("normalized_route")
                 client_sym = call["symbol"]
+                if not client_norm:
+                    continue
 
-                for server_proj, endpoints in project_servers.items():
+                # 3.1 Match exato direto via índice em memória
+                exact_candidates = endpoints_by_norm.get(client_norm)
+                matched_exact = False
+                if exact_candidates:
+                    for server_proj, ep in exact_candidates:
+                        if client_proj == server_proj:
+                            continue
+                        pair_key = (client_proj, client_sym, server_proj, ep["symbol"])
+                        if pair_key not in matched_pairs:
+                            matched_pairs.add(pair_key)
+                            bridges.append({
+                                "src_proj": client_proj,
+                                "src_symbol": client_sym,
+                                "tgt_proj": server_proj,
+                                "tgt_symbol": ep["symbol"],
+                                "label": f"{ep.get('verb', 'REST')}: {ep['raw_route']}",
+                                "description": f"Chamada detectada em {Path(call['file']).name}:{call['line']} ➔ {Path(ep['file']).name}",
+                                "protocol": "HTTP REST",
+                                "status": "COMPATIBLE",
+                                "auto_detected": True
+                            })
+                            matched_exact = True
+
+                # 3.2 Se já encontrou match exato, não precisa checar sufixo/prefixo
+                if matched_exact:
+                    continue
+
+                # 3.3 Fallback para correspondência por sufixo ou prefixo representativo
+                client_parts = client_norm.split("/")
+                client_prefix = client_parts[:3] if len(client_parts) >= 3 else None
+
+                for server_proj, ep in all_endpoints_with_proj:
                     if client_proj == server_proj:
                         continue  # Ignora intra-repo
 
-                    for ep in endpoints:
-                        server_norm = ep["normalized_route"]
-                        server_sym = ep["symbol"]
+                    server_norm = ep.get("normalized_route")
+                    if not server_norm:
+                        continue
 
-                        # Match de rotas (exato ou prefixo representativo)
-                        is_match = False
-                        if client_norm and server_norm:
-                            if client_norm == server_norm:
-                                is_match = True
-                            elif client_norm.endswith(server_norm) or server_norm.endswith(client_norm):
-                                is_match = True
-                            elif len(client_norm.split("/")) >= 3 and client_norm.split("/")[:3] == server_norm.split("/")[:3]:
-                                is_match = True
+                    is_match = False
+                    if client_norm.endswith(server_norm) or server_norm.endswith(client_norm):
+                        is_match = True
+                    elif client_prefix and len(server_norm.split("/")) >= 3 and client_prefix == server_norm.split("/")[:3]:
+                        is_match = True
 
-                        if is_match:
-                            pair_key = (client_proj, client_sym, server_proj, server_sym)
-                            if pair_key not in matched_pairs:
-                                matched_pairs.add(pair_key)
-                                bridges.append({
-                                    "src_proj": client_proj,
-                                    "src_symbol": client_sym,
-                                    "tgt_proj": server_proj,
-                                    "tgt_symbol": server_sym,
-                                    "label": f"{ep.get('verb', 'REST')}: {ep['raw_route']}",
-                                    "description": f"Chamada detectada em {Path(call['file']).name}:{call['line']} ➔ {Path(ep['file']).name}",
-                                    "protocol": "HTTP REST",
-                                    "status": "COMPATIBLE",
-                                    "auto_detected": True
-                                })
+                    if is_match:
+                        pair_key = (client_proj, client_sym, server_proj, ep["symbol"])
+                        if pair_key not in matched_pairs:
+                            matched_pairs.add(pair_key)
+                            bridges.append({
+                                "src_proj": client_proj,
+                                "src_symbol": client_sym,
+                                "tgt_proj": server_proj,
+                                "tgt_symbol": ep["symbol"],
+                                "label": f"{ep.get('verb', 'REST')}: {ep['raw_route']}",
+                                "description": f"Chamada detectada em {Path(call['file']).name}:{call['line']} ➔ {Path(ep['file']).name}",
+                                "protocol": "HTTP REST",
+                                "status": "COMPATIBLE",
+                                "auto_detected": True
+                            })
 
         return bridges
 

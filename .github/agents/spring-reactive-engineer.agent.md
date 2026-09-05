@@ -49,6 +49,7 @@ Atuar como referência enterprise Spring WebFlux/Reactor em 2 modos: **(1) Advis
 | Skill base (perfil híbrido) | [`.github/skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md`](../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md) | ⭐ Padrão canônico de desambiguação de modo (Advisory/Implementação), formato de saída e checklist base |
 | Skill (nova) | [`.github/skills/spring-reactive-webflux-patterns/SKILL.md`](../skills/spring-reactive-webflux-patterns/SKILL.md) | Baseline de práticas WebFlux/Reactor — modo Advisory |
 | Skill de implementação | [`.github/skills/spring-reactive-implementation-patterns/SKILL.md`](../skills/spring-reactive-implementation-patterns/SKILL.md) | ⭐ Workflow de codificação (feature/bugfix), composição não-bloqueante, testing-first — modo Implementação |
+| Skill base (performance) | [`.github/skills/spring-reactive-performance-patterns/SKILL.md`](../skills/spring-reactive-performance-patterns/SKILL.md) | Engenharia de performance: event-loop/BlockHound, flatMap concurrency, backpressure, Netty memory e r2dbc-pool |
 | Skill (nova) | [`.github/skills/java-jdk-backend-governance/SKILL.md`](../skills/java-jdk-backend-governance/SKILL.md) | Governança de versões Java/JDK |
 | Adapter do projeto | `.github/instructions/<projeto>-backend.instructions.md` ou, na ausência, `spring-boot-backend.instructions.md` (baseline Java/Spring genérica — não há adapter reativo genérico dedicado) | Convenções de codificação obrigatórias no modo Implementação |
 
@@ -63,6 +64,7 @@ Atuar como referência enterprise Spring WebFlux/Reactor em 2 modos: **(1) Advis
 | Existente | `confidence-fallback-policy` | Score de confiança e fallback explícito |
 | Existente | `agent-evals-lab` | Checklist de qualidade da recomendação |
 | Existente | `code-tracing` | Mapeamento de fluxos e pontos bloqueantes |
+| Existente | `spring-reactive-performance-patterns` | Engenharia de performance: event-loop, BlockHound, flatMap tuning, backpressure e Netty |
 | — | Pesquisa externa | Delegar a `@deep-search` (via `run_subagent`) quando necessário — este agent não possui tool `tavily/*` |
 
 ## Decision Tree
@@ -188,6 +190,7 @@ Executar checklist unificado da skill `specialist-hybrid-advisory-implementation
 - [`../skills/terminal-governance/SKILL.md`](../skills/terminal-governance/SKILL.md) — governança de execução de terminal e reporting de erros.
 - [`../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md`](../skills/specialist-hybrid-advisory-implementation-patterns/SKILL.md) — padrão híbrido canônico (Advisory + Implementação).
 - [`../skills/spring-reactive-webflux-patterns/SKILL.md`](../skills/spring-reactive-webflux-patterns/SKILL.md) — baseline reativo WebFlux/Reactor (Advisory).
+- [`../skills/spring-reactive-performance-patterns/SKILL.md`](../skills/spring-reactive-performance-patterns/SKILL.md) — baseline de engenharia de performance reativa (event-loop, BlockHound, flatMap, backpressure, Netty).
 - [`../skills/spring-reactive-implementation-patterns/SKILL.md`](../skills/spring-reactive-implementation-patterns/SKILL.md) — ⭐ workflow de implementação, testing-first (Implementação).
 - [`../skills/java-jdk-backend-governance/SKILL.md`](../skills/java-jdk-backend-governance/SKILL.md) — baseline de versões Java/JDK.
 - Adapter do projeto (`.github/instructions/<projeto>-backend.instructions.md` ou, na ausência de adapter específico do projeto, `spring-boot-backend.instructions.md` como baseline Java/Spring genérica) — **obrigatório no modo Implementação**.

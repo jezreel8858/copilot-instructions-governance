@@ -56,11 +56,14 @@ Toda skill deve declarar no topo:
 | **`agent-memory-policy`** | 🧠 **Tier 3** | Política de memória long-term para agents: tipos episódico, semântico e procedimental. Foco em memória procedimental (agents auto-adaptativos) com guardrails e aprovação humana obrigatória |
 | **`frontend-componentization-patterns`** | 🧩 **Tier 2** | Padrões genéricos de componentização frontend (responsabilidade única, composição, contrato de componente, fronteiras de estado) |
 | **`angular-frontend-patterns`** | 🅰️ **Tier 2** | Boas práticas/patterns de codificação Angular (standalone, template/binding, Signals+RxJS, segurança e consistência) |
+| **`angular-performance-patterns`** | 🅰️⚡ **Tier 2** | ⭐ ***(NEW)*** Engenharia de performance Angular: Zoneless, Signals fine-grained, @defer, incremental hydration, Core Web Vitals e memory leaks — base do agent `angular-engineer` |
 | **`angular-responsive-ui-patterns`** | 📱 **Tier 2** | Responsividade Angular (mobile-first, breakpoints, container queries, layout fluido, imagens responsivas e validação multi-viewport) |
 | **`design-system-component-contracts`** | 🧱 **Tier 2** | Governança de contratos de componente para design system: tokens, variantes/estados, Inputs/Outputs, semver, depreciação, breaking change e acessibilidade |
 | **`spring-boot-backend-patterns`** | ☕ **Tier 2** | Baseline enterprise para análise/recomendação Spring Boot (arquitetura, observabilidade, segurança, performance e migração) |
+| **`spring-boot-performance-patterns`** | ☕⚡ **Tier 2** | ⭐ ***(NEW)*** Engenharia de performance Spring Boot: Virtual Threads, pinning, HikariCP, N+1/EntityGraph, Caffeine+Redis, ZGC e AppCDS — base do agent `spring-boot-engineer` |
 | **`spring-boot-implementation-patterns`** | ☕⚙️ **Tier 2** | Padrões de mercado 2026 para **implementar** features/bugs em Spring Boot (virtual threads vs reativo, N+1/OSIV, DTOs de borda, testing-first) — contraparte de execução de `spring-boot-backend-patterns` |
 | **`spring-reactive-webflux-patterns`** | ⚛️ **Tier 2** | Baseline enterprise para análise/recomendação WebFlux/Reactor (adequação reativa, backpressure, resiliência e operação) |
+| **`spring-reactive-performance-patterns`** | ⚛️⚡ **Tier 2** | ⭐ ***(NEW)*** Engenharia de performance reativa: proteção event-loop com BlockHound, flatMap concurrency, backpressure, Netty memory e r2dbc-pool — base do agent `spring-reactive-engineer` |
 | **`spring-reactive-implementation-patterns`** | ⚛️⚙️ **Tier 2** | Padrões de mercado 2026 para **implementar** features/bugs em WebFlux/Reactor (composição não-bloqueante, tratamento de erro por operador, StepVerifier/WebTestClient) — contraparte de execução de `spring-reactive-webflux-patterns` |
 | **`angular-implementation-patterns`** | 🅰️⚙️ **Tier 2** | Padrões de mercado 2026 para **implementar** features/bugs em Angular (fronteira Signals/RxJS, testing-first, checklist de PR) — contraparte de execução de `angular-frontend-patterns` |
 | **`java-jdk-backend-governance`** | ☕ **Tier 1** | Governança de versões Java/JDK backend (LTS, compatibilidade, segurança, performance e trilha de migração) |
@@ -76,6 +79,7 @@ Toda skill deve declarar no topo:
 | **`performance-engineering-patterns`** | ⚡ **Tier 2** | ⭐ ***(NEW)*** Core Web Vitals (LCP/INP/CLS), N+1 queries, profiling de latência e otimização de query — base do agent `performance-agent` |
 | **`compliance-governance-patterns`** | 🛡️ **Tier 2** | ⭐ ***(NEW)*** SOC 2/GDPR/LGPD/HIPAA/ISO 27001, audit trails, least privilege e retenção de dado pessoal — base do agent `compliance-guardrails` |
 | **`task-decomposition-patterns`** | 📋 **Tier 2** | ⭐ ***(NEW)*** Decomposição sequencial/hierárquica/paralela, granularidade 2-3 níveis, validação de dependências — base do agent `feature-planner` |
+| **`refactoring-planning-patterns`** | 🏗️ **Tier 2** | ⭐ ***(NEW)*** Planejamento de refatoração estrutural (Mikado Method, Strangler Fig, Branch by Abstraction, Characterization Tests, DAG de etapas e rollback multicamada) — base do agent `refactor-planner` |
 | **`devops-agent-patterns`** | 🐳 **Tier 2** | ⭐ ***(NEW)*** Checklists de revisão Dockerfile/Kubernetes/CI-CD/IaC e estratégias de deployment — base do agent `devops-engineer` |
 | **`codegraph-optave-usage`** | 🕸️ **Tier 2** | ⭐ ***(NEW)*** Uso da lib externa `@optave/codegraph` (CLI local e MCP Server enxuto, zero API keys) como motor único de build/consulta de grafo de código — query, blast radius, ciclos, dead code, dataflow e CI gate. Base do agent `code-knowledge-graph` |
 

@@ -114,7 +114,7 @@ Esta matriz é **responsabilidade do roteador** — não é regra global.
 - **Genericidade Obrigatória (R-038)**: toda documentação em `.github/` **DEVE ser genérica**. Sem projetos específicos, tecnologias exclusivas ou convenções de domínio. Se é específico → vai para `.github/instructions/*.instructions.md` (adapter). Teste: substitua projeto por `[PROJETO]` e tech por `[TECH]` — continua válido?
 - **Anonimização de Evidência Real (R-044)**: agents que analisam repositórios reais (`code-knowledge-graph`, `business-rules-extractor`, `context-builder`, `project-scanner`) **NUNCA** persistem nomes de repositório/classe/método/pacote/caminho real em changelog, README ou `.agent.md` commitado — genericize (`[PROJETO-X]`, `ServicoExemploX`, `com.exemplo.*`) ANTES de escrever. Métricas numéricas agregadas podem permanecer reais. Evidência real crua só é permitida na resposta efêmera do chat. Ver checklist em `CLAUDE.md` § R-044.
 - **Exclusividade do Motor de Grafo (@code-knowledge-graph — R-045 / RNF-004)**: O CLI `@optave/codegraph` e o banco `.codegraph/graph.db` são recursos de uso e execução **EXCLUSIVOS** do agent `@code-knowledge-graph`. NENHUM outro agent tem permissão para rodar comandos `codegraph *` diretamente no terminal ou varrer diretórios manualmente (`list_dir`, `read_dir`) para mapear arquitetura, camadas, chamadas ou dependências. Toda análise estrutural DEVE ser delegada compulsoriamente via `run_subagent(agentName: 'code-knowledge-graph', ...)`. Agents especialistas operam em modo Advisory de forma estritamente analítica e read-only — `run_in_terminal` é restrito ao modo Implementação (testing-first).
-- **Grafo de Roteamento (R-040)**: o roteamento de agents DEVE ser declarado como dado estruturado em `docs/ai-context/routing-graph.yaml`. A Decision Tree em prosa é documentação derivada. Toda nova rota exige: *(a)* entrada no grafo; *(b)* atualização da Decision Tree; *(c)* novo caso em `docs/ai-context/evals/casos-roteamento.yaml`.
+- **Grafo de Roteamento (R-040)**: o roteamento de agents DEVE ser declarado como dado estruturado em `docs/ai-context/routing-graph.yaml`. A Decision Tree em prosa é documentação derivada. Toda nova rota exige: *(a)* entrada no grafo; *(b)* atualização da Decision Tree; *(c)* novo caso em `.github/agents/evals/casos-roteamento.yaml`.
 
 ### 2.1) context-mode — Regras Obrigatórias de Roteamento (JetBrains Copilot)
 
@@ -354,14 +354,14 @@ Escolha uma ação:
 - `test-strategy` -> estratégia de testes.
 - `test-engineer` -> implementação de testes (unit/integration/E2E), correção de testes quebrados e expansão de cobertura — modos `create`/`fix`/`coverage` (fusão de test-implementation + test-fix).
 - `business-rules-extractor` -> extração de regras de negócio de código-fonte e documentação em `.md`; validação de refatorações contra regras documentadas.
-- `refactor-planner` -> planejamento de refatoração.
+- `refactor-planner` -> planejamento e decomposição macro de refatoração estrutural (delega execução aos especialistas de stack).
 - `docs-engineer` -> autoria e curadoria de documentação técnica em `.md` — modos `author`/`curate` (fusão de docs-writer + docs-curator).
 - `deep-search` -> triagem e roteamento de pesquisa interna e externa.
 - `analysis-architect` -> análise técnica unificada: impacto, risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL); metodologia B1/B2/B3.
 - `angular-engineer` -> especialista Angular com perfil híbrido: análise/recomendação (arquitetura, reatividade, performance, segurança, acessibilidade, testes, upgrade) E implementação de feature/bugfix (testing-first, diff mínimo).
 - `spring-boot-engineer` -> especialista Spring Boot com perfil híbrido: análise/recomendação (arquitetura, Java/JDK, performance, observabilidade, segurança, migração) E implementação de feature/bugfix (virtual threads vs reativo, testing-first).
 - `spring-reactive-engineer` -> especialista Spring WebFlux/Reactor com perfil híbrido: análise/recomendação (capacidade, resiliência, backpressure, observabilidade) E implementação de feature/bugfix (sem bloqueio de event-loop, testing-first).
-- `governance-factory` -> criar/revisar agent, skill ou prompt via parâmetro `type` (fusão de agent-factory + skill-factory + prompt-factory).
+- `governance-factory` -> criar/revisar agent, skill ou prompt via parâmetro `type` (fusão de agent-factory + skill-factory + prompt-factory; na criação, delega compulsoriamente pesquisa prévia de mercado/skills ao `deep-search`).
 - `binding-initializer` -> ⚡ inicializar `catalog.yaml` + `binding.md` + `catalog.local.yaml.example` para novo repositório (1 pergunta — R-034)
 - `adapter-generator` -> ⚡ gerar automaticamente adapters por-projeto em `.github/instructions/local/` (gitignored, R-043) via `/add-project-context`
 - `runtime-verifier` -> verificação de saúde do ambiente (build/dependências/serviços) antes de testes/codificadores; read-only.
@@ -374,6 +374,7 @@ Escolha uma ação:
 - `context-mode` -> organização de contexto e pesquisa sobre conteúdo já indexado/lido.
 - `context-compact` -> compactação pós-leitura e geração de resumos executáveis.
 - `context-builder` -> coleta e condensação de contexto técnico em `docs/context/`.
+- `refactoring-planning-patterns` -> planejamento de refatoração estrutural (Mikado, Branch by Abstraction, Strangler Fig, safety net).
 
 **Pesquisa e Documentação:**
 - `tavily` -> pesquisa externa e documentação atualizada.
@@ -383,6 +384,10 @@ Escolha uma ação:
 - `sonarqube-governance` -> monitoramento de métricas de qualidade via SonarQube.
 - `yaml-governance` -> boas práticas para leitura, geração e validação de arquivos YAML/YML.
 - `git-governance` -> convenções de git workflow, branch naming e commit standards.
+- `performance-engineering-patterns` -> revisão especializada de performance (Core Web Vitals, N+1, latência, profiling).
+- `angular-performance-patterns` -> engenharia de performance Angular (Zoneless, Signals, @defer, SSR incremental, CWV).
+- `spring-boot-performance-patterns` -> engenharia de performance Spring Boot (Virtual Threads, pinning, HikariCP, N+1, cache, ZGC).
+- `spring-reactive-performance-patterns` -> engenharia de performance reativa (event-loop, BlockHound, flatMap tuning, backpressure, Netty).
 
 **Testes — Genéricos (agnósticos de stack):**
 - `test-implementation-backend` -> padrões agnósticos de testes para qualquer backend.
@@ -501,7 +506,7 @@ Cada adapter na raiz de `.github/instructions/` deve:
 
 - **Adapters/Binding:** `docs/ai-context/catalog.yaml` (manifest de carregamento hierárquico)
 - **Grafo de Roteamento (R-040):** `docs/ai-context/routing-graph.yaml` (fonte estrutural — nós, arestas, cascata)
-- **Suíte de Evals:** `docs/ai-context/evals/casos-roteamento.yaml` (quality gate de regressão de roteamento)
+- **Suíte de Evals:** `.github/agents/evals/casos-roteamento.yaml` (quality gate de regressão de roteamento)
 - **Instructions:** `.github/instructions/README.md` + `.github/instructions/*.instructions.md`
 - **Agents:** `.github/agents/README.md` + `.github/agents/catalog.yaml`
 - **Skills:** `.github/skills/README.md` + `.github/skills/.index.json`

@@ -20,12 +20,15 @@ Uso:
 
 import os
 import sys
+import time
 import json
 import sqlite3
 import argparse
 import subprocess
 from pathlib import Path
-from typing import List, Dict, Any, Optional, Set
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
+from typing import List, Dict, Any, Optional, Set, Tuple
 
 # Módulos locais de extensão
 try:
@@ -250,16 +253,182 @@ def classify_coupling(fan_in: int, fan_out: int, is_bridge: bool, is_cycle: bool
     return "eventual"
 
 
+def _process_single_project_db(
+    item: Tuple[int, Dict[str, Any]],
+    diff_summary: Dict[str, Set[str]],
+    has_diff: bool
+) -> Dict[str, Any]:
+    """Lê e processa nós e arestas de um único banco SQLite de projeto com otimizações em memória."""
+    idx, cfg = item
+    prefix = f"p{idx}_"
+    proj_name = cfg["name"]
+    db_path = cfg["db"]
+
+    if not os.path.exists(db_path):
+        return {
+            "idx": idx,
+            "cfg": cfg,
+            "status": "not_found",
+            "nodes": [],
+            "edges": [],
+            "name_mappings": [],
+            "db_path": db_path
+        }
+
+    palette = cfg.get("palette") or DEFAULT_PALETTE[idx % len(DEFAULT_PALETTE)]
+
+    try:
+        conn = sqlite3.connect(db_path)
+        # Otimizações em memória para SQLite read-only (alto throughput e saturação de CPU)
+        conn.execute("PRAGMA query_only = ON")
+        conn.execute("PRAGMA cache_size = -64000")   # 64 MB em RAM
+        conn.execute("PRAGMA mmap_size = 268435456") # 256 MB memory-mapped I/O
+        conn.execute("PRAGMA temp_store = MEMORY")
+        conn.execute("PRAGMA synchronous = OFF")
+        cur = conn.cursor()
+
+        # Leitura única da tabela edges e cálculo de fan-in/fan-out diretamente em memória
+        cur.execute("SELECT id, source_id, target_id, kind FROM edges")
+        raw_edges = cur.fetchall()
+
+        fan_in_map = defaultdict(int)
+        fan_out_map = defaultdict(int)
+        proj_edges = []
+
+        for eid, src, tgt, ekind in raw_edges:
+            fan_out_map[src] += 1
+            fan_in_map[tgt] += 1
+            proj_edges.append({
+                "id": f"{prefix}e_{eid}",
+                "from": f"{prefix}{src}",
+                "to": f"{prefix}{tgt}",
+                "kind": ekind,
+                "crossRepo": False,
+                "color": {"color": "#B0BEC5", "highlight": "#1E88E5", "hover": "#90A4AE"},
+                "arrows": {"to": {"enabled": True, "scaleFactor": 0.6}},
+                "width": 1
+            })
+
+        # Símbolos estruturais
+        cur.execute("SELECT id, name, kind, file, line, role, qualified_name FROM nodes WHERE kind in ('class', 'interface', 'enum', 'file', 'function', 'struct', 'trait')")
+        rows = cur.fetchall()
+        proj_nodes = []
+        name_mappings = []
+
+        for r in rows:
+            nid, name, kind, file, line, role, qname = r
+            full_id = f"{prefix}{nid}"
+            name_mappings.append(((proj_name, name), full_id))
+            if qname:
+                name_mappings.append(((proj_name, qname), full_id))
+
+            fin = fan_in_map[nid]
+            fout = fan_out_map[nid]
+
+            is_ctrl = "Controller" in name or "Resource" in name
+            is_svc = "Service" in name or "Manager" in name or "Provider" in name
+            is_repo = "Repository" in name or "Dao" in name
+            is_comp = "Component" in name or "Directive" in name or "Pipe" in name
+
+            node_type_tag = "Controller" if is_ctrl else ("Service" if is_svc else ("Repository" if is_repo else ("Component" if is_comp else kind.capitalize())))
+            coupling_tier = classify_coupling(fin, fout, False, False)
+
+            # Fast path de diff: se não há arquivos no diff, ignora comparações de string
+            if has_diff:
+                norm_file = (file or "").replace("\\", "/")
+                is_added = any(cf in norm_file for cf in diff_summary["added"])
+                is_modified = any(cf in norm_file for cf in diff_summary["modified"])
+                is_deleted = any(cf in norm_file for cf in diff_summary["deleted"])
+                is_diff_changed = is_added or is_modified or is_deleted
+                diff_tag = "added" if is_added else ("modified" if is_modified else ("deleted" if is_deleted else "unchanged"))
+                bg_color = "#D1FAE5" if is_added else ("#FEF3C7" if is_modified else ("#FEE2E2" if is_deleted else palette["bgColor"]))
+                border_color = "#10B981" if is_added else ("#F59E0B" if is_modified else ("#DC2626" if is_deleted else palette["borderColor"]))
+                highlight_bg = "#059669" if is_added else ("#D97706" if is_modified else ("#DC2626" if is_deleted else palette["color"]))
+                font_color = "#065F46" if is_added else ("#92400E" if is_modified else ("#991B1B" if is_deleted else "#1A202C"))
+            else:
+                is_diff_changed = False
+                diff_tag = "unchanged"
+                bg_color = palette["bgColor"]
+                border_color = palette["borderColor"]
+                highlight_bg = palette["color"]
+                font_color = "#1A202C"
+
+            node_obj = {
+                "id": full_id,
+                "label": name,
+                "project": proj_name,
+                "projectDisplayName": cfg.get("displayName", proj_name),
+                "projectType": cfg.get("type", "Module"),
+                "kind": kind,
+                "typeTag": node_type_tag,
+                "file": file,
+                "line": line or 1,
+                "role": role or "core",
+                "coupling": coupling_tier,
+                "fanIn": fin,
+                "fanOut": fout,
+                "isDiffChanged": is_diff_changed,
+                "diffStatus": diff_tag,
+                "title": f"<b>{name}</b> ({node_type_tag})<br>📁 {file}:{line}<br>📦 {cfg.get('displayName', proj_name)}<br>📊 Fan-In: {fin} | Fan-Out: {fout}<br>⚡ Acoplamento: {coupling_tier.upper()}" + (f"<br>🚩 Diff Git: {diff_tag.upper()}" if is_diff_changed else ""),
+                "color": {
+                    "background": bg_color,
+                    "border": border_color,
+                    "highlight": {
+                        "background": highlight_bg,
+                        "border": "#212121"
+                    },
+                    "hover": {
+                        "background": bg_color,
+                        "border": border_color
+                    }
+                },
+                "font": {
+                    "color": font_color,
+                    "size": 13 if is_ctrl or is_svc else 11,
+                    "face": "Roboto, 'Segoe UI', sans-serif"
+                },
+                "shape": "box",
+                "margin": 10 if is_ctrl or is_svc else 6,
+                "borderWidth": 3.0 if is_diff_changed else (2.5 if is_ctrl or is_svc else 1.5),
+                "borderWidthSelected": 4.0
+            }
+            proj_nodes.append(node_obj)
+
+        conn.close()
+        return {
+            "idx": idx,
+            "cfg": cfg,
+            "status": "ok",
+            "nodes": proj_nodes,
+            "edges": proj_edges,
+            "name_mappings": name_mappings,
+            "db_path": db_path
+        }
+    except Exception as e:
+        print(f"[WARN] Falha ao processar banco SQLite '{db_path}': {e}")
+        return {
+            "idx": idx,
+            "cfg": cfg,
+            "status": "error",
+            "nodes": [],
+            "edges": [],
+            "name_mappings": [],
+            "db_path": db_path
+        }
+
+
 def build_unified_visualization(
     projects_cfg: List[Dict[str, Any]],
     cross_bridges: List[Dict[str, Any]],
     output_html_path: str,
     diff_ref: Optional[str] = None,
-    openapi_specs: Optional[List[Path]] = None,
+    openapi_specs: Optional[List[Any]] = None,
     workspace_root: Optional[Path] = None,
-    is_ci_mode: bool = False
+    is_ci_mode: bool = False,
+    workers: Optional[int] = None
 ) -> None:
-    """Processa nós e arestas de todos os bancos de dados configurados e renderiza o HTML."""
+    """Processa nós e arestas de todos os bancos de dados configurados em paralelo e renderiza o HTML."""
+    start_time = time.time()
     all_nodes = []
     all_edges = []
     node_name_to_id = {}
@@ -268,123 +437,35 @@ def build_unified_visualization(
     
     # Extração de Diff Git Triplo (Adicionados, Modificados, Removidos)
     diff_summary = DiffChecker.get_detailed_git_diff(diff_ref, ws_root) if diff_ref else {"added": set(), "modified": set(), "deleted": set()}
+    has_diff = bool(diff_summary["added"] or diff_summary["modified"] or diff_summary["deleted"])
     changed_files = diff_summary["added"] | diff_summary["modified"] | diff_summary["deleted"]
+
+    max_workers = workers or min(32, (os.cpu_count() or 4) * 2)
+
+    # Processamento paralelo de todos os bancos SQLite de projetos utilizando ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        process_func = lambda item: _process_single_project_db(item, diff_summary, has_diff)
+        results = list(executor.map(process_func, enumerate(projects_cfg)))
+
+    # Ordenação determinística por índice original do catálogo
+    results.sort(key=lambda r: r["idx"])
+
     processed_count = 0
-
-    for idx, cfg in enumerate(projects_cfg):
-        prefix = f"p{idx}_"
+    for r in results:
+        cfg = r["cfg"]
         proj_name = cfg["name"]
-        db_path = cfg["db"]
-
-        if not os.path.exists(db_path):
+        if r["status"] == "not_found":
             print(f"[INFO] Banco de dados não encontrado para '{cfg.get('displayName', proj_name)}':")
-            print(f"       Caminho: {db_path}")
+            print(f"       Caminho: {r['db_path']}")
             print(f"       Execute 'codegraph build .' no repositório para gerar o grafo.")
             continue
-
-        processed_count += 1
-        palette = cfg.get("palette") or DEFAULT_PALETTE[idx % len(DEFAULT_PALETTE)]
-        
-        try:
-            conn = sqlite3.connect(db_path)
-            cur = conn.cursor()
-
-            # Fan-in e Fan-out
-            cur.execute("SELECT target_id, count(*) FROM edges GROUP BY target_id")
-            fan_in_map = dict(cur.fetchall())
-            cur.execute("SELECT source_id, count(*) FROM edges GROUP BY source_id")
-            fan_out_map = dict(cur.fetchall())
-
-            # Símbolos estruturais
-            cur.execute("SELECT id, name, kind, file, line, role, qualified_name FROM nodes WHERE kind in ('class', 'interface', 'enum', 'file', 'function', 'struct', 'trait')")
-            rows = cur.fetchall()
-            for r in rows:
-                nid, name, kind, file, line, role, qname = r
-                full_id = f"{prefix}{nid}"
-                node_name_to_id[(proj_name, name)] = full_id
-                if qname:
-                    node_name_to_id[(proj_name, qname)] = full_id
-
-                fin = fan_in_map.get(nid, 0)
-                fout = fan_out_map.get(nid, 0)
-
-                is_ctrl = "Controller" in name or "Resource" in name
-                is_svc = "Service" in name or "Manager" in name or "Provider" in name
-                is_repo = "Repository" in name or "Dao" in name
-                is_comp = "Component" in name or "Directive" in name or "Pipe" in name
-
-                node_type_tag = "Controller" if is_ctrl else ("Service" if is_svc else ("Repository" if is_repo else ("Component" if is_comp else kind.capitalize())))
-                coupling_tier = classify_coupling(fin, fout, False, False)
-
-                norm_file = (file or "").replace("\\", "/")
-                is_added = any(cf in norm_file for cf in diff_summary["added"])
-                is_modified = any(cf in norm_file for cf in diff_summary["modified"])
-                is_deleted = any(cf in norm_file for cf in diff_summary["deleted"])
-                is_diff_changed = is_added or is_modified or is_deleted
-
-                diff_tag = "added" if is_added else ("modified" if is_modified else ("deleted" if is_deleted else "unchanged"))
-                bg_color = "#D1FAE5" if is_added else ("#FEF3C7" if is_modified else ("#FEE2E2" if is_deleted else palette["bgColor"]))
-                border_color = "#10B981" if is_added else ("#F59E0B" if is_modified else ("#DC2626" if is_deleted else palette["borderColor"]))
-
-                node_obj = {
-                    "id": full_id,
-                    "label": name,
-                    "project": proj_name,
-                    "projectDisplayName": cfg.get("displayName", proj_name),
-                    "projectType": cfg.get("type", "Module"),
-                    "kind": kind,
-                    "typeTag": node_type_tag,
-                    "file": file,
-                    "line": line or 1,
-                    "role": role or "core",
-                    "coupling": coupling_tier,
-                    "fanIn": fin,
-                    "fanOut": fout,
-                    "isDiffChanged": is_diff_changed,
-                    "diffStatus": diff_tag,
-                    "title": f"<b>{name}</b> ({node_type_tag})<br>📁 {file}:{line}<br>📦 {cfg.get('displayName', proj_name)}<br>📊 Fan-In: {fin} | Fan-Out: {fout}<br>⚡ Acoplamento: {coupling_tier.upper()}" + (f"<br>🚩 Diff Git: {diff_tag.upper()}" if is_diff_changed else ""),
-                    "color": {
-                        "background": bg_color,
-                        "border": border_color,
-                        "highlight": {
-                            "background": "#059669" if is_added else ("#D97706" if is_modified else ("#DC2626" if is_deleted else palette["color"])),
-                            "border": "#212121"
-                        },
-                        "hover": {
-                            "background": bg_color,
-                            "border": border_color
-                        }
-                    },
-                    "font": {
-                        "color": "#065F46" if is_added else ("#92400E" if is_modified else ("#991B1B" if is_deleted else "#1A202C")),
-                        "size": 13 if is_ctrl or is_svc else 11,
-                        "face": "Roboto, 'Segoe UI', sans-serif"
-                    },
-                    "shape": "box",
-                    "margin": 10 if is_ctrl or is_svc else 6,
-                    "borderWidth": 3.0 if is_diff_changed else (2.5 if is_ctrl or is_svc else 1.5),
-                    "borderWidthSelected": 4.0
-                }
-                all_nodes.append(node_obj)
-                valid_classes.append(node_obj)
-
-            # Arestas do repositório
-            cur.execute("SELECT id, source_id, target_id, kind FROM edges")
-            for er in cur.fetchall():
-                eid, src, tgt, ekind = er
-                all_edges.append({
-                    "id": f"{prefix}e_{eid}",
-                    "from": f"{prefix}{src}",
-                    "to": f"{prefix}{tgt}",
-                    "kind": ekind,
-                    "crossRepo": False,
-                    "color": {"color": "#B0BEC5", "highlight": "#1E88E5", "hover": "#90A4AE"},
-                    "arrows": {"to": {"enabled": True, "scaleFactor": 0.6}},
-                    "width": 1
-                })
-            conn.close()
-        except Exception as e:
-            print(f"[WARN] Falha ao processar banco SQLite '{db_path}': {e}")
+        if r["status"] == "ok":
+            processed_count += 1
+            all_nodes.extend(r["nodes"])
+            valid_classes.extend(r["nodes"])
+            all_edges.extend(r["edges"])
+            for key, val in r["name_mappings"]:
+                node_name_to_id[key] = val
 
     if processed_count == 0:
         print("\n[ERRO] Nenhum banco de dados '.codegraph/graph.db' válido pôde ser lido.")
@@ -396,8 +477,8 @@ def build_unified_visualization(
         print("     python generate-graph.py --db /caminho/do/projeto\n")
         sys.exit(1)
 
-    # Ingestão Automática de Contratos OpenAPI / Swagger / AsyncAPI
-    auto_bridges = ContractCorrelator.correlate_projects(projects_cfg, openapi_specs)
+    # Ingestão Automática de Contratos OpenAPI / Swagger / AsyncAPI (concorrente multi-thread)
+    auto_bridges = ContractCorrelator.correlate_projects(projects_cfg, openapi_specs, max_workers=max_workers)
     all_bridges_to_apply = list(cross_bridges)
     
     # Adiciona pontes auto-detectadas sem duplicar
@@ -481,9 +562,10 @@ def build_unified_visualization(
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(filled_html)
 
-    print(f"\n[OK] Grafo Unificado Material 3 (2D + 3D) gerado com sucesso!")
+    elapsed_time = time.time() - start_time
+    print(f"\n[OK] Grafo Unificado Material 3 (2D + 3D) gerado com sucesso em {elapsed_time:.2f}s!")
     print(f"     Arquivo: {out_file}")
-    print(f"     Projetos processados: {processed_count}")
+    print(f"     Projetos processados: {processed_count} (Workers/Threads: {max_workers})")
     print(f"     Nós: {len(valid_classes)} | Arestas: {len(final_edges)} | Pontes REST: {len(bridge_node_ids)}")
     print(f"     Métricas de Módulos (Martin): {len(module_metrics)} pacotes calculados")
     print(f"     Ciclos Detectados: {len(detected_cycles)} | Violações de Boundary: {len(boundary_violations)}")
@@ -517,6 +599,7 @@ if __name__ == "__main__":
     parser.add_argument("--bridges", "-b", default=None, help="Caminho do arquivo JSON de pontes cross-repo")
     parser.add_argument("--diff", "-d", default=None, help="Git ref (ex: HEAD~1, master) para destacar blast radius do diff")
     parser.add_argument("--ci", "--check-boundaries", action="store_true", dest="ci", help="Modo CI Gate: falha com exit code 1 se houver violações de manifesto.boundaries")
+    parser.add_argument("--workers", "-j", type=int, default=None, help="Número de threads/workers paralelos para processar projetos e I/O (padrão: auto baseado em CPU cores)")
     parser.add_argument("--open", action="store_true", help="Abrir visualizador no navegador automaticamente após geração")
 
     args = parser.parse_args()
@@ -535,7 +618,8 @@ if __name__ == "__main__":
         diff_ref=args.diff,
         openapi_specs=openapi_specs,
         workspace_root=workspace_root,
-        is_ci_mode=args.ci
+        is_ci_mode=args.ci,
+        workers=args.workers
     )
 
     if args.open:

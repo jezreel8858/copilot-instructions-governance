@@ -1,7 +1,7 @@
 """
 test_orquestracao_contrato.py — trilha CI (contrato/lógica documentada) para os grupos
 `orquestracao_rf008` (orq-001, orq-002) e `custo_hibrido_rnf001` (rnf001-001, rnf001-002)
-de docs/ai-context/evals/casos-code-summarizer.yaml.
+de .github/agents/evals/casos-code-summarizer.yaml.
 
 ⚠️ LIMITAÇÃO CONHECIDA E ACEITA (decisão de @test-strategy — abordagem HÍBRIDA):
 Nenhum teste aqui invoca o agent `code-summarizer` real nem qualquer LLM. Eles validam

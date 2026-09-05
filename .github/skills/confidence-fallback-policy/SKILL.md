@@ -113,6 +113,24 @@ Fallback:
   → Se ainda falhar → reportar estado e aguardar orientação
 ```
 
+### 3.5) Stack ou Linguagem não Suportada no Catálogo (Out-of-Domain / Fallback Determinístico)
+
+```
+Cenário: Solicitação de codificação em linguagem/framework ausente do catálogo (ex.: "Crie uma API REST em Rust com Axum")
+Score de Execução: 0.10 (tecnologia fora das competências cadastradas no catálogo e adapters)
+
+Anti-Padrão Proibido:
+  - ❌ Criar ou invocar agente inline exclusivo para "gap detection" em runtime (adiciona round-trip de LLM, custo e latência desnecessários no caminho crítico).
+  - ❌ Delegar implementação para especialista de stack distinta (ex.: mandar Rust para @spring-boot-engineer ou Flutter para @angular-engineer).
+  - ❌ Tentar implementar código fora do padrão de governança estabelecido sem adapter de suporte.
+
+Comportamento Obrigatório (Fallback Determinístico do Router):
+  1. Recusa imediata e estruturada declarando ausência de especialista para a stack no catálogo.
+  2. Oferecer caminhos válidos:
+     - Dúvida conceitual ou documentação externa → delegar para @deep-search.
+     - Suporte definitivo no repositório → orientar expansão de governança via @governance-factory (para criar novo agent/adapter) ou /add-project-context.
+```
+
 ---
 
 ## 4) Re-roteamento
@@ -141,6 +159,8 @@ roteamento_de_volta:
 - ❌ Usar fallback de tool sem registrar que ocorreu
 - ❌ Escalar para modelo mais caro sem tentar ferramentas MCP primeiro
 - ❌ Bloquear execução por ambiguidade que o downstream pode resolver iterativamente
+- ❌ Criar ou invocar agent LLM inline exclusivo para "gap detection" (anti-padrão de latência e custo; tratar via recusa determinística no router e governança sob demanda)
+- ❌ Delegar codificação para especialista de outra stack quando a linguagem solicitada não constar no catálogo (ex.: mandar Rust para @spring-boot-engineer ou Flutter para @angular-engineer)
 
 ## 6) Routing em Cascata (Rule → Semantic → LLM-Based)
 

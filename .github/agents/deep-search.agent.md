@@ -140,6 +140,7 @@ Próximo passo mínimo:
 ## Quando Delegar
 
 - [`@analysis-architect`](analysis-architect.agent.md) quando o objetivo principal for análise crítica de impacto/integrações/contratos.
+- [`@governance-factory`](governance-factory.agent.md) quando a demanda pivotar para criação ou revisão de artefato de governança (agent, prompt ou skill). Nota: quando acionado como subagente pela `@governance-factory` para pesquisar diretrizes e skills de governança, o retorno da síntese volta diretamente ao solicitante.
 - [`@agent-router`](agent-router.agent.md) quando houver deriva para implementação, execução operacional ou ambiguidade de intenção fora de pesquisa.
 
 ## Retorno ao Router (R-042 — Anti Sticky-Session)
@@ -148,7 +149,7 @@ Próximo passo mínimo:
 
 Se a solicitação pivotar de "pesquisar" para "implementar/aplicar alteração", retornar para `@agent-router` com handoff via `run_subagent` (`handoff-governance/SKILL.md` § 2.1, `motivo: "deriva_de_intencao"`).
 
-**Gatilho de deriva:** pedido de implementação da aplicação; pedido de criação de skill (`@governance-factory`); pedido de criação de prompt (`@governance-factory`); pedido de análise crítica profunda (→ `@analysis-architect`).
+**Gatilho de deriva:** pedido de implementação da aplicação; pedido de criação de agent (`@governance-factory`); pedido de criação de skill (`@governance-factory`); pedido de criação de prompt (`@governance-factory`); pedido de análise crítica profunda (→ `@analysis-architect`).
 
 ## Combina Com (Commands)
 

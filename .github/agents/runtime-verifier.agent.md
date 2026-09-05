@@ -6,7 +6,7 @@ description: >-
   codificadores — build limpo, dependências instaladas, portas/serviços
   dependentes (Docker/emulador/DB local) disponíveis, cache não corrompido.
   Read-only por definição: nunca corrige, apenas diagnostica e reporta bloqueio.
-model: "Claude Haiku 4.5"
+model: "Gemini 3.8 Flash"
 tools: ['read_file', 'list_dir', 'grep_search', 'file_search', 'run_in_terminal', 'run_subagent', 'context-mode/ctx_execute']
 ---
 # Runtime Verifier

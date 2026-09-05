@@ -55,6 +55,51 @@ def test_openapi_parser():
         tf_path.unlink(missing_ok=True)
 
 
+def test_contract_correlator_directory_exclusion_and_matching():
+    with tempfile.TemporaryDirectory() as temp_dir:
+        root_path = Path(temp_dir)
+        proj_client = root_path / "client_app"
+        proj_server = root_path / "server_app"
+
+        # Cria estrutura de arquivos de código real
+        (proj_client / "src").mkdir(parents=True)
+        (proj_server / "src").mkdir(parents=True)
+
+        # Cria pasta node_modules que deve ser ignorada
+        (proj_client / "node_modules").mkdir(parents=True)
+        with open(proj_client / "node_modules" / "vendor.ts", "w", encoding="utf-8") as f:
+            f.write("http.get('/v1/vendor-internal');\n")
+
+        # Código cliente em src/
+        with open(proj_client / "src" / "user.service.ts", "w", encoding="utf-8") as f:
+            f.write("export class UserService {\n  find() { return http.get('/v1/usuarios'); }\n}\n")
+
+        # Código servidor em src/
+        with open(proj_server / "src" / "UserController.java", "w", encoding="utf-8") as f:
+            f.write("@RequestMapping(\"/v1/usuarios\")\npublic class UserController {\n  @GetMapping\n  public List get() {}\n}\n")
+
+        calls = ContractCorrelator.extract_http_calls_from_source(proj_client)
+        endpoints = ContractCorrelator.extract_server_endpoints_from_source(proj_server)
+
+        # Deve encontrar a chamada de src/ e ignorar node_modules
+        assert len(calls) == 1
+        assert calls[0]["raw_route"] == "/v1/usuarios"
+        assert len(endpoints) == 1
+        assert endpoints[0]["raw_route"] == "/v1/usuarios"
+
+        # Testa correlação paralela entre projetos
+        projects_cfg = [
+            {"name": "ClientApp", "path": str(proj_client)},
+            {"name": "ServerApp", "path": str(proj_server)}
+        ]
+        bridges = ContractCorrelator.correlate_projects(projects_cfg, max_workers=2)
+        assert len(bridges) == 1
+        assert bridges[0]["src_proj"] == "ClientApp"
+        assert bridges[0]["tgt_proj"] == "ServerApp"
+        assert bridges[0]["auto_detected"] is True
+
+
+
 def test_asyncapi_parser():
     sample_asyncapi = {
         "asyncapi": "2.6.0",

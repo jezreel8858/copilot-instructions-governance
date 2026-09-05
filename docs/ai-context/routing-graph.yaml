@@ -43,7 +43,7 @@ nos:
 
   - id: refactor-planner
     tipo: downstream
-    descricao: "Planejamento de refatoração segura"
+    descricao: "Planejamento e decomposição macro de refatoração estrutural com blast radius e rollback (delega execução aos especialistas de stack)"
 
   - id: docs-engineer
     tipo: downstream
@@ -139,10 +139,6 @@ nos:
   - id: code-style-enforcer
     tipo: downstream
     descricao: "Verificação de aderência a convenções de estilo documentadas no adapter de stack; nunca bloqueador"
-
-  - id: refactor-executor
-    tipo: downstream
-    descricao: "Execução de plano de refatoração já aprovado por refactor-planner, fase a fase, com validação contra regras de negócio"
 
   - id: runtime-verifier
     tipo: downstream
@@ -366,20 +362,6 @@ arestas:
         - "eslint"
         - "checkstyle"
 
-  # Execução de plano de refatoração já aprovado
-  - de: agent-router
-    para: refactor-executor
-    prioridade: 4.05
-    threshold_score: 0.90
-    nivel_routing: rule-based
-    condicoes:
-      keywords:
-        - "executar refactor"
-        - "aplicar refatoração"
-        - "executar plano de refactor"
-      sinal_r006: "Já existe plano APROVADO de refactor-planner para executar?"
-      nao_confundir_com:
-        - "criar plano de refactor do zero"  # → refactor-planner
 
   # Elicitação e estruturação de requisitos (pré-técnico, prospectivo)
   - de: agent-router
@@ -785,4 +767,10 @@ politica_cascata:
   ambiguity_zone:
     descricao: "Top-1 e Top-2 scores dentro de 0.05 um do outro"
     acao: "Aplicar nível 3 (LLM tiebreaker) independentemente do threshold absoluto"
+
+  out_of_domain:
+    descricao: "Pedido de implementação de código em stack/linguagem não suportada no catálogo ou adapters"
+    threshold: 0.20
+    acao: "Fallback determinístico — emitir recusa estruturada sem acionar executores técnicos; oferecer @deep-search para pesquisa conceitual ou sugerir @governance-factory para expansão do catálogo"
+    proibido: "Criar ou invocar agente inline de gap detection ou delegar para especialista de stack divergente"
 

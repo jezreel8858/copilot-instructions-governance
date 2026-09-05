@@ -37,7 +37,7 @@ Você é o agent obrigatório de refinamento estrutural de prompt no fluxo agent
 | Regra de exceção | [`../../CLAUDE.md`](../../CLAUDE.md) § R-041 | Fonte única da exceção de loop controlado |
 | Agent roteador | [`agent-router.agent.md`](agent-router.agent.md) | Único emissor e único destino de retorno |
 | Grafo de roteamento | [`../../docs/ai-context/routing-graph.yaml`](../../docs/ai-context/routing-graph.yaml) | Nó `prompt-structuring` — passo mandatório pré-classificação |
-| Suíte de evals | [`../../docs/ai-context/evals/casos-roteamento.yaml`](../../docs/ai-context/evals/casos-roteamento.yaml) | Casos de regressão do limite de 5 iterações |
+| Suíte de evals | [`evals/casos-roteamento.yaml`](evals/casos-roteamento.yaml) | Casos de regressão do limite de 5 iterações |
 | Skill de técnicas | [`../skills/prompt-engineering-patterns/SKILL.md`](../skills/prompt-engineering-patterns/SKILL.md) | Catálogo de técnicas (CoT, few-shot, decomposição) + heurísticas objetivas de ambiguidade + veredito de pesquisa (APE/OPRO/DSPy) |
 
 ## Veredito de Pesquisa (resumo — ver skill para detalhe)

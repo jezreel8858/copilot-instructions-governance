@@ -31,11 +31,11 @@
 | DevOps Engineer | 🟠 P3 | ✅ **RESOLVIDO** | `devops-engineer.agent.md` | `devops-agent-patterns/SKILL.md` |
 | Debugger (genérico) | 🟠 P3 | ✅ **RESOLVIDO** | `debugger.agent.md` | Reaproveitou `code-tracing` existente (R-003) |
 | Code Style Enforcer | 🟠 P3 | ✅ **RESOLVIDO** | `code-style-enforcer.agent.md` | Reaproveitou `code-review-patterns` existente |
-| Refactor Executor | 🟠 P3 | ✅ **RESOLVIDO** | `refactor-executor.agent.md` | Reaproveitou `business-rules-governance` existente |
+| Refactor Executor | 🟠 P3 | 🔄 **CONSOLIDADO** | Consolidado diretamente nos especialistas de stack (`angular-engineer`, `spring-boot-engineer`, etc.) | Execução idiomática testing-first via perfil híbrido |
 
 **Cobertura pós-implementação**: 26 → **35 agents** | 47 → **52 skills** | 77% → **~95% de cobertura de perfis do mercado**.
 
-**Governança atualizada atomicamente (R-015)**: `agents/catalog.yaml`, `agents/README.md`, `skills/.index.json`, `skills/README.md`, `docs/ai-context/routing-graph.yaml` (9 nós + 9 arestas, R-040), `docs/ai-context/evals/casos-roteamento.yaml` (+8 casos canônicos, +1 ambíguo).
+**Governança atualizada atomicamente (R-015)**: `agents/catalog.yaml`, `agents/README.md`, `skills/.index.json`, `skills/README.md`, `docs/ai-context/routing-graph.yaml` (9 nós + 9 arestas, R-040), `.github/agents/evals/casos-roteamento.yaml` (+8 casos canônicos, +1 ambíguo).
 
 ---
 

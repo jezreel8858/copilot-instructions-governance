@@ -20,11 +20,11 @@
 | Agent | `bug-triage` | Triagem de bugs/regressões com reprodução e severidade |
 | Agent | `test-strategy` | Estratégia de testes, cobertura por risco e critérios de aceitação |
 | Agent | `test-engineer` | 🧪 ***(FUSÃO)*** Implementar suítes de teste (unit/integration/E2E), corrigir testes quebrados e expandir cobertura — modos `create`/`fix`/`coverage`; nunca roda a suíte completa autonomamente no modo `fix` |
-| Agent | `refactor-planner` | Planejamento de refatoração incremental com risco e rollback |
+| Agent | `refactor-planner` | Planejamento e decomposição macro de refatoração estrutural com blast radius e rollback (delega execução aos especialistas de stack) |
 | Agent | `deep-search` | 🔎 ***(NEW)*** Retriever/Researcher para pesquisa interna (repo + context-mode + terminal read-only) e externa (Tavily), com decomposição paralela de pesquisa composta |
 | Agent | `analysis-architect` | Análise técnica unificada: impacto local (tier B1), risco, dependências, contratos e integrações cross-sistema (OpenAPI/AsyncAPI/gRPC/GraphQL) com metodologia B1/B2/B3 |
 | Agent | `agent-auditor` | 🧪 ***(NEW)*** Auditoria semântica de governança do próprio catálogo (agents/skills/prompts): detecta smells e gaps, classifica severidade e recomenda handoff para executores, sempre read-only |
-| Agent | `governance-factory` | 🏭 ***(FUSÃO)*** Criação/revisão de agent, skill ou prompt via parâmetro `type` — substitui agent-factory + skill-factory + prompt-factory, que compartilhavam o mesmo fluxo canônico |
+| Agent | `governance-factory` | 🏭 ***(FUSÃO v1.1.0)*** Criação/revisão de agent, skill ou prompt via parâmetro `type`; na criação de qualquer artefato, delega compulsoriamente pesquisa prévia de mercado/skills ao `deep-search` antes de materializar o arquivo |
 | Agent | `context-builder` | Coletar, condensar e persistir contexto técnico em `docs/context/` |
 | Agent | `binding-initializer` | ⚡ ***(NEW)*** Criar `catalog.yaml` + `binding.md` para novo repositório (1 pergunta — Health Check R-034) |
 | Agent | `adapter-generator` | ⚡ ***(NEW)*** Gerar automaticamente adapters em `.github/instructions/` via `/add-project-context` |
@@ -49,7 +49,6 @@
 | Agent | `devops-engineer` | 🐳 ***(NEW)*** Revisa Dockerfile, Kubernetes, CI/CD e IaC por segurança/resiliência/boas práticas; read-only |
 | Agent | `debugger` | 🐛 ***(NEW)*** Investiga causa raiz a partir de stack trace/log — call graph, hipótese testável, reprodução mínima; não corrige, complementa `bug-triage` com investigação mais profunda |
 | Agent | `code-style-enforcer` | 🎨 ***(NEW)*** Verifica aderência a convenções de estilo documentadas no adapter de stack; nunca bloqueador, apenas sugestão |
-| Agent | `refactor-executor` | 🔧 ***(NEW)*** Executa plano de refatoração já aprovado por `refactor-planner`, fase a fase, validando contra regras de negócio documentadas |
 
 ## 3) Roteamento Rápido
 
@@ -68,7 +67,7 @@
 | Pesquisa interna aprofundada (repo/context-mode/terminal) ou pesquisa externa composta | `deep-search` |
 | Análise técnica, impacto, contratos, integrações cross-sistema | `analysis-architect` |
 | 🧪 Auditoria semântica de governança do catálogo (smells/gaps em agents, skills e prompts) | `agent-auditor` |
-| Criação/revisão de agent, skill ou prompt | `governance-factory` (`type: agent\|skill\|prompt`) |
+| Criação/revisão de agent, skill ou prompt (com pesquisa prévia via `@deep-search` na criação) | `governance-factory` (`type: agent\|skill\|prompt`) |
 | Consolidação de contexto para execução posterior | `context-builder` |
 | ⚡ Binding context faltando (Health Check) | `binding-initializer` |
 | ⚡ Gerar adapters após /add-project-context | `adapter-generator` |
@@ -89,7 +88,6 @@
 | 🐳 Revisão de artefatos DevOps (Dockerfile/K8s/CI-CD/IaC), read-only | `devops-engineer` |
 | 🐛 Investigação de causa raiz a partir de stack trace/log | `debugger` |
 | 🎨 Verificação de aderência a convenções de estilo documentadas | `code-style-enforcer` |
-| 🔧 Execução de plano de refatoração já aprovado por `refactor-planner` | `refactor-executor` |
 | 🩺 Verificação de saúde do ambiente (build/deps/serviços) antes de testes/codificadores | `runtime-verifier` |
 | 📦 Preparação de PR pós-aprovação (diff, commit semântico, matriz de risco, changelog) | `pr-gatekeeper` |
 | 🗄️ Migrações de schema, otimização de query e integridade referencial | `database-specialist` |
