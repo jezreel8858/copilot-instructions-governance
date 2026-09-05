@@ -46,7 +46,9 @@ Exemplos:
 - **`catalog.yaml`** — Manifest único de adapters, projetos e mapping stack → instrução; inclui seção `governance_artefacts` com artefatos estruturais de IA
 - **`binding.md`** — Documentação de binding e descoberta
 - **`routing-graph.yaml`** — ⭐ **Grafo de roteamento declarado** (nós = agents, arestas = condições, política de cascata) — fonte de verdade estrutural do `agent-router` (R-040)
-- **`evals/casos-roteamento.yaml`** — Suíte de casos de teste de regressão de roteamento (canônicos, ambíguos, regressão, segurança)
+
+**Suítes de Evals:**
+- **`.github/agents/evals/casos-roteamento.yaml`** — Suíte de casos de teste de regressão de roteamento (canônicos, ambíguos, regressão, segurança)
 
 ---
 
@@ -244,13 +246,6 @@ graph TB
     style CAT6 fill:#eceff1,stroke:#455a64
 ```
 
-    style CAT1 fill:#e3f2fd,stroke:#1976d2
-    style CAT2 fill:#f3e5f5,stroke:#7b1fa2
-    style CAT3 fill:#e8f5e9,stroke:#388e3c
-    style CAT4 fill:#fff3e0,stroke:#f57c00
-    style CAT5 fill:#fce4ec,stroke:#c2185b
-    style CAT6 fill:#eceff1,stroke:#455a64
-```
 
 > 🔒⚡🛡️🧠 marcam os 9 agents adicionados na rodada de fechamento de gaps (2026-09-01), após pesquisa de mercado dedicada e validação contra o catálogo de perfis consolidados — ver changelog em `.github/agents/catalog.yaml`.
 
